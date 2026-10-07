@@ -107,7 +107,8 @@
         "lib/notebook-layout.ts",
         "lib/shortcuts.ts",
         "lib/error-mark.ts",
-        "lib/submit-moment.ts"
+        "lib/submit-moment.ts",
+        "lib/story-scenes.ts"
       ]
     },
     {
@@ -202,7 +203,8 @@
         "lib/progress.ts",
         "lib/client-progress.ts",
         "lib/attempts.ts",
-        "lib/activity.ts"
+        "lib/activity.ts",
+        "lib/story-beats.ts"
       ]
     },
     {
@@ -226,7 +228,8 @@
         "lib/party-draft.ts",
         "lib/assist-targets.ts",
         "lib/shared-doc.ts",
-        "lib/realtime.ts"
+        "lib/realtime.ts",
+        "lib/party-lock.ts"
       ]
     },
     {
@@ -244,7 +247,8 @@
         "lib/party-boss-server.ts",
         "lib/party-boss-service.ts",
         "lib/party-draft-server.ts",
-        "lib/party-draft-service.ts"
+        "lib/party-draft-service.ts",
+        "lib/party-lock-server.ts"
       ]
     },
     {

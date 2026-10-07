@@ -1,12 +1,12 @@
 {
  "meta": {
   "repo": "erictweng/quest-coder",
-  "ref": "71bc83a",
-  "commit": "71bc83a",
-  "built_at": "2026-10-07T23:19:26Z",
+  "ref": "origin/main",
+  "commit": "749d8b5",
+  "built_at": "2026-10-07T23:22:29Z",
   "counts": {
    "layers": 18,
-   "files": 259,
+   "files": 272,
    "edges": 52
   }
  },
@@ -19,7 +19,7 @@
    "label": "App shell",
    "desc": "Next.js entry: root layout, the single-page app router (app/page.tsx), global CSS, fonts, SEO, styleguide page",
    "path": "",
-   "lines": 1961,
+   "lines": 2012,
    "tokens": [
     "app",
     "shell",
@@ -91,7 +91,7 @@
    "label": "API routes",
    "desc": "Next.js route handlers: run/submit, progress, packs, session, friends, party (assist, boss), health",
    "path": "",
-   "lines": 647,
+   "lines": 653,
    "tokens": [
     "api",
     "routes",
@@ -157,7 +157,7 @@
    "label": "Solve screen",
    "desc": "Code editor, Quest Notebook/journal, HUD, action bar (Run/Submit), combat log, results, error marks",
    "path": "",
-   "lines": 1187,
+   "lines": 1461,
    "tokens": [
     "solve",
     "screen",
@@ -186,7 +186,9 @@
     "layout",
     "shortcuts",
     "mark",
-    "moment"
+    "moment",
+    "story",
+    "scenes"
    ]
   },
   {
@@ -239,7 +241,7 @@
    "label": "Party UI",
    "desc": "Multiplayer screens: party lobby, draft, assist tray, boss gate/fight, shared Yjs editor",
    "path": "",
-   "lines": 1638,
+   "lines": 1658,
    "tokens": [
     "party",
     "ui",
@@ -268,7 +270,7 @@
    "label": "Design system & moments",
    "desc": "Medieval tokens, primitives, sprites; celebration moments (fireworks, completion, reward toasts, result summary); shared chrome (top bar) and region art",
    "path": "",
-   "lines": 1013,
+   "lines": 1114,
    "tokens": [
     "design",
     "system",
@@ -314,7 +316,7 @@
    "label": "Game rules",
    "desc": "Pure game logic: types, levels, quests and unlock order, tutorial island, progress/rewards math, attempts, training activity/streaks",
    "path": "",
-   "lines": 1114,
+   "lines": 1275,
    "tokens": [
     "game",
     "rules",
@@ -344,7 +346,9 @@
     "ts",
     "quest",
     "list",
-    "client"
+    "client",
+    "story",
+    "beats"
    ]
   },
   {
@@ -355,7 +359,7 @@
    "label": "Party & friends logic",
    "desc": "Pure friends/party rules: friend codes, party questline, assist, boss, draft shapes, assist targets, shared Yjs doc, realtime pings",
    "path": "",
-   "lines": 702,
+   "lines": 774,
    "tokens": [
     "party",
     "friends",
@@ -376,7 +380,8 @@
     "doc",
     "pings",
     "lib",
-    "ts"
+    "ts",
+    "lock"
    ]
   },
   {
@@ -387,7 +392,7 @@
    "label": "Party & friends services",
    "desc": "Server orchestration for party assist/boss/draft: load from stores, apply rules, write back, ping realtime",
    "path": "",
-   "lines": 806,
+   "lines": 869,
    "tokens": [
     "party",
     "friends",
@@ -409,7 +414,8 @@
     "ping",
     "realtime",
     "lib",
-    "ts"
+    "ts",
+    "lock"
    ]
   },
   {
@@ -420,7 +426,7 @@
    "label": "Stores & database",
    "desc": "Store facades choosing Supabase Postgres (prod) or SQLite (local); Supabase clients; SQL migrations and RPC functions",
    "path": "",
-   "lines": 3814,
+   "lines": 3836,
    "tokens": [
     "stores",
     "database",
@@ -538,7 +544,7 @@
    "label": "Runner service",
    "desc": "Separately deployed Python grader: bearer auth, allowlists, limits, CPython subprocess per case, private pack, redaction",
    "path": "",
-   "lines": 1774,
+   "lines": 1781,
    "tokens": [
     "runner",
     "service",
@@ -605,7 +611,7 @@
    "label": "Build & deploy tooling",
    "desc": "Pack projection builder, privacy check, runtime copy, runner deploy/CI scripts, load test, deployment smoke; root framework configs",
    "path": "",
-   "lines": 1363,
+   "lines": 1436,
    "tokens": [
     "build",
     "deploy",
@@ -642,7 +648,7 @@
    "label": "Tests",
    "desc": "Unit (vitest), e2e (Playwright), runner pytest, Supabase SQL tests",
    "path": "",
-   "lines": 10793,
+   "lines": 11864,
    "tokens": [
     "tests",
     "test",
@@ -920,7 +926,7 @@
    "label": "route.ts",
    "desc": "exports: POST, runtime, dynamic",
    "path": "app/api/run/route.ts",
-   "lines": 125,
+   "lines": 131,
    "tokens": [
     "route",
     "ts",
@@ -1061,7 +1067,7 @@
    "label": "page.tsx",
    "desc": "exports: Home",
    "path": "app/page.tsx",
-   "lines": 1625,
+   "lines": 1676,
    "tokens": [
     "page",
     "tsx",
@@ -1636,7 +1642,7 @@
    "label": "sprites.tsx",
    "desc": "Original code-drawn pixel sprites. Each row is a string; each character is one pixel looked up in the sprite's palette (\".\" is transparent). Swappable later for drawn art at the same sizes.",
    "path": "components/medieval/sprites.tsx",
-   "lines": 221,
+   "lines": 322,
    "tokens": [
     "sprites",
     "tsx",
@@ -1989,7 +1995,7 @@
    "label": "party.tsx",
    "desc": "A region's questline as the party card shows it (from the page's quest packs).",
    "path": "components/party/party.tsx",
-   "lines": 463,
+   "lines": 473,
    "tokens": [
     "party",
     "tsx",
@@ -2015,7 +2021,7 @@
    "label": "shared-editor.tsx",
    "desc": "exports: useSharedRoom, useBossFight, SharedEditor, lostFor, BossFight, SharedRoom, \u2026",
    "path": "components/party/shared-editor.tsx",
-   "lines": 339,
+   "lines": 349,
    "tokens": [
     "shared",
     "editor",
@@ -2698,6 +2704,63 @@
   },
   {
    "idx": "84",
+   "id": "components/solve/story-strip.tsx",
+   "kind": "file",
+   "layer": "solve-ui",
+   "label": "story-strip.tsx",
+   "desc": "Story intro player + illustrated statement. Scenes are code-drawn SVG pixel art (viewBox 160\u00d7100) built from the sprite kit, posed by lib/story-scenes.ts; every frame is a pure function of (picture, u), so the strip renders deterministically and the statement reuses the same scenes as stills.",
+   "path": "components/solve/story-strip.tsx",
+   "lines": 212,
+   "tokens": [
+    "story",
+    "strip",
+    "tsx",
+    "intro",
+    "player",
+    "illustrated",
+    "statement",
+    "scenes",
+    "are",
+    "code",
+    "drawn",
+    "svg",
+    "pixel",
+    "art",
+    "view",
+    "box",
+    "viewbox",
+    "160",
+    "100",
+    "built",
+    "from",
+    "the",
+    "sprite",
+    "kit",
+    "posed",
+    "by",
+    "lib",
+    "ts",
+    "every",
+    "frame",
+    "is",
+    "pure",
+    "function",
+    "of",
+    "picture",
+    "so",
+    "renders",
+    "deterministically",
+    "and",
+    "reuses",
+    "same",
+    "as",
+    "stills",
+    "components",
+    "solve"
+   ]
+  },
+  {
+   "idx": "85",
    "id": "components/ui-bits.tsx",
    "kind": "file",
    "layer": "design-system",
@@ -2726,7 +2789,7 @@
    ]
   },
   {
-   "idx": "85",
+   "idx": "86",
    "id": "lib/activity.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -2777,7 +2840,7 @@
    ]
   },
   {
-   "idx": "86",
+   "idx": "87",
    "id": "lib/assist-targets.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -2839,7 +2902,7 @@
    ]
   },
   {
-   "idx": "87",
+   "idx": "88",
    "id": "lib/attempts.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -2901,7 +2964,7 @@
    ]
   },
   {
-   "idx": "88",
+   "idx": "89",
    "id": "lib/auth-identity.ts",
    "kind": "file",
    "layer": "auth",
@@ -2928,7 +2991,7 @@
    ]
   },
   {
-   "idx": "89",
+   "idx": "90",
    "id": "lib/browser-runner.ts",
    "kind": "file",
    "layer": "browser-run",
@@ -2986,7 +3049,7 @@
    ]
   },
   {
-   "idx": "90",
+   "idx": "91",
    "id": "lib/client-address.ts",
    "kind": "file",
    "layer": "run-gateway",
@@ -3045,7 +3108,7 @@
    ]
   },
   {
-   "idx": "91",
+   "idx": "92",
    "id": "lib/client-progress.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -3079,7 +3142,7 @@
    ]
   },
   {
-   "idx": "92",
+   "idx": "93",
    "id": "lib/contrast.ts",
    "kind": "file",
    "layer": "design-system",
@@ -3101,7 +3164,7 @@
    ]
   },
   {
-   "idx": "93",
+   "idx": "94",
    "id": "lib/dragon-queue.ts",
    "kind": "file",
    "layer": "replay",
@@ -3214,7 +3277,7 @@
    ]
   },
   {
-   "idx": "94",
+   "idx": "95",
    "id": "lib/editor-open.ts",
    "kind": "file",
    "layer": "solve-ui",
@@ -3265,7 +3328,7 @@
    ]
   },
   {
-   "idx": "95",
+   "idx": "96",
    "id": "lib/error-mark.ts",
    "kind": "file",
    "layer": "solve-ui",
@@ -3312,7 +3375,7 @@
    ]
   },
   {
-   "idx": "96",
+   "idx": "97",
    "id": "lib/fireworks.ts",
    "kind": "file",
    "layer": "design-system",
@@ -3381,7 +3444,7 @@
    ]
   },
   {
-   "idx": "97",
+   "idx": "98",
    "id": "lib/format.ts",
    "kind": "file",
    "layer": "design-system",
@@ -3407,7 +3470,7 @@
    ]
   },
   {
-   "idx": "98",
+   "idx": "99",
    "id": "lib/friends-store.ts",
    "kind": "file",
    "layer": "persistence",
@@ -3447,7 +3510,7 @@
    ]
   },
   {
-   "idx": "99",
+   "idx": "100",
    "id": "lib/friends.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -3506,14 +3569,14 @@
    ]
   },
   {
-   "idx": "100",
+   "idx": "101",
    "id": "lib/game-types.ts",
    "kind": "file",
    "layer": "game-domain",
    "label": "game-types.ts",
    "desc": "Shapes shared by the page and its components.",
    "path": "lib/game-types.ts",
-   "lines": 128,
+   "lines": 131,
    "tokens": [
     "game",
     "types",
@@ -3530,7 +3593,7 @@
    ]
   },
   {
-   "idx": "101",
+   "idx": "102",
    "id": "lib/goblin-cauldron.ts",
    "kind": "file",
    "layer": "replay",
@@ -3642,7 +3705,7 @@
    ]
   },
   {
-   "idx": "102",
+   "idx": "103",
    "id": "lib/home-pull.ts",
    "kind": "file",
    "layer": "screens",
@@ -3710,7 +3773,7 @@
    ]
   },
   {
-   "idx": "103",
+   "idx": "104",
    "id": "lib/joust-scroll.ts",
    "kind": "file",
    "layer": "replay",
@@ -3785,7 +3848,7 @@
    ]
   },
   {
-   "idx": "104",
+   "idx": "105",
    "id": "lib/levels.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -3829,7 +3892,7 @@
    ]
   },
   {
-   "idx": "105",
+   "idx": "106",
    "id": "lib/masquerade-line.ts",
    "kind": "file",
    "layer": "replay",
@@ -3950,7 +4013,7 @@
    ]
   },
   {
-   "idx": "106",
+   "idx": "107",
    "id": "lib/notebook-layout.ts",
    "kind": "file",
    "layer": "solve-ui",
@@ -4007,7 +4070,7 @@
    ]
   },
   {
-   "idx": "107",
+   "idx": "108",
    "id": "lib/party-assist-server.ts",
    "kind": "file",
    "layer": "social-services",
@@ -4028,14 +4091,14 @@
    ]
   },
   {
-   "idx": "108",
+   "idx": "109",
    "id": "lib/party-assist-service.ts",
    "kind": "file",
    "layer": "social-services",
    "label": "party-assist-service.ts",
    "desc": "Party Assist rules (see lib/party-assist.ts). Pure logic over an AssistStore + the party lineup.",
    "path": "lib/party-assist-service.ts",
-   "lines": 195,
+   "lines": 211,
    "tokens": [
     "party",
     "assist",
@@ -4055,14 +4118,14 @@
    ]
   },
   {
-   "idx": "109",
+   "idx": "110",
    "id": "lib/party-assist-store.ts",
    "kind": "file",
    "layer": "persistence",
    "label": "party-assist-store.ts",
    "desc": "Party Assist storage: one shared-editor room per claimed quest (Yjs update log + the people in it). A plain data layer: the rules live in lib/party-assist-service.ts. Local SQLite or Supabase tables (migration 202610130001, service_role only). Rows carry user ids: server only.",
    "path": "lib/party-assist-store.ts",
-   "lines": 251,
+   "lines": 261,
    "tokens": [
     "party",
     "assist",
@@ -4109,7 +4172,7 @@
    ]
   },
   {
-   "idx": "110",
+   "idx": "111",
    "id": "lib/party-assist.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -4222,7 +4285,7 @@
    ]
   },
   {
-   "idx": "111",
+   "idx": "112",
    "id": "lib/party-boss-server.ts",
    "kind": "file",
    "layer": "social-services",
@@ -4244,14 +4307,14 @@
    ]
   },
   {
-   "idx": "112",
+   "idx": "113",
    "id": "lib/party-boss-service.ts",
    "kind": "file",
    "layer": "social-services",
    "label": "party-boss-service.ts",
    "desc": "The Yjs log helpers live in lib/shared-doc.ts (shared with Assist); re-exported for existing callers.",
    "path": "lib/party-boss-service.ts",
-   "lines": 357,
+   "lines": 374,
    "tokens": [
     "party",
     "boss",
@@ -4276,14 +4339,14 @@
    ]
   },
   {
-   "idx": "113",
+   "idx": "114",
    "id": "lib/party-boss-store.ts",
    "kind": "file",
    "layer": "persistence",
    "label": "party-boss-store.ts",
    "desc": "Party boss fight storage (C4). A plain data layer: the rules live in lib/party-boss-service.ts, which reads a `BossContext` (server-only: it carries user ids) and calls these small writes. Local SQLite or Supabase tables (migrations 202610100001 + 202610160001, service_role only).",
    "path": "lib/party-boss-store.ts",
-   "lines": 361,
+   "lines": 373,
    "tokens": [
     "party",
     "boss",
@@ -4330,7 +4393,7 @@
    ]
   },
   {
-   "idx": "114",
+   "idx": "115",
    "id": "lib/party-boss.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -4497,7 +4560,7 @@
    ]
   },
   {
-   "idx": "115",
+   "idx": "116",
    "id": "lib/party-draft-server.ts",
    "kind": "file",
    "layer": "social-services",
@@ -4518,7 +4581,7 @@
    ]
   },
   {
-   "idx": "116",
+   "idx": "117",
    "id": "lib/party-draft-service.ts",
    "kind": "file",
    "layer": "social-services",
@@ -4544,7 +4607,7 @@
    ]
   },
   {
-   "idx": "117",
+   "idx": "118",
    "id": "lib/party-draft-store.ts",
    "kind": "file",
    "layer": "persistence",
@@ -4594,7 +4657,7 @@
    ]
   },
   {
-   "idx": "118",
+   "idx": "119",
    "id": "lib/party-draft.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -4702,7 +4765,157 @@
    ]
   },
   {
-   "idx": "119",
+   "idx": "120",
+   "id": "lib/party-lock-server.ts",
+   "kind": "file",
+   "layer": "social-services",
+   "label": "party-lock-server.ts",
+   "desc": "The party lock as the server sees it (server only): the same rule as the page (lib/party-lock.ts), fed the same state /api/party would send this player (run claims, the boss fight, Assist rooms). Players without a running party questline are allowed straight away, so solo grading costs one store read.",
+   "path": "lib/party-lock-server.ts",
+   "lines": 30,
+   "tokens": [
+    "party",
+    "lock",
+    "server",
+    "ts",
+    "the",
+    "as",
+    "sees",
+    "it",
+    "only",
+    "same",
+    "rule",
+    "page",
+    "lib",
+    "fed",
+    "state",
+    "api",
+    "would",
+    "send",
+    "this",
+    "player",
+    "run",
+    "claims",
+    "boss",
+    "fight",
+    "assist",
+    "rooms",
+    "players",
+    "without",
+    "running",
+    "questline",
+    "are",
+    "allowed",
+    "straight",
+    "away",
+    "so",
+    "solo",
+    "grading",
+    "costs",
+    "one",
+    "store",
+    "read"
+   ]
+  },
+  {
+   "idx": "121",
+   "id": "lib/party-lock.ts",
+   "kind": "file",
+   "layer": "social-domain",
+   "label": "party-lock.ts",
+   "desc": "Party lock (Eric's rule): once a party questline runs, its members are locked into it until they leave. Solo players (no party, or a party with no running questline) can open anything. During a run a member may open only: - their own unfinished party claim (resume / Open my quest), - quests they cleared IN THIS RUN (Replay), - an Assist room they are in (as its owner or a helper), - the run's boss while the fight is on and they haven't been voted out. Everything else is locked, including quests cleared solo in other regions. Unclaiming keeps you in the run and still locked; the leader's end_run or leaving the party unlocks everyone (the run disappears from the state). Pure: the same rule runs in the page (open / hub rows) and in /api/run (grading).",
+   "path": "lib/party-lock.ts",
+   "lines": 51,
+   "tokens": [
+    "party",
+    "lock",
+    "ts",
+    "eric",
+    "rule",
+    "once",
+    "questline",
+    "runs",
+    "its",
+    "members",
+    "are",
+    "locked",
+    "into",
+    "it",
+    "until",
+    "they",
+    "leave",
+    "solo",
+    "players",
+    "no",
+    "or",
+    "with",
+    "running",
+    "can",
+    "open",
+    "anything",
+    "during",
+    "run",
+    "member",
+    "may",
+    "only",
+    "their",
+    "own",
+    "unfinished",
+    "claim",
+    "resume",
+    "my",
+    "quest",
+    "quests",
+    "cleared",
+    "in",
+    "this",
+    "replay",
+    "an",
+    "assist",
+    "room",
+    "as",
+    "owner",
+    "helper",
+    "the",
+    "boss",
+    "while",
+    "fight",
+    "is",
+    "on",
+    "and",
+    "haven",
+    "been",
+    "voted",
+    "out",
+    "everything",
+    "else",
+    "including",
+    "other",
+    "regions",
+    "unclaiming",
+    "keeps",
+    "you",
+    "still",
+    "leader",
+    "end",
+    "leaving",
+    "unlocks",
+    "everyone",
+    "disappears",
+    "from",
+    "state",
+    "pure",
+    "same",
+    "page",
+    "hub",
+    "rows",
+    "api",
+    "grading",
+    "lib"
+   ]
+  },
+  {
+   "idx": "122",
    "id": "lib/party-store.ts",
    "kind": "file",
    "layer": "persistence",
@@ -4759,7 +4972,7 @@
    ]
   },
   {
-   "idx": "120",
+   "idx": "123",
    "id": "lib/party.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -4882,7 +5095,7 @@
    ]
   },
   {
-   "idx": "121",
+   "idx": "124",
    "id": "lib/progress-store.ts",
    "kind": "file",
    "layer": "persistence",
@@ -4915,7 +5128,7 @@
    ]
   },
   {
-   "idx": "122",
+   "idx": "125",
    "id": "lib/progress.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -4944,7 +5157,7 @@
    ]
   },
   {
-   "idx": "123",
+   "idx": "126",
    "id": "lib/public-packs.ts",
    "kind": "file",
    "layer": "content",
@@ -4997,7 +5210,7 @@
    ]
   },
   {
-   "idx": "124",
+   "idx": "127",
    "id": "lib/python-editing.ts",
    "kind": "file",
    "layer": "solve-ui",
@@ -5045,7 +5258,7 @@
    ]
   },
   {
-   "idx": "125",
+   "idx": "128",
    "id": "lib/quest-list.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -5084,7 +5297,7 @@
    ]
   },
   {
-   "idx": "126",
+   "idx": "129",
    "id": "lib/quests.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -5136,7 +5349,7 @@
    ]
   },
   {
-   "idx": "127",
+   "idx": "130",
    "id": "lib/rate-limit.ts",
    "kind": "file",
    "layer": "run-gateway",
@@ -5177,7 +5390,7 @@
    ]
   },
   {
-   "idx": "128",
+   "idx": "131",
    "id": "lib/read-json-request.ts",
    "kind": "file",
    "layer": "run-gateway",
@@ -5199,7 +5412,7 @@
    ]
   },
   {
-   "idx": "129",
+   "idx": "132",
    "id": "lib/realtime.ts",
    "kind": "file",
    "layer": "social-domain",
@@ -5241,7 +5454,7 @@
    ]
   },
   {
-   "idx": "130",
+   "idx": "133",
    "id": "lib/region-art.ts",
    "kind": "file",
    "layer": "design-system",
@@ -5286,7 +5499,7 @@
    ]
   },
   {
-   "idx": "131",
+   "idx": "134",
    "id": "lib/run-contract.ts",
    "kind": "file",
    "layer": "run-gateway",
@@ -5317,7 +5530,7 @@
    ]
   },
   {
-   "idx": "132",
+   "idx": "135",
    "id": "lib/runner-client.ts",
    "kind": "file",
    "layer": "run-gateway",
@@ -5348,7 +5561,7 @@
    ]
   },
   {
-   "idx": "133",
+   "idx": "136",
    "id": "lib/session.ts",
    "kind": "file",
    "layer": "auth",
@@ -5376,14 +5589,14 @@
    ]
   },
   {
-   "idx": "134",
+   "idx": "137",
    "id": "lib/shared-doc.ts",
    "kind": "file",
    "layer": "social-domain",
    "label": "shared-doc.ts",
    "desc": "The shared editor's document on the server (party boss fight C4 and Assist): a Yjs doc with one Y.Text, stored as a log of base64 updates. Both features use these helpers; each keeps its own log tables and rules.",
    "path": "lib/shared-doc.ts",
-   "lines": 44,
+   "lines": 65,
    "tokens": [
     "shared",
     "doc",
@@ -5424,7 +5637,7 @@
    ]
   },
   {
-   "idx": "135",
+   "idx": "138",
    "id": "lib/shortcuts.ts",
    "kind": "file",
    "layer": "solve-ui",
@@ -5466,7 +5679,7 @@
    ]
   },
   {
-   "idx": "136",
+   "idx": "139",
    "id": "lib/stairs-beats.ts",
    "kind": "file",
    "layer": "replay",
@@ -5554,7 +5767,7 @@
    ]
   },
   {
-   "idx": "137",
+   "idx": "140",
    "id": "lib/stairs-replay.ts",
    "kind": "file",
    "layer": "replay",
@@ -5635,7 +5848,131 @@
    ]
   },
   {
-   "idx": "138",
+   "idx": "141",
+   "id": "lib/story-beats.ts",
+   "kind": "file",
+   "layer": "game-domain",
+   "label": "story-beats.ts",
+   "desc": "Story intros: a quest's `story.intro.beats` (pack JSON) is a list of pictures with a caption and a duration. Everything here is pure maths over that list, so the strip can render any time `t` deterministically (`beatAt`), step through stills under reduced motion (`nextBeatStart`), and the pack test can validate shapes.",
+   "path": "lib/story-beats.ts",
+   "lines": 158,
+   "tokens": [
+    "story",
+    "beats",
+    "ts",
+    "intros",
+    "quest",
+    "intro",
+    "pack",
+    "json",
+    "is",
+    "list",
+    "of",
+    "pictures",
+    "with",
+    "caption",
+    "and",
+    "duration",
+    "everything",
+    "here",
+    "pure",
+    "maths",
+    "over",
+    "that",
+    "so",
+    "the",
+    "strip",
+    "can",
+    "render",
+    "any",
+    "time",
+    "deterministically",
+    "beat",
+    "at",
+    "beatat",
+    "step",
+    "through",
+    "stills",
+    "under",
+    "reduced",
+    "motion",
+    "next",
+    "start",
+    "nextbeatstart",
+    "test",
+    "validate",
+    "shapes",
+    "lib"
+   ]
+  },
+  {
+   "idx": "142",
+   "id": "lib/story-scenes.ts",
+   "kind": "file",
+   "layer": "solve-ui",
+   "label": "story-scenes.ts",
+   "desc": "Story pictures: each id names a scene the story strip draws (components/solve/story-strip.tsx) and a pose function from beat progress u (0..1) to the scene's state. Pure, so packs can be validated in unit tests and every frame is deterministic. Motion follows the house rules: things that fall use ease-in (gravity) and land with a small thud; things that grow use ease-out; crumbling uses ease-in.",
+   "path": "lib/story-scenes.ts",
+   "lines": 62,
+   "tokens": [
+    "story",
+    "scenes",
+    "ts",
+    "pictures",
+    "each",
+    "id",
+    "names",
+    "scene",
+    "the",
+    "strip",
+    "draws",
+    "components",
+    "solve",
+    "tsx",
+    "and",
+    "pose",
+    "function",
+    "from",
+    "beat",
+    "progress",
+    "to",
+    "state",
+    "pure",
+    "so",
+    "packs",
+    "can",
+    "be",
+    "validated",
+    "in",
+    "unit",
+    "tests",
+    "every",
+    "frame",
+    "is",
+    "deterministic",
+    "motion",
+    "follows",
+    "house",
+    "rules",
+    "things",
+    "that",
+    "fall",
+    "use",
+    "ease",
+    "gravity",
+    "land",
+    "with",
+    "small",
+    "thud",
+    "grow",
+    "out",
+    "crumbling",
+    "uses",
+    "lib"
+   ]
+  },
+  {
+   "idx": "143",
    "id": "lib/styleguide.ts",
    "kind": "file",
    "layer": "app-shell",
@@ -5671,7 +6008,7 @@
    ]
   },
   {
-   "idx": "139",
+   "idx": "144",
    "id": "lib/submit-moment.ts",
    "kind": "file",
    "layer": "solve-ui",
@@ -5742,7 +6079,7 @@
    ]
   },
   {
-   "idx": "140",
+   "idx": "145",
    "id": "lib/supabase/auth-errors.ts",
    "kind": "file",
    "layer": "auth",
@@ -5767,7 +6104,7 @@
    ]
   },
   {
-   "idx": "141",
+   "idx": "146",
    "id": "lib/supabase/client.ts",
    "kind": "file",
    "layer": "persistence",
@@ -5787,7 +6124,7 @@
    ]
   },
   {
-   "idx": "142",
+   "idx": "147",
    "id": "lib/supabase/config.ts",
    "kind": "file",
    "layer": "persistence",
@@ -5810,7 +6147,7 @@
    ]
   },
   {
-   "idx": "143",
+   "idx": "148",
    "id": "lib/supabase/server.ts",
    "kind": "file",
    "layer": "persistence",
@@ -5830,7 +6167,7 @@
    ]
   },
   {
-   "idx": "144",
+   "idx": "149",
    "id": "lib/tutorial-island.ts",
    "kind": "file",
    "layer": "game-domain",
@@ -5927,7 +6264,7 @@
    ]
   },
   {
-   "idx": "145",
+   "idx": "150",
    "id": "lib/vault-row.ts",
    "kind": "file",
    "layer": "replay",
@@ -5965,7 +6302,7 @@
    ]
   },
   {
-   "idx": "146",
+   "idx": "151",
    "id": "lib/wobble-dance.ts",
    "kind": "file",
    "layer": "replay",
@@ -6088,7 +6425,7 @@
    ]
   },
   {
-   "idx": "147",
+   "idx": "152",
    "id": "lib/world-map.ts",
    "kind": "file",
    "layer": "screens",
@@ -6126,7 +6463,7 @@
    ]
   },
   {
-   "idx": "148",
+   "idx": "153",
    "id": "next-env.d.ts",
    "kind": "file",
    "layer": "tooling",
@@ -6145,7 +6482,7 @@
    ]
   },
   {
-   "idx": "149",
+   "idx": "154",
    "id": "next.config.ts",
    "kind": "file",
    "layer": "tooling",
@@ -6173,7 +6510,7 @@
    ]
   },
   {
-   "idx": "150",
+   "idx": "155",
    "id": "playwright.config.ts",
    "kind": "file",
    "layer": "tooling",
@@ -6191,7 +6528,7 @@
    ]
   },
   {
-   "idx": "151",
+   "idx": "156",
    "id": "postcss.config.mjs",
    "kind": "file",
    "layer": "tooling",
@@ -6207,7 +6544,7 @@
    ]
   },
   {
-   "idx": "152",
+   "idx": "157",
    "id": "proxy.ts",
    "kind": "file",
    "layer": "auth",
@@ -6223,7 +6560,7 @@
    ]
   },
   {
-   "idx": "153",
+   "idx": "158",
    "id": "runner/__init__.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6241,7 +6578,7 @@
    ]
   },
   {
-   "idx": "154",
+   "idx": "159",
    "id": "runner/bounded_subprocess.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6267,7 +6604,7 @@
    ]
   },
   {
-   "idx": "155",
+   "idx": "160",
    "id": "runner/browser_run.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6322,7 +6659,7 @@
    ]
   },
   {
-   "idx": "156",
+   "idx": "161",
    "id": "runner/case_worker.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6379,7 +6716,7 @@
    ]
   },
   {
-   "idx": "157",
+   "idx": "162",
    "id": "runner/private_pack.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6403,14 +6740,14 @@
    ]
   },
   {
-   "idx": "158",
+   "idx": "163",
    "id": "runner/quest_runner.py",
    "kind": "file",
    "layer": "runner-service",
    "label": "quest_runner.py",
    "desc": "CPython execution and grading engine for Quest Coder. Submitted code is executed by ``execute_case`` and graded by ``run_one_case``. With ``isolate=True`` (what the CLI uses) every case executes in a separate worker process that receives only the source and the case inputs, so expected values and the verdict never share an interpreter with submitted code. The source checks and resource limits here are defense in depth. They are not an OS isolation boundary; the runner service must still be deployed in a locked-down container or microVM.",
    "path": "runner/quest_runner.py",
-   "lines": 993,
+   "lines": 1000,
    "tokens": [
     "quest",
     "runner",
@@ -6486,7 +6823,7 @@
    ]
   },
   {
-   "idx": "159",
+   "idx": "164",
    "id": "runner/quest_runner_cli.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6510,7 +6847,7 @@
    ]
   },
   {
-   "idx": "160",
+   "idx": "165",
    "id": "runner/service/app.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6531,7 +6868,7 @@
    ]
   },
   {
-   "idx": "161",
+   "idx": "166",
    "id": "runner/service/request_body.py",
    "kind": "file",
    "layer": "runner-service",
@@ -6554,7 +6891,7 @@
    ]
   },
   {
-   "idx": "162",
+   "idx": "167",
    "id": "runner/tests/__init__.py",
    "kind": "file",
    "layer": "tests",
@@ -6570,7 +6907,7 @@
    ]
   },
   {
-   "idx": "163",
+   "idx": "168",
    "id": "runner/tests/test_engine_portable.py",
    "kind": "file",
    "layer": "tests",
@@ -6619,7 +6956,7 @@
    ]
   },
   {
-   "idx": "164",
+   "idx": "169",
    "id": "runner/tests/test_error_position.py",
    "kind": "file",
    "layer": "tests",
@@ -6641,14 +6978,73 @@
    ]
   },
   {
-   "idx": "165",
+   "idx": "170",
+   "id": "runner/tests/test_forest_bramblehorn.py",
+   "kind": "file",
+   "layer": "tests",
+   "label": "test_forest_bramblehorn.py",
+   "desc": "Forest of Patience \u00b7 The Bet of Old Bramblehorn: the three teaching quests grade by real execution. Quest 1 (recursion) must survive the deepest chain, Quest 2's lesson (memoization) is enforced by the runner's time limit on row-30 forks, Quest 3 (bottom-up rows) reaches row 200 with margin, and hard-coded examples fail Submit.",
+   "path": "runner/tests/test_forest_bramblehorn.py",
+   "lines": 138,
+   "tokens": [
+    "test",
+    "forest",
+    "bramblehorn",
+    "py",
+    "of",
+    "patience",
+    "the",
+    "bet",
+    "old",
+    "three",
+    "teaching",
+    "quests",
+    "grade",
+    "by",
+    "real",
+    "execution",
+    "quest",
+    "recursion",
+    "must",
+    "survive",
+    "deepest",
+    "chain",
+    "lesson",
+    "memoization",
+    "is",
+    "enforced",
+    "runner",
+    "time",
+    "limit",
+    "on",
+    "row",
+    "30",
+    "forks",
+    "bottom",
+    "up",
+    "rows",
+    "reaches",
+    "200",
+    "with",
+    "margin",
+    "and",
+    "hard",
+    "coded",
+    "examples",
+    "fail",
+    "submit",
+    "tests"
+   ]
+  },
+  {
+   "idx": "171",
    "id": "runner/tests/test_generated_pack.py",
    "kind": "file",
    "layer": "tests",
    "label": "test_generated_pack.py",
    "desc": "The production pack generator: valid packs, correct oracle, and private cases that catch hard-coding.",
    "path": "runner/tests/test_generated_pack.py",
-   "lines": 129,
+   "lines": 137,
    "tokens": [
     "test",
     "generated",
@@ -6673,7 +7069,7 @@
    ]
   },
   {
-   "idx": "166",
+   "idx": "172",
    "id": "runner/tests/test_masquerade.py",
    "kind": "file",
    "layer": "tests",
@@ -6725,7 +7121,7 @@
    ]
   },
   {
-   "idx": "167",
+   "idx": "173",
    "id": "runner/tests/test_numerology_goblin.py",
    "kind": "file",
    "layer": "tests",
@@ -6780,7 +7176,7 @@
    ]
   },
   {
-   "idx": "168",
+   "idx": "174",
    "id": "runner/tests/test_pack_dir.py",
    "kind": "file",
    "layer": "tests",
@@ -6811,7 +7207,7 @@
    ]
   },
   {
-   "idx": "169",
+   "idx": "175",
    "id": "runner/tests/test_pack_registry.py",
    "kind": "file",
    "layer": "tests",
@@ -6838,7 +7234,7 @@
    ]
   },
   {
-   "idx": "170",
+   "idx": "176",
    "id": "runner/tests/test_picky_dragon.py",
    "kind": "file",
    "layer": "tests",
@@ -6882,7 +7278,7 @@
    ]
   },
   {
-   "idx": "171",
+   "idx": "177",
    "id": "runner/tests/test_replay_watchable.py",
    "kind": "file",
    "layer": "tests",
@@ -6935,7 +7331,7 @@
    ]
   },
   {
-   "idx": "172",
+   "idx": "178",
    "id": "runner/tests/test_royal_joust.py",
    "kind": "file",
    "layer": "tests",
@@ -6980,7 +7376,7 @@
    ]
   },
   {
-   "idx": "173",
+   "idx": "179",
    "id": "runner/tests/test_service_config.py",
    "kind": "file",
    "layer": "tests",
@@ -7003,7 +7399,7 @@
    ]
   },
   {
-   "idx": "174",
+   "idx": "180",
    "id": "runner/tests/test_smoke.py",
    "kind": "file",
    "layer": "tests",
@@ -7025,7 +7421,7 @@
    ]
   },
   {
-   "idx": "175",
+   "idx": "181",
    "id": "runner/tests/test_spun_vault.py",
    "kind": "file",
    "layer": "tests",
@@ -7055,7 +7451,7 @@
    ]
   },
   {
-   "idx": "176",
+   "idx": "182",
    "id": "runner/tests/test_trusted_boundary.py",
    "kind": "file",
    "layer": "tests",
@@ -7075,7 +7471,7 @@
    ]
   },
   {
-   "idx": "177",
+   "idx": "183",
    "id": "runner/tests/test_wobblesworth.py",
    "kind": "file",
    "layer": "tests",
@@ -7121,14 +7517,14 @@
    ]
   },
   {
-   "idx": "178",
+   "idx": "184",
    "id": "scripts/build_pack_projections.py",
    "kind": "file",
    "layer": "tooling",
    "label": "build_pack_projections.py",
    "desc": "Generate browser-safe projections from tracked server content. `content/server/<slug>.json` is the tracked source for public content. It keeps server-released solution and hint text plus public Run/replay cases, but never contains private Submit fixtures. `content/public/<slug>.json` removes solution and hint text before browser bundling. Private grading packs are mounted only by the runner and are deliberately not an input to this script. Run with `--check` to fail when public projections are stale.",
    "path": "scripts/build_pack_projections.py",
-   "lines": 86,
+   "lines": 123,
    "tokens": [
     "build",
     "pack",
@@ -7191,7 +7587,7 @@
    ]
   },
   {
-   "idx": "179",
+   "idx": "185",
    "id": "scripts/copy_browser_runtime.mjs",
    "kind": "file",
    "layer": "tooling",
@@ -7256,7 +7652,7 @@
    ]
   },
   {
-   "idx": "180",
+   "idx": "186",
    "id": "scripts/deployment_smoke.mjs",
    "kind": "file",
    "layer": "tooling",
@@ -7272,7 +7668,7 @@
    ]
   },
   {
-   "idx": "181",
+   "idx": "187",
    "id": "scripts/load_test_runner.ts",
    "kind": "file",
    "layer": "tooling",
@@ -7388,7 +7784,7 @@
    ]
   },
   {
-   "idx": "182",
+   "idx": "188",
    "id": "scripts/privacy_check.py",
    "kind": "file",
    "layer": "tooling",
@@ -7416,14 +7812,14 @@
    ]
   },
   {
-   "idx": "183",
+   "idx": "189",
    "id": "scripts/private_pack.py",
    "kind": "file",
    "layer": "tooling",
    "label": "private_pack.py",
    "desc": "Generate a private grading pack (skeleton or with fresh hidden cases) or validate one.",
    "path": "scripts/private_pack.py",
-   "lines": 669,
+   "lines": 705,
    "tokens": [
     "private",
     "pack",
@@ -7442,7 +7838,7 @@
    ]
   },
   {
-   "idx": "184",
+   "idx": "190",
    "id": "scripts/test_provenance.mjs",
    "kind": "file",
    "layer": "tooling",
@@ -7458,7 +7854,7 @@
    ]
   },
   {
-   "idx": "185",
+   "idx": "191",
    "id": "supabase/migrations/202610020001_quest_coder_auth_progress.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7489,7 +7885,7 @@
    ]
   },
   {
-   "idx": "186",
+   "idx": "192",
    "id": "supabase/migrations/202610040001_quest_coder_rewards_gold_skills.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7548,7 +7944,7 @@
    ]
   },
   {
-   "idx": "187",
+   "idx": "193",
    "id": "supabase/migrations/202610050001_quest_coder_notebook_notes_layout.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7632,7 +8028,7 @@
    ]
   },
   {
-   "idx": "188",
+   "idx": "194",
    "id": "supabase/migrations/202610060001_quest_coder_training_activity.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7711,7 +8107,7 @@
    ]
   },
   {
-   "idx": "189",
+   "idx": "195",
    "id": "supabase/migrations/202610070001_quest_coder_friends.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7798,7 +8194,7 @@
    ]
   },
   {
-   "idx": "190",
+   "idx": "196",
    "id": "supabase/migrations/202610080001_quest_coder_parties.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7878,7 +8274,7 @@
    ]
   },
   {
-   "idx": "191",
+   "idx": "197",
    "id": "supabase/migrations/202610090001_quest_coder_party_questline.sql",
    "kind": "file",
    "layer": "persistence",
@@ -7940,7 +8336,7 @@
    ]
   },
   {
-   "idx": "192",
+   "idx": "198",
    "id": "supabase/migrations/202610100001_quest_coder_party_boss.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8011,7 +8407,7 @@
    ]
   },
   {
-   "idx": "193",
+   "idx": "199",
    "id": "supabase/migrations/202610110001_quest_coder_party_draft.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8095,7 +8491,7 @@
    ]
   },
   {
-   "idx": "194",
+   "idx": "200",
    "id": "supabase/migrations/202610120001_quest_coder_party_region_keeps_ready.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8167,7 +8563,7 @@
    ]
   },
   {
-   "idx": "195",
+   "idx": "201",
    "id": "supabase/migrations/202610130001_quest_coder_party_assist.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8260,7 +8656,7 @@
    ]
   },
   {
-   "idx": "196",
+   "idx": "202",
    "id": "supabase/migrations/202610140001_quest_coder_start_choice.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8335,7 +8731,7 @@
    ]
   },
   {
-   "idx": "197",
+   "idx": "203",
    "id": "supabase/migrations/202610150001_quest_coder_xp_floor_small_quests.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8409,7 +8805,7 @@
    ]
   },
   {
-   "idx": "198",
+   "idx": "204",
    "id": "supabase/migrations/202610160001_quest_coder_party_boss_gate.sql",
    "kind": "file",
    "layer": "persistence",
@@ -8500,7 +8896,7 @@
    ]
   },
   {
-   "idx": "199",
+   "idx": "205",
    "id": "supabase/tests/migration_checks.sql",
    "kind": "file",
    "layer": "tests",
@@ -8532,7 +8928,7 @@
    ]
   },
   {
-   "idx": "200",
+   "idx": "206",
    "id": "supabase/tests/supabase_stubs.sql",
    "kind": "file",
    "layer": "tests",
@@ -8571,7 +8967,7 @@
    ]
   },
   {
-   "idx": "201",
+   "idx": "207",
    "id": "tests/e2e/accessibility.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8588,7 +8984,7 @@
    ]
   },
   {
-   "idx": "202",
+   "idx": "208",
    "id": "tests/e2e/browser-run.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8621,7 +9017,7 @@
    ]
   },
   {
-   "idx": "203",
+   "idx": "209",
    "id": "tests/e2e/campaigns-quests.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8651,7 +9047,7 @@
    ]
   },
   {
-   "idx": "204",
+   "idx": "210",
    "id": "tests/e2e/cross-browser-smoke.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8670,7 +9066,7 @@
    ]
   },
   {
-   "idx": "205",
+   "idx": "211",
    "id": "tests/e2e/dragon-queue.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8701,7 +9097,7 @@
    ]
   },
   {
-   "idx": "206",
+   "idx": "212",
    "id": "tests/e2e/editor-errors.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8737,7 +9133,7 @@
    ]
   },
   {
-   "idx": "207",
+   "idx": "213",
    "id": "tests/e2e/fixtures.ts",
    "kind": "file",
    "layer": "tests",
@@ -8807,7 +9203,7 @@
    ]
   },
   {
-   "idx": "208",
+   "idx": "214",
    "id": "tests/e2e/frame.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8842,7 +9238,7 @@
    ]
   },
   {
-   "idx": "209",
+   "idx": "215",
    "id": "tests/e2e/fresh-editor.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8886,7 +9282,7 @@
    ]
   },
   {
-   "idx": "210",
+   "idx": "216",
    "id": "tests/e2e/friends.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8920,7 +9316,7 @@
    ]
   },
   {
-   "idx": "211",
+   "idx": "217",
    "id": "tests/e2e/goblin-cauldron.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8950,7 +9346,7 @@
    ]
   },
   {
-   "idx": "212",
+   "idx": "218",
    "id": "tests/e2e/home-map.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -8981,7 +9377,7 @@
    ]
   },
   {
-   "idx": "213",
+   "idx": "219",
    "id": "tests/e2e/home-pull-map.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9049,7 +9445,7 @@
    ]
   },
   {
-   "idx": "214",
+   "idx": "220",
    "id": "tests/e2e/home-seams.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9083,7 +9479,7 @@
    ]
   },
   {
-   "idx": "215",
+   "idx": "221",
    "id": "tests/e2e/joust-scroll.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9116,7 +9512,7 @@
    ]
   },
   {
-   "idx": "216",
+   "idx": "222",
    "id": "tests/e2e/masquerade-line.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9147,7 +9543,7 @@
    ]
   },
   {
-   "idx": "217",
+   "idx": "223",
    "id": "tests/e2e/masquerade.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9196,7 +9592,7 @@
    ]
   },
   {
-   "idx": "218",
+   "idx": "224",
    "id": "tests/e2e/numerology-goblin.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9243,7 +9639,7 @@
    ]
   },
   {
-   "idx": "219",
+   "idx": "225",
    "id": "tests/e2e/party-assist-chip.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9279,7 +9675,7 @@
    ]
   },
   {
-   "idx": "220",
+   "idx": "226",
    "id": "tests/e2e/party-assist.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9314,7 +9710,7 @@
    ]
   },
   {
-   "idx": "221",
+   "idx": "227",
    "id": "tests/e2e/party-boss.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9349,7 +9745,7 @@
    ]
   },
   {
-   "idx": "222",
+   "idx": "228",
    "id": "tests/e2e/party-gate.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9384,14 +9780,49 @@
    ]
   },
   {
-   "idx": "223",
+   "idx": "229",
+   "id": "tests/e2e/party-lock.spec.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "party-lock.spec.ts",
+   "desc": "Players get their own browser contexts; close them after each test so their pages stop polling the server.",
+   "path": "tests/e2e/party-lock.spec.ts",
+   "lines": 161,
+   "tokens": [
+    "party",
+    "lock",
+    "spec",
+    "ts",
+    "players",
+    "get",
+    "their",
+    "own",
+    "browser",
+    "contexts",
+    "close",
+    "them",
+    "after",
+    "each",
+    "test",
+    "so",
+    "pages",
+    "stop",
+    "polling",
+    "the",
+    "server",
+    "tests",
+    "e2e"
+   ]
+  },
+  {
+   "idx": "230",
    "id": "tests/e2e/party.spec.ts",
    "kind": "file",
    "layer": "tests",
    "label": "party.spec.ts",
    "desc": "Players get their own browser contexts; close them after each test so their pages stop polling the server.",
    "path": "tests/e2e/party.spec.ts",
-   "lines": 233,
+   "lines": 241,
    "tokens": [
     "party",
     "spec",
@@ -9418,7 +9849,7 @@
    ]
   },
   {
-   "idx": "224",
+   "idx": "231",
    "id": "tests/e2e/picky-dragon.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9456,7 +9887,7 @@
    ]
   },
   {
-   "idx": "225",
+   "idx": "232",
    "id": "tests/e2e/profile.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9485,7 +9916,7 @@
    ]
   },
   {
-   "idx": "226",
+   "idx": "233",
    "id": "tests/e2e/royal-joust.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9518,7 +9949,58 @@
    ]
   },
   {
-   "idx": "227",
+   "idx": "234",
+   "id": "tests/e2e/shared-doc-sync.spec.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "shared-doc-sync.spec.ts",
+   "desc": "Shared-editor sync under concurrent typing: two players in the same document each type ten lines at once and both screens converge within seconds (no update stuck in Yjs's pending set, no row lost by compaction).",
+   "path": "tests/e2e/shared-doc-sync.spec.ts",
+   "lines": 137,
+   "tokens": [
+    "shared",
+    "doc",
+    "sync",
+    "spec",
+    "ts",
+    "editor",
+    "under",
+    "concurrent",
+    "typing",
+    "two",
+    "players",
+    "in",
+    "the",
+    "same",
+    "document",
+    "each",
+    "type",
+    "ten",
+    "lines",
+    "at",
+    "once",
+    "and",
+    "both",
+    "screens",
+    "converge",
+    "within",
+    "seconds",
+    "no",
+    "update",
+    "stuck",
+    "yjs",
+    "pending",
+    "set",
+    "row",
+    "lost",
+    "by",
+    "compaction",
+    "tests",
+    "e2e"
+   ]
+  },
+  {
+   "idx": "235",
    "id": "tests/e2e/spun-vault.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9553,7 +10035,62 @@
    ]
   },
   {
-   "idx": "228",
+   "idx": "236",
+   "id": "tests/e2e/story-intro.spec.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "story-intro.spec.ts",
+   "desc": "Story intro + illustrated statement (pack `story`): the first open of Old Bramblehorn plays the 7-beat strip in the combat log (desktop) or as a card over the editor (phones); Skip leaves the illustrated statement as the log's empty state; the intro plays once per browser; \u25b6 Story replays it; Run basic swaps the log to the replay as before.",
+   "path": "tests/e2e/story-intro.spec.ts",
+   "lines": 149,
+   "tokens": [
+    "story",
+    "intro",
+    "spec",
+    "ts",
+    "illustrated",
+    "statement",
+    "pack",
+    "the",
+    "first",
+    "open",
+    "of",
+    "old",
+    "bramblehorn",
+    "plays",
+    "beat",
+    "strip",
+    "in",
+    "combat",
+    "log",
+    "desktop",
+    "or",
+    "as",
+    "card",
+    "over",
+    "editor",
+    "phones",
+    "skip",
+    "leaves",
+    "empty",
+    "state",
+    "once",
+    "per",
+    "browser",
+    "replays",
+    "it",
+    "run",
+    "basic",
+    "swaps",
+    "to",
+    "replay",
+    "before",
+    "tests",
+    "e2e"
+   ]
+  },
+  {
+   "idx": "237",
    "id": "tests/e2e/submit-moment.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9590,14 +10127,14 @@
    ]
   },
   {
-   "idx": "229",
+   "idx": "238",
    "id": "tests/e2e/trusted-slice.spec.ts",
    "kind": "file",
    "layer": "tests",
    "label": "trusted-slice.spec.ts",
    "desc": "Submit opens on its animation and the rewards wait for it: skip straight to them.",
    "path": "tests/e2e/trusted-slice.spec.ts",
-   "lines": 1156,
+   "lines": 1174,
    "tokens": [
     "trusted",
     "slice",
@@ -9623,7 +10160,7 @@
    ]
   },
   {
-   "idx": "230",
+   "idx": "239",
    "id": "tests/e2e/tutorial-island.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9666,7 +10203,7 @@
    ]
   },
   {
-   "idx": "231",
+   "idx": "240",
    "id": "tests/e2e/vault-row.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9697,7 +10234,7 @@
    ]
   },
   {
-   "idx": "232",
+   "idx": "241",
    "id": "tests/e2e/wobble-dance.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9758,7 +10295,7 @@
    ]
   },
   {
-   "idx": "233",
+   "idx": "242",
    "id": "tests/e2e/wobblesworth.spec.ts",
    "kind": "file",
    "layer": "tests",
@@ -9806,7 +10343,7 @@
    ]
   },
   {
-   "idx": "234",
+   "idx": "243",
    "id": "tests/unit/activity.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9823,7 +10360,7 @@
    ]
   },
   {
-   "idx": "235",
+   "idx": "244",
    "id": "tests/unit/assist-targets.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9841,7 +10378,7 @@
    ]
   },
   {
-   "idx": "236",
+   "idx": "245",
    "id": "tests/unit/auth-errors.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9859,7 +10396,7 @@
    ]
   },
   {
-   "idx": "237",
+   "idx": "246",
    "id": "tests/unit/browser-run-parity.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9913,7 +10450,7 @@
    ]
   },
   {
-   "idx": "238",
+   "idx": "247",
    "id": "tests/unit/client-address.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9931,7 +10468,7 @@
    ]
   },
   {
-   "idx": "239",
+   "idx": "248",
    "id": "tests/unit/client-helpers.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9949,7 +10486,7 @@
    ]
   },
   {
-   "idx": "240",
+   "idx": "249",
    "id": "tests/unit/client-progress.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -9994,7 +10531,7 @@
    ]
   },
   {
-   "idx": "241",
+   "idx": "250",
    "id": "tests/unit/design.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10011,7 +10548,7 @@
    ]
   },
   {
-   "idx": "242",
+   "idx": "251",
    "id": "tests/unit/dragon-queue.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10064,7 +10601,7 @@
    ]
   },
   {
-   "idx": "243",
+   "idx": "252",
    "id": "tests/unit/editor-open.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10082,7 +10619,7 @@
    ]
   },
   {
-   "idx": "244",
+   "idx": "253",
    "id": "tests/unit/error-mark.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10100,7 +10637,7 @@
    ]
   },
   {
-   "idx": "245",
+   "idx": "254",
    "id": "tests/unit/fireworks.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10117,7 +10654,7 @@
    ]
   },
   {
-   "idx": "246",
+   "idx": "255",
    "id": "tests/unit/friends.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10134,7 +10671,7 @@
    ]
   },
   {
-   "idx": "247",
+   "idx": "256",
    "id": "tests/unit/goblin-cauldron.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10168,7 +10705,7 @@
    ]
   },
   {
-   "idx": "248",
+   "idx": "257",
    "id": "tests/unit/home-pull.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10186,7 +10723,7 @@
    ]
   },
   {
-   "idx": "249",
+   "idx": "258",
    "id": "tests/unit/joust-scroll.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10219,7 +10756,7 @@
    ]
   },
   {
-   "idx": "250",
+   "idx": "259",
    "id": "tests/unit/levels.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10236,7 +10773,7 @@
    ]
   },
   {
-   "idx": "251",
+   "idx": "260",
    "id": "tests/unit/load-test-runner.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10254,7 +10791,7 @@
    ]
   },
   {
-   "idx": "252",
+   "idx": "261",
    "id": "tests/unit/masquerade-line.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10283,7 +10820,7 @@
    ]
   },
   {
-   "idx": "253",
+   "idx": "262",
    "id": "tests/unit/notebook.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10300,7 +10837,7 @@
    ]
   },
   {
-   "idx": "254",
+   "idx": "263",
    "id": "tests/unit/pack-registry.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10330,7 +10867,7 @@
    ]
   },
   {
-   "idx": "255",
+   "idx": "264",
    "id": "tests/unit/party-assist.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10348,7 +10885,7 @@
    ]
   },
   {
-   "idx": "256",
+   "idx": "265",
    "id": "tests/unit/party-boss.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10366,7 +10903,7 @@
    ]
   },
   {
-   "idx": "257",
+   "idx": "266",
    "id": "tests/unit/party-draft.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10384,7 +10921,25 @@
    ]
   },
   {
-   "idx": "258",
+   "idx": "267",
+   "id": "tests/unit/party-lock.test.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "party-lock.test.ts",
+   "desc": "",
+   "path": "tests/unit/party-lock.test.ts",
+   "lines": 93,
+   "tokens": [
+    "party",
+    "lock",
+    "test",
+    "ts",
+    "tests",
+    "unit"
+   ]
+  },
+  {
+   "idx": "268",
    "id": "tests/unit/party-progress.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10402,7 +10957,7 @@
    ]
   },
   {
-   "idx": "259",
+   "idx": "269",
    "id": "tests/unit/party.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10419,7 +10974,7 @@
    ]
   },
   {
-   "idx": "260",
+   "idx": "270",
    "id": "tests/unit/progress-store.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10437,7 +10992,7 @@
    ]
   },
   {
-   "idx": "261",
+   "idx": "271",
    "id": "tests/unit/quest-list.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10455,7 +11010,7 @@
    ]
   },
   {
-   "idx": "262",
+   "idx": "272",
    "id": "tests/unit/rate-limit.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10473,7 +11028,7 @@
    ]
   },
   {
-   "idx": "263",
+   "idx": "273",
    "id": "tests/unit/region-art.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10491,7 +11046,7 @@
    ]
   },
   {
-   "idx": "264",
+   "idx": "274",
    "id": "tests/unit/request-boundaries.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10509,7 +11064,7 @@
    ]
   },
   {
-   "idx": "265",
+   "idx": "275",
    "id": "tests/unit/rewards.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10526,7 +11081,7 @@
    ]
   },
   {
-   "idx": "266",
+   "idx": "276",
    "id": "tests/unit/rpc-signatures.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10576,7 +11131,7 @@
    ]
   },
   {
-   "idx": "267",
+   "idx": "277",
    "id": "tests/unit/runner-client.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10594,7 +11149,7 @@
    ]
   },
   {
-   "idx": "268",
+   "idx": "278",
    "id": "tests/unit/session.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10611,7 +11166,55 @@
    ]
   },
   {
-   "idx": "269",
+   "idx": "279",
+   "id": "tests/unit/shared-doc-sync.test.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "shared-doc-sync.test.ts",
+   "desc": "The shared editor's sync path under the two races that only show up in production (Supabase, several app instances): a seq gap in what a reader fetched, and an append that lands while another request compacts.",
+   "path": "tests/unit/shared-doc-sync.test.ts",
+   "lines": 215,
+   "tokens": [
+    "shared",
+    "doc",
+    "sync",
+    "test",
+    "ts",
+    "the",
+    "editor",
+    "path",
+    "under",
+    "two",
+    "races",
+    "that",
+    "only",
+    "show",
+    "up",
+    "in",
+    "production",
+    "supabase",
+    "several",
+    "app",
+    "instances",
+    "seq",
+    "gap",
+    "what",
+    "reader",
+    "fetched",
+    "and",
+    "an",
+    "append",
+    "lands",
+    "while",
+    "another",
+    "request",
+    "compacts",
+    "tests",
+    "unit"
+   ]
+  },
+  {
+   "idx": "280",
    "id": "tests/unit/shortcuts.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10628,7 +11231,7 @@
    ]
   },
   {
-   "idx": "270",
+   "idx": "281",
    "id": "tests/unit/stairs-beats.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10653,7 +11256,7 @@
    ]
   },
   {
-   "idx": "271",
+   "idx": "282",
    "id": "tests/unit/stairs-replay.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10682,7 +11285,57 @@
    ]
   },
   {
-   "idx": "272",
+   "idx": "283",
+   "id": "tests/unit/story-beats.test.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "story-beats.test.ts",
+   "desc": "",
+   "path": "tests/unit/story-beats.test.ts",
+   "lines": 88,
+   "tokens": [
+    "story",
+    "beats",
+    "test",
+    "ts",
+    "tests",
+    "unit"
+   ]
+  },
+  {
+   "idx": "284",
+   "id": "tests/unit/story-content.test.ts",
+   "kind": "file",
+   "layer": "tests",
+   "label": "story-content.test.ts",
+   "desc": "Pack `story` fields (intro beats + illustrated-statement panels): shape in every pack, content for the Forest boss.",
+   "path": "tests/unit/story-content.test.ts",
+   "lines": 56,
+   "tokens": [
+    "story",
+    "content",
+    "test",
+    "ts",
+    "pack",
+    "fields",
+    "intro",
+    "beats",
+    "illustrated",
+    "statement",
+    "panels",
+    "shape",
+    "in",
+    "every",
+    "for",
+    "the",
+    "forest",
+    "boss",
+    "tests",
+    "unit"
+   ]
+  },
+  {
+   "idx": "285",
    "id": "tests/unit/submit-moment.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10700,7 +11353,7 @@
    ]
   },
   {
-   "idx": "273",
+   "idx": "286",
    "id": "tests/unit/theme-names.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10729,7 +11382,7 @@
    ]
   },
   {
-   "idx": "274",
+   "idx": "287",
    "id": "tests/unit/tutorial-island.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10747,7 +11400,7 @@
    ]
   },
   {
-   "idx": "275",
+   "idx": "288",
    "id": "tests/unit/vault-row.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10765,7 +11418,7 @@
    ]
   },
   {
-   "idx": "276",
+   "idx": "289",
    "id": "tests/unit/wobble-dance.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10837,7 +11490,7 @@
    ]
   },
   {
-   "idx": "277",
+   "idx": "290",
    "id": "tests/unit/world-map.test.ts",
    "kind": "file",
    "layer": "tests",
@@ -10930,7 +11583,7 @@
    "from": "api",
    "to": "social-services",
    "type": "import",
-   "weight": 7,
+   "weight": 8,
    "sample": [
     "app/api/party/assist/route.ts",
     "lib/party-assist-server.ts"
@@ -10980,7 +11633,7 @@
    "from": "app-shell",
    "to": "game-domain",
    "type": "import",
-   "weight": 8,
+   "weight": 9,
    "sample": [
     "app/page.tsx",
     "lib/levels.ts"
@@ -11020,17 +11673,17 @@
    "from": "app-shell",
    "to": "social-domain",
    "type": "import",
-   "weight": 2,
+   "weight": 3,
    "sample": [
     "app/page.tsx",
-    "lib/party-boss.ts"
+    "lib/party-lock.ts"
    ]
   },
   {
    "from": "app-shell",
    "to": "solve-ui",
    "type": "import",
-   "weight": 13,
+   "weight": 14,
    "sample": [
     "app/page.tsx",
     "lib/shortcuts.ts"
@@ -11090,7 +11743,7 @@
    "from": "party-ui",
    "to": "social-domain",
    "type": "import",
-   "weight": 13,
+   "weight": 14,
    "sample": [
     "components/party/assist-together.tsx",
     "lib/party-boss.ts"
@@ -11190,7 +11843,7 @@
    "from": "social-services",
    "to": "game-domain",
    "type": "import",
-   "weight": 4,
+   "weight": 5,
    "sample": [
     "lib/party-assist-server.ts",
     "lib/quests.ts"
@@ -11200,7 +11853,7 @@
    "from": "social-services",
    "to": "persistence",
    "type": "import",
-   "weight": 15,
+   "weight": 17,
    "sample": [
     "lib/party-assist-server.ts",
     "lib/party-assist-store.ts"
@@ -11220,7 +11873,7 @@
    "from": "social-services",
    "to": "social-domain",
    "type": "import",
-   "weight": 12,
+   "weight": 13,
    "sample": [
     "lib/party-assist-service.ts",
     "lib/party-boss.ts"
@@ -11230,7 +11883,7 @@
    "from": "solve-ui",
    "to": "design-system",
    "type": "import",
-   "weight": 10,
+   "weight": 11,
    "sample": [
     "components/solve/action-bar.tsx",
     "components/medieval/sprites.tsx"
@@ -11240,7 +11893,7 @@
    "from": "solve-ui",
    "to": "game-domain",
    "type": "import",
-   "weight": 8,
+   "weight": 10,
    "sample": [
     "components/solve/hud.tsx",
     "lib/levels.ts"
@@ -11260,7 +11913,7 @@
    "from": "tests",
    "to": "runner-service",
    "type": "import",
-   "weight": 25,
+   "weight": 26,
    "sample": [
     "runner/tests/test_error_position.py",
     "runner/quest_runner.py"
@@ -11270,9 +11923,9 @@
    "from": "tests",
    "to": "tooling",
    "type": "import",
-   "weight": 7,
+   "weight": 8,
    "sample": [
-    "runner/tests/test_generated_pack.py",
+    "runner/tests/test_forest_bramblehorn.py",
     "scripts/private_pack.py"
    ]
   },
@@ -11518,11 +12171,13 @@
     "components/solve/replay-view.tsx",
     "components/solve/resize-handle.tsx",
     "components/solve/results.tsx",
+    "components/solve/story-strip.tsx",
     "lib/editor-open.ts",
     "lib/error-mark.ts",
     "lib/notebook-layout.ts",
     "lib/python-editing.ts",
     "lib/shortcuts.ts",
+    "lib/story-scenes.ts",
     "lib/submit-moment.ts"
    ],
    "upstream": [
@@ -11670,6 +12325,7 @@
     "lib/progress.ts",
     "lib/quest-list.ts",
     "lib/quests.ts",
+    "lib/story-beats.ts",
     "lib/tutorial-island.ts"
    ],
    "upstream": [],
@@ -11690,8 +12346,8 @@
    ],
    "top_fan_in": [
     "lib/game-types.ts",
-    "lib/levels.ts",
     "lib/quests.ts",
+    "lib/levels.ts",
     "lib/activity.ts",
     "lib/progress.ts"
    ]
@@ -11703,6 +12359,7 @@
     "lib/party-assist.ts",
     "lib/party-boss.ts",
     "lib/party-draft.ts",
+    "lib/party-lock.ts",
     "lib/party.ts",
     "lib/realtime.ts",
     "lib/shared-doc.ts"
@@ -11735,7 +12392,8 @@
     "lib/party-boss-server.ts",
     "lib/party-boss-service.ts",
     "lib/party-draft-server.ts",
-    "lib/party-draft-service.ts"
+    "lib/party-draft-service.ts",
+    "lib/party-lock-server.ts"
    ],
    "upstream": [
     "game-domain",
@@ -11943,6 +12601,7 @@
     "runner/tests/__init__.py",
     "runner/tests/test_engine_portable.py",
     "runner/tests/test_error_position.py",
+    "runner/tests/test_forest_bramblehorn.py",
     "runner/tests/test_generated_pack.py",
     "runner/tests/test_masquerade.py",
     "runner/tests/test_numerology_goblin.py",
@@ -11980,11 +12639,14 @@
     "tests/e2e/party-assist.spec.ts",
     "tests/e2e/party-boss.spec.ts",
     "tests/e2e/party-gate.spec.ts",
+    "tests/e2e/party-lock.spec.ts",
     "tests/e2e/party.spec.ts",
     "tests/e2e/picky-dragon.spec.ts",
     "tests/e2e/profile.spec.ts",
     "tests/e2e/royal-joust.spec.ts",
+    "tests/e2e/shared-doc-sync.spec.ts",
     "tests/e2e/spun-vault.spec.ts",
+    "tests/e2e/story-intro.spec.ts",
     "tests/e2e/submit-moment.spec.ts",
     "tests/e2e/trusted-slice.spec.ts",
     "tests/e2e/tutorial-island.spec.ts",
@@ -12015,6 +12677,7 @@
     "tests/unit/party-assist.test.ts",
     "tests/unit/party-boss.test.ts",
     "tests/unit/party-draft.test.ts",
+    "tests/unit/party-lock.test.ts",
     "tests/unit/party-progress.test.ts",
     "tests/unit/party.test.ts",
     "tests/unit/progress-store.test.ts",
@@ -12026,9 +12689,12 @@
     "tests/unit/rpc-signatures.test.ts",
     "tests/unit/runner-client.test.ts",
     "tests/unit/session.test.ts",
+    "tests/unit/shared-doc-sync.test.ts",
     "tests/unit/shortcuts.test.ts",
     "tests/unit/stairs-beats.test.ts",
     "tests/unit/stairs-replay.test.ts",
+    "tests/unit/story-beats.test.ts",
+    "tests/unit/story-content.test.ts",
     "tests/unit/submit-moment.test.ts",
     "tests/unit/theme-names.test.ts",
     "tests/unit/tutorial-island.test.ts",

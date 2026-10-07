@@ -38,3 +38,8 @@ Eric owns layer membership, so the worker did not touch the map. Either extend
 
 Complete and verify one mini-milestone before launching the next worker.
 Update this file whenever a worker starts, finishes, or gets blocked.
+
+## M0 — Hermes-verified 2026-10-07
+- 63 unit tests OK; build_map vs quest-coder origin/main 749d8b5: 8/8 checks, exit 0 (18 layers, 272 files, 52 layer edges).
+- layers.json: mapped 4 files added upstream mid-run (party-lock -> social-domain, party-lock-server -> social-services, story-beats -> game-domain, story-scenes -> solve-ui).
+- Open for M1: map.json has layer->layer edges only; file-level edges needed for expand-to-files.
