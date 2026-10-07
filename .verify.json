@@ -1,0 +1,38 @@
+{
+  "$schema": "hproj-verify/v1",
+  "project": "DAG GPS",
+  "description": "Verification commands for this project. Fill in the command slots that apply; leave others null. Workers run non-null commands from the project root before reporting completion.",
+  "commands": {
+    "setup": null,
+    "build": null,
+    "lint": null,
+    "test": "python3 -m unittest discover -s tests -q",
+    "smoke": "python3 scripts/build_map.py --repo /Users/aibert/projects/quest-coder --ref origin/main --layers maps/quest-coder/layers.json --out maps/quest-coder/map.json"
+  },
+  "required_files": [
+    "PROJECT.md",
+    "TASKS.md",
+    "STATUS.md",
+    "AGENTS.md",
+    "scripts/build_map.py",
+    "scripts/import_graph.py",
+    "maps/quest-coder/map.json"
+  ],
+  "timeout_seconds": 600,
+  "examples": {
+    "node": {
+      "setup": "npm ci",
+      "build": "npm run build",
+      "lint": "npm run lint",
+      "test": "npm test"
+    },
+    "python": {
+      "setup": "pip install -e .",
+      "lint": "ruff check .",
+      "test": "pytest -q"
+    },
+    "shell": {
+      "smoke": "./scripts/smoke.sh"
+    }
+  }
+}

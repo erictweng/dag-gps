@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "project_name": "DAG GPS",
+  "slug": "dag-gps",
+  "phase": "idea",
+  "visibility_level": "standard",
+  "risk_level": "medium",
+  "active_milestone": null,
+  "active_mini": null,
+  "active_worker": null,
+  "last_verified": null,
+  "next_action": "define first mini-milestone",
+  "decision_required": null,
+  "blocked": false,
+  "blocked_reason": null,
+  "updated_at": "2026-10-07T15:28:50-07:00"
+}
