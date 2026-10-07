@@ -1,0 +1,411 @@
+{
+  "repo": "erictweng/quest-coder",
+  "commit": "71bc83a",
+  "status": "DRAFT — mini-eric from folders + top-of-file comments; Eric to correct",
+  "layers": [
+    {
+      "id": "app-shell",
+      "label": "App shell",
+      "desc": "Next.js entry: root layout, the single-page app router (app/page.tsx), global CSS, fonts, SEO, styleguide page",
+      "aliases": [
+        "home page",
+        "entry",
+        "router",
+        "layout",
+        "page.tsx",
+        "styleguide"
+      ],
+      "globs": [
+        "app/layout.tsx",
+        "app/page.tsx",
+        "app/*.css",
+        "app/*.svg",
+        "app/robots.ts",
+        "app/sitemap.ts",
+        "app/fonts/**",
+        "app/styleguide/**",
+        "lib/styleguide.ts"
+      ]
+    },
+    {
+      "id": "auth",
+      "label": "Auth & session",
+      "desc": "Supabase passwordless + Google sign-in, auth callback routes, SSR cookie refresh proxy, session identity",
+      "aliases": [
+        "login",
+        "sign in",
+        "identity",
+        "cookies",
+        "magic link",
+        "google"
+      ],
+      "globs": [
+        "proxy.ts",
+        "app/auth/**",
+        "lib/auth-identity.ts",
+        "lib/session.ts",
+        "lib/supabase/auth-errors.ts",
+        "components/sign-in-controls.tsx"
+      ]
+    },
+    {
+      "id": "api",
+      "label": "API routes",
+      "desc": "Next.js route handlers: run/submit, progress, packs, session, friends, party (assist, boss), health",
+      "aliases": [
+        "endpoints",
+        "backend",
+        "route handlers",
+        "server routes",
+        "/api"
+      ],
+      "globs": [
+        "app/api/**"
+      ]
+    },
+    {
+      "id": "screens",
+      "label": "Screens",
+      "desc": "Top-level views: home hub + world map, quest board, campaigns, quests list, profile, friends book",
+      "aliases": [
+        "hub",
+        "home",
+        "map",
+        "campaigns",
+        "profile",
+        "friends book",
+        "top bar",
+        "navigation"
+      ],
+      "globs": [
+        "components/hub/**",
+        "components/quests/**",
+        "components/campaigns/**",
+        "components/profile/**",
+        "components/friends/**",
+        "lib/home-pull.ts",
+        "lib/world-map.ts"
+      ]
+    },
+    {
+      "id": "solve-ui",
+      "label": "Solve screen",
+      "desc": "Code editor, Quest Notebook/journal, HUD, action bar (Run/Submit), combat log, results, error marks",
+      "aliases": [
+        "editor",
+        "notebook",
+        "journal",
+        "run button",
+        "submit button",
+        "combat log",
+        "results"
+      ],
+      "globs": [
+        "components/solve/**",
+        "lib/editor-open.ts",
+        "lib/python-editing.ts",
+        "lib/notebook-layout.ts",
+        "lib/shortcuts.ts",
+        "lib/error-mark.ts",
+        "lib/submit-moment.ts"
+      ]
+    },
+    {
+      "id": "replay",
+      "label": "Replay scenes",
+      "desc": "Animated per-quest replays of a run (dragon queue, goblin cauldron, joust, masquerade, vault, wobble, stairs) and their beat logic",
+      "aliases": [
+        "animation",
+        "scenes",
+        "replay",
+        "dragon",
+        "goblin",
+        "stairs",
+        "vault"
+      ],
+      "globs": [
+        "components/replay/**",
+        "lib/dragon-queue.ts",
+        "lib/goblin-cauldron.ts",
+        "lib/joust-scroll.ts",
+        "lib/masquerade-line.ts",
+        "lib/vault-row.ts",
+        "lib/wobble-dance.ts",
+        "lib/stairs-beats.ts",
+        "lib/stairs-replay.ts"
+      ]
+    },
+    {
+      "id": "party-ui",
+      "label": "Party UI",
+      "desc": "Multiplayer screens: party lobby, draft, assist tray, boss gate/fight, shared Yjs editor",
+      "aliases": [
+        "multiplayer",
+        "co-op",
+        "boss fight",
+        "assist",
+        "shared editor"
+      ],
+      "globs": [
+        "components/party/**"
+      ]
+    },
+    {
+      "id": "design-system",
+      "label": "Design system & moments",
+      "desc": "Medieval tokens, primitives, sprites; celebration moments (fireworks, completion, reward toasts, result summary); shared chrome (top bar) and region art",
+      "aliases": [
+        "sprites",
+        "tokens",
+        "theme",
+        "fireworks",
+        "toasts",
+        "ui kit",
+        "top bar",
+        "region art"
+      ],
+      "globs": [
+        "components/medieval/**",
+        "components/big-moments.tsx",
+        "components/completion-moment.tsx",
+        "components/fireworks.tsx",
+        "components/result-summary.tsx",
+        "components/reward-toasts.tsx",
+        "components/ui-bits.tsx",
+        "lib/fireworks.ts",
+        "lib/contrast.ts",
+        "lib/format.ts",
+        "components/frame/**",
+        "lib/region-art.ts"
+      ]
+    },
+    {
+      "id": "game-domain",
+      "label": "Game rules",
+      "desc": "Pure game logic: types, levels, quests and unlock order, tutorial island, progress/rewards math, attempts, training activity/streaks",
+      "aliases": [
+        "levels",
+        "unlocks",
+        "rewards",
+        "xp",
+        "gold",
+        "streak",
+        "progression",
+        "game types"
+      ],
+      "globs": [
+        "lib/game-types.ts",
+        "lib/levels.ts",
+        "lib/quests.ts",
+        "lib/quest-list.ts",
+        "lib/tutorial-island.ts",
+        "lib/progress.ts",
+        "lib/client-progress.ts",
+        "lib/attempts.ts",
+        "lib/activity.ts"
+      ]
+    },
+    {
+      "id": "social-domain",
+      "label": "Party & friends logic",
+      "desc": "Pure friends/party rules: friend codes, party questline, assist, boss, draft shapes, assist targets, shared Yjs doc, realtime pings",
+      "aliases": [
+        "party logic",
+        "friends",
+        "assist",
+        "boss",
+        "draft",
+        "realtime",
+        "yjs"
+      ],
+      "globs": [
+        "lib/friends.ts",
+        "lib/party.ts",
+        "lib/party-assist.ts",
+        "lib/party-boss.ts",
+        "lib/party-draft.ts",
+        "lib/assist-targets.ts",
+        "lib/shared-doc.ts",
+        "lib/realtime.ts"
+      ]
+    },
+    {
+      "id": "social-services",
+      "label": "Party & friends services",
+      "desc": "Server orchestration for party assist/boss/draft: load from stores, apply rules, write back, ping realtime",
+      "aliases": [
+        "party server",
+        "party service",
+        "orchestration"
+      ],
+      "globs": [
+        "lib/party-assist-server.ts",
+        "lib/party-assist-service.ts",
+        "lib/party-boss-server.ts",
+        "lib/party-boss-service.ts",
+        "lib/party-draft-server.ts",
+        "lib/party-draft-service.ts"
+      ]
+    },
+    {
+      "id": "persistence",
+      "label": "Stores & database",
+      "desc": "Store facades choosing Supabase Postgres (prod) or SQLite (local); Supabase clients; SQL migrations and RPC functions",
+      "aliases": [
+        "database",
+        "db",
+        "supabase",
+        "sqlite",
+        "migrations",
+        "store",
+        "rpc",
+        "postgres"
+      ],
+      "globs": [
+        "lib/progress-store.ts",
+        "lib/friends-store.ts",
+        "lib/party-store.ts",
+        "lib/party-assist-store.ts",
+        "lib/party-boss-store.ts",
+        "lib/party-draft-store.ts",
+        "lib/supabase/client.ts",
+        "lib/supabase/config.ts",
+        "lib/supabase/server.ts",
+        "supabase/migrations/**"
+      ]
+    },
+    {
+      "id": "run-gateway",
+      "label": "Run gateway",
+      "desc": "Server side of Run/Submit: request contract validation, rate limiting, caller address, authenticated client to the runner service",
+      "aliases": [
+        "grading request",
+        "runner client",
+        "rate limit",
+        "run contract",
+        "submit pipeline"
+      ],
+      "globs": [
+        "lib/run-contract.ts",
+        "lib/runner-client.ts",
+        "lib/rate-limit.ts",
+        "lib/client-address.ts",
+        "lib/read-json-request.ts"
+      ]
+    },
+    {
+      "id": "browser-run",
+      "label": "In-browser Run basic",
+      "desc": "Advisory Run basic in a Web Worker with Pyodide + the runner's grading engine copied at build time; no rewards",
+      "aliases": [
+        "pyodide",
+        "web worker",
+        "run basic",
+        "client-side python"
+      ],
+      "globs": [
+        "lib/browser-runner.ts",
+        "browser-runtime/**"
+      ]
+    },
+    {
+      "id": "runner-service",
+      "label": "Runner service",
+      "desc": "Separately deployed Python grader: bearer auth, allowlists, limits, CPython subprocess per case, private pack, redaction",
+      "aliases": [
+        "grader",
+        "python runner",
+        "cloud run",
+        "sandbox",
+        "judge"
+      ],
+      "globs": [
+        "runner/*.py",
+        "runner/service/**"
+      ]
+    },
+    {
+      "id": "content",
+      "label": "Quest content",
+      "desc": "Quest packs: public projections shipped to the browser, server/private fixtures, pack delivery helper",
+      "aliases": [
+        "packs",
+        "challenges",
+        "problems",
+        "fixtures",
+        "hidden tests"
+      ],
+      "globs": [
+        "content/**",
+        "hidden-packs/**",
+        "lib/public-packs.ts"
+      ]
+    },
+    {
+      "id": "tooling",
+      "label": "Build & deploy tooling",
+      "desc": "Pack projection builder, privacy check, runtime copy, runner deploy/CI scripts, load test, deployment smoke; root framework configs",
+      "aliases": [
+        "scripts",
+        "deploy",
+        "ci",
+        "build"
+      ],
+      "globs": [
+        "scripts/**",
+        "*.config.ts",
+        "*.config.mjs",
+        "next-env.d.ts"
+      ]
+    },
+    {
+      "id": "tests",
+      "label": "Tests",
+      "desc": "Unit (vitest), e2e (Playwright), runner pytest, Supabase SQL tests",
+      "aliases": [
+        "test",
+        "e2e",
+        "unit",
+        "pytest",
+        "playwright"
+      ],
+      "globs": [
+        "tests/**",
+        "runner/tests/**",
+        "supabase/tests/**"
+      ]
+    }
+  ],
+  "manual_edges": [
+    {
+      "from": "solve-ui",
+      "to": "api",
+      "type": "http",
+      "why": "Run/Submit POST /api/run"
+    },
+    {
+      "from": "api",
+      "to": "runner-service",
+      "type": "http",
+      "why": "lib/runner-client.ts → QUEST_CODER_RUNNER_URL"
+    },
+    {
+      "from": "runner-service",
+      "to": "content",
+      "type": "data",
+      "why": "reads private pack via QUEST_CODER_PRIVATE_PACK_PATH"
+    },
+    {
+      "from": "tooling",
+      "to": "browser-run",
+      "type": "build",
+      "why": "copy_browser_runtime.mjs copies runner engine into public/engine"
+    },
+    {
+      "from": "social-domain",
+      "to": "party-ui",
+      "type": "realtime",
+      "why": "Supabase Realtime broadcast pings (draw, ignore in ranking)"
+    }
+  ]
+}

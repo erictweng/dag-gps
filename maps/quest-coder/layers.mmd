@@ -1,0 +1,64 @@
+flowchart TD
+  app_shell["App shell<br/>7 files"]
+  auth["Auth & session<br/>8 files"]
+  api["API routes<br/>10 files"]
+  screens["Screens<br/>12 files"]
+  solve_ui["Solve screen<br/>14 files"]
+  replay["Replay scenes<br/>16 files"]
+  party_ui["Party UI<br/>8 files"]
+  design_system["Design system & moments<br/>15 files"]
+  game_domain["Game rules<br/>9 files"]
+  social_domain["Party & friends logic<br/>8 files"]
+  social_services["Party & friends services<br/>6 files"]
+  persistence["Stores & database<br/>23 files"]
+  run_gateway["Run gateway<br/>5 files"]
+  browser_run["In-browser Run basic<br/>2 files"]
+  runner_service["Runner service<br/>9 files"]
+  content["Quest content<br/>1 files"]
+  tooling["Build & deploy tooling<br/>11 files"]
+  tests["Tests<br/>95 files"]
+  api -->|8| auth
+  api -->|1| content
+  api -->|1| design_system
+  api -->|7| game_domain
+  api -->|9| persistence
+  api -->|17| run_gateway
+  api -->|8| social_domain
+  api -->|7| social_services
+  app_shell -->|1| auth
+  app_shell -->|1| browser_run
+  app_shell -->|1| content
+  app_shell -->|13| design_system
+  app_shell -->|8| game_domain
+  app_shell -->|8| party_ui
+  app_shell -->|12| replay
+  app_shell -->|9| screens
+  app_shell -->|2| social_domain
+  app_shell -->|13| solve_ui
+  auth -->|7| persistence
+  browser_run -->|1| game_domain
+  design_system -->|4| game_domain
+  party_ui -->|2| design_system
+  party_ui -->|1| game_domain
+  party_ui -->|13| social_domain
+  persistence -->|2| game_domain
+  persistence -->|6| social_domain
+  replay -->|7| design_system
+  replay -->|10| game_domain
+  screens -->|10| design_system
+  screens -->|10| game_domain
+  screens -->|1| party_ui
+  screens -->|2| social_domain
+  screens -->|3| solve_ui
+  social_services -->|4| game_domain
+  social_services -->|15| persistence
+  social_services -->|1| run_gateway
+  social_services -->|12| social_domain
+  solve_ui -->|10| design_system
+  solve_ui -->|8| game_domain
+  solve_ui -->|12| replay
+  solve_ui -.->|http| api
+  api -.->|http| runner_service
+  runner_service -.->|data| content
+  tooling -.->|build| browser_run
+  social_domain -.->|realtime| party_ui
