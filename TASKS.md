@@ -11,7 +11,7 @@ Status values: `queued` | `running` | `verified` | `blocked` | `failed`
 
 #### 0.2 — Cover the files quest-coder added since `71bc83a`
 
-Status: blocked (needs Eric — he owns layer membership)
+Status: verified (34d7ef9: 4 files mapped; build_map vs 749d8b5 8/8 PASS)
 
 `layers.json` has no glob for `lib/party-lock.ts`, `lib/party-lock-server.ts`,
 `lib/story-beats.ts`, `lib/story-scenes.ts`. Until then the `.verify.json` smoke
@@ -25,6 +25,10 @@ Done when:
 ## Next
 
 ### Milestone 1 — Canvas
+
+Eric approved (2026-10-07): add file-level edges, then build the canvas.
+- 1.1 file_edges in map.json — handoff `.hsub/handoffs/m1-1-file-edges.md` — running
+- 1.2 canvas (web/template.html + render.py + Playwright smoke) — handoff `.hsub/handoffs/m1-2-canvas.md` — queued after 1.1 verified
 
 #### 1.1 — `index.html` renders the layer DAG, clicking a layer expands it to its files
 
