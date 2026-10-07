@@ -9,6 +9,9 @@ scripts/import_graph.py on quest-coder@71bc83a:
   api_calls{"components/party/party.tsx": ["/api/party"], ...}
   rpcs     {"lib/friends-store.ts": ["quest_coder_friend_remove", ...], ...}
   sqlfns   {"quest_coder_read_progress": ["supabase/migrations/2026...sql", ...], ...}
+
+An edge target is not always a map file node: import_graph resolves `.jsx`, `.css` and
+`.json` imports too, and writes "UNRESOLVED:<spec>" when it cannot resolve one.
 """
 import json
 import os
@@ -283,6 +286,117 @@ class TestTypedEdges(unittest.TestCase):
         self.assertEqual(bm.manual_edges({}), [])
 
 
+# --------------------------------------------------------------- file edges
+
+MIGRATION = "supabase/migrations/202610020001_quest_coder_auth_progress.sql"
+
+
+class TestFileLevelEdges(unittest.TestCase):
+    ROUTES = ["app/api/friends/route.ts", "app/api/packs/[slug]/route.ts"]
+
+    def build(self, **kw):
+        args = {"import_pairs": [tuple(e) for e in EDGES] + [tuple(e) for e in PYEDGES],
+                "api_calls": {}, "route_files": self.ROUTES, "rpcs": {}, "sqlfns": {},
+                "layer_of": layer_of_fixture(), "files": FILES}
+        args.update(kw)
+        return bm.file_level_edges(**args)
+
+    def test_every_import_pair_becomes_a_file_edge(self):
+        edges, dropped = self.build()
+        self.assertEqual(dropped, [])
+        self.assertEqual(len(edges), len(EDGES) + len(PYEDGES))
+        self.assertEqual({(e["from"], e["to"]) for e in edges},
+                         {tuple(e) for e in EDGES} | {tuple(e) for e in PYEDGES})
+        self.assertTrue(all(e["type"] == "import" for e in edges))
+
+    def test_identical_pairs_are_deduped_per_type(self):
+        dupes = [("components/solve/action-bar.tsx", "lib/levels.ts")] * 3
+        edges, _ = self.build(import_pairs=dupes)
+        self.assertEqual(edges, [{"from": "components/solve/action-bar.tsx",
+                                  "to": "lib/levels.ts", "type": "import",
+                                  "cross_layer": True}])
+
+    def test_the_same_pair_with_two_types_is_kept_twice(self):
+        edges, _ = self.build(
+            import_pairs=[("components/solve/action-bar.tsx", "app/api/friends/route.ts")],
+            api_calls={"components/solve/action-bar.tsx": ["/api/friends"]})
+        self.assertEqual([e["type"] for e in edges], ["http", "import"])
+
+    def test_same_layer_edges_are_kept_and_flagged_not_cross_layer(self):
+        edges, _ = self.build()
+        by_pair = {(e["from"], e["to"]): e for e in edges}
+        same = by_pair[("components/solve/action-bar.tsx", "lib/editor-open.ts")]
+        self.assertFalse(same["cross_layer"])  # both in `ui`, dropped by the layer rollup
+        self.assertFalse(by_pair[("runner/case_worker.py", "runner/quest_runner.py")]
+                         ["cross_layer"])
+        self.assertTrue(by_pair[("app/api/friends/route.ts", "lib/levels.ts")]["cross_layer"])
+
+    def test_http_edges_point_at_the_resolved_route_file(self):
+        edges, dropped = self.build(
+            import_pairs=[],
+            api_calls={"components/solve/action-bar.tsx": ["/api/friends", "/api/packs/forest"]})
+        self.assertEqual(dropped, [])
+        self.assertEqual([(e["from"], e["to"], e["type"], e["cross_layer"]) for e in edges], [
+            ("components/solve/action-bar.tsx", "app/api/friends/route.ts", "http", True),
+            ("components/solve/action-bar.tsx", "app/api/packs/[slug]/route.ts", "http", True)])
+
+    def test_a_fetch_path_with_no_route_handler_makes_no_edge(self):
+        edges, dropped = self.build(
+            import_pairs=[],
+            api_calls={"components/solve/action-bar.tsx": ["/api/private-pack"]})
+        self.assertEqual((edges, dropped), ([], []))
+
+    def test_rpc_edges_target_the_migration_that_last_defines_the_function(self):
+        late = "supabase/migrations/202610040001_quest_coder_rewards_gold_skills.sql"
+        edges, _ = self.build(
+            import_pairs=[], files=FILES + [late],
+            rpcs={"lib/progress-store.ts": ["quest_coder_read_progress"]},
+            sqlfns={"quest_coder_read_progress": [MIGRATION, late]})
+        self.assertEqual([(e["from"], e["to"], e["type"]) for e in edges],
+                         [("lib/progress-store.ts", late, "rpc")])
+
+    def test_a_same_layer_rpc_edge_is_kept(self):
+        edges, _ = self.build(
+            import_pairs=[], rpcs={"lib/progress-store.ts": ["quest_coder_read_progress"]},
+            sqlfns={"quest_coder_read_progress": [MIGRATION]})
+        self.assertEqual(len(edges), 1)  # both files are in `persistence`
+        self.assertFalse(edges[0]["cross_layer"])
+
+    def test_an_rpc_with_no_sql_definition_makes_no_edge(self):
+        edges, dropped = self.build(
+            import_pairs=[], rpcs={"lib/progress-store.ts": ["quest_coder_ghost"]}, sqlfns={})
+        self.assertEqual((edges, dropped), ([], []))
+
+    def test_an_endpoint_that_is_not_a_file_node_is_dropped_and_reported(self):
+        edges, dropped = self.build(import_pairs=[
+            ("lib/levels.ts", "UNRESOLVED:@/lib/missing"),
+            ("components/solve/sprite.jsx", "lib/levels.ts"),
+            ("app/api/friends/route.ts", "lib/levels.ts"),
+        ])
+        self.assertEqual([(e["from"], e["to"]) for e in edges],
+                         [("app/api/friends/route.ts", "lib/levels.ts")])
+        self.assertEqual(dropped, [
+            ["lib/levels.ts", "UNRESOLVED:@/lib/missing", "import"],
+            ["components/solve/sprite.jsx", "lib/levels.ts", "import"]])
+
+    def test_self_edges_are_skipped(self):
+        edges, dropped = self.build(import_pairs=[("lib/levels.ts", "lib/levels.ts")])
+        self.assertEqual((edges, dropped), ([], []))
+
+    def test_edges_are_sorted_by_from_then_to_then_type(self):
+        edges, _ = self.build()
+        self.assertEqual([(e["from"], e["to"], e["type"]) for e in edges],
+                         sorted((e["from"], e["to"], e["type"]) for e in edges))
+
+    def test_an_unmapped_endpoint_still_yields_an_edge(self):
+        layer_of = layer_of_fixture()
+        del layer_of["lib/levels.ts"]  # unmapped: a FAIL elsewhere, but not an edge drop
+        edges, dropped = self.build(
+            import_pairs=[("app/api/friends/route.ts", "lib/levels.ts")], layer_of=layer_of)
+        self.assertEqual(dropped, [])
+        self.assertTrue(edges[0]["cross_layer"])
+
+
 # ---------------------------------------------------------- graph + closure
 
 def edge(a, b, t="import"):
@@ -475,14 +589,20 @@ class TestExtractDesc(unittest.TestCase):
 
 class TestCheckReport(unittest.TestCase):
     def _doc(self):
-        return {"nodes": [{"idx": "1", "id": "api"}, {"idx": "2", "id": "ui"},
-                          {"idx": "3", "id": "lib/levels.ts"}],
-                "edges": [{"from": "ui", "to": "api", "type": "import"}]}
+        return {"nodes": [{"idx": "1", "id": "api", "kind": "layer"},
+                          {"idx": "2", "id": "ui", "kind": "layer"},
+                          {"idx": "3", "id": "lib/levels.ts", "kind": "file"},
+                          {"idx": "4", "id": "components/solve/action-bar.tsx",
+                           "kind": "file"}],
+                "edges": [{"from": "ui", "to": "api", "type": "import"}],
+                "file_edges": [{"from": "components/solve/action-bar.tsx",
+                                "to": "lib/levels.ts", "type": "import",
+                                "cross_layer": True}]}
 
     def _run(self, doc, **kw):
         args = {"graph": {"unresolved": []}, "unmapped": [], "double": {}, "empty": [],
                 "cycle": None, "layer_ids": ["api", "ui"], "spec": {"manual_edges": []},
-                "http_misses": [], "rpc_misses": []}
+                "http_misses": [], "rpc_misses": [], "fedge_drops": []}
         args.update(kw)
         with tempfile.TemporaryDirectory() as d:
             out = os.path.join(d, "map.json")
@@ -493,7 +613,7 @@ class TestCheckReport(unittest.TestCase):
     def test_a_clean_build_passes_every_check(self):
         report = self._run(self._doc())
         self.assertTrue(all(ok for ok, _, _ in report), report)
-        self.assertEqual(len(report), 7)
+        self.assertEqual(len(report), 8)
 
     def test_unresolved_imports_fail(self):
         report = self._run(self._doc(),
@@ -526,11 +646,27 @@ class TestCheckReport(unittest.TestCase):
         doc["nodes"][1]["idx"] = "1"
         self.assertFalse(self._run(doc)[6][0])
 
+    def test_a_file_edge_to_an_unknown_id_fails(self):
+        doc = self._doc()
+        doc["file_edges"].append({"from": "lib/levels.ts", "to": "lib/ghost.ts",
+                                  "type": "import", "cross_layer": True})
+        ok, _, detail = self._run(doc)[7]
+        self.assertFalse(ok)
+        self.assertIn("lib/levels.ts -> lib/ghost.ts (import)", detail)
+        self.assertTrue(self._run(doc)[6][0])  # layer edges are still fine
+
+    def test_a_file_edge_to_a_layer_id_fails(self):
+        doc = self._doc()
+        doc["file_edges"].append({"from": "lib/levels.ts", "to": "api",
+                                  "type": "import", "cross_layer": True})
+        self.assertFalse(self._run(doc)[7][0])
+
     def test_misses_are_notes_not_failures(self):
         report = self._run(self._doc(), http_misses=[["a.ts", "/api/ghost"]],
-                           rpc_misses=[["b.ts", "fn"]])
+                           rpc_misses=[["b.ts", "fn"]],
+                           fedge_drops=[["a.ts", "UNRESOLVED:@/x", "import"]])
         self.assertTrue(all(ok for ok, _, _ in report))
-        self.assertEqual(len(report), 9)
+        self.assertEqual(len(report), 11)
 
 
 if __name__ == "__main__":

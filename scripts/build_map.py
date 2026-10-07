@@ -164,6 +164,47 @@ def rpc_edges(rpcs, sqlfns, layer_of):
     return edges, misses
 
 
+def file_level_edges(import_pairs, api_calls, route_files, rpcs, sqlfns, layer_of, files):
+    """-> (edges, dropped). file->file edges, so the canvas can expand a layer into files.
+
+    `import` from every JS/TS and Python pair, `http` from a fetch('/api/...') caller to
+    the matching route handler, `rpc` from a `.rpc('fn')` caller to the migration that
+    last defines fn. Unlike the layer rollup, same-layer edges are kept and carry
+    `cross_layer: False`. Identical (from, to, type) triples are deduped; an endpoint
+    that is not a file node id (an `UNRESOLVED:` target, a `.jsx` file the map does not
+    index) is dropped and reported.
+    """
+    known = set(files)
+    seen, out, dropped = set(), [], []
+
+    def add(a, b, etype):
+        if a == b:
+            return
+        if a not in known or b not in known:
+            dropped.append([a, b, etype])
+            return
+        if (a, b, etype) in seen:
+            return
+        seen.add((a, b, etype))
+        out.append({"from": a, "to": b, "type": etype,
+                    "cross_layer": layer_of.get(a) != layer_of.get(b)})
+
+    for a, b in import_pairs:
+        add(a, b, "import")
+    for caller, paths in sorted(api_calls.items()):
+        for p in paths:
+            route = resolve_api_route(p, route_files)
+            if route:
+                add(caller, route, "http")
+    for caller, fns in sorted(rpcs.items()):
+        for fn in fns:
+            defs = sqlfns.get(fn) or []
+            if defs:  # migrations sort chronologically by name; the last one wins
+                add(caller, defs[-1], "rpc")
+    out.sort(key=lambda e: (e["from"], e["to"], e["type"]))
+    return out, dropped
+
+
 def manual_edges(spec):
     return [
         {"from": e["from"], "to": e["to"], "type": e.get("type", "manual"),
@@ -397,17 +438,20 @@ def build(repo, ref, layers_path, out_path, tops):
     per_layer = collections.Counter(layer_of.values())
     empty = [l["id"] for l in layers if not per_layer.get(l["id"])]
 
-    file_edges = [tuple(e) for e in graph["edges"]] + [tuple(e) for e in graph.get("pyedges", [])]
-    edges = rollup(file_edges, layer_of)
+    import_pairs = [tuple(e) for e in graph["edges"]] + [tuple(e) for e in graph.get("pyedges", [])]
+    edges = rollup(import_pairs, layer_of)
     route_files = [f for f in files if f.startswith("app/api/") and f.endswith("/route.ts")]
     http, http_misses = http_edges(graph.get("api_calls", {}), layer_of, route_files)
     rpc, rpc_misses = rpc_edges(graph.get("rpcs", {}), graph.get("sqlfns", {}), layer_of)
     manual = manual_edges(spec)
     edges += http + rpc + manual
+    fedges, fedge_drops = file_level_edges(
+        import_pairs, graph.get("api_calls", {}), route_files, graph.get("rpcs", {}),
+        graph.get("sqlfns", {}), layer_of, files)
 
     # file importer counts, for per-layer top_fan_in
     importers = collections.defaultdict(set)
-    for a, b in file_edges:
+    for a, b in import_pairs:
         if a != b:
             importers[b].add(a)
 
@@ -460,10 +504,12 @@ def build(repo, ref, layers_path, out_path, tops):
             "ref": ref, "commit": commit,
             "built_at": datetime.datetime.now(datetime.timezone.utc).replace(
                 microsecond=0).isoformat().replace("+00:00", "Z"),
-            "counts": {"layers": len(layers), "files": len(files), "edges": len(edges)},
+            "counts": {"layers": len(layers), "files": len(files), "edges": len(edges),
+                       "file_edges": len(fedges)},
         },
         "nodes": nodes,
         "edges": edges,
+        "file_edges": fedges,
         "layers": layers_out,
     }
 
@@ -473,14 +519,14 @@ def build(repo, ref, layers_path, out_path, tops):
         fh.write("\n")
 
     report = check(doc, out_path, graph, unmapped, double, empty, cycle, layer_ids, spec,
-                   http_misses, rpc_misses)
+                   http_misses, rpc_misses, fedge_drops)
     return doc, report, extract_log
 
 
 # ----------------------------------------------------------------------- checks
 
 def check(doc, out_path, graph, unmapped, double, empty, cycle, layer_ids, spec,
-          http_misses, rpc_misses):
+          http_misses, rpc_misses, fedge_drops=()):
     results = []
 
     def add(ok, name, detail=""):
@@ -512,9 +558,20 @@ def check(doc, out_path, graph, unmapped, double, empty, cycle, layer_ids, spec,
         add(ok, "map.json round-trips, every edge endpoint is a known id",
             ("\n".join(f"    DANGLING {e['from']} -> {e['to']}" for e in dangling[:10])
              + ("\n    DUPLICATE idx values" if dup_idx else "")).rstrip())
+
+        file_ids = {n["id"] for n in reloaded["nodes"] if n.get("kind") == "file"}
+        fdangling = [e for e in reloaded["file_edges"]
+                     if e["from"] not in file_ids or e["to"] not in file_ids]
+        add(not fdangling,
+            f"every file_edge endpoint is a known file node ({len(reloaded['file_edges'])} edges)",
+            "\n".join(f"    DANGLING {e['from']} -> {e['to']} ({e['type']})"
+                      for e in fdangling[:10]))
     except Exception as exc:  # noqa: BLE001 - surfaced in the report
         add(False, "map.json round-trips", f"    {exc!r}")
 
+    if fedge_drops:
+        add(True, f"note: {len(fedge_drops)} file edge(s) dropped, endpoint is not a file node",
+            "\n".join(f"    {a} -> {b} ({t})" for a, b, t in list(fedge_drops)[:10]))
     if http_misses:
         add(True, f"note: {len(http_misses)} fetch path(s) with no route handler",
             "\n".join(f"    {a} -> {b}" for a, b in http_misses[:10]))
@@ -543,6 +600,10 @@ def main(argv=None):
           f"= {len(doc['nodes'])}")
     print(f"edges:     {m['counts']['edges']} (" + ", ".join(
         f"{t} {n}" for t, n in sorted(by_type.items())) + ")")
+    fby_type = collections.Counter(e["type"] for e in doc["file_edges"])
+    cross = sum(1 for e in doc["file_edges"] if e["cross_layer"])
+    print(f"file edges:{m['counts']['file_edges']} (" + ", ".join(
+        f"{t} {n}" for t, n in sorted(fby_type.items())) + f"; cross-layer {cross})")
     print(f"wrote:     {a.out} ({os.path.getsize(a.out)} bytes)")
     print("checks:")
     failed = 0

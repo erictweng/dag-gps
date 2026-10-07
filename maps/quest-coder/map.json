@@ -3,11 +3,12 @@
   "repo": "erictweng/quest-coder",
   "ref": "origin/main",
   "commit": "749d8b5",
-  "built_at": "2026-10-07T23:22:29Z",
+  "built_at": "2026-10-07T23:29:19Z",
   "counts": {
    "layers": 18,
    "files": 272,
-   "edges": 52
+   "edges": 52,
+   "file_edges": 413
   }
  },
  "nodes": [
@@ -12018,6 +12019,2486 @@
    "weight": 1,
    "sample": null,
    "why": "Supabase Realtime broadcast pings (draw, ignore in ranking)"
+  }
+ ],
+ "file_edges": [
+  {
+   "from": "app/api/friends/route.ts",
+   "to": "lib/friends-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/friends/route.ts",
+   "to": "lib/friends.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/friends/route.ts",
+   "to": "lib/rate-limit.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/friends/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/friends/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/health/route.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/health/route.ts",
+   "to": "lib/runner-client.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/packs/[slug]/route.ts",
+   "to": "lib/public-packs.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/packs/route.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/party-assist-server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/party-assist-service.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/rate-limit.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/realtime.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/assist/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/party-boss-server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/party-boss-service.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/rate-limit.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/realtime.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/boss/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/party-assist-server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/party-boss-service.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/party-draft-server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/party-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/rate-limit.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/realtime.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/region-art.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/party/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/progress/route.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/progress/route.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/progress/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/progress/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/activity.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/party-lock-server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/party-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/rate-limit.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/realtime.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/run-contract.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/runner-client.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/run/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/client-address.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/rate-limit.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/read-json-request.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/session.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/supabase/auth-errors.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/api/session/route.ts",
+   "to": "lib/supabase/server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/auth/callback/route.ts",
+   "to": "lib/supabase/server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/auth/confirm/route.ts",
+   "to": "lib/supabase/server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/auth/google/route.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/auth/google/route.ts",
+   "to": "lib/supabase/server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/layout.tsx",
+   "to": "components/medieval/tokens.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "app/api/party/assist/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "app/api/party/boss/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "app/api/progress/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "app/api/run/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "app/api/session/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/big-moments.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/campaigns/campaigns-view.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/completion-moment.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/frame/top-bar.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/friends/friends-book.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/hub/home-view.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/hub/quest-board.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/hub/start-choice.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/hub/types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/assist-together.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/assist-tray.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/boss-gate.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/boss-together.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/party-draft.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/party-next.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/party.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/party/shared-editor.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/profile/profile-view.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/quests/quests-view.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/replay/dragon-queue.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/replay/goblin-cauldron.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/replay/joust-scroll.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/replay/masquerade-line.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/replay/vault-row.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/replay/wobble-dance.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/result-summary.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/reward-toasts.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/sign-in-controls.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/action-bar.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/combat-log.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/hud.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/journal-panels.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/quest-journal.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/replay-view.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/resize-handle.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/results.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/solve/story-strip.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "components/ui-bits.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/activity.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/attempts.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/browser-runner.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/client-progress.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/dragon-queue.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/editor-open.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/error-mark.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/goblin-cauldron.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/joust-scroll.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/masquerade-line.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/party-lock.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/progress.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/public-packs.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/python-editing.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/quest-list.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/region-art.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/shortcuts.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/stairs-beats.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/story-beats.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/submit-moment.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/tutorial-island.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/wobble-dance.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/page.tsx",
+   "to": "lib/world-map.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/styleguide/page.tsx",
+   "to": "app/styleguide/style-tile.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "app/styleguide/page.tsx",
+   "to": "lib/styleguide.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "app/styleguide/style-tile.tsx",
+   "to": "components/medieval/primitives.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/styleguide/style-tile.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/styleguide/style-tile.tsx",
+   "to": "components/medieval/tokens.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "app/styleguide/style-tile.tsx",
+   "to": "lib/contrast.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/big-moments.tsx",
+   "to": "components/fireworks.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/big-moments.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/big-moments.tsx",
+   "to": "components/reward-toasts.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/big-moments.tsx",
+   "to": "lib/fireworks.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/big-moments.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/campaigns/campaigns-view.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/campaigns/campaigns-view.tsx",
+   "to": "lib/quest-list.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/fireworks.tsx",
+   "to": "lib/fireworks.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/frame/top-bar.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/frame/top-bar.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "app/api/friends/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "components/party/party.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "components/solve/quest-journal.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "lib/friends.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "lib/notebook-layout.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "lib/progress.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/friends/friends-book.tsx",
+   "to": "lib/shortcuts.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/home-loader.tsx",
+   "to": "lib/home-pull.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "components/hub/home-loader.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "components/hub/types.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "components/profile/public-card.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "lib/home-pull.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "lib/region-art.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/home-view.tsx",
+   "to": "lib/world-map.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/quest-board.tsx",
+   "to": "components/hub/types.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/hub/quest-board.tsx",
+   "to": "components/medieval/primitives.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/quest-board.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/start-choice.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/start-choice.tsx",
+   "to": "lib/tutorial-island.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/hub/types.ts",
+   "to": "components/medieval/primitives.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/medieval/leather.ts",
+   "to": "components/medieval/tokens.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/medieval/primitives.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/medieval/sprites.tsx",
+   "to": "components/medieval/tokens.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/assist-together.tsx",
+   "to": "app/api/party/assist/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/assist-together.tsx",
+   "to": "components/party/shared-editor.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/assist-together.tsx",
+   "to": "lib/party-assist.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/assist-together.tsx",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/assist-tray.tsx",
+   "to": "components/party/party.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/assist-tray.tsx",
+   "to": "lib/assist-targets.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/assist-tray.tsx",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/boss-gate.tsx",
+   "to": "app/api/party/boss/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/boss-gate.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/boss-gate.tsx",
+   "to": "components/party/party.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/boss-gate.tsx",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/boss-together.tsx",
+   "to": "components/party/shared-editor.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/boss-together.tsx",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party-draft.tsx",
+   "to": "components/party/party.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/party-draft.tsx",
+   "to": "lib/party-draft.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party-next.tsx",
+   "to": "components/party/party.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/party/party-next.tsx",
+   "to": "lib/party-assist.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party-next.tsx",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party.tsx",
+   "to": "app/api/party/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party.tsx",
+   "to": "lib/party-assist.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/party.tsx",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/shared-editor.tsx",
+   "to": "app/api/party/boss/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/shared-editor.tsx",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/shared-editor.tsx",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/party/shared-editor.tsx",
+   "to": "lib/shared-doc.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/profile/profile-view.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/profile/profile-view.tsx",
+   "to": "components/profile/public-card.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/profile/profile-view.tsx",
+   "to": "lib/activity.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/profile/profile-view.tsx",
+   "to": "lib/attempts.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/profile/profile-view.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/profile/public-card.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/quests/quests-view.tsx",
+   "to": "components/campaigns/campaigns-view.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/quests/quests-view.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/quests/quests-view.tsx",
+   "to": "lib/quest-list.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/dragon-queue.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/dragon-queue.tsx",
+   "to": "lib/dragon-queue.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/goblin-cauldron.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/goblin-cauldron.tsx",
+   "to": "lib/goblin-cauldron.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/joust-scroll.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/joust-scroll.tsx",
+   "to": "lib/joust-scroll.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/masquerade-line.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/masquerade-line.tsx",
+   "to": "lib/masquerade-line.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/scenes.tsx",
+   "to": "components/replay/stairs-scene.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/scenes.tsx",
+   "to": "components/replay/vault-row.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/scenes.tsx",
+   "to": "lib/format.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/scenes.tsx",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/scenes.tsx",
+   "to": "lib/stairs-beats.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/scenes.tsx",
+   "to": "lib/vault-row.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/stairs-scene.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/stairs-scene.tsx",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/stairs-scene.tsx",
+   "to": "lib/stairs-beats.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/stairs-scene.tsx",
+   "to": "lib/stairs-replay.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/vault-row.tsx",
+   "to": "lib/vault-row.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/replay/wobble-dance.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/replay/wobble-dance.tsx",
+   "to": "lib/wobble-dance.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/reward-toasts.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/solve/action-bar.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/action-bar.tsx",
+   "to": "lib/error-mark.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/solve/combat-log.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/hud.tsx",
+   "to": "components/frame/top-bar.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/hud.tsx",
+   "to": "components/medieval/primitives.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/hud.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/hud.tsx",
+   "to": "components/medieval/tokens.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/hud.tsx",
+   "to": "lib/levels.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/journal-panels.tsx",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/quest-journal.tsx",
+   "to": "components/medieval/leather.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/quest-journal.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/quest-journal.tsx",
+   "to": "lib/notebook-layout.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/solve/quest-journal.tsx",
+   "to": "lib/progress.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "components/replay/dragon-queue.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "components/replay/goblin-cauldron.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "components/replay/joust-scroll.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "components/replay/masquerade-line.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "components/replay/scenes.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "components/replay/wobble-dance.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/dragon-queue.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/goblin-cauldron.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/joust-scroll.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/masquerade-line.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/shortcuts.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/stairs-beats.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/replay-view.tsx",
+   "to": "lib/wobble-dance.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/results.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/results.tsx",
+   "to": "lib/attempts.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/results.tsx",
+   "to": "lib/format.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/results.tsx",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/story-strip.tsx",
+   "to": "components/medieval/sprites.tsx",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/story-strip.tsx",
+   "to": "lib/story-beats.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "components/solve/story-strip.tsx",
+   "to": "lib/story-scenes.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/assist-targets.ts",
+   "to": "lib/party-assist.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/assist-targets.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/browser-runner.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/dragon-queue.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/format.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/friends-store.ts",
+   "to": "lib/friends.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/friends-store.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/friends-store.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/friends-store.ts",
+   "to": "supabase/migrations/202610070001_quest_coder_friends.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/friends-store.ts",
+   "to": "supabase/migrations/202610080001_quest_coder_parties.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/game-types.ts",
+   "to": "lib/attempts.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/game-types.ts",
+   "to": "lib/story-beats.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/goblin-cauldron.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/home-pull.ts",
+   "to": "lib/world-map.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/joust-scroll.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/masquerade-line.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/notebook-layout.ts",
+   "to": "lib/progress.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-server.ts",
+   "to": "lib/party-assist-service.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-assist-server.ts",
+   "to": "lib/party-assist-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-server.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-server.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-server.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-service.ts",
+   "to": "lib/party-assist-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-service.ts",
+   "to": "lib/party-assist.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-service.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-service.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-service.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-service.ts",
+   "to": "lib/shared-doc.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-store.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-assist-store.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-assist.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/activity.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/party-boss-service.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/party-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/realtime.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-server.ts",
+   "to": "lib/runner-client.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-service.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-service.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-service.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-service.ts",
+   "to": "lib/shared-doc.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-store.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-boss-store.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-draft-server.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-server.ts",
+   "to": "lib/party-draft-service.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-draft-server.ts",
+   "to": "lib/party-draft-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-server.ts",
+   "to": "lib/party-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-server.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-service.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-service.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-service.ts",
+   "to": "lib/party-draft-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-service.ts",
+   "to": "lib/party-draft.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-service.ts",
+   "to": "lib/party-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-service.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-store.ts",
+   "to": "lib/party-draft.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-draft-store.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-lock-server.ts",
+   "to": "lib/party-assist-server.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-lock-server.ts",
+   "to": "lib/party-boss-service.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-lock-server.ts",
+   "to": "lib/party-boss-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-lock-server.ts",
+   "to": "lib/party-lock.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-lock-server.ts",
+   "to": "lib/party-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-lock-server.ts",
+   "to": "lib/quests.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-lock.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-store.ts",
+   "to": "lib/friends-store.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-store.ts",
+   "to": "lib/party.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/party-store.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-store.ts",
+   "to": "supabase/migrations/202610090001_quest_coder_party_questline.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party-store.ts",
+   "to": "supabase/migrations/202610120001_quest_coder_party_region_keeps_ready.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party.ts",
+   "to": "lib/party-assist.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party.ts",
+   "to": "lib/party-boss.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/party.ts",
+   "to": "lib/party-draft.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "lib/progress.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "supabase/migrations/202610020001_quest_coder_auth_progress.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "supabase/migrations/202610050001_quest_coder_notebook_notes_layout.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "supabase/migrations/202610060001_quest_coder_training_activity.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "supabase/migrations/202610090001_quest_coder_party_questline.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "supabase/migrations/202610140001_quest_coder_start_choice.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress-store.ts",
+   "to": "supabase/migrations/202610150001_quest_coder_xp_floor_small_quests.sql",
+   "type": "rpc",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/progress.ts",
+   "to": "lib/activity.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/runner-client.ts",
+   "to": "lib/run-contract.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/session.ts",
+   "to": "lib/auth-identity.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/session.ts",
+   "to": "lib/progress-store.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/session.ts",
+   "to": "lib/supabase/server.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/stairs-beats.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/stairs-beats.ts",
+   "to": "lib/stairs-replay.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/stairs-replay.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/story-scenes.ts",
+   "to": "lib/story-beats.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/submit-moment.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/supabase/client.ts",
+   "to": "lib/supabase/config.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/supabase/server.ts",
+   "to": "lib/supabase/config.ts",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "lib/vault-row.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "lib/wobble-dance.ts",
+   "to": "lib/game-types.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "proxy.ts",
+   "to": "lib/supabase/config.ts",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/browser_run.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/case_worker.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/quest_runner.py",
+   "to": "runner/bounded_subprocess.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/quest_runner_cli.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/quest_runner_cli.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/service/app.py",
+   "to": "runner/bounded_subprocess.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/service/app.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/service/app.py",
+   "to": "runner/service/request_body.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/tests/test_error_position.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_error_position.py",
+   "to": "runner/tests/test_smoke.py",
+   "type": "import",
+   "cross_layer": false
+  },
+  {
+   "from": "runner/tests/test_forest_bramblehorn.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_forest_bramblehorn.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_generated_pack.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_generated_pack.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_masquerade.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_masquerade.py",
+   "to": "runner/quest_runner_cli.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_masquerade.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_numerology_goblin.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_numerology_goblin.py",
+   "to": "runner/quest_runner_cli.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_numerology_goblin.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_pack_dir.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_pack_dir.py",
+   "to": "runner/service/app.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_pack_registry.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_pack_registry.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_picky_dragon.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_picky_dragon.py",
+   "to": "runner/quest_runner_cli.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_picky_dragon.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_replay_watchable.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_royal_joust.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_royal_joust.py",
+   "to": "runner/quest_runner_cli.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_royal_joust.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_service_config.py",
+   "to": "runner/service/app.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_smoke.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_spun_vault.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_spun_vault.py",
+   "to": "runner/quest_runner_cli.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_spun_vault.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_trusted_boundary.py",
+   "to": "runner/__init__.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_trusted_boundary.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_trusted_boundary.py",
+   "to": "runner/service/app.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_trusted_boundary.py",
+   "to": "runner/service/request_body.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_wobblesworth.py",
+   "to": "runner/quest_runner.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_wobblesworth.py",
+   "to": "runner/quest_runner_cli.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "runner/tests/test_wobblesworth.py",
+   "to": "scripts/private_pack.py",
+   "type": "import",
+   "cross_layer": true
+  },
+  {
+   "from": "scripts/deployment_smoke.mjs",
+   "to": "app/api/health/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "scripts/deployment_smoke.mjs",
+   "to": "app/api/packs/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "scripts/deployment_smoke.mjs",
+   "to": "app/api/run/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "scripts/deployment_smoke.mjs",
+   "to": "app/api/session/route.ts",
+   "type": "http",
+   "cross_layer": true
+  },
+  {
+   "from": "scripts/private_pack.py",
+   "to": "runner/private_pack.py",
+   "type": "import",
+   "cross_layer": true
   }
  ],
  "layers": {
