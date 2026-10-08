@@ -1332,7 +1332,15 @@ panel.addEventListener("click", function (ev) {
   var rowButton = ev.target.closest("[data-row-page]");
   if (rowButton) {
     var key = rowButton.getAttribute("data-row-key");
-    rowButton.closest("[data-row-list]").innerHTML = fileRowsPage(key, Number(rowButton.getAttribute("data-row-page")));
+    var rowList = rowButton.closest("[data-row-list]");
+    var restoreRowFocus = document.activeElement === rowButton;
+    var rowAction = rowButton.textContent;
+    rowList.innerHTML = fileRowsPage(key, Number(rowButton.getAttribute("data-row-page")));
+    if (restoreRowFocus) {
+      var enabledRows = Array.from(rowList.querySelectorAll("[data-row-page]:enabled"));
+      var replacement = enabledRows.find(function (button) { return button.textContent === rowAction; }) || enabledRows[0];
+      if (replacement) replacement.focus();
+    }
     return;
   }
   var t = ev.target.closest("[data-expand],[data-back],[data-clear],[data-go],[data-file]");
@@ -1353,7 +1361,12 @@ svg.addEventListener("keydown", function(ev) {
   var node = ev.target.closest(".node[data-id]");
   if (!node || !["Enter"," "].includes(ev.key)) return;
   ev.preventDefault();var id = node.getAttribute("data-id");
-  if (ev.shiftKey && NODE.get(id) && NODE.get(id).kind === "layer") showFiles(id); else setFocus(id);
+  if (ev.shiftKey && NODE.get(id) && NODE.get(id).kind === "layer") {
+    showFiles(id);
+    // The expanded graph replaces this focused group. Move to a stable visible
+    // return action, not BODY or an arbitrary (possibly off-page) file node.
+    btnBack.focus();
+  } else setFocus(id);
 });
 document.getElementById("refresh-info").addEventListener("toggle", function () { fitView(null); });
 document.getElementById("t-tests").addEventListener("change", function (ev) {

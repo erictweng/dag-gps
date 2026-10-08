@@ -12,6 +12,8 @@ import subprocess
 import sys
 import time
 
+import release_contract as contract
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -68,24 +70,42 @@ def main():
             print('Missing release acceptance commands', file=sys.stderr)
             return 1
     output = ROOT / args.output
-    input_files = set(config['required_files']) | {'.verify.json', 'README.md', 'docs/V1_ACCEPTANCE.md'}
-    input_files.update(str(p.relative_to(ROOT)) for directory in ['web', 'scripts']
-                       for p in (ROOT / directory).glob('*') if p.is_file()
-                       and p.suffix in ['.py', '.js', '.cjs', '.mjs', '.html'])
-    inputs = {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in sorted(input_files)}
-    results = run(commands, output, config["timeout_seconds"])
-    changed = [p for p, digest in inputs.items() if hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != digest]
-    if changed:
-        results.append(dict(name='input_integrity', command='verify immutable gate inputs', returncode=1,
-                            changed=changed, seconds=0))
+    inputs = contract.input_inventory(ROOT)
+    start_provenance = contract.provenance(ROOT)
+    artifacts = {}
+    results = []
+    for name, command in commands.items():
+        if command is None:
+            continue
+        try:
+            contract.verify_inputs(ROOT, inputs)
+            contract.verify_provenance(ROOT, start_provenance)
+            contract.verify_artifacts(ROOT, artifacts)
+            rows = run({name: command}, output, config['timeout_seconds'])
+            results.extend(rows)
+            if rows[0]['returncode']:
+                break
+            contract.verify_inputs(ROOT, inputs)
+            contract.verify_provenance(ROOT, start_provenance)
+            contract.verify_artifacts(ROOT, artifacts)
+            logs = [(output / (name + suffix)).relative_to(ROOT).as_posix()
+                    for suffix in ('.stdout.log', '.stderr.log')]
+            contract.freeze(ROOT, artifacts, name, logs)
+        except (OSError, ValueError) as error:
+            results.append(dict(name='integrity', command='verify frozen inputs/artifacts/provenance',
+                                returncode=1, error=str(error), seconds=0))
+            print(str(error), file=sys.stderr)
+            break
+    end_provenance = contract.provenance(ROOT)
     environment = {}
     for name, command in {'python': ['python3', '--version'], 'node': ['node', '--version'],
                           'git': ['git', '--version'], 'os': ['uname', '-a'],
                           'hardware': ['sysctl', '-n', 'machdep.cpu.brand_string', 'hw.memsize']}.items():
         result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True)
         environment[name] = dict(returncode=result.returncode, output=result.stdout.strip())
-    report = dict(environment=environment, timestamp=datetime.datetime.now().astimezone().isoformat(),
-                  build_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+    report = dict(schema=contract.SCHEMA, artifacts=artifacts,
+                  provenance_start=start_provenance, provenance_end=end_provenance, environment=environment, timestamp=datetime.datetime.now().astimezone().isoformat(),
+                  build_commit=start_provenance['head'],
                   legacy_only=args.legacy_only, results=results,
                   human_acceptance='pending; this runner cannot approve semantics or unaided use',
                   inputs=inputs)

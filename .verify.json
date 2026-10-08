@@ -104,7 +104,10 @@
     "scripts/audit_release.cjs",
     "scripts/smoke_release.cjs",
     "tests/release.test.cjs",
-    "tests/test_release.py"
+    "tests/test_release.py",
+    "scripts/release_contract.py",
+    "tests/test_release_contract.py",
+    "docs/RELEASE_REVIEW_FIXES.md"
   ],
   "timeout_seconds": 600,
   "examples": {

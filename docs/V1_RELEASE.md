@@ -239,3 +239,28 @@ Ask/render/paint-opportunity timing. Warm scorer p95 has a <10ms local-hardware 
 The worker observes no unrecoverable defect in its specified flows; that is **not** a
 blanket no-P0/P1 certification. Human acceptance and parent review are release blockers,
 not silently ticked checkboxes.
+
+## V1.5 independent-review fixes — local worker, parent/human pending
+
+Independent review of `757df72` blocked integration on IR-01 (P1 unbound generated
+payloads), IR-02 (P2 incomplete gate inputs/provenance) and IR-03 (P2 keyboard focus).
+The isolated `v1-release-fixes` follow-up adds regression-backed v2 byte/inventory
+binding, producer-boundary freezing, staged rejection preserving the previous bundle,
+complete recursive test/data/doc inventory and HEAD/worktree provenance, plus real
+keyboard paging/expansion focus assertions. Old receipts require a full rerun.
+Exact outcomes/evidence and residual risks: [RELEASE_REVIEW_FIXES.md](RELEASE_REVIEW_FIXES.md).
+Two actual precommit complete runs and packaging passed; the later run had
+192 Python / 152 JS, all eight gates, 32 screenshots, 23 Axe states and 50,000
+scorer samples. Real receipt mirror accepted clean packaging and rejected 15/15
+negative probes with previous bundle bytes preserved. **Renewed Phase 0 precommit verification passed** all eight unchanged recipes and
+packaging (192 Python / 152 JS; worst scorer p95 4.557041 ms). Independent source
+review passed IR-01/IR-02/IR-03; fresh real-receipt probes accepted 1/1 clean package
+and rejected 17/17 negatives, preserving all previous bundle bytes, including
+injected promotion/readback faults. Earlier performance failures remain retained.
+Local fix commit and exact-postcommit rerun follow; only the final clean-provenance
+receipt certifies the exact committed bytes. No main integration or human acceptance
+is implied. Evidence: `artifacts/phase0-precommit/`, `artifacts/phase0-independent-review/`;
+final handoff: `artifacts/phase0-completion.json`.
+Do not treat worker verification as final acceptance.
+Parent independent re-review, Eric semantic grouping and unaided real session remain
+pending. No push/merge/public artifact upload or later milestone in this follow-up.

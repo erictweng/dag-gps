@@ -1,4 +1,5 @@
 """Release runner must fail closed, rather than certify a plausible subset."""
+from contextlib import contextmanager
 import importlib.util
 import json
 from pathlib import Path
@@ -9,6 +10,7 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts'))
 
 
 def load(name):
@@ -52,9 +54,9 @@ class ReleaseChecks(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('Missing pinned quest Git source', result.stderr)
 
-    def test_positive_unit_bundle_keeps_verification_path_after_citation_review(self):
-        # Synthetic unit-only payloads live in a disposable isolated root. These
-        # do not count as browser/build evidence or a real release candidate.
+    @contextmanager
+    def synthetic_bundle(self):
+        # Disposable synthetic fixture, NEVER real verification evidence.
         package = load('package_release')
         with tempfile.TemporaryDirectory(dir=ROOT / 'artifacts') as directory:
             root = Path(directory)
@@ -77,15 +79,85 @@ class ReleaseChecks(unittest.TestCase):
                 (root / 'artifacts' / name).write_text('{}')
             (root / 'artifacts/release-ui-performance.json').write_text(json.dumps({'browserVersion': 'unit', 'playwrightVersion': 'unit'}))
             (root / 'artifacts/release-accessibility.json').write_text(json.dumps({'states': [{'axe': {'engineVersion': 'unit'}}]}))
-            verification = root / 'verification.json'
+            verification = root / 'artifacts/verification.json'
             names = ['build', 'test', 'smoke', 'release_session', 'accessibility', 'performance', 'ui_performance', 'milestone_acceptance']
             verification.write_text(json.dumps({'legacy_only': False, 'results': [{'name': name, 'returncode': 0} for name in names], 'build_commit': commit, 'inputs': {}, 'timestamp': 'synthetic-unit-only'}))
             with mock.patch.object(package, 'ROOT', root), mock.patch.object(sys, 'argv', ['package_release.py', '--verification', str(verification)]), mock.patch.object(package.subprocess, 'check_output', side_effect=lambda command, **kwargs: commit if command[1] == 'rev-parse' else ''):
-                self.assertEqual(package.main(), 0)
+                c = package.contract
+                # Unit-only synthetic binding. Real release runner must produce its
+                # own receipts from actual commands and producer/test boundaries.
+                report = json.loads(verification.read_text())
+                report.update(schema=c.SCHEMA, synthetic_unit_only=True,
+                              inputs=c.input_inventory(root),
+                              provenance_start=c.provenance(root), provenance_end=c.provenance(root),
+                              artifacts={'synthetic-unit': {'boundary': 'synthetic unit fixture only',
+                                  'selectors': [s for s, _ in c.BUNDLE] + c.EVIDENCE,
+                                  'files': c.inventory(root, [s for s, _ in c.BUNDLE] + c.EVIDENCE)}})
+                verification.write_text(json.dumps(report))
+                yield package, root, verification
+
+    def test_positive_unit_bundle_keeps_verification_path_after_citation_review(self):
+        with self.synthetic_bundle() as (package, root, verification):
+            self.assertEqual(package.main(), 0)
             manifest = json.loads((root / 'dist/release/v1.0.0-rc.1/manifest.json').read_text())
             self.assertEqual(manifest['verification']['path'], str(verification))
             self.assertEqual(manifest['verification']['sha256'], package.sha(verification))
             self.assertEqual(manifest['privacy']['cited_source_review']['uniqueSourceRanges'], 1)
+
+    def test_changed_payload_or_evidence_rejected_and_previous_bundle_preserved(self):
+        for name in ['dist/dag-gps/index.html', 'dist/dag-gps/map.json',
+                     'artifacts/release-browser.json', 'docs/SUPPORTED_SOURCES.md']:
+            with self.subTest(name=name), self.synthetic_bundle() as (package, root, verification):
+                package.main()
+                bundle = root / 'dist/release/v1.0.0-rc.1'
+                before = {str(p.relative_to(bundle)): p.read_bytes() for p in bundle.rglob('*') if p.is_file()}
+                target = root / name
+                target.write_bytes(target.read_bytes() + b'\nchanged after green verification')
+                with self.assertRaises(ValueError):
+                    package.main()
+                self.assertEqual(before, {str(p.relative_to(bundle)): p.read_bytes() for p in bundle.rglob('*') if p.is_file()})
+
+    def test_copy_race_rejected_and_previous_bundle_preserved(self):
+        with self.synthetic_bundle() as (package, root, verification):
+            package.main()
+            bundle = root / 'dist/release/v1.0.0-rc.1'
+            before = {str(p.relative_to(bundle)): p.read_bytes() for p in bundle.rglob('*') if p.is_file()}
+            copy = package.shutil.copyfile
+            def raced(source, dest):
+                copy(source, dest)
+                if str(source).endswith('dag-gps/index.html'):
+                    Path(dest).write_bytes(Path(dest).read_bytes() + b'\ncopy-race')
+            with mock.patch.object(package.shutil, 'copyfile', side_effect=raced):
+                with self.assertRaises(ValueError):
+                    package.main()
+            self.assertEqual(before, {str(p.relative_to(bundle)): p.read_bytes() for p in bundle.rglob('*') if p.is_file()})
+
+    def test_missing_added_and_renamed_payload_inventory_rejected(self):
+        for action in ['delete', 'add', 'rename']:
+            with self.subTest(action=action), self.synthetic_bundle() as (package, root, verification):
+                # Freeze directory membership as a producer would, not only candidates.
+                report = json.loads(verification.read_text())
+                group = report['artifacts']['synthetic-unit']
+                group['selectors'].append('dist/dag-gps')
+                group['files'] = package.contract.inventory(root, group['selectors'])
+                verification.write_text(json.dumps(report))
+                package.main()
+                bundle = root / 'dist/release/v1.0.0-rc.1'
+                before = {str(p.relative_to(bundle)): p.read_bytes() for p in bundle.rglob('*') if p.is_file()}
+                target = root / 'dist/dag-gps/index.html'
+                if action == 'delete': target.unlink()
+                if action == 'add': (target.parent / 'added.js').write_text('new code')
+                if action == 'rename': target.rename(target.parent / 'renamed.html')
+                with self.assertRaises(ValueError): package.main()
+                self.assertEqual(before, {str(p.relative_to(bundle)): p.read_bytes() for p in bundle.rglob('*') if p.is_file()})
+
+    def test_old_green_receipt_without_binding_rejected(self):
+        with self.synthetic_bundle() as (package, root, verification):
+            report = json.loads(verification.read_text())
+            del report['schema']
+            verification.write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, 'Unbound/old verification contract'):
+                package.main()
 
     def test_packaging_refuses_legacy_or_partial_verification(self):
         package = load('package_release')

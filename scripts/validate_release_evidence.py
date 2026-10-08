@@ -69,6 +69,11 @@ def validate():
         if fixture['name'].startswith('synthetic-'):
             assert fixture['boundedView']['cyclePreserved'] and fixture['boundedView']['lateFileAskVisible']
             assert fixture['boundedView']['controlsSeparated']
+            assert len(fixture['keyboardFocus']) == 6
+            assert all(case['enabled'] for case in fixture['keyboardFocus'])
+            assert len(fixture['keyboardEvents']) >= 6
+            assert all(event['trusted'] for event in fixture['keyboardEvents'])
+            assert any(event['shift'] for event in fixture['keyboardEvents'])
             assert fixture['boundedView']['fileGraphNodes'] == 80
     screenshots = set()
     for report in [browser, audit, ui]:
