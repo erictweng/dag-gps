@@ -67,7 +67,7 @@ function parity(a,b,location='result') {
     s=await ask('path from mystery engine to database','No match');await noAction(s);assert.equal(await page.locator('[data-head="from_target"]').count(),0);
     s=await ask('file authentication.py','No match');await noAction(s);assert.equal(await page.locator('[data-override]').count(),0);
     await page.setViewportSize({width:1280,height:800});await page.waitForTimeout(200);s=await ask('where is runner.py?','Needs your choice',true);await noAction(s);await screenshot('1280');
-    const storage=await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length}));assert.deepEqual(storage,{local:0,session:0});checks.push({check:'no alias learning or browser persistence'});
+    const storage=await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length}));assert.deepEqual(storage,{local:0,session:0});checks.push({check:'no alias learning or browser persistence WITHOUT explicit consent (including override alone)'});
     // Verify the shipped source, not an injected replacement, on all separate lookup rows.
     const rows=loadCases(map),expectedOutputs=rows.map(r=>createScorer(map).score(r.question));
     const browserOutputs=await page.evaluate(({map,rows})=>rows.map(r=>DagGpsScorer.createScorer(map).score(r.question)),{map,rows});

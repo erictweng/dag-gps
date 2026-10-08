@@ -118,10 +118,31 @@ class TestInlineModules(unittest.TestCase):
         output = subprocess.check_output(['node', '-e', script + ';console.log(JSON.stringify([marker,data]));'], text=True)
         self.assertEqual(json.loads(output), ['</ScRiPt><!--<script>\u2028\u2029', {'text': '</script><!--<script>'}])
 
+    def test_alias_ui_source_safe_in_closure_and_data_never_executed(self):
+        import subprocess
+        import re
+        from unittest.mock import patch, mock_open
+        source = 'globalThis.marker = "</ScRiPt><!--<script>"; globalThis.captured = data.text;'
+        data = {'text': 'globalThis.pwned = true; </script><!--<script>'}
+        template = '<script>(function(){var data=' + render.PLACEHOLDER + ';/*__ALIAS_UI__*/})();</script>'
+        with patch('builtins.open', mock_open(read_data=source)):
+            html = render.render(template, data)
+        self.assertEqual(html.lower().count('</script>'), 1)
+        match = re.search(r'<script>(.*?)</script>', html, re.S)
+        assert match is not None
+        script = match.group(1)
+        output = subprocess.check_output(['node', '-e', script + ';console.log(JSON.stringify([marker,captured,globalThis.pwned||false]));'], text=True)
+        self.assertEqual(json.loads(output), ['</ScRiPt><!--<script>', data['text'], False])
+
+    def test_rejects_duplicate_alias_placeholders(self):
+        for marker in ('/*__ALIASES__*/', '/*__ALIAS_UI__*/'):
+            with self.assertRaises(ValueError):
+                render.render(marker + marker + render.PLACEHOLDER, small_map())
+
     def test_real_page_inlines_both_modules(self):
         with open(render.DEFAULT_TEMPLATE, encoding='utf-8') as fh:
             html = render.render(fh.read(), small_map())
-        for marker in ('/*__SCORER__*/', '/*__ROUTER__*/', render.PLACEHOLDER):
+        for marker in ('/*__SCORER__*/', '/*__ROUTER__*/', '/*__ALIASES__*/', '/*__ALIAS_UI__*/', render.PLACEHOLDER):
             self.assertNotIn(marker, html)
         self.assertIn('DagGpsScorer', html)
         self.assertIn('DagGpsRouter', html)

@@ -35,7 +35,8 @@ runner.py**, offers real full paths (`runner/quest_runner.py` and
 `runner/quest_runner_cli.py`), and does not act until you click an **Override**.
 Typos are suggestion-only. Duplicate basenames such as `route.ts` show every
 matching full path and require your choice. Unknown queries without evidence
-show **No match**, with no arbitrary override buttons. Nothing is learned or saved.
+show **No match**, with no arbitrary override buttons. Override alone never learns;
+remembering a name requires separate review and confirmation.
 
 Answers say **Exact match / Likely match / Needs your choice / No match** based
 on evidence, coverage and runner-up separation, never a softmax percentage.
@@ -50,12 +51,48 @@ File routes use real IDs across layers; click to inspect and Back to layers.
 NOT_SURE clears prior highlights and never acts on speculative IDs; an abstained
 PATH requires supported explicit overrides for both endpoints.
 
+## Explicit learned names
+
+After selecting an **Override**, the page offers **Remember this name for this node?**.
+Enter a specific alias, click **Review name…**, inspect the exact text and real target
+path/layer, then **Confirm remember**. Cancel, typing, asking, and override alone
+never save anything. NOT_SURE without a supported explicit choice cannot learn.
+PATH learning is deliberately disabled: ask about a single endpoint separately
+rather than remembering the entire route question.
+
+**Manage learned aliases** lets you inspect and remove names, clear all with an
+explicit confirmation, download JSON, and import a user-selected JSON file.
+Import fully validates first and previews the resulting names, conflicts and
+orphan count; **Merge** is the default, **Replace all** must be selected explicitly.
+Confirm applies the preview; invalid imports apply nothing. Duplicate bindings
+are idempotent. Conflicting normalized names require a target choice, never silent
+overwrite. Deleted/unknown IDs remain visible as quarantined orphans; no guessing.
+
+The version-1 schema is `{version: 1, repo: "erictweng/quest-coder", aliases:
+[{alias: "Python judge", nodeId: "runner-service"}]}`. Limits: 256 KiB UTF-8,
+1,000 entries, 1–160 alias characters with no controls. Do not store secrets.
+Learned overlays do not change the generated map or its built-in aliases.
+Exact literal filenames/paths take precedence, including ambiguous basenames.
+Matching uses exact endpoint names (case/whitespace-insensitive), not fuzzy learning.
+
+Storage is namespaced by repository and schema version, **not commit**, so a rebuild
+of the same repository can retain names. `file://` localStorage is **browser-dependent
+and best-effort**: this does not promise portability across file paths or browsers.
+Use export/import for backup and transfer. Denied/quota storage reports **Unsaved**;
+names remain usable for this session and exportable, but persistence is not claimed.
+There is no server, model training, automatic alias generation or network learning.
+
 ## Verification and limits
 
-- Commands: `.verify.json`; current report: `docs/LOOKUP_REPORT.md`.
-- M3 routing history: `docs/M3_REPORT.md`; scorer provenance: `docs/M2_REPORT.md`.
-- 104 Python + 73 JS tests; legacy M3 5 canonical + 11 extra browser checks,
-  lookup 19 UI checks, and shipped scorer parity for both datasets.
+- Commands: `.verify.json`; current report: `docs/ALIAS_LEARNING_REPORT.md`.
+- Filename lookup history: `docs/LOOKUP_REPORT.md`; M3 routing: `docs/M3_REPORT.md`;
+  scorer provenance: `docs/M2_REPORT.md`.
+- 106 Python + 87 JS tests (14 new alias tests); legacy M3 5 canonical + 11 extra
+  browser checks, lookup 19 UI checks, alias 19 UI checks, and shipped scorer parity.
+- Synthetic alias regression: 15/15, zero wrong accepts or false accepts on negative requests.
+  `Python judge` already matched runner-service before this milestone; the harder
+  synthetic `Python judge station` demonstrates abstention → opt-in correction → match.
+  These are worker regression examples, not user evidence.
 - The unchanged 47-case generated regression now has operation 47/47, target
   top-1 44/44. The separate 40-case lookup challenge has operation/label 39/40,
   target top-1 16/17, and no false accepted negatives (0/24). The bearer-auth
