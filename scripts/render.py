@@ -37,7 +37,7 @@ def render(template_text, map_data):
     Function executes only shipped local source, never map/query contents. This
     preserves source syntax even for closing script tags in strings or comments.
     """
-    for name in ("scorer", "router"):
+    for name in ("scorer", "router", "aliases"):
         marker = "/*__%s__*/" % name.upper()
         if template_text.count(marker) > 1:
             raise ValueError("duplicate module placeholder: " + marker)
@@ -45,6 +45,14 @@ def render(template_text, map_data):
             with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), name + ".js"), encoding="utf-8") as fh:
                 source = fh.read()
             template_text = template_text.replace(marker, "new Function(" + js_literal(source) + ")();")
+    ui_marker = "/*__ALIAS_UI__*/"
+    if template_text.count(ui_marker) > 1:
+        raise ValueError("duplicate module placeholder: " + ui_marker)
+    if ui_marker in template_text:
+        # Direct eval binds only trusted shipped UI source to the template closure.
+        # Neither alias strings, import JSON, map values nor query text are code.
+        with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "alias-ui.js"), encoding="utf-8") as fh:
+            template_text = template_text.replace(ui_marker, "eval(" + js_literal(fh.read()) + ");")
     if template_text.count(PLACEHOLDER) != 1:
         raise ValueError(
             "template must contain exactly one %r placeholder (found %d)"

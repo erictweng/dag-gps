@@ -130,11 +130,19 @@
           Object.values(result.targets).some(h => !h.yes)))) throw new Error('Inconsistent acceptance');
     return true;
   }
-  function createScorer(map) {
+  function createScorer(map, learnedAliases = []) {
     if (!map || !Array.isArray(map.nodes) || !map.nodes.length) throw new Error('Map needs indexed nodes');
     const ids = map.nodes.map(n => n.id);
     if (ids.some(id => typeof id !== 'string' || !id) || new Set(ids).size !== ids.length)
       throw new Error('Map IDs must be unique strings');
+    const aliasKey = value => value.trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!Array.isArray(learnedAliases) || learnedAliases.length > 1000) throw new Error('Invalid alias overlay');
+    const overlay = learnedAliases.map(a => {
+      if (!a || typeof a.alias !== 'string' || !a.alias.trim() || a.alias.length > 160 ||
+          /[\u0000-\u001f\u007f-\u009f\ud800-\udfff]/u.test(a.alias) || !ids.includes(a.nodeId))
+        throw new Error('Invalid alias overlay');
+      return {alias: aliasKey(a.alias), nodeId: a.nodeId};
+    });
     const incoming = Object.fromEntries(ids.map(id => [id, 0]));
     for (const e of [...(map.edges || []), ...(map.file_edges || [])]) {
       if (!ids.includes(e.from) || !ids.includes(e.to)) throw new Error('Unknown edge endpoint');
@@ -152,9 +160,9 @@
     function fileRequest(text) {
       // Extract whole literal tokens, never truncate/repair a path into a different file.
       const literalNames = (text.match(/[^\s`"'?!,;()]+/g) || []).filter(name =>
-        name.includes('.') && /^[\w./@-]+$/.test(name));
+        name.includes('.') && /^[\w./@\[\]-]+$/.test(name));
       const query = literalNames.length === 1 ? literalNames[0] : filenameText(text);
-      const literal = /^[\w./@-]+$/.test(query);
+      const literal = /^[\w./@\[\]-]+$/.test(query);
       const explicit = /\bfile(?:name)?\b/i.test(text) || literalNames.length > 0 || (literal && /[/.]/.test(query));
       const known = index.some(n => n.kind === 'file' && (n.basename === query || n.stem === query));
       const layer = index.some(n => n.kind === 'layer' &&
@@ -246,6 +254,24 @@
     }
     function rank(text) {
       const file = fileRequest(text);
+      // Real literal filenames/paths (including ambiguous basenames) always win.
+      const realFile = file && index.some(n => n.kind === 'file' &&
+        (file.query.includes('/') ? n.literalPath === file.query : n.basename === file.query));
+      const learned = new Set(overlay.filter(a => a.alias === aliasKey(filenameText(text))).map(a => a.nodeId));
+      if (learned.size && !realFile) {
+        const h = finish(index.map(n => ({id: n.id, score: learned.has(n.id) ? 30 : 0,
+          evidence: learned.has(n.id) ? 30 : 0, coverage: learned.has(n.id) ? 1 : 0,
+          exact: true, components: {learnedAlias: learned.has(n.id) ? 30 : 0},
+          matchReason: 'Explicitly confirmed learned alias.'})), 'architecture', text, false);
+        if (learned.size > 1) {
+          // Preserve all conflicting targets, including those beyond top three.
+          h.suggestions = index.filter(n => learned.has(n.id)).map(n => ({id: n.id,
+            score: 30, probability: h.probabilities[n.id], components: {learnedAlias: 30},
+            path: n.node.path || '', aliases: (n.node.aliases || []).slice(), reason: 'Conflicting learned alias — choose explicitly.'}));
+          h.reason = 'Conflicting learned alias — choose a real target explicitly.';
+        }
+        return h;
+      }
       if (file) return rankFile(file);
       const q = terms(text); const phrase = q.join(' '); const raw = normalized(text);
       const overlap = set => q.length ? q.filter(t => set.has(t)).length / q.length : 0;

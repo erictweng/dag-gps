@@ -87,6 +87,32 @@ Status: verified locally on `lookup-evidence`, based on `1844aa2`; parent indepe
 - No push/merge, quest-coder edits, membership changes, or next milestone launch.
   See `docs/LOOKUP_REPORT.md` and `.hsub/build-updates/lookup-evidence.md`.
 
+## Explicit correction-driven alias learning
+
+Eric approved running this next milestone without waiting for real failed queries.
+Status: verified locally on `alias-learning` from `ba72d1b`; parent independent
+verification/PR pending. All regression examples are synthetic, not user evidence.
+
+- Opt-in only after a real alternative choice; exact alias and real target shown
+  before a separate confirmation. Override/review/cancel/asking do not persist.
+- Repo/version-scoped best-effort localStorage; immutable scorer overlay; exact
+  file/path priority; conflicts abstain; duplicates idempotent; orphans quarantined.
+- Inspect/remove/confirmed clear; actual browser JSON download; user-file import
+  fully validates before preview/confirmation, merge default vs explicit replace.
+- Invalid schema/repo/version/size/strings apply nothing; markup escaped; no alias
+  data is executable. Denied/quota storage says Unsaved and navigation still works.
+- PATH learning disabled with honest endpoint-query guidance. NOT_SURE without
+  a supported explicit override cannot learn. No automatic training or backend.
+- 106 Python + 87 JS tests; alias 19 real UI checks / 15 synthetic eval cases /
+  5 shipped overlay parity; prior lookup19/M3 canonical5+extras11/canvas/parity and
+  pinned map gates pass. No page/console errors or external requests.
+- All 272 literal file paths tested against alias hijacking. Both old eval datasets,
+  map/layers/router unchanged. Existing bearer-auth miss retained.
+- `Python judge` already matched runner-service: no invented baseline failure.
+  `Python judge station` demonstrates abstention → correction → accepted repeat.
+- Report `docs/ALIAS_LEARNING_REPORT.md`; exact gates/logs and nine screenshots
+  under `artifacts/alias*`; no push or merge, no quest-coder changes.
+
 ## Backlog
 
 - Eric review/correction of generated eval answers and map aliases.

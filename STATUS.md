@@ -4,15 +4,40 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
-Filename lookup + evidence-first answers is locally verified on `lookup-evidence`,
-based on approved M3 `1844aa2`. Parent independent rerun/review pending; no push
-or merge. Open `dist/quest-coder.html` for the offline demo.
+Explicit correction-driven alias learning is locally verified on `alias-learning`,
+based on verified lookup milestone `ba72d1b`. Parent independent rerun/review and
+PR creation pending; no push or merge. Open `dist/quest-coder.html` for the offline demo.
 
 ## Active Worker
 
 None.
 
 ## Last Verified
+
+Alias learning, branch `alias-learning` (local worker; parent review pending):
+
+- `.verify.json` build/test/smoke exit 0: **106 Python + 87 JS tests**, including
+  14 pure alias tests and safe trusted-source inlining; all 272 exact file paths
+  protected against learned alias hijacking, including dynamic-route brackets.
+- Explicit override → typed exact alias → review real target → confirm. No implicit
+  learning. PATH learning disabled with single-endpoint-query guidance.
+- Repo/version-scoped best-effort localStorage, immutable overlays, visible conflicts
+  and orphan quarantine, inspect/remove/confirmed clear, browser JSON download,
+  atomic validated previewed merge (default)/replace import. Denial/quota says Unsaved.
+- Alias **19 UI checks**, 15/15 synthetic eval cases, 5 overlay parity cases;
+  existing lookup **19**, M3 **5 canonical + 11 extra**, 47 original + 40 lookup
+  source parity, canvas/interaction gates and pinned map checks remain passing.
+  Browser reports contain zero page/console errors and zero external requests.
+- `Python judge` baseline was already runner-service, reported honestly. Synthetic
+  `Python judge station` demonstrates a real abstention → correction → repeat match.
+  Existing bearer-auth challenge miss retained; no user queries fabricated.
+- Map, layer membership, router, and both existing eval datasets byte-identical to
+  `ba72d1b`. No quest-coder changes, remote writes, backend or automatic training.
+- Report `docs/ALIAS_LEARNING_REPORT.md`; exact gates/logs in
+  `artifacts/alias-final-verification.json`, `alias-{build,test,smoke}.log`;
+  nine inspected screenshots `artifacts/alias-*.png`; best-effort storage limits documented.
+
+### Filename lookup evidence
 
 Filename lookup, branch `lookup-evidence` (local worker; parent review pending):
 
