@@ -45,7 +45,7 @@ class TestJsLiteral(unittest.TestCase):
         data["nodes"][1]["desc"] = "ends a block with </script> inside a string"
         text = render.js_literal(data)
         self.assertNotIn("</", text)
-        self.assertIn("<\\/script>", text)
+        self.assertIn("\\u003c/script>", text)
         # still parses as JS once the escape is honoured
         self.assertEqual(json.loads(text.replace("<\\/", "</")), data)
 
@@ -99,6 +99,33 @@ class TestRender(unittest.TestCase):
         text = text.replace('http://www.w3.org/2000/svg', '')
         for needle in ("http://", "https://", "<script src", "<link rel=\"stylesheet\""):
             self.assertNotIn(needle, text, "template reaches outside: %r" % needle)
+
+
+class TestInlineModules(unittest.TestCase):
+    def test_source_and_data_are_safe_and_executable(self):
+        import subprocess
+        import re
+        from unittest.mock import patch, mock_open
+        source = 'globalThis.marker = "</ScRiPt><!--<script>\\u2028\\u2029";'
+        template = '<script>/*__SCORER__*/;var data=' + render.PLACEHOLDER + ';</script>'
+        with patch('builtins.open', mock_open(read_data=source)):
+            html = render.render(template, {'text': '</script><!--<script>'})
+        self.assertEqual(html.lower().count('</script>'), 1)
+        match = re.search(r'<script>(.*?)</script>', html, re.S)
+        self.assertIsNotNone(match)
+        assert match is not None
+        script = match.group(1)
+        output = subprocess.check_output(['node', '-e', script + ';console.log(JSON.stringify([marker,data]));'], text=True)
+        self.assertEqual(json.loads(output), ['</ScRiPt><!--<script>\u2028\u2029', {'text': '</script><!--<script>'}])
+
+    def test_real_page_inlines_both_modules(self):
+        with open(render.DEFAULT_TEMPLATE, encoding='utf-8') as fh:
+            html = render.render(fh.read(), small_map())
+        for marker in ('/*__SCORER__*/', '/*__ROUTER__*/', render.PLACEHOLDER):
+            self.assertNotIn(marker, html)
+        self.assertIn('DagGpsScorer', html)
+        self.assertIn('DagGpsRouter', html)
+        self.assertNotIn('<script src', html)
 
 
 class TestCheckMap(unittest.TestCase):

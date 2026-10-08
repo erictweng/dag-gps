@@ -39,7 +39,7 @@ Done when:
 
 ## Milestone 2 — Local scorer + generated evaluation
 
-Status: verified locally on `m2-scorer`; parent independent review pending.
+Status: verified on `m2-scorer`; parent independently verified before M3.
 
 - Dependency-free `web/scorer.js` for Node/browser; observed map IDs only; LOCATE,
   UPSTREAM, DOWNSTREAM, PATH, NOT_SURE; validated heads, heuristic scores,
@@ -54,9 +54,25 @@ Status: verified locally on `m2-scorer`; parent independent review pending.
 - M1 canvas/Ask unchanged. Known grading/authentication errors remain reported,
   not hidden; see `docs/M2_REPORT.md`. Eric must review draft eval answers.
 
+## Milestone 3 — Offline Ask + route highlighting
+
+Eric approved M3 after parent verified M2.
+Status: verified locally on `m3-routing`; parent rerun/review pending.
+
+- Inlined scorer/router, safe script serialization, enabled Enter + visible Ask button.
+- Validated IDs; LOCATE/Dependencies/Dependents/directed deterministic BFS; realtime
+  excluded, no-route honest, mixed layer/file endpoints explicitly unsupported.
+- Heuristic score/latency/yes-no/explanations/top-three explicit overrides; NOT_SURE
+  clears old highlights. Cross-layer file routes show real known file IDs.
+- 104 Python + 46 JS tests; full pinned map parity + 10/10 map checks.
+- Legacy smoke and 47-case shipped scorer parity pass; 5 canonical real UI states
+  plus 11 extra checks; zero errors/external requests; screenshots inspected.
+- No map/scorer changes, push, merge or quest-coder edits. See `docs/M3_REPORT.md`.
+
 ## Backlog
 
-- M3 — route highlight, confidence bar, top-3 alternatives (after parent verifies M2).
+- Eric review/correction of generated eval answers and map aliases.
+- M4 hosted backend remains dropped unless revisited.
 
 ## Blocked
 

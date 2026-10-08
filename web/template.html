@@ -43,7 +43,13 @@
     border: 1px solid var(--line); background: #0b0f16; color: var(--mut);
     font: inherit; font-size: 12px;
   }
-  .ask input:disabled { cursor: not-allowed; }
+  .ask input { color: var(--fg); width: 330px; }
+  header { flex-wrap: wrap; }
+  #answer { border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 14px; overflow-wrap: anywhere; }
+  #answer:empty { display: none; }
+  .alternative { display: block; width: 100%; text-align: left; white-space: normal; overflow-wrap: anywhere; margin: 4px 0; }
+  #answer progress { width: 100%; accent-color: var(--accent); }
+  .node.endpoint-to .box { stroke: #d2a8ff; fill: #261b32; stroke-width: 2.4px; }
   .ask .tag {
     font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
     color: var(--dim); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px;
@@ -160,10 +166,11 @@
 <header>
   <div class="brand">DAG GPS<span id="h-repo">—</span></div>
   <div class="meta" id="h-meta"></div>
-  <div class="ask">
-    <span class="tag">M2</span>
-    <input id="ask" type="text" disabled placeholder="Ask (M2) — e.g. where does grading live?" aria-label="Ask (M2)">
-  </div>
+  <form class="ask" id="ask-form">
+    <span class="tag">local / offline</span>
+    <input id="ask" type="text" placeholder="e.g. dependencies of pyodide" aria-label="Ask about the graph">
+    <button class="btn" type="submit" id="ask-submit">Ask</button>
+  </form>
 </header>
 
 <main>
@@ -178,11 +185,13 @@
     <div class="legend" id="legend"></div>
     <div class="hint">wheel = zoom · drag = pan · click = focus · double-click = expand · Esc = back</div>
   </div>
-  <aside id="panel"></aside>
+  <aside><section id="answer" aria-live="polite"></section><section id="panel"></section></aside>
 </main>
 
 <script>
 "use strict";
+/*__SCORER__*/
+/*__ROUTER__*/
 var MAP = /*__MAP__*/null;
 
 if (!MAP) {
@@ -229,6 +238,9 @@ var MAX_GAP = 58, MAX_LANE_GAP = 26;
 var SWEEPS = 14, YPASSES = 12;
 
 // ==================================================================== state
+var scorer = DagGpsScorer.createScorer(MAP);
+var router = DagGpsRouter.createRouter(MAP);
+var answer = null, answerRoute = null, overrides = {}, answerLatency = 0;
 var S = {
   view: "layers",      // "layers" | "files"
   focused: null,       // node id or null
@@ -242,7 +254,7 @@ var S = {
 // =================================================================== helpers
 function esc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 function num(n) { return Number(n || 0).toLocaleString("en-US"); }
 function plural(n, word) { return num(n) + " " + word + (Number(n) === 1 ? "" : "s"); }
@@ -787,6 +799,7 @@ function highlightSets() {
 }
 
 function applyHighlight() {
+  if (answerRoute) return applyAnswerHighlight();
   var vp = document.getElementById("viewport");
   if (!vp) return;
   var h = highlightSets();
@@ -842,7 +855,7 @@ function panelEmpty() {
     "<h2>" + esc(MAP.meta.repo) + "</h2>" +
     '<div class="sub">' + LAYER_IDS.length + " layers · " + num(tot) + " files · " +
       num(MAP.edges.length) + " layer edges · " + num(FILE_EDGES.length) + " file edges</div>" +
-    '<p class="desc">Click a layer to highlight it with everything upstream and downstream. ' +
+    '<p class="desc">Click a layer to highlight its dependencies and dependents. ' +
       "Double-click (or <b>Expand</b>) to open its files.</p>" +
     "<h3>Layers by lines</h3>" +
     '<ul class="rows">' + LAYER_IDS.slice().sort(function (a, b) {
@@ -872,9 +885,9 @@ function panelLayer(id) {
     }).join("") + "</div>" : "") +
     '<div><button class="btn" data-expand="' + esc(id) + '">Expand to files</button>' +
       '<button class="btn ghost" data-clear="1">Clear</button></div>' +
-    "<h3>Upstream — depends on (" + ((inf.upstream || []).length) + ")</h3>" +
+    "<h3>Dependencies (" + ((inf.upstream || []).length) + ")</h3>" +
     chipRow(inf.upstream, "up") +
-    "<h3>Downstream — depended on by (" + ((inf.downstream || []).length) + ")</h3>" +
+    "<h3>Dependents (" + ((inf.downstream || []).length) + ")</h3>" +
     chipRow(inf.downstream, "down") +
     "<h3>Top fan-in</h3>" + fileRows(inf.top_fan_in) +
     "<h3>Files (" + files.length + ", by lines)</h3>" + fileRows(files);
@@ -910,6 +923,10 @@ function panelStub(stubId) {
 }
 
 function panelFor() {
+  if (S.view === "route") {
+    if (!S.focused) { panel.innerHTML = "<h2>Route view</h2><p>Only selected real nodes and edges. Click a node to inspect; Back returns to layers.</p>"; return; }
+    return NODE.get(S.focused).kind === "layer" ? panelLayer(S.focused) : panelFile(S.focused);
+  }
   if (S.view === "files") {
     if (!S.focused) {
       var lid = S.expanded;
@@ -943,6 +960,7 @@ function header() {
 }
 
 function showLayers(keepFocus) {
+  clearAnswerHighlight();
   S.view = "layers"; S.expanded = null;
   if (!keepFocus) S.focused = null;
   G = layerGraph();
@@ -956,6 +974,7 @@ function showLayers(keepFocus) {
 }
 
 function showFiles(layerId) {
+  clearAnswerHighlight();
   if (!LAYER_INFO[layerId]) return;
   S.view = "files"; S.expanded = layerId; S.focused = null;
   G = fileGraph(layerId);
@@ -970,6 +989,7 @@ function showFiles(layerId) {
 }
 
 function setFocus(id) {
+  clearAnswerHighlight();
   S.focused = id && (NODE.has(id) || isStub(id)) ? id : null;
   if (S.focused && !S.nodes.some(function (n) { return n.id === S.focused; })) {
     // focusing something off-screen: bring the right view up first
@@ -987,6 +1007,124 @@ function setFocus(id) {
   applyHighlight();
   panelFor();
 }
+
+// ================================================================ Ask / route
+function clearAnswerHighlight() {
+  if (answerRoute) {
+    answerRoute = null;
+    renderAnswer('Highlights cleared by manual navigation.');
+  }
+  document.querySelectorAll('.endpoint-to').forEach(function (g) { g.classList.remove('endpoint-to'); });
+}
+function applyAnswerHighlight() {
+  var r = answerRoute, lit = new Set(r.ids), vp = document.getElementById('viewport');
+  vp.classList.add('dimming');
+  vp.querySelectorAll('g.node').forEach(function (g) {
+    var id = g.getAttribute('data-id');
+    g.classList.remove('sel', 'rel-up', 'rel-down', 'faded', 'endpoint-to');
+    if (!lit.has(id)) g.classList.add('faded');
+    else if (id === r.from) g.classList.add('sel');
+    else if (r.op === 'PATH' && id === r.to) g.classList.add('endpoint-to');
+    else g.classList.add(r.op === 'DOWNSTREAM' ? 'rel-down' : 'rel-up');
+  });
+  vp.querySelectorAll('path.edge').forEach(function (p) {
+    var e = G.edges[+p.getAttribute('data-e')];
+    p.classList.toggle('emph', r.edges.some(function (x) { return x.from === e.from && x.to === e.to && x.type === e.type; }));
+  });
+}
+function routeGraph(r) {
+  var nodes = r.ids.map(function (id) {
+    var n = NODE.get(id);
+    return {id: id, kind: n.kind, w: n.kind === 'file' ? 300 : LAYER_W, h: FILE_H,
+      t1: n.kind === 'file' ? id : (n.label || id), t2: n.kind === 'file' ? layerLabel(n.layer) : 'layer endpoint',
+      tip: id + '\n' + (n.desc || ''), mid: n.kind === 'file'};
+  });
+  return layout(nodes, r.edges.map(function (e) {
+    return {from: e.from, to: e.to, type: e.type, weight: 1, tip: e.from + ' → ' + e.to + ' (' + e.type + ')'};
+  }));
+}
+function displayRoute(op, from, to) {
+  var r = router.route(op, from, to); // rejects unknown IDs, never synthesizes edges
+  if (r.kind === 'layer') {
+    if (r.ids.indexOf(HIDE_BY_DEFAULT) !== -1) document.getElementById('t-tests').checked = S.showTests = true;
+    showLayers(false);
+  } else if (op === 'LOCATE') {
+    showFiles(NODE.get(from).layer);
+    fitView(null); // exact-file Ask must not inherit a minimum zoom that hides its target
+  } else {
+    clearAnswerHighlight();
+    S.view = 'route'; S.expanded = null; S.focused = null;
+    G = routeGraph(r); S.nodes = G.nodes; S.edges = G.edges;
+    btnBack.classList.remove('hidden');
+    crumb.textContent = 'Global route view · real file/layer IDs · consumer → dependency';
+    draw(); fitView(null);
+  }
+  answerRoute = r; S.focused = from;
+  applyHighlight(); panelFor();
+  return r;
+}
+var OP_LABEL = {LOCATE: 'Locate', UPSTREAM: 'Dependencies', DOWNSTREAM: 'Dependents', PATH: 'Directed path', NOT_SURE: 'Not sure'};
+function renderAnswer(status) {
+  if (!answer) return;
+  var op = answer.operation.choice;
+  var html = '<h2>' + esc(OP_LABEL[op]) + ' · ' + esc(op) + '</h2>' +
+    '<div class="sub">Scorer accepted: <b>' + (answer.yes ? 'yes' : 'no') + '</b> · ' + answerLatency.toFixed(2) + ' ms (score + validate + route + draw)</div>' +
+    '<p class="desc" id="route-status">' + esc(status || (answerRoute ? answerRoute.status : 'No action — choose an alternative explicitly.')) + '</p>' +
+    '<p class="desc">' + esc(answer.reason.replace('graph traversal is deferred to M3', 'endpoint matching only; routing is reported separately')) + '</p>' +
+    '<div class="sub">Heuristic operation confidence: ' + (answer.operation.confidence * 100).toFixed(1) + '% — not calibrated correctness</div>' +
+    '<progress max="1" value="' + answer.operation.confidence + '" aria-label="Heuristic operation confidence"></progress>';
+  if (answerRoute && answerRoute.path) html += '<p class="desc">' + answerRoute.path.map(esc).join(' → ') + '</p>';
+  Object.keys(answer.targets).forEach(function (key) {
+    var h = answer.targets[key];
+    html += '<h3>' + esc(key.replace('_target', '').replace('locate', 'Target')) + ' — heuristic score ' + (h.confidence * 100).toFixed(1) + '%</h3>' +
+      '<progress max="1" value="' + h.confidence + '" aria-label="Heuristic target confidence"></progress>' +
+      '<div class="sub">' + esc(h.reason) + '</div>';
+    if (overrides[key]) html += '<div class="sub">Explicit override: ' + esc(overrides[key]) + '</div>';
+    h.top3.forEach(function (a) {
+      var components = Object.keys(a.components).filter(function (k) { return a.components[k] > 0; }).map(function (k) { return k + ' ' + a.components[k].toFixed(2); }).join(', ') || 'no lexical evidence';
+      html += '<button type="button" class="btn ghost alternative" data-override="' + esc(a.id) + '" data-head="' + key + '">' +
+        esc(a.id) + ' · ' + (a.probability * 100).toFixed(1) + '% heuristic weight<br><small>raw ' + a.score.toFixed(2) + ': ' + esc(components) + '</small></button>';
+    });
+  });
+  html += '<div class="sub">Edges point consumer → dependency. Realtime ignored. Endpoint matching does not imply route success. Alternatives are explicit user overrides.</div>';
+  document.getElementById('answer').innerHTML = html;
+}
+document.getElementById('ask-form').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var start = performance.now();
+  clearAnswerHighlight(); answer = null; overrides = {}; S.focused = null;
+  applyHighlight(); panelFor();
+  try {
+    var result = scorer.score(document.getElementById('ask').value);
+    DagGpsScorer.validateResult(result, MAP); // boundary validation before using IDs
+    answer = result;
+    if (answer.yes && answer.operation.choice !== 'NOT_SURE') {
+      var t = answer.targets;
+      displayRoute(answer.operation.choice, (t.locate_target || t.from_target).choice, t.to_target && t.to_target.choice);
+    }
+    answerLatency = performance.now() - start; renderAnswer();
+  } catch (err) {
+    answer = null; answerRoute = null; S.focused = null; applyHighlight();
+    document.getElementById('answer').textContent = 'Invalid scorer result — no action: ' + err.message;
+  }
+});
+document.getElementById('answer').addEventListener('click', function (ev) {
+  var button = ev.target.closest('[data-override]');
+  if (!button || !answer) return;
+  var key = button.getAttribute('data-head'), id = button.getAttribute('data-override');
+  DagGpsScorer.validateResult(answer, MAP);
+  if (!answer.targets[key] || !answer.targets[key].top3.some(function (a) { return a.id === id; }) || !NODE.has(id)) return;
+  overrides[key] = id;
+  var op = answer.requestedOperation, t = answer.targets;
+  if (op === 'PATH') {
+    // Abstained PATH requires explicit selection of BOTH endpoints, never uniform speculative argmax.
+    var from = overrides.from_target || (answer.yes && t.from_target.choice);
+    var to = overrides.to_target || (answer.yes && t.to_target.choice);
+    if (!from || !to) { renderAnswer('Choose both endpoints explicitly before routing.'); return; }
+    displayRoute(op, from, to);
+  } else displayRoute(op, overrides.locate_target);
+  renderAnswer('Explicit user override · ' + answerRoute.status);
+});
 
 // ============================================================ interactions
 svg.addEventListener("wheel", function (ev) {
@@ -1050,12 +1188,12 @@ btnBack.addEventListener("click", function () { showLayers(false); });
 document.getElementById("btn-fit").addEventListener("click", function () { fitView(null); });
 document.getElementById("t-tests").addEventListener("change", function (ev) {
   S.showTests = ev.target.checked;
-  if (S.view === "files") showLayers(false);
+  if (S.view !== "layers") showLayers(false);
   else showLayers(S.focused !== HIDE_BY_DEFAULT || S.showTests);
 });
 document.addEventListener("keydown", function (ev) {
   if (ev.key !== "Escape") return;
-  if (S.view === "files") showLayers(false);
+  if (S.view !== "layers") showLayers(false);
   else setFocus(null);
 });
 var rt = null;
@@ -1070,7 +1208,8 @@ window.dagGps = {
     return {
       view: S.view, focused: S.focused, expanded: S.expanded,
       visibleNodes: S.nodes.length, visibleEdges: S.edges.length,
-      zoom: S.k, showTests: S.showTests
+      zoom: S.k, showTests: S.showTests,
+      answer: answer, route: answerRoute, latencyMs: answerLatency
     };
   },
   focus: function (id) { setFocus(id); return window.dagGps.state(); },

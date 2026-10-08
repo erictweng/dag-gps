@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-// M2 is tested as an independent browser global; Ask is NOT wired (M3).
+// Test shipped inlined scorer parity alongside enabled M3 Ask.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -22,8 +22,7 @@ const {chromium} = require(process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects
     page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
     page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});
     await page.goto(pathToFileURL(path.join(ROOT,'dist/quest-coder.html')).href);
-    assert.equal(await page.locator('#ask').isDisabled(),true);
-    await page.addScriptTag({content:fs.readFileSync(path.join(ROOT,'web/scorer.js'),'utf8')});
+    assert.equal(await page.locator('#ask').isEnabled(),true);
     const result=await page.evaluate(({map,rows})=>{
       const s=globalThis.DagGpsScorer.createScorer(map);
       const results=rows.map(r=>s.score(r.question));
@@ -46,7 +45,7 @@ const {chromium} = require(process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects
     parity(result.results,expected);
     assert.deepEqual(errors,[]);assert.deepEqual(requests,[]);
     assert.ok(result.p95WarmMs<10,`browser p95 ${result.p95WarmMs}ms >=10ms`);
-    const report={cases:rows.length,nodeBrowserParity:true,askDisabled:true,pageErrors:errors,externalRequests:requests,
+    const report={cases:rows.length,nodeBrowserParity:true,askEnabled:true,pageErrors:errors,externalRequests:requests,
       p95WarmMs:result.p95WarmMs,samples:result.samples};
     fs.mkdirSync(path.join(ROOT,'artifacts'),{recursive:true});
     fs.writeFileSync(path.join(ROOT,'artifacts/m2-browser.json'),JSON.stringify(report,null,2)+'\n');

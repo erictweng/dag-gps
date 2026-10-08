@@ -4,9 +4,9 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
-M2 scorer + generated benchmark is locally verified on `m2-scorer` (parent review
-pending). M1 canvas is preserved and Ask stays disabled. Next scoped milestone:
-M3 routing/highlighting, after parent independently verifies M2.
+M3 offline Ask + directed routing/highlights is locally verified on `m3-routing`.
+M2 was independently verified by parent before M3. M3 awaits parent rerun/review;
+no push or merge. Open `dist/quest-coder.html` for the offline demo.
 
 ## Active Worker
 
@@ -14,7 +14,25 @@ None.
 
 ## Last Verified
 
-2026-10-07, branch `m2-scorer` (local worker; parent review pending):
+2026-10-07, branch `m3-routing` (local worker; parent review pending):
+
+- `.verify.json` build/test/smoke exit 0: **104 Python + 46 JS tests**, map 10/10
+  at pinned `749d8b5de490cc2e6a0c98c713fab3ab856da799`; committed map untouched.
+- Ask enabled, validated scorer boundary, Dependencies/Dependents/directed PATH,
+  heuristic bars/top-three clickable overrides, honest abstention/no-path.
+- 5/5 canonical real-typing/Enter/button browser states plus 11 additional UI checks;
+  zero errors/external requests. Real-ID cross-layer file view; mixed endpoints
+  explicitly unsupported. Existing canvas and real-click interactions pass.
+- Scorer parity 47/47, Node p95 1.7014 ms / Chromium 1.0000 ms (940 samples each).
+  Generated benchmark unchanged: op 46/47, target 42/44 top-1, 43/44 top-3;
+  grading/authentication shortcomings retained honestly.
+- Report: `docs/M3_REPORT.md`; logs: `artifacts/m3-final-verification.json`;
+  screenshots: `artifacts/m3-{locate,dependencies,dependents,path,file}.png`
+  plus no-path, file-path, 1280 states (inspected for clipping/collisions).
+
+### M2 evidence
+
+2026-10-07, branch `m2-scorer` (parent independently verified before M3):
 
 - `.verify.json` build/test/smoke all exit 0: 99 Python tests, 40 JS tests,
   map 10/10 checks; existing canvas screenshots and real-click smoke pass.

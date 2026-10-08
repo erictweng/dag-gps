@@ -6,8 +6,8 @@
     "setup": null,
     "build": "python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html",
     "lint": null,
-    "test": "python3 -m unittest discover -s tests -q && node --test tests/scorer.test.cjs tests/eval.test.cjs && node scripts/eval_scorer.cjs",
-    "smoke": "python3 scripts/build_map.py --repo /Users/aibert/projects/quest-coder --ref origin/main --layers maps/quest-coder/layers.json --out maps/quest-coder/map.json && python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html && node scripts/smoke_canvas.mjs dist/quest-coder.html artifacts/ && node scripts/check_interactions.cjs && node scripts/smoke_scorer.cjs"
+    "test": "python3 -m unittest discover -s tests -q && node --test tests/scorer.test.cjs tests/eval.test.cjs tests/router.test.cjs && node scripts/eval_scorer.cjs",
+    "smoke": "python3 scripts/build_map.py --repo /Users/aibert/projects/quest-coder --ref 749d8b5de490cc2e6a0c98c713fab3ab856da799 --layers maps/quest-coder/layers.json --out artifacts/m3-map-smoke.json && python3 scripts/check_snapshot.py maps/quest-coder/map.json artifacts/m3-map-smoke.json && python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html && node scripts/smoke_canvas.mjs dist/quest-coder.html artifacts/ && node scripts/check_interactions.cjs && node scripts/smoke_scorer.cjs && node scripts/smoke_m3.cjs"
   },
   "required_files": [
     "PROJECT.md",
@@ -26,7 +26,13 @@
     "eval/eval.jsonl",
     "tests/scorer.test.cjs",
     "tests/eval.test.cjs",
-    "docs/M2_REPORT.md"
+    "docs/M2_REPORT.md",
+    "web/router.js",
+    "tests/router.test.cjs",
+    "tests/test_snapshot.py",
+    "scripts/smoke_m3.cjs",
+    "scripts/check_snapshot.py",
+    "docs/M3_REPORT.md"
   ],
   "timeout_seconds": 600,
   "examples": {
