@@ -181,10 +181,11 @@
   <div class="meta" id="h-meta"></div>
   <form class="ask" id="ask-form">
     <span class="tag">local / offline</span>
-    <input id="ask" type="text" placeholder="e.g. dependencies of pyodide" aria-label="Ask about the graph">
+    <input id="ask" type="text" placeholder="e.g. locate a source file" aria-label="Ask about the graph">
     <button class="btn" type="submit" id="ask-submit">Ask</button>
   </form>
 </header>
+<details id="refresh-info" style="flex:none;padding:6px 16px;border-bottom:1px solid var(--line);font-size:12px;max-height:160px;overflow:auto;overflow-wrap:anywhere"><summary id="refresh-summary">Snapshot provenance</summary><div id="refresh-detail"></div></details>
 
 <main>
   <div id="stage">
@@ -210,7 +211,7 @@ var MAP = /*__MAP__*/null;
 
 if (!MAP) {
   document.body.innerHTML = '<div class="warn">No map inlined.<br>' +
-    'Run: python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html</div>';
+    'Run: python3 scripts/build_project.py --repo REPO --ref REF --layers LAYERS --out-dir OUTPUT</div>';
 } else { (function () {
 
 // ====================================================================== data
@@ -968,13 +969,28 @@ function header() {
   var m = MAP.meta, c = m.counts || {};
   document.getElementById("h-repo").textContent = m.repo || "";
   document.getElementById("h-meta").innerHTML =
-    "<span>commit <b>" + esc(m.commit) + "</b> <span style='color:var(--dim)'>(" +
+    "<span>audited source <b>" + esc(m.commit) + "</b> <span style='color:var(--dim)'>(" +
       esc(m.ref || "") + ")</span></span>" +
     "<span>built <b>" + esc(m.built_at) + "</b></span>" +
     "<span><b>" + num(c.layers) + "</b> layers</span>" +
     "<span><b>" + num(c.files) + "</b> files</span>" +
     "<span><b>" + num(c.edges) + "</b> layer edges</span>" +
     "<span><b>" + num(c.file_edges) + "</b> file edges</span>";
+  var d = MAP.refresh, s = d && d.summary;
+  document.getElementById('refresh-summary').textContent = s ?
+    (d.initial_build ? 'Initial snapshot' : 'Snapshot diff') + ': +' + s.added_files + ' / −' + s.deleted_files +
+    ' files · +' + s.added_connections + ' / −' + s.removed_connections + ' typed connections · ' +
+    s.assignment_changes + ' assignments · ' + s.node_changes + ' changed nodes' : 'Snapshot provenance (no comparison supplied)';
+  document.getElementById('refresh-detail').textContent =
+    'Audited source commit: ' + (m.snapshot_commit || m.commit) + ' · ref: ' + (m.ref || '') +
+    ' · built: ' + m.built_at + ' · verified local ' + (m.source_tip_ref || 'HEAD') +
+    ' at build: ' + (m.source_tip_at_build || 'not recorded by legacy build') +
+    '. Offline snapshot; cannot detect current remote freshness. ' +
+    (d && d.baseline ? 'Compared with committed snapshot ' + d.baseline.commit + '. ' : '') +
+    'Machine-readable details: diff.json / report.json. Alias namespace: ' + m.repo +
+    '. file:// storage portability is best-effort; use Manage learned aliases → Export / Import JSON.' +
+    (MAP.diagnostics ? ' Extraction: ' + MAP.diagnostics.unresolved.length + ' unresolved imports, ' +
+      MAP.diagnostics.unsupported.length + ' unsupported constructs (see report.json); no automatic remapping.' : '');
   document.title = "DAG GPS — " + (m.repo || "") + " @ " + (m.commit || "");
 }
 
@@ -1233,6 +1249,7 @@ panel.addEventListener("click", function (ev) {
 
 btnBack.addEventListener("click", function () { showLayers(false); });
 document.getElementById("btn-fit").addEventListener("click", function () { fitView(null); });
+document.getElementById("refresh-info").addEventListener("toggle", function () { fitView(null); });
 document.getElementById("t-tests").addEventListener("change", function (ev) {
   S.showTests = ev.target.checked;
   if (S.view !== "layers") showLayers(false);

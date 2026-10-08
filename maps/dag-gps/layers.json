@@ -1,0 +1,10 @@
+{
+  "repo": "erictweng/dag-gps",
+  "status": "Worker-draft grounded in f92d0cf; requires Eric review",
+  "layers": [
+    {"id":"pipeline", "label":"Snapshot pipeline", "desc":"Git archive extraction, reviewed layer assignment, import graph, map validation and offline HTML rendering. Build and browser verification scripts.", "aliases":["snapshot builder", "map pipeline"], "globs":["scripts/**"]},
+    {"id":"browser", "label":"Offline navigator", "desc":"Standalone graph canvas, local evidence scorer, directed routing, explicit alias storage and import export UI.", "aliases":["offline browser", "navigator"], "globs":["web/**"]},
+    {"id":"tests", "label":"Regression tests", "desc":"Python map and render tests plus Node scorer, routing, filename and alias regression tests.", "aliases":["test suite"], "globs":["tests/**"]}
+  ],
+  "manual_edges": []
+}

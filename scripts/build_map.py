@@ -22,7 +22,12 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 IMPORT_GRAPH = os.path.join(HERE, "import_graph.py")
-SOURCE_EXTS = ("ts", "tsx", "js", "mjs", "py", "sql")
+SOURCE_EXTS = ("ts", "tsx", "js", "jsx", "mjs", "cjs", "py", "sql")
+EXCLUDED_DIRS = {'.git', 'node_modules', '.venv', 'venv', '__pycache__', 'vendor', 'dist', 'artifacts', 'build', '.next'}
+
+
+def included(path):
+    return not (set(path.split('/')[:-1]) & EXCLUDED_DIRS)
 DEFAULT_TOPS = ["app", "components", "lib", "proxy.ts", "scripts", "browser-runtime", "runner"]
 # Edge types that are a draw, not a dependency: skipped for closure and cycle checks.
 IGNORED_FOR_CLOSURE = ("realtime",)
@@ -396,7 +401,7 @@ def git(repo, *args):
 
 def source_files(repo, ref):
     names = git(repo, "ls-tree", "-r", "--name-only", ref).split("\n")
-    return sorted(f for f in names if f and f.rsplit(".", 1)[-1] in SOURCE_EXTS)
+    return sorted(f for f in names if f and included(f) and f.rsplit(".", 1)[-1] in SOURCE_EXTS)
 
 
 def read_export(root, rel):
@@ -423,12 +428,13 @@ def layer_node(layer, idx, files, texts):
 def build(repo, ref, layers_path, out_path, tops):
     spec = load_json(layers_path)
     layers = spec["layers"]
-    commit = git(repo, "rev-parse", "--short", ref).strip()
-    files = source_files(repo, ref)
+    pinned = git(repo, "rev-parse", "--verify", ref + '^{commit}').strip()
+    commit = git(repo, "rev-parse", "--short", pinned).strip()
+    files = source_files(repo, pinned)
 
     tmp = tempfile.mkdtemp(prefix="dag-gps-")
     try:
-        archive = subprocess.Popen(["git", "-C", repo, "archive", ref], stdout=subprocess.PIPE)
+        archive = subprocess.Popen(["git", "-C", repo, "archive", pinned], stdout=subprocess.PIPE)
         tar = subprocess.Popen(["tar", "-x", "-C", tmp], stdin=archive.stdout)
         archive.stdout.close()
         tar.communicate()
@@ -519,13 +525,27 @@ def build(repo, ref, layers_path, out_path, tops):
         "layers": layers_out,
     }
 
+    # Validate a private candidate; never publish failing maps over a valid one.
     os.makedirs(os.path.dirname(os.path.abspath(out_path)) or ".", exist_ok=True)
-    with open(out_path, "w") as fh:
-        json.dump(doc, fh, indent=1)
-        fh.write("\n")
-
-    report = check(doc, out_path, graph, unmapped, double, empty, cycle, layer_ids, spec,
-                   http_misses, rpc_misses, fedge_drops)
+    fd, candidate = tempfile.mkstemp(prefix='.map-', dir=os.path.dirname(os.path.abspath(out_path)))
+    try:
+        with os.fdopen(fd, "w") as fh:
+            json.dump(doc, fh, indent=1)
+            fh.write("\n")
+        report = check(doc, candidate, graph, unmapped, double, empty, cycle, layer_ids, spec,
+                       http_misses, rpc_misses, fedge_drops)
+        if all(ok for ok, _, _ in report):
+            os.replace(candidate, out_path)
+    finally:
+        if os.path.exists(candidate):
+            os.unlink(candidate)
+    # Diagnostics are returned even when the candidate is rejected.
+    doc['diagnostics'] = {'unresolved': graph.get('unresolved', []),
+                          'unsupported': graph.get('unsupported', []),
+                          'unmapped': unmapped, 'duplicate_assignments': double,
+                          'empty_layers': empty, 'layer_cycle': cycle,
+                          'non_source_connections': list(fedge_drops),
+                          'unresolved_http': http_misses, 'unresolved_rpc': rpc_misses}
     return doc, report, extract_log
 
 
@@ -560,10 +580,12 @@ def check(doc, out_path, graph, unmapped, double, empty, cycle, layer_ids, spec,
         ids = {n["id"] for n in reloaded["nodes"]}
         dangling = [e for e in reloaded["edges"] if e["from"] not in ids or e["to"] not in ids]
         dup_idx = len({n["idx"] for n in reloaded["nodes"]}) != len(reloaded["nodes"])
-        ok = not dangling and not dup_idx
+        dup_ids = len(ids) != len(reloaded['nodes'])
+        ok = not dangling and not dup_idx and not dup_ids
         add(ok, "map.json round-trips, every edge endpoint is a known id",
             ("\n".join(f"    DANGLING {e['from']} -> {e['to']}" for e in dangling[:10])
-             + ("\n    DUPLICATE idx values" if dup_idx else "")).rstrip())
+             + ("\n    DUPLICATE idx values" if dup_idx else "")
+             + ("\n    DUPLICATE node IDs" if dup_ids else "")).rstrip())
 
         file_ids = {n["id"] for n in reloaded["nodes"] if n.get("kind") == "file"}
         fdangling = [e for e in reloaded["file_edges"]
@@ -610,7 +632,7 @@ def main(argv=None):
     cross = sum(1 for e in doc["file_edges"] if e["cross_layer"])
     print(f"file edges:{m['counts']['file_edges']} (" + ", ".join(
         f"{t} {n}" for t, n in sorted(fby_type.items())) + f"; cross-layer {cross})")
-    print(f"wrote:     {a.out} ({os.path.getsize(a.out)} bytes)")
+    print(f"output:    {a.out} (promoted only if every check passes)")
     print("checks:")
     failed = 0
     for ok, name, detail in report:

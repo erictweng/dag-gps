@@ -96,3 +96,14 @@ test('clear persists an empty schema; wrong/corrupt saved data cannot crash navi
  assert.deepEqual(next.overlay(),[]);assert.ok(next.snapshot().error);
  assert.equal(S.createScorer(map,next.overlay()).score('grader').yes,true);
 });
+test('same repo regenerated map retains valid ID, quarantines deleted alias, reports loaded count',()=>{
+ const memory=storage(), before={meta:{repo:'fixture/repo',commit:'old'},nodes:[{id:'a.cjs',kind:'file',layer:'old'},{id:'gone.py',kind:'file',layer:'old'}]};
+ const store=A.createStore(before,memory);store.add('valid station','a.cjs');store.add('retired station','gone.py');
+ const after={meta:{repo:'fixture/repo',commit:'new'},nodes:[{id:'a.cjs',kind:'file',layer:'new'},{id:'new.cjs',kind:'file',layer:'old'}]};
+ const loaded=A.createStore(after,memory);
+ assert.equal(loaded.snapshot().key,store.snapshot().key);
+ assert.match(loaded.snapshot().status,/Loaded 2 saved aliases/);
+ assert.deepEqual(loaded.overlay(),[{alias:'valid station',nodeId:'a.cjs'}]);
+ assert.deepEqual(loaded.snapshot().entries.map(e=>[e.nodeId,e.orphan]),[['a.cjs',false],['gone.py',true]]);
+ assert.equal(A.createStore({...after,meta:{repo:'another/repo'}},memory).overlay().length,0);
+});

@@ -4,9 +4,26 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
-Explicit correction-driven alias learning is locally verified on `alias-learning`,
-based on verified lookup milestone `ba72d1b`. Parent independent rerun/review and
-PR creation pending; no push or merge. Open `dist/quest-coder.html` for the offline demo.
+Reusable maps and safe refresh locally verified on `reusable-refresh` from `f92d0cf`.
+Parent independent review/verification then authorized direct-to-main integration pending;
+worker commits locally only, no merge/push. Open `dist/dag-gps/index.html` or
+`dist/quest-refresh/index.html`; report `docs/REFRESH_REPORT.md`.
+
+- One-command pinned Git archive → validated map/offline HTML/deterministic diff/report;
+  generic discovery or explicit scope, origin identity/canonical local fallback.
+- Staging before publish; rejected assignments/imports/cycles/render leave prior bytes;
+  caught promotion error rollback tested (not a cross-file crash transaction).
+- HTML source commit/ref vs build-time local HEAD, no offline live-freshness claim;
+  same-repo exact aliases retained, deleted IDs ORPHAN, export/import fallback visible.
+- 123 Python + 88 JS tests; unchanged existing eval/browser/parity gates plus 7 new
+  refresh browser checks, zero errors/external requests. Five refresh screenshots inspected.
+- Self snapshot f92d0cf: 3 layers/27 files/3 layer/19 file connections, 0 unresolved,
+  4 unsupported dynamic requires. Quest frozen map/layers remain unchanged, 0 unresolved.
+- CommonJS/UMD literal requires, .cjs/.jsx source discovery, multiline local Python imports;
+  unsupported/ambiguous constructs explicit. No large extractor redesign or source guessing.
+- Real synthetic committed snapshots prove added/deleted/typed edge/reassignment diff and
+  browser alias migration; clearly labeled as synthetic, not user accuracy evidence.
+- Exact gates/logs: artifacts/refresh-final-verification.json and refresh-{build,test,smoke}.log.
 
 ## Active Worker
 

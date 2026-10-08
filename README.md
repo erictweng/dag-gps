@@ -8,6 +8,40 @@ The indexed-table, operation-head and per-target-head pattern is borrowed from
 [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast). Validated
 normalized distributions remain available, but are not correctness probabilities.
 
+## Reusable pinned maps + safe refresh
+
+```bash
+python3 scripts/build_project.py --repo . \
+  --ref f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93 \
+  --layers maps/dag-gps/layers.json --out-dir dist/dag-gps
+open dist/dag-gps/index.html
+```
+
+One command produces **map.json + standalone offline index.html + diff.json + report.json**.
+Use any local Git repository and reviewed layer spec. It resolves the ref to a commit
+and extracts **git archive**, not the mutable worktree. Source discovery is generic;
+`--tops` chooses explicit extraction scope without reducing assignment coverage.
+Origin determines repository identity (canonical local fallback); no fixed project URLs.
+
+`--previous-map PATH` compares with an explicit baseline; otherwise an existing output
+map is used. Diffs list added/deleted files/layers, added/removed typed connections,
+node changes and before/after layer assignments, with a visible HTML summary. Initial
+builds are labeled, not presented as upstream changes. All outputs are staged/checked
+before promotion; failed mapping/extraction/render checks preserve previous outputs.
+Caught promotion errors roll back; per-file replace is not a crash-safe cross-file
+transaction. Use one writer and open after success.
+
+HTML distinguishes **audited source commit/ref**, build time and **verified local HEAD
+at build time**. It cannot detect live remote freshness offline. Rebuilds keep the same
+alias namespace: surviving exact IDs persist, deleted IDs stay ORPHAN, never rebound.
+file:// storage portability remains best-effort; visible Export/Import JSON is the fallback.
+
+Self demo: 3 layers / 27 files / 3 layer connections / 19 file connections at `f92d0cf`.
+Ask `locate scripts/build_map.py` or `dependencies of Regression tests`. Layer draft:
+`maps/dag-gps/layers.json`. Quest-coder's frozen scope must be explicit; both commands,
+extractor limitations and atomicity guarantees: **docs/REFRESH_REPORT.md**. Neither a
+source graph nor a successful build proves every dynamic dependency was extracted.
+
 ## Offline Ask — filename lookup + evidence labels
 
 ```bash
@@ -84,10 +118,10 @@ There is no server, model training, automatic alias generation or network learni
 
 ## Verification and limits
 
-- Commands: `.verify.json`; current report: `docs/ALIAS_LEARNING_REPORT.md`.
+- Commands: `.verify.json`; current report: `docs/REFRESH_REPORT.md`; alias history: `docs/ALIAS_LEARNING_REPORT.md`.
 - Filename lookup history: `docs/LOOKUP_REPORT.md`; M3 routing: `docs/M3_REPORT.md`;
   scorer provenance: `docs/M2_REPORT.md`.
-- 106 Python + 87 JS tests (14 new alias tests); legacy M3 5 canonical + 11 extra
+- 123 Python + 88 JS tests (17 refresh fixtures + 15 alias tests); refresh 7 UI checks, legacy M3 5 canonical + 11 extra
   browser checks, lookup 19 UI checks, alias 19 UI checks, and shipped scorer parity.
 - Synthetic alias regression: 15/15, zero wrong accepts or false accepts on negative requests.
   `Python judge` already matched runner-service before this milestone; the harder
@@ -104,4 +138,4 @@ There is no server, model training, automatic alias generation or network learni
 
 Plan: `docs/PLAN.md`; idea capture: `docs/IDEA.md`. The layer map remains
 `maps/quest-coder/layers.json` (draft, awaiting Eric's corrections). This milestone
-does not change map membership, graph routing, pan/zoom or legacy interactions.
+preserves the frozen quest-coder map and routing/scoring behavior; reusable refresh adds a separate self-repo layer draft.

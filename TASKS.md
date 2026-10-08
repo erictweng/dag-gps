@@ -113,6 +113,25 @@ verification/PR pending. All regression examples are synthetic, not user evidenc
 - Report `docs/ALIAS_LEARNING_REPORT.md`; exact gates/logs and nine screenshots
   under `artifacts/alias*`; no push or merge, no quest-coder changes.
 
+## Reusable maps and safe refresh
+
+Status: verified locally on `reusable-refresh` from `f92d0cf`; parent review and
+independent rerun pending. Worker local commit only; parent handles authorized main push.
+
+- One-command repo/ref/layers → staged validated map.json/index.html/diff.json/report.json.
+- Immutable Git archives; generic source discovery or explicit scope; actual origin identity.
+- Deterministic added/deleted files/layers, typed connections, node/assignment changes;
+  visible source provenance and diff summary, no offline live-freshness promise.
+- Reject unmapped/duplicate/unresolved/cycle candidates, preserve valid published bytes;
+  caught promotion failure rollback tested and cross-file/crash limits documented.
+- CommonJS/UMD/CJS and multiline Python local-script coverage with honest unsupported findings.
+- Independent real self-repo snapshot/layer draft (f92d0cf), actual source Ask and graph clicks.
+- Same repo aliases survive rebuild; deleted IDs remain orphan, never guessed/rebound;
+  best-effort file storage and visible export/import fallback.
+- 123 Python + 88 JS; prior gates retained; new refresh browser 7 checks, no errors/network;
+  five screenshots inspected; synthetic fixture compares actual before/after Git commits.
+- Report docs/REFRESH_REPORT.md; .verify.json exercises both repos. Quest map/layers untouched.
+
 ## Backlog
 
 - Eric review/correction of generated eval answers and map aliases.

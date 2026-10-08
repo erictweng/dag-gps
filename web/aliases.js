@@ -37,7 +37,10 @@
     const repo = map.meta.repo, key = 'dag-gps:aliases:v1:' + encodeURIComponent(repo);
     const ids = new Set(map.nodes.map(n => n.id));
     let entries = [], status = 'No aliases saved.', error = '';
-    try { const text = storage.getItem(key); if (text !== null) entries = validate(text, repo); }
+    try { const text = storage.getItem(key); if (text !== null) {
+      entries = validate(text, repo);
+      status = 'Loaded ' + entries.length + ' saved aliases (best-effort file storage).';
+    } }
     catch (e) { error = 'Storage unavailable or invalid: ' + e.message; status = error; }
     function serialize(list = entries) { return JSON.stringify({version: VERSION, repo, aliases: list}, null, 2); }
     function snapshot() {
