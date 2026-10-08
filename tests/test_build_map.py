@@ -379,9 +379,11 @@ class TestFileLevelEdges(unittest.TestCase):
             ["lib/levels.ts", "UNRESOLVED:@/lib/missing", "import"],
             ["components/solve/sprite.jsx", "lib/levels.ts", "import"]])
 
-    def test_self_edges_are_skipped(self):
+    def test_self_edges_are_retained_as_valid_file_cycles_v2(self):
+        # V1.2 cycle contract deliberately replaces the old self-edge omission;
+        # this is a synthetic builder fixture, not a new edge in the real pin.
         edges, dropped = self.build(import_pairs=[("lib/levels.ts", "lib/levels.ts")])
-        self.assertEqual((edges, dropped), ([], []))
+        self.assertEqual((edges, dropped), ([{'from': 'lib/levels.ts', 'to': 'lib/levels.ts', 'type': 'import', 'cross_layer': False}], []))
 
     def test_edges_are_sorted_by_from_then_to_then_type(self):
         edges, _ = self.build()

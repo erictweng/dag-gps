@@ -10,7 +10,7 @@ import sys
 import tempfile
 
 from build_map import build, git, load_json, source_files
-from render import check_map, render, DEFAULT_TEMPLATE
+from render import check_map, render, DEFAULT_TEMPLATE, published_tours
 
 
 class BuildFailure(ValueError):
@@ -65,7 +65,8 @@ def snapshot_diff(previous, current):
         if not doc:
             return None
         m = doc['meta']
-        return {'commit': m.get('snapshot_commit', m['commit']), 'ref': m.get('ref')}
+        return {'commit': m.get('snapshot_commit', m['commit']), 'ref': m.get('ref'),
+                'extraction_version': m.get('extraction_version', 1)}
     result = {'version': 1, 'repo': current['meta']['repo'],
               'baseline': provenance(previous), 'snapshot': provenance(current),
               'initial_build': previous is None,
@@ -113,7 +114,9 @@ def publish(stage, output, names):
         raise
 
 
-def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None, tours=None):
+def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None, tours=None, without_tours=False):
+    if without_tours and tours is not None:
+        raise BuildFailure('--without-tours conflicts with --tours')
     repo = str(Path(repo).resolve())
     pinned = git(repo, 'rev-parse', '--verify', ref + '^{commit}').strip()
     tip = git(repo, 'rev-parse', '--verify', 'HEAD^{commit}').strip()
@@ -121,6 +124,9 @@ def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None, tour
     if previous_map is None and (output / 'map.json').exists():
         previous_map = output / 'map.json'
     previous = load_json(previous_map) if previous_map else None
+    if tours is None and not without_tours and (published_tours(output / 'index.html') or
+            previous and previous['meta'].get('tours', {}).get('status') == 'current'):
+        raise BuildFailure('Previous build has tours. Supply --tours for exact validation or explicitly --without-tours; no silent omission.')
     if previous and check_map(previous):
         raise BuildFailure('Previous map is invalid: ' + '; '.join(check_map(previous)))
     output.mkdir(parents=True, exist_ok=True)
@@ -132,15 +138,20 @@ def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None, tour
                            source_tip_at_build=tip, source_tip_ref='HEAD',
                            freshness='Snapshot only; build-time local HEAD verified, not live remote freshness.',
                            extraction_scope=discovered)
+        from tours import compile_tours
+        compiled = compile_tours(load_json(tours), doc, repo) if tours is not None else None
+        doc['meta']['tours'] = {'status': 'current' if compiled else 'omitted' if without_tours else 'unavailable',
+                              'evidence': 'curated_source_supported' if compiled else 'unavailable',
+                              'observed_execution': False,
+                              'snapshot_commit': pinned,
+                              'reason': 'Exact repository and snapshot source evidence validated.' if compiled else
+                              'Explicit --without-tours: no old citations attached.' if without_tours else
+                              'No reviewed tours supplied for this snapshot; runtime walkthroughs unavailable.'}
         diff = snapshot_diff(previous, doc)
-        report = {'version': 1, 'meta': doc['meta'], 'extract': log,
+        report = {'version': 2, 'meta': doc['meta'], 'extract': log,
                   'checks': [{'ok': ok, 'name': name, 'detail': detail} for ok, name, detail in checks],
-                  'diagnostics': doc['diagnostics'], 'diff_summary': diff['summary'],
-                  'limitations': ['JS imports use a lexical extractor, not a full parser; regex literals and template interpolation are not modeled.',
-                                  'Only relative and @/ JS specs are local-resolved; other configured aliases and bare package resolution are not interpreted.',
-                                  'Nonliteral require/import, relative Python imports, and dynamic Python imports are unsupported and not guessed.',
-                                  'Bare Python names without a unique local match are external/unknown, not proof of installed dependencies.',
-                                  'HTTP/RPC extraction is literal pattern-based; non-source targets remain explicit diagnostic findings.']}
+                  'diagnostics': doc['diagnostics'], 'trust': doc['trust'], 'diff_summary': diff['summary'],
+                  'limitations': doc['trust']['limitations']}
         if not all(ok for ok, _, _ in checks):
             raise BuildFailure(json.dumps(report, indent=2))
         problems = check_map(doc)
@@ -149,8 +160,6 @@ def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None, tour
         doc['refresh'] = diff
         for name, data in [('map.json', doc), ('diff.json', diff), ('report.json', report)]:
             (Path(stage) / name).write_text(json.dumps(data, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-        from tours import compile_tours
-        compiled = compile_tours(load_json(tours), doc, repo) if tours else None
         html = render(Path(DEFAULT_TEMPLATE).read_text(encoding='utf-8'), doc, compiled)
         (Path(stage) / 'index.html').write_text(html, encoding='utf-8')
         # Exercise serialized artifacts before touching any previous valid output.
@@ -165,11 +174,13 @@ def main(argv=None):
     for arg in ('repo', 'ref', 'layers', 'out-dir'):
         ap.add_argument('--' + arg, required=True)
     ap.add_argument('--previous-map')
-    ap.add_argument('--tours', help='Reviewed tours JSON pinned to the same repository and commit')
+    tour_flags = ap.add_mutually_exclusive_group()
+    tour_flags.add_argument('--tours', help='Reviewed tours JSON pinned to the same repository and commit')
+    tour_flags.add_argument('--without-tours', action='store_true', help='Explicitly omit tours, never attach previous evidence')
     ap.add_argument('--tops', nargs='+', help='Explicit extractor scope; all source files must still be assigned')
     a = ap.parse_args(argv)
     try:
-        report = build_project(a.repo, a.ref, a.layers, a.out_dir, a.previous_map, a.tops, a.tours)
+        report = build_project(a.repo, a.ref, a.layers, a.out_dir, a.previous_map, a.tops, a.tours, a.without_tours)
     except (BuildFailure, OSError, ValueError, KeyError, RuntimeError, subprocess.CalledProcessError) as exc:
         print('Refresh failed; candidates are validated before promotion (caught promotion errors trigger rollback).\n' + str(exc), file=sys.stderr)
         return 1

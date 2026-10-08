@@ -1,0 +1,9 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');
+const {contextual}=require('../web/trust.js');
+const map=require('../maps/quest-coder/map.json');
+test('real unsupported worker gives contextual concrete findings without changing map',()=>{const before=JSON.stringify(map);const r=contextual(map,['browser-runtime/run-worker.mjs']);assert.equal(r.scope,'context');assert.ok(r.findings.some(f=>f.category==='unsupported_dynamic_construct'&&f.reason.includes('nonliteral import')));assert.equal(JSON.stringify(map),before);});
+test('resolved lexical links never become runtime confidence and clean file stays uncertain',()=>{const r=contextual(map,['lib/runner-client.ts']);assert.equal(r.scope,'repository');assert.match(r.reason,/runtime completeness and coverage unknown/);assert.ok(map.trust.findings.some(f=>f.evidence==='resolved_lexical_import'));assert.ok(map.trust.findings.some(f=>f.evidence==='inferred_unverified'));});
+test('external packages are not unresolved errors',()=>{const r=contextual(map,['runner/bounded_subprocess.py']);assert.equal(r.findings.filter(f=>f.category==='external_dependency').length,0);assert.ok(map.trust.findings.some(f=>f.category==='external_dependency'));});
+test('unscanned real inventory and unknown IDs stay honest',()=>{const p=map.trust.scope.unscanned_paths[0];assert.equal(contextual(map,[p]).scope,'context');assert.deepEqual(contextual(map,[p]).unscanned,[p]);assert.equal(contextual(map,['unknown.ts']).scope,'repository');assert.match(contextual(map,['unknown.ts']).reason,/not exhaustive/);});
+test('layer context expands ownership without inventing graph links',()=>{assert.equal(contextual(map,['browser-run']).scope,'context');});
+test('legacy maps explicitly unavailable provenance',()=>{const legacy={...map};delete legacy.trust;assert.match(contextual(legacy,[]).reason,/legacy map/);});

@@ -12,10 +12,12 @@
       "map": "maps/quest-coder/map.json",
       "tours": "maps/quest-coder/tours.json",
       "tops": ["app", "components", "lib", "proxy.ts", "scripts", "browser-runtime", "runner"],
-      "counts": {"layers": 18, "files": 272, "layer_connections": 52, "file_connections": 413},
+      "counts": {"layers": 18, "files": 272, "layer_connections": 52, "file_connections": 415},
+      "extraction_version": 2,
+      "migration": "docs/TRUST_REPORT.md: unchanged source pin; 413 to 415 file links, no removals; exact source-backed Python additions",
       "provenance": "real immutable Git source; worker-drafted layers, generated lookup labels and manually source-audited tours; not Eric-approved target labels",
       "current_gates": [".verify.json:build", ".verify.json:smoke", "scripts/check_snapshot.py", "tests/test_tours.py", "scripts/smoke_tours.cjs"],
-      "limitations": ["182 extracted nodes versus 272 assignment inventory files", "relative Python import and computed Pyodide import omitted", "14 non-source targets dropped", "one unresolved HTTP reference", "mixed layer/file routing unsupported"]
+      "limitations": ["182 scanned versus 272 assignment inventory files", "computed Pyodide import, dynamic Python loaders and five conditional search-path insertions unsupported", "14 non-source targets dropped", "one unresolved literal HTTP reference, zero unresolved imports", "mixed layer/file routing unsupported"]
     },
     {
       "id": "dag-gps-pinned",
@@ -26,7 +28,9 @@
       "map": "dist/dag-gps/map.json",
       "tours": null,
       "scope": "generic included source inventory at this commit; output is generated and ignored",
-      "counts": {"layers": 3, "files": 27, "layer_connections": 3, "file_connections": 19},
+      "counts": {"layers": 3, "files": 27, "layer_connections": 3, "file_connections": 20},
+      "extraction_version": 2,
+      "migration": "docs/TRUST_REPORT.md: unchanged source pin; 19 to 20 file links, no removals; explicit static file loader path",
       "provenance": "real immutable pre-refresh/pre-tours source; worker-drafted layer spec, not Eric semantic approval",
       "current_gates": [".verify.json:build", ".verify.json:smoke", "scripts/smoke_refresh.cjs"],
       "limitations": ["old snapshot does not demonstrate current implementation coverage", "no curated tours", "four computed Playwright requires unsupported", "11 JSON target imports dropped"],
@@ -39,7 +43,7 @@
       "provenance": "generated development fixtures; not real user queries",
       "status": "existing and rerun in V1.0",
       "fixtures": ["tests/test_refresh.py::RefreshTests", "tests/test_build_map.py"],
-      "cases": ["CommonJS UMD imports with comment/string masking", "multiline Python local-script import", "nonliteral require and relative Python unsupported", "ambiguous Python suffix rejection", "unmapped/duplicate/unresolved/layer-cycle rejection", "mutable worktree isolation", "render/promotion failure preservation", "added/deleted typed links and reassignment", "excluded vendor/generated directories"]
+      "cases": ["CommonJS UMD imports with comment/string masking", "multiline Python local-script import", "nonliteral require and dynamic Python unsupported", "invalid root-relative Python now rejects with preservation (deliberate V2 migration)", "ambiguous Python suffix rejection without guessing", "unmapped/duplicate/unresolved/layer-cycle rejection", "mutable worktree isolation", "render/promotion failure preservation", "added/deleted typed links and reassignment", "excluded vendor/generated directories"]
     },
     {
       "id": "routes-and-lookup",
@@ -64,11 +68,19 @@
       "cases": ["wrong repo/commit/ID/path/range/excerpt rejection", "stale/invalid tour preservation", "malicious strings inert", "zero-tour repository", "every step and citation against immutable source"]
     },
     {
+      "id": "v1-trust-and-extraction",
+      "provenance": "worker-generated synthetic source fixtures plus immutable real-source migration audit; not Eric-authored query labels or observed runtime",
+      "status": "V1.2 worker verified; parent pending",
+      "fixtures": ["tests/test_extraction_trust.py", "tests/trust.test.cjs", "tests/test_refresh.py", "tests/test_tours.py", "scripts/smoke_trust.cjs"],
+      "cases": ["one/two-level Python relative imports and namespace/package init", "missing/ambiguous modules and symbol-vs-submodule", "source cycles and self edges retained", "bounded explicit file-relative search paths/loaders without suffix guessing", "whitespace CommonJS/TS and indented side-effect imports, no string/comment invented links", "diagnostic categories/scope/count/schema and strict extraction migration parity", "contextual versus repository-level warnings and real-file navigation", "external/non-source versus unresolved distinctions", "explicit tour omission, contradictory/malformed/stale rejection and all-byte preservation", "no stale natural-query tour and visible omission reason"],
+      "report": "docs/TRUST_REPORT.md"
+    },
+    {
       "id": "future-v1-edges-and-scale",
       "provenance": "planned generated fixtures only; no tests or results claimed yet",
       "status": "not implemented in V1.0",
-      "milestones": ["V1.1a", "V1.2", "V1.3", "V1.4", "V1.5"],
-      "cases": ["impact-specific direct/transitive shortest witnesses and HTTP separation", "test classification and coverage-unknown", "affected-tour citation references", "trust diagnostics and static relative Python improvement", "human-reviewed layer editor roundtrip", "opt-in feedback capture provenance/privacy", "synthetic 1000/5000-node performance and accessibility"],
+      "milestones": ["V1.3", "V1.4", "V1.5"],
+      "cases": ["human-reviewed layer editor roundtrip", "opt-in feedback capture provenance/privacy", "synthetic 1000/5000-node performance and accessibility"],
       "owner": "respective milestone worker implements; parent independently verifies"
     }
   ],

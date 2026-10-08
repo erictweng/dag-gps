@@ -10,9 +10,9 @@ normalized distributions remain available, but are not correctness probabilities
 
 ## v1 foundation and release contract
 
-V1.0 was parent-accepted on main `6bfc5ee`. Eric authorized full **V1.1a+b**;
-impact engine and UI/Ask are worker-verified on `v1-impact`, with parent independent
-review/integration pending. v1 release still requires later gates and Eric's unaided
+V1.0 was parent-accepted on main `6bfc5ee`; full V1.1 impact is integrated at `7bc6769`.
+Full **V1.2 trust / narrow extraction / stale-tour safety** is worker-verified on
+`v1-trust`, with parent independent review/integration pending. v1 release still requires later gates and Eric's unaided
 real repository session, not just automated tests.
 
 - [Approved v1 milestone plan](.hermes/plans/2026-10-07_203500-v1-milestones.md)
@@ -38,13 +38,53 @@ sections. Realtime excluded. “Potentially affected” does not mean “will br
 Ambiguous/missing files require explicit choice; unknowns clear stale highlights.
 Click a result for its shortest typed chain and real-node inspection; Return to impact
 graph preserves recovery after inspection/tour evidence. `what depends on …` retains
-legacy DOWNSTREAM behavior. No filesystem-opening claim or source/extractor changes.
+legacy DOWNSTREAM behavior. No filesystem-opening or runtime/coverage claim.
 
 Open rebuilt `dist/quest-refresh/index.html` or `dist/quest-coder.html`; old pinned
-self graph `dist/dag-gps/index.html` honestly has no tours. Worker gates: **138 Python +
+self graph `dist/dag-gps/index.html` honestly has no tours. Historical V1.1 gates: **138 Python +
 103 JS**, **14 impact browser checks / 9 screenshots**, zero errors/external requests;
 all legacy gates/evals retained. [Impact API, path classification, semantics, source
-audit and actual evidence](docs/IMPACT_REPORT.md). Parent acceptance remains pending.
+audit and actual evidence](docs/IMPACT_REPORT.md). V1.2's source-backed extraction migration is documented below.
+
+## Map trust and completeness (V1.2)
+
+**Map trust** shows the pinned source SHA, extraction version and exact scope:
+quest **182 / 272 files scanned**, 90 unscanned; self **27 / 27** at its old pin.
+These are inventory/file counts, **not runtime completeness**. Filter concrete
+findings by category/path and click **Locate source file**. File/Ask/impact warnings
+show relevant findings when traceable, otherwise clearly repository-level uncertainty.
+Resolved static imports/loaders, curated source-supported tours and inferred/unverified
+literal HTTP/RPC/manual links remain distinct. External packages are not local errors.
+
+Static package-relative Python imports and concrete submodules now resolve without
+suffix guessing. Narrow whitespace CommonJS/TS and indented side-effect import cases
+are supported; dynamic constructs, conditional/unmodeled search paths and parser
+limitations remain explicit. Source cycles/self edges are retained; layer cycles still
+require review, never deletion of true edges.
+
+Same source pins, deliberate version-2 extraction migration: quest **413 → 415** file
+links; self **19 → 20**. No pairs removed or source/layer membership edits. Current
+grading-engine impact: 16 direct consumers / 12 import-linked tests, coverage unknown.
+Exact source lines, diagnostic counts, fixture/parity rationale and CLI safety:
+[TRUST_REPORT.md](docs/TRUST_REPORT.md). **161 Python + 109 JS**, all build/test/smoke
+recipes pass; new trust browser **10 checks / 13 inspected screenshots**, zero
+page/console errors or external requests, legacy gates retained.
+
+Stale tours still reject with prior outputs preserved. To refresh deliberately
+without their evidence, replace `--tours PATH` with **`--without-tours`**:
+
+```bash
+python3 scripts/build_project.py --repo /Users/aibert/projects/quest-coder \
+  --ref 749d8b5de490cc2e6a0c98c713fab3ab856da799 \
+  --layers maps/quest-coder/layers.json \
+  --tops app components lib proxy.ts scripts browser-runtime runner \
+  --without-tours --out-dir dist/quest-no-tours
+```
+
+Both tour flags together reject; malformed input is never a silent opt-out. An
+existing tour build (including legacy HTML) cannot silently lose evidence by omitting
+flags or changing the comparison map. The omitted page displays its reason and has
+no old tour data/query resolver. Standalone render supports the same explicit flag.
 
 ## Architecture-guided tours
 
@@ -72,8 +112,9 @@ one false execution sequence. No live application execution or calibrated confid
 Optional `--tours PATH` also works with `scripts/build_project.py`. Repository, exact
 commit, node IDs, paths, evidence bounds and typed links validate before publishing;
 stale/invalid tours preserve previous artifacts. Tour data is per repo, not hardcoded
-into runtime. Omitting it gives an honest **No curated tours available**, as in the
-self demo. Supporting excerpts are inline, safely escaped; optional GitHub links
+into runtime. First builds without reviewed tours show **No curated tours available**,
+as in the self demo. Existing attached tours require explicit `--without-tours` to
+omit; the exact reason is shown. Supporting excerpts are inline, safely escaped; optional GitHub links
 point to the exact audited SHA. Full schema, commands and limits: **docs/TOURS_REPORT.md**.
 
 Verification: **138 Python + 93 JS tests**, all legacy gates plus **29 tour UI checks**,
@@ -108,7 +149,7 @@ at build time**. It cannot detect live remote freshness offline. Rebuilds keep t
 alias namespace: surviving exact IDs persist, deleted IDs stay ORPHAN, never rebound.
 file:// storage portability remains best-effort; visible Export/Import JSON is the fallback.
 
-Self demo: 3 layers / 27 files / 3 layer connections / 19 file connections at `f92d0cf`.
+Self demo: 3 layers / 27 files / 3 layer connections / 20 file connections at `f92d0cf` (V2 extraction).
 Ask `locate scripts/build_map.py` or `dependencies of Regression tests`. Layer draft:
 `maps/dag-gps/layers.json`. Quest-coder's frozen scope must be explicit; both commands,
 extractor limitations and atomicity guarantees: **docs/REFRESH_REPORT.md**. Neither a
@@ -117,7 +158,7 @@ source graph nor a successful build proves every dynamic dependency was extracte
 ## Offline Ask — filename lookup + evidence labels
 
 ```bash
-python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html
+python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html --without-tours
 open dist/quest-coder.html
 ```
 
@@ -190,11 +231,11 @@ There is no server, model training, automatic alias generation or network learni
 
 ## Verification and limits
 
-- Commands: `.verify.json`; current baseline: `docs/V1_BASELINE_REPORT.md`;
+- Commands: `.verify.json`; current trust evidence: `docs/TRUST_REPORT.md`; historical baseline: `docs/V1_BASELINE_REPORT.md`;
   integrated feature history: `docs/REFRESH_REPORT.md`, `docs/TOURS_REPORT.md`, `docs/ALIAS_LEARNING_REPORT.md`.
 - Filename lookup history: `docs/LOOKUP_REPORT.md`; M3 routing: `docs/M3_REPORT.md`;
   scorer provenance: `docs/M2_REPORT.md`.
-- 138 Python + 93 JS tests (15 tour fixtures + 5 controller tests, 17 refresh fixtures, 15 alias tests);
+- Historical pre-impact/trust: 138 Python + 93 JS tests (15 tour fixtures + 5 controller tests, 17 refresh fixtures, 15 alias tests);
   tours 29 UI checks, refresh 7 UI checks, legacy M3 5 canonical + 11 extra
   browser checks, lookup 19 UI checks, alias 19 UI checks, and shipped scorer parity.
 - Synthetic alias regression: 15/15, zero wrong accepts or false accepts on negative requests.
@@ -212,4 +253,5 @@ There is no server, model training, automatic alias generation or network learni
 
 Plan: `docs/PLAN.md`; idea capture: `docs/IDEA.md`. The layer map remains
 `maps/quest-coder/layers.json` (draft, awaiting Eric's corrections). This milestone
-preserves the frozen quest-coder map and routing/scoring behavior; reusable refresh adds a separate self-repo layer draft.
+preserves frozen source pins, node membership and routing/scoring behavior; V1.2's
+deliberate extractor migration adds only audited links/provenance. Reusable refresh adds a separate self-repo layer draft.

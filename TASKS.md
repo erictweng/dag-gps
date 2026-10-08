@@ -9,21 +9,27 @@ Status values: `queued` | `running` | `verified` | `blocked` | `failed`
 
 Authoritative [v1 plan](.hermes/plans/2026-10-07_203500-v1-milestones.md),
 [acceptance/evidence owners](docs/V1_ACCEPTANCE.md), [supported sources](docs/SUPPORTED_SOURCES.md),
-[fixture manifest](docs/V1_FIXTURES.json). V1.0 is parent-accepted on main `6bfc5ee`; Eric authorized full **V1.1a+b**.
+[fixture manifest](docs/V1_FIXTURES.json). V1.0 is parent-accepted on main `6bfc5ee`,
+V1.1 integrated at `7bc6769`; Eric authorized full **V1.2a+b+c**.
 
 | Milestone | Status | Evidence / next action |
 |---|---|---|
 | V1.0 baseline and contract | **parent accepted** | Main `6bfc5ee`; [baseline](docs/V1_BASELINE_REPORT.md), 138 Python + 93 JS at that milestone |
-| V1.1a pure impact analysis | **worker verified; parent pending** | 10 new pure impact tests; audited real witnesses, import-only BFS, separate transitive HTTP/RPC, coverage unknown, raw/compiled exact citations; [report](docs/IMPACT_REPORT.md) |
-| V1.1b impact UI/Ask | **worker verified; parent pending** | Inspect + explicit Ask, choices before analysis, chain/real-node/tour recovery; 14 browser checks / 9 inspected screenshots; all build/test/smoke exit 0, 138 Python + 103 JS |
-| V1.2 trust / narrow extraction / stale tours | queued — not started | Fixtures first; existing gaps disclosed, no runtime-completeness fiction |
+| V1.1a pure impact analysis | **integrated main `7bc6769`** | 10 pure impact tests; audited real witnesses, import-only BFS, separate HTTP/RPC, coverage unknown; [historical report](docs/IMPACT_REPORT.md) |
+| V1.1b impact UI/Ask | **integrated main `7bc6769`** | Historical 14 browser checks / 9 screenshots; legacy gates retained in V1.2 |
+| V1.2a trust contract / diagnostics UI | **worker verified; parent pending** | Map/report V2 scope/category/count provenance; concrete findings/filter/navigation, relevant Ask/impact warning or explicit repo-level uncertainty; [report](docs/TRUST_REPORT.md) |
+| V1.2b narrow extraction | **worker verified; parent pending** | Fixture-first relative Python/namespace/init/symbol vs submodule, explicit static paths/loaders with no suffix guessing, narrow CommonJS/TS; cycles retained; same source pins, audited +2 quest / +1 self pairs, none removed |
+| V1.2c stale-tour handling | **worker verified; parent pending** | Exact validation preserved; explicit mutually-exclusive `--without-tours`, malformed/stale all-byte preservation, legacy/comparison omission bypass blocked, no stale natural query |
+| V1.2 full automated gate | **worker verified; parent pending** | `.verify.json` build/test/smoke exit 0; 161 Python + 109 JS, strict pinned parity/10 checks; all legacy browser/eval gates plus trust10 / 13 inspected 1280/1920 screenshots, zero errors/network |
 | V1.3 reviewed onboarding | queued — not started | Human review/export/rebuild; explicitly newer supported self snapshot |
 | V1.4 opt-in query evaluation | queued — not started | May run alongside after V1.0; consent off by default; no inferred Eric labels, shared writes serialized |
 | V1.5 release | queued — not started | All milestone/legacy gates plus scale/accessibility and **Eric unaided session**; until human gate, release candidate only |
 
-No automated V1.1 blocker. Parent owns independent acceptance/integration/direct
-main push per WORKFLOW; worker commits locally only. V1.1 includes engine AND UI;
-no V1.2 trust/onboarding/query logging scope or quest-coder changes.
+No automated V1.2 blocker. Parent owns independent acceptance/integration/direct
+main push per WORKFLOW; worker commits locally only. No onboarding/query logging,
+source-pin advance, quest-coder source edits or v1 release claim. Later gates and
+Eric's unaided session remain. Current evidence: `artifacts/trust-verification.json`,
+`trust-migration.json`, `trust-browser.json`, `trust-*.png`, `.hsub/build-updates/v1-trust*.md`.
 The old worker-local/pending statuses below are historical and now integrated as
 of baseline main 4898578; old metrics are not a fresh execution. Fresh quest
 non-source drops are 14 versus historical prose's 15 (see baseline discrepancy).

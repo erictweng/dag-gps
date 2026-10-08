@@ -107,4 +107,63 @@ class TourTests(unittest.TestCase):
         build_project(self.repo,self.sha,self.layers,self.out,tours=source)
         html=(self.out/'index.html').read_text();self.assertIn(self.sha,html);self.assertIn('Source walkthrough',html)
 
+    def test_explicit_omission_refresh_removes_old_evidence_and_records_reason(self):
+        source=self.root/'tours.json';source.write_text(json.dumps(self.spec))
+        build_project(self.repo,self.sha,self.layers,self.out,tours=source)
+        before={p.name:p.read_bytes() for p in self.out.iterdir()}
+        (self.repo/'b.js').write_text('export const b=4;\n');self.git('add','.');self.git('commit','-qm','new snapshot')
+        newer=self.git('rev-parse','HEAD')
+        with self.assertRaisesRegex(ValueError,'Stale'):
+            build_project(self.repo,newer,self.layers,self.out,tours=source)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.out.iterdir()})
+        with self.assertRaisesRegex(ValueError,'no silent omission'):
+            build_project(self.repo,newer,self.layers,self.out)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.out.iterdir()})
+        report=build_project(self.repo,newer,self.layers,self.out,without_tours=True)
+        doc=json.loads((self.out/'map.json').read_text())
+        self.assertEqual(report['meta']['tours'],doc['meta']['tours'])
+        self.assertEqual(doc['meta']['tours']['status'],'omitted')
+        self.assertIn('--without-tours',doc['meta']['tours']['reason'])
+        html=(self.out/'index.html').read_text()
+        self.assertIn('var TOUR_DATA = null;',html)
+        self.assertNotIn('Source walkthrough',html)
+        self.assertEqual(doc['trust'],report['trust'])
+
+    def test_contradictory_and_malformed_tours_never_opt_out(self):
+        source=self.root/'tours.json';source.write_text('malformed')
+        before={p.name:p.read_bytes() for p in self.out.iterdir()}
+        with self.assertRaisesRegex(ValueError,'conflicts'):
+            build_project(self.repo,self.sha,self.layers,self.out,tours=source,without_tours=True)
+        with self.assertRaises(json.JSONDecodeError):
+            build_project(self.repo,self.sha,self.layers,self.out,tours=source)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.out.iterdir()})
+        for script in ('build_project.py','render.py'):
+            result=subprocess.run([sys.executable,str(ROOT/'scripts'/script),'--tours',str(source),'--without-tours'],capture_output=True,text=True)
+            self.assertNotEqual(result.returncode,0)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.out.iterdir()})
+
+    def test_legacy_html_and_explicit_comparison_cannot_bypass_omission_gate(self):
+        source=self.root/'tours.json';source.write_text(json.dumps(self.spec))
+        build_project(self.repo,self.sha,self.layers,self.out,tours=source)
+        legacy=json.loads((self.out/'map.json').read_text());legacy['meta'].pop('tours')
+        baseline=self.root/'legacy.json';baseline.write_text(json.dumps(legacy))
+        before={p.name:p.read_bytes() for p in self.out.iterdir()}
+        with self.assertRaisesRegex(ValueError,'no silent omission'):
+            build_project(self.repo,self.sha,self.layers,self.out,previous_map=baseline)
+        with self.assertRaisesRegex(ValueError,'no silent omission'):
+            render_main(['--map',str(baseline),'--out',str(self.out/'index.html')])
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.out.iterdir()})
+
+    def test_standalone_render_cannot_claim_current_without_tours(self):
+        source=self.root/'tours.json';source.write_text(json.dumps(self.spec))
+        build_project(self.repo,self.sha,self.layers,self.out,tours=source)
+        before=(self.out/'index.html').read_bytes()
+        with self.assertRaisesRegex(ValueError,'no silent omission'):
+            render_main(['--map',str(self.out/'map.json'),'--out',str(self.out/'index.html')])
+        with self.assertRaisesRegex(ValueError,'no validated evidence'):
+            render(Path(DEFAULT_TEMPLATE).read_text(),json.loads((self.out/'map.json').read_text()))
+        self.assertEqual(before,(self.out/'index.html').read_bytes())
+        self.assertEqual(render_main(['--map',str(self.out/'map.json'),'--out',str(self.out/'index.html'),'--without-tours']),0)
+        self.assertIn('var TOUR_DATA = null;', (self.out/'index.html').read_text())
+
 if __name__=='__main__':unittest.main()

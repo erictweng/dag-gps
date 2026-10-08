@@ -183,8 +183,6 @@ def file_level_edges(import_pairs, api_calls, route_files, rpcs, sqlfns, layer_o
     seen, out, dropped = set(), [], []
 
     def add(a, b, etype):
-        if a == b:
-            return
         if a not in known or b not in known:
             dropped.append([a, b, etype])
             return
@@ -513,7 +511,7 @@ def build(repo, ref, layers_path, out_path, tops):
     doc = {
         "meta": {
             "repo": spec.get("repo", os.path.basename(os.path.abspath(repo))),
-            "ref": ref, "commit": commit,
+            "ref": ref, "commit": commit, "snapshot_commit": pinned, "extraction_version": 2,
             "built_at": datetime.datetime.now(datetime.timezone.utc).replace(
                 microsecond=0).isoformat().replace("+00:00", "Z"),
             "counts": {"layers": len(layers), "files": len(files), "edges": len(edges),
@@ -525,6 +523,15 @@ def build(repo, ref, layers_path, out_path, tops):
         "layers": layers_out,
     }
 
+    from trust import build_trust
+    doc['trust'] = build_trust(graph, files, fedges, fedge_drops, http_misses, rpc_misses, tops, pinned)
+    doc['diagnostics'] = {'unresolved': graph.get('unresolved', []),
+                          'unsupported': graph.get('unsupported', []),
+                          'external': graph.get('ext', {}), 'file_cycles': graph.get('cycles', []),
+                          'unmapped': unmapped, 'duplicate_assignments': double,
+                          'empty_layers': empty, 'layer_cycle': cycle,
+                          'non_source_connections': list(fedge_drops),
+                          'unresolved_http': http_misses, 'unresolved_rpc': rpc_misses}
     # Validate a private candidate; never publish failing maps over a valid one.
     os.makedirs(os.path.dirname(os.path.abspath(out_path)) or ".", exist_ok=True)
     fd, candidate = tempfile.mkstemp(prefix='.map-', dir=os.path.dirname(os.path.abspath(out_path)))
@@ -539,13 +546,7 @@ def build(repo, ref, layers_path, out_path, tops):
     finally:
         if os.path.exists(candidate):
             os.unlink(candidate)
-    # Diagnostics are returned even when the candidate is rejected.
-    doc['diagnostics'] = {'unresolved': graph.get('unresolved', []),
-                          'unsupported': graph.get('unsupported', []),
-                          'unmapped': unmapped, 'duplicate_assignments': double,
-                          'empty_layers': empty, 'layer_cycle': cycle,
-                          'non_source_connections': list(fedge_drops),
-                          'unresolved_http': http_misses, 'unresolved_rpc': rpc_misses}
+    # Diagnostics are serialized and returned even when the candidate is rejected.
     return doc, report, extract_log
 
 

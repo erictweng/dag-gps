@@ -131,6 +131,17 @@ class RefreshTests(unittest.TestCase):
             self.build(second)
         self.assertEqual(before, self.published())
 
+    def test_file_cycle_in_one_layer_is_published_without_erasing_edges(self):
+        self.put('b.js', "import './a.js';\n")
+        self.spec['layers']=[{'id':'core','label':'Core','globs':['*.js','*.py']}]
+        self.write_spec()
+        second=self.commit()
+        self.build(second)
+        doc=json.loads((self.out/'map.json').read_text())
+        self.assertEqual([(e['from'],e['to']) for e in doc['file_edges']], [('a.js','b.js'),('b.js','a.js')])
+        self.assertEqual(doc['trust']['file_cycles'], [['a.js','b.js','a.js']])
+        self.assertIsNone(doc['diagnostics']['layer_cycle'])
+
     def test_low_level_builder_preserves_failed_output(self):
         target = self.root / 'valid.json'
         target.write_text('previous valid artifact')
@@ -213,12 +224,23 @@ class RefreshTests(unittest.TestCase):
 
     def test_unsupported_constructs_reported_not_guessed(self):
         self.put('a.js', 'require(variable);\n')
-        self.put('gone.py', 'from .helper import thing\n')
+        self.put('gone.py', '__import__(name)\n')
         second = self.commit()
         self.build(second)
         doc = json.loads((self.out / 'map.json').read_text())
         self.assertEqual(len(doc['diagnostics']['unsupported']), 2)
         self.assertEqual(doc['file_edges'], [])
+
+    def test_invalid_relative_python_is_now_local_failure_preserving_output(self):
+        # V2 migration: the V1 unsupported-relative fixture is a real invalid
+        # root-relative import, not a supported package or a dynamic construct.
+        self.build()
+        before = self.published()
+        self.put('gone.py', 'from .helper import thing\n')
+        second = self.commit()
+        with self.assertRaisesRegex(bp.BuildFailure, 'relative Python beyond package'):
+            self.build(second)
+        self.assertEqual(before, self.published())
 
     def test_ambiguous_python_local_import_rejects_without_guessing(self):
         self.build()

@@ -8,6 +8,7 @@ We swap that for the map as a JSON literal. Stdlib only, no network, no build st
 the output opens from file:// with nothing else on disk.
 """
 import argparse
+import copy
 import json
 import os
 import sys
@@ -16,6 +17,16 @@ PLACEHOLDER = "/*__MAP__*/null"
 DEFAULT_TEMPLATE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "web", "template.html"
 )
+
+
+def published_tours(html_path):
+    """Legacy HTML also records attached tour data; never silently drop it."""
+    import re
+    try:
+        with open(html_path, encoding='utf-8') as fh:
+            return bool(re.search(r'^var TOUR_DATA = (?!null;)', fh.read(), re.M))
+    except FileNotFoundError:
+        return False
 
 
 def js_literal(data):
@@ -37,7 +48,15 @@ def render(template_text, map_data, tours=None):
     Function executes only shipped local source, never map/query contents. This
     preserves source syntax even for closing script tags in strings or comments.
     """
-    for name in ("scorer", "router", "aliases", "tours", "impact"):
+    map_data = copy.deepcopy(map_data)
+    if 'meta' in map_data:
+        if not tours and map_data['meta'].get('tours', {}).get('status') == 'current':
+            raise ValueError('Map claims current tours but no validated evidence supplied; use explicit --without-tours')
+        if tours:
+            map_data['meta']['tours'] = {'status': 'current', 'evidence': 'curated_source_supported', 'observed_execution': False, 'snapshot_commit': tours['commit'], 'reason': 'Exact repository and snapshot source evidence validated.'}
+        else:
+            map_data['meta'].setdefault('tours', {'status': 'unavailable', 'reason': 'No reviewed tours supplied for this snapshot.'})
+    for name in ("scorer", "router", "aliases", "tours", "impact", "trust"):
         marker = "/*__%s__*/" % name.upper()
         if template_text.count(marker) > 1:
             raise ValueError("duplicate module placeholder: " + marker)
@@ -46,6 +65,9 @@ def render(template_text, map_data, tours=None):
                 source = fh.read()
             template_text = template_text.replace(marker, "new Function(" + js_literal(source) + ")();")
     template_text = template_text.replace("/*__TOUR_DATA__*/null", js_literal(tours))
+    if "/*__TRUST_UI__*/" in template_text:
+        with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "trust-ui.js"), encoding="utf-8") as fh:
+            template_text = template_text.replace("/*__TRUST_UI__*/", "var trustUI = eval(" + js_literal(fh.read()) + ");")
     if "/*__TOUR_UI__*/" in template_text:
         with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "tour-ui.js"), encoding="utf-8") as fh:
             template_text = template_text.replace("/*__TOUR_UI__*/", "var tourUI = eval(" + js_literal(fh.read()) + "); var tourController = tourUI.controller; var resolveTourQuery = tourUI.resolve; var exitTour = tourUI.exit;")
@@ -79,6 +101,8 @@ def check_map(map_data):
             problems.append("missing top-level %r" % key)
     if problems:
         return problems
+    from trust import validate_trust
+    problems.extend(validate_trust(map_data))
     for key in ("repo", "commit", "built_at", "counts"):
         if key not in map_data["meta"]:
             problems.append("missing meta.%s" % key)
@@ -105,9 +129,13 @@ def main(argv=None):
     ap.add_argument("--map", required=True, help="path to map.json")
     ap.add_argument("--out", required=True, help="path of the HTML page to write")
     ap.add_argument("--template", default=DEFAULT_TEMPLATE)
-    ap.add_argument("--tours", help="Reviewed tours JSON; requires --repo to validate immutable source")
+    tour_flags = ap.add_mutually_exclusive_group()
+    tour_flags.add_argument("--tours", help="Reviewed tours JSON; requires --repo to validate immutable source")
+    tour_flags.add_argument("--without-tours", action='store_true', help='Explicitly omit tours and their citations')
     ap.add_argument("--repo", help="Local Git repository for tour evidence verification")
     args = ap.parse_args(argv)
+    if not args.tours and not args.without_tours and published_tours(args.out):
+        raise ValueError('Published HTML has tours; supply --tours or explicitly --without-tours; no silent omission.')
 
     with open(args.map, encoding="utf-8") as fh:
         map_data = json.load(fh)
@@ -120,6 +148,8 @@ def main(argv=None):
         template_text = fh.read()
 
     tours = None
+    if args.without_tours:
+        map_data['meta']['tours'] = {'status': 'omitted', 'reason': 'Explicit --without-tours: no old citations attached.'}
     if args.tours:
         if not args.repo:
             raise ValueError("--tours requires --repo")

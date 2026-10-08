@@ -2,7 +2,39 @@
 
 Last updated: 2026-10-07 PDT
 
-## Current focus — V1.1a+b worker verified / parent pending
+## Current focus — V1.2a+b+c worker verified / parent pending
+
+Worker `v1-trust` starts from clean, verified main `7bc6769` (integrated V1.1).
+No worker push/merge. All approved trust, narrow extraction and stale-tour minis built.
+
+- Version-2 map/report provenance: five categories, concrete paths/reasons, exact
+  scope/inventory denominator, file cycles and separate lexical/loader/curated/inferred
+  evidence. Offline findings navigation plus file/Ask/impact contextual warnings;
+  otherwise explicitly repository-level uncertainty, never runtime-completeness percent.
+- Fixture-first package-relative Python, namespace/init and concrete submodules;
+  narrow explicit file-relative paths/loaders preserve real dependencies without
+  suffix guessing. Whitespace CommonJS/TS + indented imports; unsupported constructs
+  stay visible. File/self cycles retained; layer cycles still block for grouping review.
+- Mutually-exclusive `--without-tours` / `--tours`; exact stale validation stays fail
+  closed. No silent omission, including legacy HTML/comparison overrides. Omitted
+  evidence cannot resolve a natural tour query; reason/current/unavailable status visible.
+- `.verify.json` build/test/smoke **exit 0**, **161 Python + 109 JS**; strict full pinned
+  parity/10 checks and every legacy eval/browser gate retained. Trust browser **10
+  checks / 13 inspected screenshots** at 1920/1280, zero errors/external requests.
+- Same source pins: quest `749d8b5` / self `f92d0cf`. Deliberate extractor migration
+  quest **413 → 415**, self **19 → 20** file pairs; no removals, node/membership/source
+  edits. Exact pairs/weight changes, fixture rationale and impact audit in
+  [TRUST_REPORT](docs/TRUST_REPORT.md). Runner engine: 16 direct / 12 linked tests;
+  runner-client unchanged 3 direct / 1 farther / no observed linked tests. Coverage unknown.
+- Quest scanned **182 / 272**, 90 unscanned; 14 non-source, **0 unresolved imports**,
+  1 literal HTTP miss, 8 unsupported, 280 external findings. Self **27 / 27**, 11
+  non-source, 0 unresolved, 4 unsupported, 94 external findings. Not runtime coverage.
+- Evidence: `artifacts/trust-verification.json`, `trust-{build,test,smoke}.log`,
+  `trust-migration.json`, `trust-browser.json`, `trust-*.png`. Open
+  `dist/quest-refresh/index.html`, `dist/quest-coder.html`, `dist/dag-gps/index.html`,
+  or explicit opt-out `dist/quest-no-tours/index.html`. Outputs remain local/ignored.
+
+## Integrated V1.1 — historical worker evidence (main `7bc6769`)
 
 V1.0 parent acceptance is integrated on main `6bfc5ee`. Eric authorized full V1.1,
 not only the pure engine. `v1-impact` starts from that clean main; no worker push/merge.
@@ -30,18 +62,18 @@ not only the pure engine. `v1-impact` starts from that clean main; no worker pus
 
 ## Active worker / next action
 
-V1.1 implementation and local verification complete. Parent independently reviews
-engine correctness/spec/code quality and browser evidence, reruns gates, then integrates
-and pushes main per [WORKFLOW](docs/WORKFLOW.md). No next milestone worker launched.
-V1.2 and later remain queued; V1.4 writes must stay serialized against shared UI/scorer.
+V1.2 implementation and local verification complete. Parent independently reviews
+trust semantics/spec/code quality, extraction migrations and browser evidence, reruns
+gates, then integrates/pushes main per [WORKFLOW](docs/WORKFLOW.md). No V1.3+ worker
+launched. V1.4 writes must stay serialized against shared UI/scorer.
 
 ## Blockers and release boundary
 
-No automated V1.1 blocker; parent V1.1 acceptance remains pending. Entire v1 is **not**
-complete: trust/onboarding/optional evaluation/release and Eric's unaided session remain.
+No automated V1.2 blocker; parent V1.2 acceptance remains pending. Entire v1 is **not**
+complete: onboarding/optional evaluation/release and Eric's unaided session remain.
 Impact is static potential reachability, not execution/coverage or guaranteed breakage.
 Known prior limitations retained: mixed layer/file routes, bearer-auth abstention,
-relative/dynamic Python and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,
+dynamic Python/conditional paths and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,
 best-effort file storage/export fallback, per-file publication not power-loss transaction,
 source walkthroughs not observed runtime. See [acceptance](docs/V1_ACCEPTANCE.md),
 [supported sources](docs/SUPPORTED_SOURCES.md), [baseline](docs/V1_BASELINE_REPORT.md).

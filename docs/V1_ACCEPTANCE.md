@@ -5,8 +5,9 @@ Approved scope: Eric's “Start with v1.0” / “Execute DAG GPS V1.0 only” a
 is authoritative; this contract records its defaults, not an extension of scope.
 V1.0 is foundation only and was parent-accepted on main `6bfc5ee`.
 Eric subsequently authorized full **V1.1a+b** (engine AND UI/Ask), worker-verified
-on `v1-impact`. V1.1 parent independent review/rerun/integration remains pending;
-neither milestone declares v1 released.
+on `v1-impact` and integrated on verified main `7bc6769`. Eric authorized full
+**V1.2a+b+c**, now worker-verified on `v1-trust`; parent independent review/rerun/
+integration remains pending. No milestone here declares v1 released.
 
 ## Goal and locked defaults
 
@@ -57,16 +58,17 @@ root and retains its own evidence. No placeholders count as passing release gate
 Unchecked entries are **future acceptance**, not tests claimed to exist. Worker
 owns implementation/test evidence; parent owns independent acceptance/integration;
 Eric owns semantic review and unaided session. Milestone anchors below link the
-approved plan. V1.0 is parent-accepted; V1.1a+b worker checks are complete but
-remain parent-pending. Later unchecked gates are still future work.
+approved plan. V1.0 is parent-accepted; V1.1a+b is integrated at `7bc6769`;
+V1.2a+b+c worker checks are complete but remain parent-pending. Later unchecked
+gates are still future work.
 
 | State | Check / milestone | Required evidence | Owner |
 |---|---|---|---|
 | Parent accepted | [V1.0](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v10--freeze-the-release-contract-and-baseline): reproducible baseline, coherent status, matrix, contract | Non-null `.verify.json` build/test/smoke exit 0; exact pinned parity, retained miss, report and fixture manifest | Worker; parent independent rerun/review |
-| Worker verified; parent pending | [V1.1a](../.hermes/plans/2026-10-07_203500-v1-milestones.md#mini-11a--pure-analysis): explainable FILE impact | 10 pure impact tests: cycles/shortest/order/immutability, distinct direct/transitive, unknown/isolated, HTTP/RPC separation, path-classified tests, raw/compiled exact citations/orphans; coverage always unknown. [Actual report](IMPACT_REPORT.md) | V1.1 worker; parent independent review |
-| Worker verified; parent pending | V1.1b: UI and impact Ask | 14 real browser checks / 9 inspected screenshots: runner-client and quest_runner, source-audited witnesses/tests, unknown/ambiguity fail closed, typed chain/real-file inspection/tour recovery, 1280/1920 and no-tours second map; all legacy gates retained, zero errors/network. [Evidence](IMPACT_REPORT.md) | V1.1 worker; parent independent browser/code review |
-| Not started | [V1.2](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v12--map-trust-and-completeness): evidence quality / extraction | Future trust fixtures/browser checks; concrete findings with path/reason, source vs runtime evidence, relevant limitation badges; static relative Python fixes fixture-first, no invented runtime completeness | V1.2 worker; parent |
-| Not started | V1.2 stale tours / refresh integrity | Exact-commit mismatch preserves prior bytes; explicit no-tour opt-out, legacy extractor parity retained or deliberately migrated with evidence; source cycles not deleted for a DAG gate | V1.2 worker; parent; Eric for architectural decisions |
+| Integrated main `7bc6769` | [V1.1a](../.hermes/plans/2026-10-07_203500-v1-milestones.md#mini-11a--pure-analysis): explainable FILE impact | 10 pure impact tests: cycles/shortest/order/immutability, distinct direct/transitive, unknown/isolated, HTTP/RPC separation, path-classified tests, raw/compiled exact citations/orphans; coverage always unknown. [Actual report](IMPACT_REPORT.md) | V1.1 worker; parent independent review |
+| Integrated main `7bc6769` | V1.1b: UI and impact Ask | 14 real browser checks / 9 inspected screenshots: runner-client and quest_runner, source-audited witnesses/tests, unknown/ambiguity fail closed, typed chain/real-file inspection/tour recovery, 1280/1920 and no-tours second map; all legacy gates retained, zero errors/network. [Evidence](IMPACT_REPORT.md) | V1.1 worker; parent independent browser/code review |
+| Worker verified; parent pending | [V1.2](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v12--map-trust-and-completeness): evidence quality / extraction | Versioned map/report categories/scope/counts; concrete path/reason navigation and contextual vs repo-level warnings; fixture-first relative Python/namespace/init/submodule and narrow static paths/CommonJS/TS, no suffix guessing/runtime completeness fiction; 161 Python + 109 JS; trust10 checks / 13 inspected 1280/1920 screenshots, all legacy gates pass. [Report/migration](TRUST_REPORT.md) | V1.2 worker; parent independent review/rerun |
+| Worker verified; parent pending | V1.2 stale tours / refresh integrity | Exact-commit/malformed rejection preserves every prior artifact byte; mutually-exclusive explicit `--without-tours`, no stale natural-query evidence, legacy HTML/comparison bypass rejected; same pins, +2 quest / +1 self audited pairs, none removed; full strict parity; file/self cycles retained, layer cycles actionable and blocking | V1.2 worker; parent; Eric for future architectural decisions |
 | Not started | [V1.3](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v13--reviewable-repo-onboarding): draft → review → export → publish | Future draft/editor/export tests and second real repo onboarding without hand-editing JSON; zero missing/double assignments, invalid exports preserve output, stable IDs/warnings; newer self snapshot explicitly chosen, not silently substituted | V1.3 worker; parent; Eric reviews meaning |
 | Not started | [V1.4](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v14--opt-in-real-query-evaluation-parallel-track): consent and evaluation | Future feedback browser/import/privacy tests, local opt-in/export/remove/clear, snapshot/overlay provenance, generated/dev/held-out/user distinctions; ideally ≥20 confirmed Eric queries, held-out subset before tuning | V1.4 worker; parent; Eric labels intent |
 | Not started | V1.4 accuracy claims | Report accepted wrong answers, unnecessary abstentions, top1/top3, no-path truth, separate scorer p95; missing user labels block real-user accuracy claims, not feature implementation | Worker measures; parent audits; Eric confirms |
@@ -83,7 +85,7 @@ sharing; no automatic public upload.
 ## Known constraints that must not disappear in release prose
 
 Mixed layer/file routes are unsupported; bearer-auth responsibility lookup abstains.
-Relative/dynamic Python and nonliteral JS imports leave gaps; configured JS aliases
+Dynamic Python/conditional search paths and nonliteral JS imports leave gaps; configured JS aliases
 other than root `@/` are not resolved. CSS/JSON targets have no nodes. Self demo
 currently audits old `f92d0cf`, not current feature coverage. `file://` storage is
 best-effort with export/import recovery; no cross-tab synchronization guarantee.
@@ -97,6 +99,8 @@ contradictory scope or acceptance-blocking uncertainty to Eric rather than weake
 Eric authorized both V1.1a+b after V1.0 parent acceptance. Actual pinned graph/source
 was audited before fixtures; `lib/runner-client.ts` has zero observed linked tests,
 while `runner/quest_runner.py` has eleven real import-linked tests. Neither establishes
-coverage. Engine plus Inspect/Ask UI are worker-verified, not parent-accepted.
+coverage. Engine plus Inspect/Ask UI are integrated at `7bc6769`. These are historical
+V1.1 expectations; V1.2 adds the source-audited twelfth runner test and records the
+same-pin migration in [TRUST_REPORT.md](TRUST_REPORT.md).
 Extractor/trust redesign, onboarding and query logging remain outside V1.1.
 V1.4 shared scorer/UI writes remain serialized; no later milestone launched here.

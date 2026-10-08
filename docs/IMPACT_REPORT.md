@@ -1,8 +1,19 @@
-# V1.1 — Explainable potential impact (worker verified)
+# V1.1 — Explainable potential impact (historical integrated evidence)
+
+V1.1 is integrated on main `7bc6769`. The original worker evidence below is retained
+as history. V1.2's deliberate same-source extractor migration is documented in
+[TRUST_REPORT.md](TRUST_REPORT.md): quest 413 → 415 file pairs, no removals;
+`runner/quest_runner.py` 14 → 16 direct consumers and 11 → 12 linked tests;
+self `scripts/build_map.py` 1 → 2 linked tests through an explicit static loader.
+The runner-client expectations remain unchanged. Browser/unit source assertions
+were updated to the exact newly resolved statements, not weakened. Coverage stays
+unknown, and current impact warnings disclose incident extraction findings or
+explicit repository-level uncertainty. Current all-gate totals: 161 Python + 109 JS;
+parent V1.2 acceptance remains pending.
 
 Implemented both V1.1a **and** V1.1b on `v1-impact` from main `6bfc5ee`.
-Worker verification: 2026-10-07 PDT. Parent independent spec/code review, rerun,
-main integration and push remain pending. This is not acceptance of later v1 gates.
+Original worker verification: 2026-10-07 PDT. The pending-review statements below
+are historical; V1.1 subsequently integrated. This is not acceptance of later v1 gates.
 
 ## Contract and decisions
 

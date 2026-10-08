@@ -9,6 +9,7 @@ function renderImpact(){
   if(!impact)return;
   impactPanel.hidden=false;
   impactPanel.innerHTML='<h2>Potential impact</h2><p>'+esc(impact.fileId)+'</p><p class="sub">Potentially affected, not guaranteed to break. Snapshot '+esc(impact.snapshot)+'. Arrows: consumer → dependency.</p><button type="button" class="btn ghost" id="impact-return">Return to impact graph</button><button type="button" class="btn ghost" id="impact-close">Close impact</button>'+
+    (trustUI ? trustUI.badge([impact.fileId].concat(impact.directConsumers,impact.transitiveConsumers,impact.boundaryImpacts).flatMap(function(r){return typeof r==='string'?[r]:r.chain;})) : '')+
     '<h3>Direct consumers ('+impact.directConsumers.length+')</h3>'+impactRows(impact.directConsumers,'directConsumers')+
     '<h3>Transitive consumers ('+impact.transitiveConsumers.length+')</h3>'+impactRows(impact.transitiveConsumers,'transitiveConsumers')+
     '<h3>Linked tests ('+impact.linkedTests.length+')</h3><p id="impact-coverage">Coverage unknown. '+(impact.linkedTests.length?'Observed import reachability, not coverage proof.':'No dependency-linked test observed; this does not mean untested.')+'</p>'+impactRows(impact.linkedTests,'linkedTests')+
@@ -61,7 +62,7 @@ document.getElementById('ask-form').addEventListener('submit',function(ev){
   if(!h){document.getElementById('answer').textContent='Potential impact requires a single file target. No analysis performed.';return;}
   if(result.yes && h.yes && NODE.get(h.choice).kind==='file'){startImpact(h.choice);return;}
   var choices=(h.suggestions || h.top3).filter(function(x){return NODE.get(x.id).kind==='file';});
-  document.getElementById('answer').innerHTML='<h2>Potential impact — '+esc(h.match?h.match.label:'No match')+'</h2><p>No analysis performed. Choose a real file explicitly before analysis.</p><p class="sub">'+esc(h.reason)+'</p>'+choices.map(function(x){return '<button type="button" class="btn ghost alternative" data-impact-choice="'+esc(x.id)+'">Choose '+esc(x.path || x.id)+'</button>';}).join('');
+  document.getElementById('answer').innerHTML='<h2>Potential impact — '+esc(h.match?h.match.label:'No match')+'</h2><p>No analysis performed. Choose a real file explicitly before analysis.</p><p class="sub">'+esc(h.reason)+'</p>'+choices.map(function(x){return '<button type="button" class="btn ghost alternative" data-impact-choice="'+esc(x.id)+'">Choose '+esc(x.path || x.id)+'</button>';}).join('')+(trustUI ? trustUI.badge([]) : '');
 },true);
 document.getElementById('answer').addEventListener('click',function(ev){var b=ev.target.closest('[data-impact-choice]');if(b && NODE.has(b.dataset.impactChoice)&&NODE.get(b.dataset.impactChoice).kind==='file')startImpact(b.dataset.impactChoice);});
 panel.addEventListener('click',function(ev){var b=ev.target.closest('[data-impact]');if(b)startImpact(b.dataset.impact);});

@@ -193,6 +193,9 @@
   #impact-panel .alternative { font-size:12px; }
   #impact-chain { border:1px solid var(--node-br); border-radius:6px; padding:8px; }
   .impact-legend { margin:6px 0 0; }
+  .trust-warning,.trust-finding { border:1px solid var(--node-br);padding:8px;margin:8px 0;border-radius:5px;overflow-wrap:anywhere;font-size:12px; }
+  #trust-panel { overflow-wrap:anywhere;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px; }
+  #trust-panel input,#trust-panel select { width:100%;margin:5px 0;background:var(--panel);color:var(--fg); }
   .warn { padding: 30px; color: var(--accent); font-family: ui-monospace, monospace; }
 </style>
 </head>
@@ -222,7 +225,7 @@
     <div class="legend" id="legend"></div>
     <div class="hint">wheel = zoom · drag = pan · click = focus · double-click = expand · Esc = back</div>
   </div>
-  <aside><details id="alias-manager"><summary>Manage learned aliases</summary><p>No secrets. Local to this repository/browser; file storage is best-effort. Export for backup.</p><div id="alias-status" role="status"></div><div id="alias-list"></div><button class="btn" id="alias-export" type="button">Export JSON</button><button class="btn ghost" id="alias-clear" type="button">Clear aliases…</button><label>Import JSON <input id="alias-import" type="file" accept="application/json,.json"></label><label>Import mode <select id="alias-mode"><option value="merge">Merge (default)</option><option value="replace">Replace all</option></select></label><div id="alias-preview"></div></details><section id="tour-panel" hidden aria-live="polite"></section><section id="answer" aria-live="polite"></section><section id="impact-panel" hidden aria-live="polite"></section><section id="panel"></section></aside>
+  <aside><details id="trust-panel"><summary id="trust-summary">Map trust and extraction findings</summary><p id="trust-meta"></p><p id="trust-counts"></p><label>Category <select id="trust-filter"><option value="">All findings</option><option value="resolved_source">Resolved source links</option><option value="non_source_target">Non-source targets</option><option value="unresolved_local_reference">Unresolved local references</option><option value="unsupported_dynamic_construct">Unsupported dynamic constructs</option><option value="external_dependency">External dependencies</option></select></label><label>Path or target <input id="trust-path" type="search" aria-label="Filter extraction findings by path"></label><button id="trust-reset" type="button" class="btn ghost">All repository findings</button><div id="trust-findings"></div><details id="trust-limits-box"><summary>Extraction limitations and unscanned paths</summary><div id="trust-limits"></div></details></details><details id="alias-manager"><summary>Manage learned aliases</summary><p>No secrets. Local to this repository/browser; file storage is best-effort. Export for backup.</p><div id="alias-status" role="status"></div><div id="alias-list"></div><button class="btn" id="alias-export" type="button">Export JSON</button><button class="btn ghost" id="alias-clear" type="button">Clear aliases…</button><label>Import JSON <input id="alias-import" type="file" accept="application/json,.json"></label><label>Import mode <select id="alias-mode"><option value="merge">Merge (default)</option><option value="replace">Replace all</option></select></label><div id="alias-preview"></div></details><section id="tour-panel" hidden aria-live="polite"></section><section id="answer" aria-live="polite"></section><section id="impact-panel" hidden aria-live="polite"></section><section id="panel"></section></aside>
 </main>
 
 <dialog id="tour-evidence" aria-labelledby="evidence-title"><h2 id="evidence-title"></h2><p id="evidence-meta"></p><pre id="evidence-source"></pre><button class="btn" id="evidence-close" type="button">Close evidence</button><button class="btn ghost" id="evidence-locate" type="button">Locate real file in map</button><a id="evidence-permalink" target="_blank" rel="noopener noreferrer">GitHub · pinned source (external, optional)</a></dialog>
@@ -233,6 +236,7 @@
 /*__ALIASES__*/
 /*__TOURS__*/
 /*__IMPACT__*/
+/*__TRUST__*/
 var TOUR_DATA = /*__TOUR_DATA__*/null;
 var MAP = /*__MAP__*/null;
 
@@ -953,6 +957,7 @@ function panelFile(id) {
     '<div class="sub">' + esc(layerLabel(n.layer)) + " · " + plural(n.lines, "line") + "</div>" +
     (n.desc ? '<p class="desc">' + esc(n.desc) + "</p>" : "") +
     '<div><button type="button" class="btn" data-impact="' + esc(id) + '">Inspect potential impact</button><button class="btn ghost" data-clear="1">Clear</button></div>' +
+    (trustUI ? trustUI.badge([id]) : '') +
     "<h3>Imports (" + outs.length + ")</h3>" +
     fileRows(outs.map(function (e) { return e.to; }),
              { type: function (p) { return otype.get(p) || ""; } }) +
@@ -1177,7 +1182,7 @@ function renderAnswer(status) {
       esc(overrides.locate_target) + ' · ' + esc(NODE.get(overrides.locate_target).kind === 'file' ? layerLabel(NODE.get(overrides.locate_target).layer) : 'layer') +
       '</p><label>Exact alias text <input id="alias-text" maxlength="160" autocomplete="off" placeholder="Enter the specific name, not the question"></label><button type="button" class="btn" id="alias-review">Review name…</button><div id="alias-confirmation"></div></div>';
   }
-  document.getElementById('answer').innerHTML = html;
+  document.getElementById('answer').innerHTML = html + (trustUI ? trustUI.badge(answerRoute ? answerRoute.ids : heads.filter(function(h){return h.yes;}).map(function(h){return h.choice;})) : '');
 }
 document.getElementById('ask-form').addEventListener('submit', function (ev) {
   ev.preventDefault();
@@ -1221,6 +1226,7 @@ document.getElementById('answer').addEventListener('click', function (ev) {
 /*__ALIAS_UI__*/
 /*__TOUR_UI__*/
 /*__IMPACT_UI__*/
+/*__TRUST_UI__*/
 // ============================================================ interactions
 svg.addEventListener("wheel", function (ev) {
   ev.preventDefault();

@@ -8,6 +8,7 @@ tourController.tours.forEach(function(t){
 if(!tourController.tours.length){
   tourSelect.disabled=true;
   tourSelect.options[0].textContent='No curated tours available';
+  tourSelect.title=(MAP.meta.tours || {}).reason || 'No reviewed tours supplied for this snapshot.';
 }
 ['http','message','spawn','data','import'].forEach(function(type){
   EDGE_TYPES['tour-'+type]={color:'#56d4c7',dash:type==='import'?'3 3':'14 4 2 4',title:'tour '+type+' · source direction'};

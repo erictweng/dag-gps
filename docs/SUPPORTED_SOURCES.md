@@ -3,7 +3,8 @@
 Support is a bounded **static source map**, not a runtime call graph, package manager,
 compiler, coverage tool or universal-language promise. This matrix is grounded in
 `scripts/import_graph.py`, `scripts/build_map.py`, `scripts/build_project.py` and the
-named tests below at baseline `4898578`. V1.0 changes no extraction behavior.
+named tests below. V1.2 uses **dag-gps-static-v2**; source snapshots remain unchanged.
+The deliberate extraction/provenance migration is in [TRUST_REPORT.md](TRUST_REPORT.md).
 
 ## Current matrix
 
@@ -14,10 +15,10 @@ named tests below at baseline `4898578`. V1.0 changes no extraction behavior.
 | Literal `import('path')` / `require('path')`, CommonJS/UMD | Literal imports and UMD requires can create static links; comments/quoted fixtures masked for import recognition | `RefreshTests.test_commonjs_umd_and_python_script_imports_are_real`; real self `.cjs` graph. Function shadowing and code execution not modeled |
 | Computed JS import/require | Nonliteral patterns are reported unsupported, not evaluated | `RefreshTests.test_unsupported_constructs_reported_not_guessed`; quest Pyodide URL and self Playwright requires reproduced. Regex literals/template interpolation not modeled; findings are not exhaustive |
 | JS lexical safety | Lightweight comment/string masking for imports | Not a full parser. Regex-literal syntax can confuse lexical scans; template bodies/interpolation are masked rather than parsed. No promise for all TS syntax; no new parser fixtures claimed in V1.0 |
-| Python absolute imports, local scripts, multiline imports | AST scan of included Python files; exact module or same-directory match, then unique suffix heuristic; `as` binding does not change module name | `import_graph.py:82–128`; `RefreshTests.test_commonjs_umd_and_python_script_imports_are_real`. This is not actual sys.path/importlib resolution. `from module import names` selects first resolved candidate group, not complete symbol-to-submodule modeling |
+| Python absolute imports, local scripts, multiline imports | AST scan; exact repo-root modules, explicit statically recognized search directories, or same-directory scripts. No suffix guessing; aliases preserve module names | `tests/test_extraction_trust.py`, `RefreshTests.test_commonjs_umd_and_python_script_imports_are_real`. Real package `__init__` and concrete imported submodules link separately; imported symbols do not invent files. Conflicting module/package candidates reject |
 | Ambiguous local Python names | Records unresolved ambiguity; refresh rejects rather than guesses | `RefreshTests.test_ambiguous_python_local_import_rejects_without_guessing` |
-| Relative Python imports (`from .…`) | Reported unsupported; omitted edges | `RefreshTests.test_unsupported_constructs_reported_not_guessed`, real `runner/__init__.py`. Planned V1.2 regression-first improvement, **not** implemented |
-| Dynamic Python loading | Direct `__import__` calls flagged unsupported; not executed | `import_graph.py:97–98`; importlib/dynamic loader detection is not comprehensive. Unmatched bare imports external/unknown, not proof of installed dependencies. Python syntax parse errors produce unsupported + unresolved findings |
+| Relative Python imports (`from .…`) | Deterministic one/multiple-level package-relative modules, `from . import submodule`, package `__init__`, and namespace directories | Fixture-first `ExtractionTrustTests`; real `runner/__init__.py:3` fixed. Missing relative/namespace modules and imports beyond the package reject; no fabricated symbol edges |
+| Dynamic Python loading / search paths | `__import__`, `import_module`, unrecognized loader paths and search-path changes reported unsupported, not executed | Narrow exception: unconditional top-level `sys.path.insert(0, __file__-relative path)` and explicit `spec_from_file_location` file paths built from documented pathlib/os.path syntax (`scripts/python_static.py`). `resolve()` is lexical normalization, not symlink/filesystem execution. Conditional paths, arbitrary variables, aliases/shadowing and complete importlib semantics are not modeled. Explicit loader links are labeled `resolved_static_loader`, not runtime proof |
 | CSS/JSON/assets/non-code | Not source nodes; resolved targets lacking nodes reported and dropped from file edges | `build_map.file_level_edges` and `diagnostics.non_source_connections`; real baseline quest 14 drops, self 11. Imported `.json` may resolve as an existing file, but receives no graph node |
 | Literal HTTP `/api/…` references | Heuristic string pattern matched to route handler; unresolved HTTP references reported | `import_graph.py:36,68–70`, `build_map` HTTP resolution, real `/api/private-pack` miss. This regex scans text, not validated fetch-call execution, and does not share import masking. API-source files are excluded from caller capture; no dynamic URL/general backend tracing |
 | RPC and migration SQL | Literal `.rpc('name')` matched to detected migration `create function`; SQL files included in inventory, migration function definitions scanned | `import_graph.py:37,71–80`; builder edge tests and pinned map RPC evidence. Not a SQL parser/general SQL dependency extractor or proof migrations deployed |
@@ -28,7 +29,7 @@ Named tests are members of `tests/test_refresh.py::RefreshTests` unless otherwis
 specified. For builder shape/edge/coverage tests see `tests/test_build_map.py`; full
 pinned parity is `tests/test_snapshot.py` and `scripts/check_snapshot.py`.
 Source inspection supports implementation limits where no dedicated test exists;
-we do **not** claim unbuilt trust/parser tests already exist.
+Trust schema, extraction fixtures and contextual browser gates now exist; no full JS parser is claimed.
 
 ## Scope, identity and failure behavior
 
@@ -36,7 +37,7 @@ Generic `build_project.py` discovery uses the included Git source inventory as J
 extraction inputs; explicit `--tops` restricts that scan. Python and migration SQL
 still scan repository-wide. Assignment coverage checks all included source inventory,
 so **inventory count and extracted-node count can differ**. Quest's baseline has
-272 assigned files but 182 extractor nodes. Zero unresolved imports only describes
+272 assigned files but 182 extractor nodes (90 unscanned inventory paths). Zero unresolved imports only describes
 this chosen extraction scope, not all dependencies or files.
 
 Preserve quest's explicit tops `app components lib proxy.ts scripts browser-runtime runner`
@@ -53,6 +54,16 @@ errors (`test_promotion_error_rolls_back_bytes`); hard kill/power loss and concu
 readers are not a multi-file transaction. Use one writer. No live watcher, external
 browser service, automatic cross-tab sync or runtime execution tracing is promised.
 
+V2 diagnostics distinguish resolved source links, non-source targets, unresolved local
+references, unsupported constructs and external dependencies. Quest: 415 resolved
+file links, 14 non-source targets, 1 literal HTTP miss, 8 unsupported findings and 280
+external source/package findings; **0 unresolved imports**. Self: 20 resolved links,
+11 non-source targets, 4 unsupported findings, 94 external findings, 0 unresolved.
+These are distinct observed findings, not import occurrences or runtime completeness.
+Map/report contain identical trust data; offline findings are inspectable with concrete
+paths/reasons, file navigation and answer/impact contextual limitations.
+
 Build/UI evidence and count discrepancy with historical reports:
-[V1_BASELINE_REPORT.md](V1_BASELINE_REPORT.md). Future trust/onboarding gates:
+[V1_BASELINE_REPORT.md](V1_BASELINE_REPORT.md). Current trust evidence:
+[TRUST_REPORT.md](TRUST_REPORT.md); later onboarding/release gates:
 [V1_ACCEPTANCE.md](V1_ACCEPTANCE.md); fixture provenance: [V1_FIXTURES.json](V1_FIXTURES.json).

@@ -42,6 +42,6 @@ test('real pinned audit: runner-client witnesses and citations, no observed test
  const m=require('../maps/quest-coder/map.json'),t=require('../maps/quest-coder/tours.json'),r=analyzeImpact(m,t,'lib/runner-client.ts');
  assert.deepEqual(r.directConsumers.map(x=>x.id),['app/api/health/route.ts','app/api/run/route.ts','lib/party-boss-server.ts']);assert.deepEqual(r.transitiveConsumers.map(x=>x.chain),[['app/api/party/boss/route.ts','lib/party-boss-server.ts','lib/runner-client.ts']]);assert.equal(r.linkedTests.length,0);assert.equal(r.coverage,'unknown');assert.deepEqual(r.tourReferences.filter(x=>x.kind==='step').map(x=>[x.tourId,x.step,x.start,x.end]),[['submit',3,31,46],['submit',3,49,83]]);
 });
-test('real grading engine includes eleven hidden tests through actual imports',()=>{
- const r=analyzeImpact(require('../maps/quest-coder/map.json'),null,'runner/quest_runner.py');assert.equal(r.directConsumers.length,14);assert.equal(r.transitiveConsumers.length,0);assert.equal(r.linkedTests.length,11);assert.ok(r.linkedTests.every(x=>x.edges.every(e=>e.type==='import')));
+test('real grading engine includes twelve hidden tests through actual imports (extractor v2)',()=>{
+ const r=analyzeImpact(require('../maps/quest-coder/map.json'),null,'runner/quest_runner.py');assert.equal(r.directConsumers.length,16);assert.equal(r.transitiveConsumers.length,0);assert.equal(r.linkedTests.length,12);assert.ok(r.linkedTests.every(x=>x.edges.every(e=>e.type==='import')));
 });
