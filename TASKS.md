@@ -76,3 +76,6 @@ Status: verified (2026-10-07, branch `m0-build-map`)
 - `tests/test_build_map.py` — 63 unittest cases on in-memory fixtures that mirror the
   real `import_graph.json` shapes.
 - `maps/quest-coder/map.json` — built at `71bc83a`, 8/8 checks passed.
+
+## M1.2 — verified 2026-10-07
+Recovered Claude partial implementation after session quota exhaustion. Offline HTML canvas, renderer, unit tests, browser smoke, real-click interaction check complete. 97 unit tests pass; map checks 10/10; four screenshot states with zero page errors and zero external requests. Real clicks, expand, file details, Escape, test toggle, double-click, back, zoom and fit pass. Artifact: dist/quest-coder.html. Scorer remains M2 (Ask disabled deliberately).
