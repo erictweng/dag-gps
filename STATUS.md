@@ -2,7 +2,34 @@
 
 Last updated: 2026-10-07 PDT
 
-## Current focus — V1.3 onboarding worker verified / parent pending
+## Current focus — V1.4 query feedback/evaluation worker verified / parent pending
+
+Worker `v1-feedback` starts from clean main `c6543f6` (integrated V1.3). No worker
+merge/push. Full opt-in capture and evaluation infrastructure implemented; parent
+independent review and Eric's confirmed real labels remain pending.
+
+- OFF each load, explicit local consent, persistent recording badge, completed ordinary
+  Ask including abstentions/PATH; tours/impact visibly excluded (no fake operation map).
+- Correct/Wrong/Unclear and editable expectations/separate PATH endpoints; Wrong can
+  have unknown intent, Unclear is never NOT_SURE truth. No labels automatically teach
+  aliases. Separate feedback store, deletion/confirmed clear, actual download/export.
+- Bounded atomic consented imports; stale source/scorer retained ineligible, IDs not
+  rebound. 200 records / 90 days / 2 MiB retention, denied/quota unsaved export fallback.
+- Full source pin/metadata/map/scorer SHA/alias provenance, original/alias-off/on metrics;
+  user/generated + immutable development/heldout separation, frozen first-label holdout.
+- Full `.verify.json` build/test/smoke exit 0; 176 Python + 150 JS, 20 feedback tests;
+  strict pinned parity and all legacy gates. Browser 18 checks / 6 inspected 1280/1920
+  screenshots; no errors/external requests. See [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md).
+- Exact browser export: 8 generated fixtures, 4 evaluable, zero real-user labels. Known
+  bearer-auth miss preserved; actual Eric runner.py intent still unconfirmed. No scorer
+  tuning; mini c real-user improvement deferred until confirmed cases / pre-tuning holdout.
+- Evidence: `artifacts/feedback-verification.json`, `feedback-{build,test,smoke}.log`,
+  `feedback-browser.json`, `feedback-export-{generated,eval}.json`, `feedback-*.png`;
+  regenerated navigator `dist/quest-refresh/index.html`. Artifacts local/ignored.
+- ≥20 Eric cases is a soft collection goal, not feature blocker; no real-user accuracy
+  or v1 release claims. V1.5/Eric semantic review and unaided session still pending.
+
+## Integrated V1.3 — historical worker evidence (main `c6543f6`)
 
 Worker `v1-onboarding` starts from clean main `a5b0255` (integrated V1.2).
 No worker push/merge. Full draft → offline review → actual download → validated build

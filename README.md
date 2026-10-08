@@ -12,9 +12,9 @@ normalized distributions remain available, but are not correctness probabilities
 
 V1.0 was parent-accepted on main `6bfc5ee`; full V1.1 impact is integrated at `7bc6769`.
 Full **V1.2 trust / narrow extraction / stale-tour safety** is integrated on main
-`a5b0255`. Eric authorized full **V1.3 reviewable onboarding**, now worker-verified
-on `v1-onboarding`; parent independent review/integration and Eric semantic review
-remain pending. v1 release still requires later gates and Eric's unaided real repository
+`a5b0255`. Full **V1.3 reviewable onboarding** is integrated at `c6543f6`; Eric
+semantic review remains pending. Eric authorized full **V1.4 opt-in query feedback /
+evaluation**, worker-verified on `v1-feedback`; parent independent review pending. v1 release still requires later gates and Eric's unaided real repository
 session, not just automated tests.
 
 - [Approved v1 milestone plan](.hermes/plans/2026-10-07_203500-v1-milestones.md)
@@ -28,7 +28,49 @@ all exit 0. Evidence is local/ignored under `artifacts/v1-baseline/`; earlier
 sections below describe integrated pre-v1 functionality, not a complete v1 release.
 Desktop-first offline/local, optional query capture off by default, no execution
 tracing, and human-reviewed onboarding are locked defaults. Onboarding is implemented
-in V1.3 below; optional query capture is not yet implemented.
+in V1.3 below; optional V1.4 query capture/evaluation is implemented below.
+
+## Opt-in query feedback and evaluation (V1.4)
+
+Open **Query feedback** in the navigator sidebar. It starts **OFF** on every load;
+choose real user queries or generated fixture provenance, then explicitly enable local
+recording. A persistent header badge says Recording locally. Subsequent ordinary Ask
+answers are captured; tours/impact are explicitly excluded with their reason.
+
+Open a record: choose Correct / Wrong / Unclear, review/edit expected operation and real
+node IDs (PATH has independent from/to and optional directed route truth), designate
+Development or Held-out **before the first label**, then confirm. Wrong can retain
+unknown intent; Unclear is never NOT_SURE truth. Held-out labels and designated splits
+are frozen. **Labels do not teach aliases**; alias confirmation is separate.
+
+Disable stops recording; remove one or confirm Clear all. Export JSON for backup;
+import is a ≤2 MiB inert preview and explicitly consented replacement. Same-repo stale
+snapshots remain ineligible, never remapped; foreign repo/version/unknown current IDs
+reject. Retention: newest 200 / 90 days (pruned on enable/write), oldest-byte eviction
+at 2 MiB. Denied/quota storage shows Unsaved/session-only; export before closing.
+`file://` storage is best-effort. Queries/answers/corrections/source metadata/alias overlay
+remain local only, without telemetry; review private exports before sharing.
+
+```sh
+node scripts/eval_user_queries.cjs maps/quest-coder/map.json \
+  /path/to/dag-gps-query-feedback-v1.json artifacts/my-user-eval.json
+# No dataset: honest empty collection report, not invented accuracy
+node scripts/eval_user_queries.cjs
+node scripts/smoke_feedback.cjs
+```
+
+Evaluation requires the matching full source pin, canonical map SHA and scorer source
+SHA; reports original / alias-off / saved alias-on, user vs generated and development
+vs held-out separately. Counts, operation/target top1/top3, accepted wrong targets,
+unnecessary abstention, independently checked directed no-path truth (no realtime),
+and **warm scorer-only p95**, not UI time. No labeled user cases yet; ≥20 confirmed
+Eric cases is a soft collection goal. Existing actual runner.py feedback has unconfirmed
+intent. No scorer tuning on synthetic cases; real-user improvement is deferred.
+
+[USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md): 176 Python / 150 JS, all full gates,
+20 feedback unit/eval tests; 18 real-browser checks / 6 inspected screenshots. Actual
+browser export is explicitly generated, not Eric ground truth. Parent review and V1.5 /
+Eric's unaided acceptance remain pending.
 
 ## Reviewable project onboarding (V1.3)
 

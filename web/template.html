@@ -145,6 +145,15 @@
   .btn.ghost { background: transparent; color: var(--fg); border-color: var(--node-br); font-weight: 400; }
   .btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
 
+  #feedback-manager { border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:12px; }
+  #feedback-manager summary { cursor:pointer; font-weight:600; overflow-wrap:anywhere; }
+  #feedback-manager p, #feedback-manager label { font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+  #feedback-manager label { display:block; margin:10px 0; }
+  #feedback-manager input, #feedback-manager select { display:block; width:100%; min-width:0; margin-top:5px; padding:7px; background:var(--bg); color:var(--fg); border:1px solid var(--line); border-radius:5px; }
+  #feedback-manager button { margin:4px 0; }
+  #feedback-manager :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .feedback-record pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; }
+  .feedback-record { border-top:1px solid var(--line); padding:8px 0; }
   #alias-manager { border-bottom: 1px solid var(--line); margin-bottom: 12px; padding-bottom: 10px; }
   #alias-manager summary { cursor: pointer; font-weight: 600; }
   #alias-manager p, #alias-status, #alias-preview, #remember-offer p { font-size: 12px; overflow-wrap: anywhere; }
@@ -206,7 +215,7 @@
   <div class="meta" id="h-meta"></div>
   <label class="tour-picker">Tours <select id="tour-select" aria-label="Architecture tour"><option value="">Choose a walkthrough…</option></select></label>
   <form class="ask" id="ask-form">
-    <span class="tag">local / offline</span>
+    <span class="tag" id="feedback-live" aria-live="polite">local / offline</span>
     <input id="ask" type="text" placeholder="e.g. locate a source file" aria-label="Ask about the graph">
     <button class="btn" type="submit" id="ask-submit">Ask</button>
   </form>
@@ -232,6 +241,8 @@
 <script>
 "use strict";
 /*__SCORER__*/
+/*__QUERY-FEEDBACK__*/
+var FEEDBACK_PROVENANCE = /*__FEEDBACK_PROVENANCE__*/null;
 /*__ROUTER__*/
 /*__ALIASES__*/
 /*__TOURS__*/
@@ -1186,7 +1197,7 @@ function renderAnswer(status) {
 }
 document.getElementById('ask-form').addEventListener('submit', function (ev) {
   ev.preventDefault();
-  if (resolveTourQuery(document.getElementById('ask').value)) return;
+  if (resolveTourQuery(document.getElementById('ask').value)) { feedbackUI.excluded(); return; }
   if (tourController.state().active) exitTour();
   var start = performance.now();
   clearAnswerHighlight(); answer = null; overrides = {}; S.focused = null;
@@ -1200,6 +1211,7 @@ document.getElementById('ask-form').addEventListener('submit', function (ev) {
       displayRoute(answer.operation.choice, (t.locate_target || t.from_target).choice, t.to_target && t.to_target.choice);
     }
     answerLatency = performance.now() - start; renderAnswer();
+    feedbackUI.capture(document.getElementById('ask').value, answer);
   } catch (err) {
     answer = null; answerRoute = null; S.focused = null; applyHighlight();
     document.getElementById('answer').textContent = 'Invalid scorer result — no action: ' + err.message;
@@ -1227,6 +1239,7 @@ document.getElementById('answer').addEventListener('click', function (ev) {
 /*__TOUR_UI__*/
 /*__IMPACT_UI__*/
 /*__TRUST_UI__*/
+/*__FEEDBACK_UI__*/
 // ============================================================ interactions
 svg.addEventListener("wheel", function (ev) {
   ev.preventDefault();

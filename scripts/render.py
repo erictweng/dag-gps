@@ -56,7 +56,7 @@ def render(template_text, map_data, tours=None):
             map_data['meta']['tours'] = {'status': 'current', 'evidence': 'curated_source_supported', 'observed_execution': False, 'snapshot_commit': tours['commit'], 'reason': 'Exact repository and snapshot source evidence validated.'}
         else:
             map_data['meta'].setdefault('tours', {'status': 'unavailable', 'reason': 'No reviewed tours supplied for this snapshot.'})
-    for name in ("scorer", "router", "aliases", "tours", "impact", "trust"):
+    for name in ("scorer", "router", "aliases", "tours", "impact", "trust", "query-feedback"):
         marker = "/*__%s__*/" % name.upper()
         if template_text.count(marker) > 1:
             raise ValueError("duplicate module placeholder: " + marker)
@@ -82,6 +82,18 @@ def render(template_text, map_data, tours=None):
         # Neither alias strings, import JSON, map values nor query text are code.
         with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "alias-ui.js"), encoding="utf-8") as fh:
             template_text = template_text.replace(ui_marker, "eval(" + js_literal(fh.read()) + ");")
+    if "/*__FEEDBACK_PROVENANCE__*/null" in template_text:
+        import hashlib
+        inputs = {key: map_data.get(key) for key in ('nodes', 'edges', 'file_edges', 'layers')}
+        inputs.update(repo=map_data['meta']['repo'], commit=map_data['meta'].get('snapshot_commit', map_data['meta']['commit']))
+        canonical = json.dumps(inputs, sort_keys=True, ensure_ascii=False, separators=(',', ':'))
+        with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), 'scorer.js'), 'rb') as fh:
+            scorer_sha = hashlib.sha256(fh.read()).hexdigest()
+        provenance = {'mapSha256': hashlib.sha256(canonical.encode('utf-8')).hexdigest(), 'scorerSha256': scorer_sha}
+        template_text = template_text.replace('/*__FEEDBACK_PROVENANCE__*/null', js_literal(provenance))
+    if "/*__FEEDBACK_UI__*/" in template_text:
+        with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), 'feedback-ui.js'), encoding='utf-8') as fh:
+            template_text = template_text.replace('/*__FEEDBACK_UI__*/', 'var feedbackUI = eval(' + js_literal(fh.read()) + ');')
     if template_text.count(PLACEHOLDER) != 1:
         raise ValueError(
             "template must contain exactly one %r placeholder (found %d)"

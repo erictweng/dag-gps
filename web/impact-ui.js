@@ -55,6 +55,7 @@ document.getElementById('ask-form').addEventListener('submit',function(ev){
   clearImpact();
   if(target===null)return;
   ev.preventDefault();ev.stopImmediatePropagation();
+  feedbackUI.excluded();
   if(tourController.state().active)exitTour();
   clearAnswerHighlight();answer=null;answerRoute=null;S.focused=null;overrides={};showLayers(false);
   var result=scorer.score('locate '+target);DagGpsScorer.validateResult(result,MAP);
