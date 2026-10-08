@@ -11,11 +11,11 @@ Status values: `queued` | `running` | `verified` | `blocked` | `failed`
 
 Eric approved (2026-10-07): add file-level edges, then build the canvas.
 - 1.1 file_edges in map.json — handoff `.hsub/handoffs/m1-1-file-edges.md` — verified
-- 1.2 canvas (web/template.html + render.py + Playwright smoke) — handoff `.hsub/handoffs/m1-2-canvas.md` — queued
+- 1.2 canvas (web/template.html + render.py + Playwright smoke) — handoff `.hsub/handoffs/m1-2-canvas.md` — verified
 
 #### 1.2 — `index.html` renders the layer DAG, clicking a layer expands it to its files
 
-Status: queued
+Status: verified (M1.2 at d690283)
 
 Notes for whoever builds this:
 
@@ -37,10 +37,26 @@ Done when:
 
 - A Playwright run on `file://` with 0 console errors, plus 1920×1080 screenshots.
 
+## Milestone 2 — Local scorer + generated evaluation
+
+Status: verified locally on `m2-scorer`; parent independent review pending.
+
+- Dependency-free `web/scorer.js` for Node/browser; observed map IDs only; LOCATE,
+  UPSTREAM, DOWNSTREAM, PATH, NOT_SURE; validated heads, heuristic scores,
+  component explanations and top-3 alternatives; independent PATH endpoints.
+- Persist aliases in map nodes; regression tests preserve existing IDs/edges.
+- 47 generated eval questions with inspected graph routes, not user-ground-truth;
+  distinct paraphrase regressions plus invalid-contract tests.
+- `scripts/eval_scorer.cjs`: op 46/47, raw target top-1 42/44, top-3 43/44,
+  negative abstention 10/10, path endpoints 14/14, Node p95 0.7754 ms.
+- All verification recipe gates exit 0: 99 Python + 40 JS tests, render/map checks,
+  existing canvas/real-click smoke and new Chromium scorer parity (p95 0.7000 ms).
+- M1 canvas/Ask unchanged. Known grading/authentication errors remain reported,
+  not hidden; see `docs/M2_REPORT.md`. Eric must review draft eval answers.
+
 ## Backlog
 
-- M2 — scorer + `eval.jsonl` (~30 questions).
-- M3 — route highlight, confidence bar, top-3 alternatives.
+- M3 — route highlight, confidence bar, top-3 alternatives (after parent verifies M2).
 
 ## Blocked
 

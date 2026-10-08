@@ -6,8 +6,8 @@
     "setup": null,
     "build": "python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html",
     "lint": null,
-    "test": "python3 -m unittest discover -s tests -q",
-    "smoke": "python3 scripts/build_map.py --repo /Users/aibert/projects/quest-coder --ref origin/main --layers maps/quest-coder/layers.json --out maps/quest-coder/map.json && python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html && node scripts/smoke_canvas.mjs dist/quest-coder.html artifacts/ && node scripts/check_interactions.cjs"
+    "test": "python3 -m unittest discover -s tests -q && node --test tests/scorer.test.cjs tests/eval.test.cjs && node scripts/eval_scorer.cjs",
+    "smoke": "python3 scripts/build_map.py --repo /Users/aibert/projects/quest-coder --ref origin/main --layers maps/quest-coder/layers.json --out maps/quest-coder/map.json && python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html && node scripts/smoke_canvas.mjs dist/quest-coder.html artifacts/ && node scripts/check_interactions.cjs && node scripts/smoke_scorer.cjs"
   },
   "required_files": [
     "PROJECT.md",
@@ -19,7 +19,14 @@
     "maps/quest-coder/map.json",
     "web/template.html",
     "scripts/render.py",
-    "scripts/smoke_canvas.mjs"
+    "scripts/smoke_canvas.mjs",
+    "web/scorer.js",
+    "scripts/eval_scorer.cjs",
+    "scripts/smoke_scorer.cjs",
+    "eval/eval.jsonl",
+    "tests/scorer.test.cjs",
+    "tests/eval.test.cjs",
+    "docs/M2_REPORT.md"
   ],
   "timeout_seconds": 600,
   "examples": {
