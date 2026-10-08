@@ -21,17 +21,30 @@ DEFAULT_TEMPLATE = os.path.join(
 def js_literal(data):
     """Serialize `data` so it is safe to paste inside an HTML <script> block.
 
-    `</` has to be broken up: an HTML parser ends the script at the first
-    `</script` regardless of JS string quoting. U+2028/U+2029 are line
-    terminators in JS but not in JSON, so they are escaped too.
+    Escape `<` to prevent closing tags and HTML double-escaped script states,
+    regardless of JS string quoting. Escape U+2028/U+2029 for JS compatibility.
     """
     text = json.dumps(data, ensure_ascii=False, separators=(",", ":"), sort_keys=False)
-    text = text.replace("</", "<\\/")
+    # Escape every '<' to also prevent HTML script double-escaped states (<!--).
+    text = text.replace("<", "\\u003c")
     text = text.replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
     return text
 
 
 def render(template_text, map_data):
+    """Inline trusted module source as safely encoded JS strings.
+
+    Function executes only shipped local source, never map/query contents. This
+    preserves source syntax even for closing script tags in strings or comments.
+    """
+    for name in ("scorer", "router"):
+        marker = "/*__%s__*/" % name.upper()
+        if template_text.count(marker) > 1:
+            raise ValueError("duplicate module placeholder: " + marker)
+        if marker in template_text:
+            with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), name + ".js"), encoding="utf-8") as fh:
+                source = fh.read()
+            template_text = template_text.replace(marker, "new Function(" + js_literal(source) + ")();")
     if template_text.count(PLACEHOLDER) != 1:
         raise ValueError(
             "template must contain exactly one %r placeholder (found %d)"

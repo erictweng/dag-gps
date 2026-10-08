@@ -4,15 +4,49 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
-M1.1 (`file_edges` in `map.json`) is done. Next: M1.2, the canvas
-(`web/template.html` + `render.py` + a Playwright smoke) — handoff
-`.hsub/handoffs/m1-2-canvas.md`.
+M3 offline Ask + directed routing/highlights is locally verified on `m3-routing`.
+M2 was independently verified by parent before M3. M3 awaits parent rerun/review;
+no push or merge. Open `dist/quest-coder.html` for the offline demo.
 
 ## Active Worker
 
 None.
 
 ## Last Verified
+
+2026-10-07, branch `m3-routing` (local worker; parent review pending):
+
+- `.verify.json` build/test/smoke exit 0: **104 Python + 46 JS tests**, map 10/10
+  at pinned `749d8b5de490cc2e6a0c98c713fab3ab856da799`; committed map untouched.
+- Ask enabled, validated scorer boundary, Dependencies/Dependents/directed PATH,
+  heuristic bars/top-three clickable overrides, honest abstention/no-path.
+- 5/5 canonical real-typing/Enter/button browser states plus 11 additional UI checks;
+  zero errors/external requests. Real-ID cross-layer file view; mixed endpoints
+  explicitly unsupported. Existing canvas and real-click interactions pass.
+- Scorer parity 47/47, Node p95 1.7014 ms / Chromium 1.0000 ms (940 samples each).
+  Generated benchmark unchanged: op 46/47, target 42/44 top-1, 43/44 top-3;
+  grading/authentication shortcomings retained honestly.
+- Report: `docs/M3_REPORT.md`; logs: `artifacts/m3-final-verification.json`;
+  screenshots: `artifacts/m3-{locate,dependencies,dependents,path,file}.png`
+  plus no-path, file-path, 1280 states (inspected for clipping/collisions).
+
+### M2 evidence
+
+2026-10-07, branch `m2-scorer` (parent independently verified before M3):
+
+- `.verify.json` build/test/smoke all exit 0: 99 Python tests, 40 JS tests,
+  map 10/10 checks; existing canvas screenshots and real-click smoke pass.
+- 47 generated eval cases, not user-ground-truth: operation 46/47 (97.87%),
+  raw target top-1 42/44 (95.45%), top-3 43/44 (97.73%), PATH endpoints 14/14.
+- Abstention 11/47; negatives 10/10 abstained, false accepts 0/10.
+- p95 warm: Node 0.7754 ms, Chromium 0.7000 ms, 940 samples each (<10 ms).
+- Chromium parity across 47 outputs (numeric tolerance 1e-12), zero errors/external
+  requests; Ask still disabled. M1 template, renderer, node IDs and edges unchanged.
+- Remaining scorer errors: grading → run-gateway (expected runner-service),
+  authentication → NOT_SURE. Generated expectations need Eric review.
+- Full report: `docs/M2_REPORT.md`; actual logs: `artifacts/m2-final-verification.json`.
+
+### Previous milestone evidence
 
 2026-10-07, branch `m1-file-edges`:
 

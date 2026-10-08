@@ -1,0 +1,47 @@
+{"question": "Where does login live?", "operation": "LOCATE", "target": "auth", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-01"}
+{"question": "Find the notebook", "operation": "LOCATE", "target": "solve-ui", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-02"}
+{"question": "Where is pyodide?", "operation": "LOCATE", "target": "browser-run", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-03"}
+{"question": "Show the database", "operation": "LOCATE", "target": "persistence", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-04"}
+{"question": "Where do hidden tests live?", "operation": "LOCATE", "target": "content", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-05"}
+{"question": "Find the judge", "operation": "LOCATE", "target": "runner-service", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-06"}
+{"question": "Where is progression?", "operation": "LOCATE", "target": "game-domain", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-07"}
+{"question": "Locate party server", "operation": "LOCATE", "target": "social-services", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-08"}
+{"question": "Where are sprites?", "operation": "LOCATE", "target": "design-system", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-09"}
+{"question": "Where does grading live?", "operation": "LOCATE", "target": "runner-service", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-10"}
+{"question": "Where is authentication?", "operation": "LOCATE", "target": "auth", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-11"}
+{"question": "Find app/api/run/route.ts", "operation": "LOCATE", "target": "app/api/run/route.ts", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-12"}
+{"question": "Where is lib/rate-limit.ts?", "operation": "LOCATE", "target": "lib/rate-limit.ts", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-13"}
+{"question": "Locate components/solve/action-bar.tsx", "operation": "LOCATE", "target": "components/solve/action-bar.tsx", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-14"}
+{"question": "What depends on runner service?", "operation": "DOWNSTREAM", "target": "runner-service", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-15"}
+{"question": "Who uses database?", "operation": "DOWNSTREAM", "target": "persistence", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-16"}
+{"question": "What imports game rules?", "operation": "DOWNSTREAM", "target": "game-domain", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-17"}
+{"question": "Show dependents of pyodide", "operation": "DOWNSTREAM", "target": "browser-run", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-18"}
+{"question": "Downstream of lib/runner-client.ts", "operation": "DOWNSTREAM", "target": "lib/runner-client.ts", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-19"}
+{"question": "What does runner service depend on?", "operation": "UPSTREAM", "target": "runner-service", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-20"}
+{"question": "What does API depend on?", "operation": "UPSTREAM", "target": "api", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-21"}
+{"question": "Dependencies of solve screen", "operation": "UPSTREAM", "target": "solve-ui", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-22"}
+{"question": "Upstream of party UI", "operation": "UPSTREAM", "target": "party-ui", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-23"}
+{"question": "What does lib/progress-store.ts use?", "operation": "UPSTREAM", "target": "lib/progress-store.ts", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-24"}
+{"question": "What does quest content import?", "operation": "UPSTREAM", "target": "content", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-25"}
+{"question": "Locate CI", "operation": "LOCATE", "target": "tooling", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-26"}
+{"question": "Where are replay scenes?", "operation": "LOCATE", "target": "replay", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-27"}
+{"question": "Find friends book", "operation": "LOCATE", "target": "screens", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-28"}
+{"question": "Where is app shell?", "operation": "LOCATE", "target": "app-shell", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-29"}
+{"question": "Where is party logic?", "operation": "LOCATE", "target": "social-domain", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-30"}
+{"question": "Trace from editor to database", "operation": "PATH", "from_target": "solve-ui", "to_target": "persistence", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-31", "expected_route": ["solve-ui", "api", "persistence"]}
+{"question": "How does solve screen reach runner service?", "operation": "PATH", "from_target": "solve-ui", "to_target": "runner-service", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-32", "expected_route": ["solve-ui", "api", "runner-service"]}
+{"question": "Show path from API to quest content", "operation": "PATH", "from_target": "api", "to_target": "content", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-33", "expected_route": ["api", "content"]}
+{"question": "Route between auth and database", "operation": "PATH", "from_target": "auth", "to_target": "persistence", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-34", "expected_route": ["auth", "persistence"]}
+{"question": "From app shell to pyodide", "operation": "PATH", "from_target": "app-shell", "to_target": "browser-run", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-35", "expected_route": ["app-shell", "browser-run"]}
+{"question": "From lib/runner-client.ts to lib/run-contract.ts", "operation": "PATH", "from_target": "lib/runner-client.ts", "to_target": "lib/run-contract.ts", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-36", "expected_route": ["lib/runner-client.ts", "lib/run-contract.ts"]}
+{"question": "From database to editor", "operation": "PATH", "from_target": "persistence", "to_target": "solve-ui", "kind": "positive", "provenance": "generated-worker-draft", "id": "m2-37", "expected_route": null}
+{"question": "", "operation": "NOT_SURE", "kind": "empty", "provenance": "generated-worker-draft", "id": "m2-38"}
+{"question": "Please show me", "operation": "NOT_SURE", "kind": "empty", "provenance": "generated-worker-draft", "id": "m2-39"}
+{"question": "Where is billing?", "operation": "NOT_SURE", "kind": "unknown", "provenance": "generated-worker-draft", "id": "m2-40"}
+{"question": "What depends on kafka?", "operation": "NOT_SURE", "kind": "unknown", "provenance": "generated-worker-draft", "id": "m2-41"}
+{"question": "Where is top bar?", "operation": "NOT_SURE", "kind": "ambiguous", "provenance": "generated-worker-draft", "id": "m2-42"}
+{"question": "Locate auth and database", "operation": "NOT_SURE", "kind": "ambiguous", "provenance": "generated-worker-draft", "id": "m2-43"}
+{"question": "Trace from editor to payment gateway", "operation": "NOT_SURE", "kind": "missing-endpoint", "provenance": "generated-worker-draft", "id": "m2-44"}
+{"question": "Show a path to database", "operation": "NOT_SURE", "kind": "missing-endpoint", "provenance": "generated-worker-draft", "id": "m2-45"}
+{"question": "Where is quantum teleporter?", "operation": "NOT_SURE", "kind": "unknown", "provenance": "generated-worker-draft", "id": "m2-46"}
+{"question": "From undefined service to mystery cache", "operation": "NOT_SURE", "kind": "unknown", "provenance": "generated-worker-draft", "id": "m2-47"}

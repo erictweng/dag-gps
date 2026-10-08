@@ -3,7 +3,7 @@
   "repo": "erictweng/quest-coder",
   "ref": "origin/main",
   "commit": "749d8b5",
-  "built_at": "2026-10-08T00:18:54Z",
+  "built_at": "2026-10-08T00:32:18Z",
   "counts": {
    "layers": 18,
    "files": 272,
@@ -20,6 +20,14 @@
    "label": "App shell",
    "desc": "Next.js entry: root layout, the single-page app router (app/page.tsx), global CSS, fonts, SEO, styleguide page",
    "path": "",
+   "aliases": [
+    "home page",
+    "entry",
+    "router",
+    "layout",
+    "page.tsx",
+    "styleguide"
+   ],
    "lines": 2012,
    "tokens": [
     "app",
@@ -55,6 +63,14 @@
    "label": "Auth & session",
    "desc": "Supabase passwordless + Google sign-in, auth callback routes, SSR cookie refresh proxy, session identity",
    "path": "",
+   "aliases": [
+    "login",
+    "sign in",
+    "identity",
+    "cookies",
+    "magic link",
+    "google"
+   ],
    "lines": 206,
    "tokens": [
     "auth",
@@ -92,6 +108,13 @@
    "label": "API routes",
    "desc": "Next.js route handlers: run/submit, progress, packs, session, friends, party (assist, boss), health",
    "path": "",
+   "aliases": [
+    "endpoints",
+    "backend",
+    "route handlers",
+    "server routes",
+    "/api"
+   ],
    "lines": 653,
    "tokens": [
     "api",
@@ -124,6 +147,16 @@
    "label": "Screens",
    "desc": "Top-level views: home hub + world map, quest board, campaigns, quests list, profile, friends book",
    "path": "",
+   "aliases": [
+    "hub",
+    "home",
+    "map",
+    "campaigns",
+    "profile",
+    "friends book",
+    "top bar",
+    "navigation"
+   ],
    "lines": 2104,
    "tokens": [
     "screens",
@@ -158,6 +191,15 @@
    "label": "Solve screen",
    "desc": "Code editor, Quest Notebook/journal, HUD, action bar (Run/Submit), combat log, results, error marks",
    "path": "",
+   "aliases": [
+    "editor",
+    "notebook",
+    "journal",
+    "run button",
+    "submit button",
+    "combat log",
+    "results"
+   ],
    "lines": 1461,
    "tokens": [
     "solve",
@@ -200,6 +242,15 @@
    "label": "Replay scenes",
    "desc": "Animated per-quest replays of a run (dragon queue, goblin cauldron, joust, masquerade, vault, wobble, stairs) and their beat logic",
    "path": "",
+   "aliases": [
+    "animation",
+    "scenes",
+    "replay",
+    "dragon",
+    "goblin",
+    "stairs",
+    "vault"
+   ],
    "lines": 3667,
    "tokens": [
     "replay",
@@ -242,6 +293,13 @@
    "label": "Party UI",
    "desc": "Multiplayer screens: party lobby, draft, assist tray, boss gate/fight, shared Yjs editor",
    "path": "",
+   "aliases": [
+    "multiplayer",
+    "co-op",
+    "boss fight",
+    "assist",
+    "shared editor"
+   ],
    "lines": 1658,
    "tokens": [
     "party",
@@ -271,6 +329,16 @@
    "label": "Design system & moments",
    "desc": "Medieval tokens, primitives, sprites; celebration moments (fireworks, completion, reward toasts, result summary); shared chrome (top bar) and region art",
    "path": "",
+   "aliases": [
+    "sprites",
+    "tokens",
+    "theme",
+    "fireworks",
+    "toasts",
+    "ui kit",
+    "top bar",
+    "region art"
+   ],
    "lines": 1114,
    "tokens": [
     "design",
@@ -317,6 +385,16 @@
    "label": "Game rules",
    "desc": "Pure game logic: types, levels, quests and unlock order, tutorial island, progress/rewards math, attempts, training activity/streaks",
    "path": "",
+   "aliases": [
+    "levels",
+    "unlocks",
+    "rewards",
+    "xp",
+    "gold",
+    "streak",
+    "progression",
+    "game types"
+   ],
    "lines": 1275,
    "tokens": [
     "game",
@@ -360,6 +438,15 @@
    "label": "Party & friends logic",
    "desc": "Pure friends/party rules: friend codes, party questline, assist, boss, draft shapes, assist targets, shared Yjs doc, realtime pings",
    "path": "",
+   "aliases": [
+    "party logic",
+    "friends",
+    "assist",
+    "boss",
+    "draft",
+    "realtime",
+    "yjs"
+   ],
    "lines": 774,
    "tokens": [
     "party",
@@ -393,6 +480,11 @@
    "label": "Party & friends services",
    "desc": "Server orchestration for party assist/boss/draft: load from stores, apply rules, write back, ping realtime",
    "path": "",
+   "aliases": [
+    "party server",
+    "party service",
+    "orchestration"
+   ],
    "lines": 869,
    "tokens": [
     "party",
@@ -427,6 +519,16 @@
    "label": "Stores & database",
    "desc": "Store facades choosing Supabase Postgres (prod) or SQLite (local); Supabase clients; SQL migrations and RPC functions",
    "path": "",
+   "aliases": [
+    "database",
+    "db",
+    "supabase",
+    "sqlite",
+    "migrations",
+    "store",
+    "rpc",
+    "postgres"
+   ],
    "lines": 3836,
    "tokens": [
     "stores",
@@ -470,6 +572,13 @@
    "label": "Run gateway",
    "desc": "Server side of Run/Submit: request contract validation, rate limiting, caller address, authenticated client to the runner service",
    "path": "",
+   "aliases": [
+    "grading request",
+    "runner client",
+    "rate limit",
+    "run contract",
+    "submit pipeline"
+   ],
    "lines": 343,
    "tokens": [
     "run",
@@ -508,6 +617,12 @@
    "label": "In-browser Run basic",
    "desc": "Advisory Run basic in a Web Worker with Pyodide + the runner's grading engine copied at build time; no rewards",
    "path": "",
+   "aliases": [
+    "pyodide",
+    "web worker",
+    "run basic",
+    "client-side python"
+   ],
    "lines": 208,
    "tokens": [
     "in",
@@ -545,6 +660,13 @@
    "label": "Runner service",
    "desc": "Separately deployed Python grader: bearer auth, allowlists, limits, CPython subprocess per case, private pack, redaction",
    "path": "",
+   "aliases": [
+    "grader",
+    "python runner",
+    "cloud run",
+    "sandbox",
+    "judge"
+   ],
    "lines": 1781,
    "tokens": [
     "runner",
@@ -579,6 +701,13 @@
    "label": "Quest content",
    "desc": "Quest packs: public projections shipped to the browser, server/private fixtures, pack delivery helper",
    "path": "",
+   "aliases": [
+    "packs",
+    "challenges",
+    "problems",
+    "fixtures",
+    "hidden tests"
+   ],
    "lines": 22,
    "tokens": [
     "quest",
@@ -612,6 +741,12 @@
    "label": "Build & deploy tooling",
    "desc": "Pack projection builder, privacy check, runtime copy, runner deploy/CI scripts, load test, deployment smoke; root framework configs",
    "path": "",
+   "aliases": [
+    "scripts",
+    "deploy",
+    "ci",
+    "build"
+   ],
    "lines": 1436,
    "tokens": [
     "build",
@@ -649,6 +784,13 @@
    "label": "Tests",
    "desc": "Unit (vitest), e2e (Playwright), runner pytest, Supabase SQL tests",
    "path": "",
+   "aliases": [
+    "test",
+    "e2e",
+    "unit",
+    "pytest",
+    "playwright"
+   ],
    "lines": 11864,
    "tokens": [
     "tests",

@@ -408,6 +408,18 @@ def read_export(root, rel):
         return ""
 
 
+def layer_node(layer, idx, files, texts):
+    """Retain alias phrases as well as tokens for the local/browser scorer."""
+    return {
+        "idx": str(idx), "id": layer["id"], "kind": "layer", "layer": layer["id"],
+        "label": layer["label"], "desc": layer.get("desc", ""), "path": "",
+        "aliases": list(layer.get("aliases", [])),
+        "lines": sum(texts[f].count("\n") for f in files),
+        "tokens": tokens_of(layer["label"], *layer.get("aliases", []), layer.get("desc", ""),
+                            *[g.replace("/**", "") for g in layer["globs"]]),
+    }
+
+
 def build(repo, ref, layers_path, out_path, tops):
     spec = load_json(layers_path)
     layers = spec["layers"]
@@ -466,13 +478,7 @@ def build(repo, ref, layers_path, out_path, tops):
     nodes, idx = [], 1
     for l in layers:
         lfiles = sorted(f for f in files if layer_of.get(f) == l["id"])
-        nodes.append({
-            "idx": str(idx), "id": l["id"], "kind": "layer", "layer": l["id"],
-            "label": l["label"], "desc": l.get("desc", ""), "path": "",
-            "lines": sum(texts[f].count("\n") for f in lfiles),
-            "tokens": tokens_of(l["label"], *l.get("aliases", []), l.get("desc", ""),
-                                *[g.replace("/**", "") for g in l["globs"]]),
-        })
+        nodes.append(layer_node(l, idx, lfiles, texts))
         idx += 1
     for f in files:
         lid = layer_of.get(f)
