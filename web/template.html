@@ -11,8 +11,8 @@
     --panel: #141a24;
     --line: #253040;
     --fg: #d7e0ea;
-    --mut: #8a97a8;
-    --dim: #5a6675;
+    --mut: #a3b1c4;
+    --dim: #95a3b6;
     --accent: #ffb454;
     --node: #1b2432;
     --node-br: #33415a;
@@ -63,6 +63,10 @@
   #stage { position: relative; flex: 1 1 auto; min-width: 0; background: var(--bg); }
   svg#dag { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
   svg#dag.panning { cursor: grabbing; }
+  /* Keep controls/legend outside the pannable SVG, including readable zoom. */
+  #stage { display:flex;flex-direction:column; }
+  svg#dag { position:relative;inset:auto;flex:1 1 auto;min-height:0;height:auto;overflow:hidden; }
+
 
   .toolbar {
     position: absolute; top: 10px; left: 12px; z-index: 3;
@@ -178,6 +182,9 @@
   .node.rel-up .box { stroke: var(--up); fill: #16251b; }
   .node.rel-down .box { stroke: var(--down); fill: #15202e; }
   .faded { opacity: .13; }
+  .node.faded { opacity:1; }
+  .node.faded .t1 { fill:var(--mut); }
+  .node.faded .box { stroke:var(--line); }
   .emph { opacity: 1; }
   #viewport.dimming .edge:not(.emph) { opacity: .07; }
   .node.tour-involved .box { stroke:#56d4c7; fill:#173730; stroke-width:2px; }
@@ -196,7 +203,15 @@
   dialog pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; padding:12px; background:var(--bg); }
   dialog a { color:#56d4c7; display:block; margin-top:10px; }
   :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .node:focus-visible .box { stroke:var(--accent);stroke-width:3px; }
+  button.nm,button.chip { font:inherit;color:inherit;text-align:left;background:transparent;border:0;cursor:pointer;padding:0; }
+  .toolbar { position:relative;top:auto;left:auto;flex:0 0 auto;padding:10px 12px 0;max-width:100%; }
+  .legend { position:relative;bottom:auto;left:auto;flex:0 0 auto;align-self:flex-start;margin:10px 12px 12px;max-width:calc(100% - 24px); }
+  @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important;transition:none!important;scroll-behavior:auto!important; } }
   @media(max-width:650px) { main { flex-direction:column; } #stage { min-height:38vh; } aside { flex:1; min-width:0; border-left:0; border-top:1px solid var(--line); } .ask { margin-left:0; width:100%; } .ask input { min-width:0; width:100%; } .ask .tag,.hint { display:none; } header { gap:7px; } .meta { font-size:10px; gap:6px; } }
+  @media(max-width:650px) { html,body { height:auto; } body { overflow:auto; } main { display:block; } #stage { height:360px;min-height:360px; } aside { overflow:visible;width:100%; } }
+  button,.btn,.toolbar button,.toolbar label,.ask input,input,select,.tour-picker select { border-color:#66758a; }
+  input::placeholder { color:var(--dim);opacity:1; }
   #impact-panel { overflow-wrap:anywhere; border-bottom:1px solid var(--line); margin-bottom:14px; padding-bottom:14px; }
   #impact-panel h3 { color:var(--fg); }
   #impact-panel .alternative { font-size:12px; }
@@ -227,6 +242,9 @@
     <div class="toolbar">
       <button id="btn-back" class="hidden" type="button">← Back to layers</button>
       <button id="btn-fit" type="button">Fit</button>
+      <button id="btn-readable" type="button">Readable zoom</button>
+      <button id="btn-file-prev" class="hidden" type="button">Previous files</button>
+      <button id="btn-file-next" class="hidden" type="button">Next files</button>
       <label><input type="checkbox" id="t-tests"> Show tests layer</label>
       <span class="crumb" id="crumb"></span>
     </div>
@@ -681,8 +699,10 @@ function layerGraph() {
   return layout(nodes, edges);
 }
 
+var FILE_PAGE_SIZE = 80, filePage = 0;
 function fileGraph(layerId) {
-  var files = layerFiles(layerId);
+  var allFiles = layerFiles(layerId);
+  var files = allFiles.slice(filePage * FILE_PAGE_SIZE, (filePage + 1) * FILE_PAGE_SIZE);
   var inside = new Set(files);
   var nodes = files.map(function (f) {
     var n = NODE.get(f) || { label: f, lines: 0 };
@@ -719,12 +739,12 @@ function fileGraph(layerId) {
       });
     } else if (a) {
       var lo = (NODE.get(fe.to) || {}).layer;
-      if (!lo) return;
+      if (!lo || lo === layerId) return;
       stub(lo).out++;
       bump(fe.from, STUB + lo, fe.type, lo, "out");
     } else if (b) {
       var li = (NODE.get(fe.from) || {}).layer;
-      if (!li) return;
+      if (!li || li === layerId) return;
       stub(li).in++;
       bump(STUB + li, fe.to, fe.type, li, "in");
     }
@@ -776,7 +796,7 @@ function nodeSVG(n) {
   var cls = "node " + n.kind;
   var y1 = n.kind === "stub" ? -7 : -4, y2 = n.kind === "stub" ? 11 : 14;
   return '<g class="' + cls + '" data-id="' + esc(n.id) + '" transform="translate(' +
-    n.x.toFixed(1) + ',' + n.y.toFixed(1) + ')">' +
+    n.x.toFixed(1) + ',' + n.y.toFixed(1) + ')" role="button" tabindex="0" aria-label="' + esc(n.tip) + '">' +
     '<title>' + esc(n.tip) + '</title>' +
     '<rect class="box" x="' + (-n.w / 2) + '" y="' + (-n.h / 2) + '" width="' + n.w +
       '" height="' + n.h + '" rx="7"/>' +
@@ -786,6 +806,7 @@ function nodeSVG(n) {
 }
 
 function draw() {
+  if (S.view !== "files") { document.getElementById("btn-file-prev").classList.add("hidden");document.getElementById("btn-file-next").classList.add("hidden"); }
   var W = svg.clientWidth, H = svg.clientHeight;
   var eHTML = G.edges.map(function (e, i) {
     var st = ety(e.type);
@@ -898,17 +919,27 @@ function applyHighlight() {
 function chipRow(ids, cls) {
   if (!ids || !ids.length) return '<div class="empty">none</div>';
   return '<div class="chips">' + ids.map(function (id) {
-    return '<span class="chip ' + cls + '" data-go="' + esc(id) + '">' +
-      esc(layerLabel(id)) + "</span>";
+    return '<button type="button" class="chip ' + cls + '" data-go="' + esc(id) + '">' +
+      esc(layerLabel(id)) + "</button>";
   }).join("") + "</div>";
 }
+var rowLists = new Map(), rowSerial = 0;
 function fileRows(paths, opts) {
   if (!paths || !paths.length) return '<div class="empty">none</div>';
-  return '<ul class="rows">' + paths.map(function (p) {
+  var key = String(++rowSerial); rowLists.set(key,{paths:paths,opts:opts});
+  return '<div data-row-list="' + key + '">' + fileRowsPage(key,0) + '</div>';
+}
+function fileRowsPage(key, page) {
+  var entry = rowLists.get(key), paths = entry.paths, opts = entry.opts;
+  var count = paths.length, start = page * 150;
+  var navigation = count > 150 ? '<p class="sub">Showing ' + (start + 1) + '–' + Math.min(start + 150,count) + ' / ' + count + ' files; other rows on adjacent pages. Ask any full path.</p>' +
+    '<button class="btn" data-row-page="' + (page - 1) + '" data-row-key="' + key + '" ' + (page === 0 ? 'disabled' : '') + '>Previous rows</button>' +
+    '<button class="btn" data-row-page="' + (page + 1) + '" data-row-key="' + key + '" ' + (start + 150 >= count ? 'disabled' : '') + '>Next rows</button>' : '';
+  return navigation + '<ul class="rows">' + paths.slice(start,start + 150).map(function (p) {
     var n = NODE.get(p) || {};
     var ty = opts && opts.type ? '<span class="ty">' + esc(opts.type(p)) + "</span>" : "";
-    return "<li><span class='nm' data-file='" + esc(p) + "' title='" + esc(p) + "'>" +
-      esc(p) + "</span>" + ty + "<span class='num'>" + num(n.lines || 0) + "</span></li>";
+    return "<li><button type='button' class='nm' data-file='" + esc(p) + "' title='" + esc(p) + "'>" +
+      esc(p) + "</button>" + ty + "<span class='num'>" + num(n.lines || 0) + "</span></li>";
   }).join("") + "</ul>";
 }
 
@@ -924,8 +955,8 @@ function panelEmpty() {
     '<ul class="rows">' + LAYER_IDS.slice().sort(function (a, b) {
       return layerLines(b) - layerLines(a);
     }).map(function (id) {
-      return "<li><span class='nm' data-go='" + esc(id) + "' title='" + esc(id) + "'>" +
-        esc(layerLabel(id)) + "</span><span class='num'>" +
+      return "<li><button type='button' class='nm' data-go='" + esc(id) + "' title='" + esc(id) + "'>" +
+        esc(layerLabel(id)) + "</button><span class='num'>" +
         layerFiles(id).length + "f</span><span class='num'>" + num(layerLines(id)) +
         "</span></li>";
     }).join("") + "</ul>";
@@ -987,6 +1018,7 @@ function panelStub(stubId) {
 }
 
 function panelFor() {
+  rowLists.clear();
   if (S.view === "route") {
     if (!S.focused) { panel.innerHTML = "<h2>Route view</h2><p>Only selected real nodes and edges. Click a node to inspect; Back returns to layers.</p>"; return; }
     return NODE.get(S.focused).kind === "layer" ? panelLayer(S.focused) : panelFile(S.focused);
@@ -1045,6 +1077,8 @@ function showLayers(keepFocus) {
   G = layerGraph();
   S.nodes = G.nodes; S.edges = G.edges;
   btnBack.classList.add("hidden");
+  document.getElementById("btn-file-prev").classList.add("hidden");
+  document.getElementById("btn-file-next").classList.add("hidden");
   crumb.innerHTML = "layer view · <b>" + G.nodes.length + "</b> layers, " +
     G.edges.length + " edges" + (S.showTests ? "" : " · tests hidden");
   draw();
@@ -1052,16 +1086,22 @@ function showLayers(keepFocus) {
   panelFor();
 }
 
-function showFiles(layerId) {
+function showFiles(layerId, focusId, pageIndex) {
   clearAnswerHighlight();
   if (!LAYER_INFO[layerId]) return;
+  var inventory = layerFiles(layerId);
+  filePage = focusId ? Math.max(0, Math.floor(inventory.indexOf(focusId) / FILE_PAGE_SIZE)) : (pageIndex || 0);
   S.view = "files"; S.expanded = layerId; S.focused = null;
   G = fileGraph(layerId);
   S.nodes = G.nodes; S.edges = G.edges;
   btnBack.classList.remove("hidden");
   var nf = layerFiles(layerId).length;
   crumb.innerHTML = "<b>" + esc(layerLabel(layerId)) + "</b> · " + nf +
-    " files + " + (G.nodes.length - nf) + " layer stubs, " + G.edges.length + " edges";
+    " files · showing " + Math.min(FILE_PAGE_SIZE,nf - filePage * FILE_PAGE_SIZE) + " (page " + (filePage + 1) + "/" + Math.max(1,Math.ceil(nf / FILE_PAGE_SIZE)) + ") · " + G.edges.length + " visible edges; off-page edges omitted from canvas only. Ask any full path to inspect it.";
+  document.getElementById("btn-file-prev").classList.toggle("hidden", nf <= FILE_PAGE_SIZE);
+  document.getElementById("btn-file-next").classList.toggle("hidden", nf <= FILE_PAGE_SIZE);
+  document.getElementById("btn-file-prev").disabled = filePage === 0;
+  document.getElementById("btn-file-next").disabled = (filePage + 1) * FILE_PAGE_SIZE >= nf;
   draw();
   fitView(G.nodes.length > 40 ? 0.6 : null);
   panelFor();
@@ -1080,7 +1120,7 @@ function setFocus(id) {
         showLayers(true); return;
       }
     } else if (n && n.kind === "file") {
-      showFiles(n.layer); S.focused = id; applyHighlight(); panelFor(); return;
+      showFiles(n.layer, id); S.focused = id; applyHighlight(); panelFor(); return;
     }
   }
   applyHighlight();
@@ -1128,7 +1168,7 @@ function displayRoute(op, from, to) {
     if (r.ids.indexOf(HIDE_BY_DEFAULT) !== -1) document.getElementById('t-tests').checked = S.showTests = true;
     showLayers(false);
   } else if (op === 'LOCATE') {
-    showFiles(NODE.get(from).layer);
+    showFiles(NODE.get(from).layer, from);
     fitView(null); // exact-file Ask must not inherit a minimum zoom that hides its target
   } else {
     clearAnswerHighlight();
@@ -1289,6 +1329,12 @@ svg.addEventListener("dblclick", function (ev) {
 });
 
 panel.addEventListener("click", function (ev) {
+  var rowButton = ev.target.closest("[data-row-page]");
+  if (rowButton) {
+    var key = rowButton.getAttribute("data-row-key");
+    rowButton.closest("[data-row-list]").innerHTML = fileRowsPage(key, Number(rowButton.getAttribute("data-row-page")));
+    return;
+  }
   var t = ev.target.closest("[data-expand],[data-back],[data-clear],[data-go],[data-file]");
   if (!t) return;
   if (t.hasAttribute("data-expand")) return showFiles(t.getAttribute("data-expand"));
@@ -1300,6 +1346,15 @@ panel.addEventListener("click", function (ev) {
 
 btnBack.addEventListener("click", function () { showLayers(false); });
 document.getElementById("btn-fit").addEventListener("click", function () { fitView(null); });
+document.getElementById("btn-readable").addEventListener("click", function () { fitView(1); });
+document.getElementById("btn-file-prev").addEventListener("click", function () { showFiles(S.expanded,null,filePage - 1); });
+document.getElementById("btn-file-next").addEventListener("click", function () { showFiles(S.expanded,null,filePage + 1); });
+svg.addEventListener("keydown", function(ev) {
+  var node = ev.target.closest(".node[data-id]");
+  if (!node || !["Enter"," "].includes(ev.key)) return;
+  ev.preventDefault();var id = node.getAttribute("data-id");
+  if (ev.shiftKey && NODE.get(id) && NODE.get(id).kind === "layer") showFiles(id); else setFocus(id);
+});
 document.getElementById("refresh-info").addEventListener("toggle", function () { fitView(null); });
 document.getElementById("t-tests").addEventListener("change", function (ev) {
   S.showTests = ev.target.checked;
@@ -1319,6 +1374,7 @@ window.addEventListener("resize", function () {
 
 // ================================================================ test hook
 window.dagGps = {
+  layout: layout,
   state: function () {
     return {
       view: S.view, focused: S.focused, expanded: S.expanded,

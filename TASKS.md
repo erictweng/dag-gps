@@ -12,7 +12,7 @@ Authoritative [v1 plan](.hermes/plans/2026-10-07_203500-v1-milestones.md),
 [fixture manifest](docs/V1_FIXTURES.json). V1.0 is parent-accepted on main `6bfc5ee`,
 V1.1 integrated at `7bc6769`, V1.2 integrated at `a5b0255`; Eric authorized full
 **V1.3a+b+c**, now integrated at `c6543f6`, and full **V1.4a+b+c**. V1.4
-worker feature/infrastructure gates verified; real-user tuning deferred. Worker samples
+integrated at `99652d1`; real-user tuning deferred. Worker samples
 do not replace Eric's semantic review.
 
 | Milestone | Status | Evidence / next action |
@@ -28,11 +28,13 @@ do not replace Eric's semantic review.
 | V1.3b offline review editor | **integrated main `c6543f6`** | Rename/move/split/merge/delete/search/undo/reset, migration warnings/no rebinding, inert ≤8 MiB imports, real cycle evidence and explicit review/export |
 | V1.3c real export/build roundtrip | **integrated main `c6543f6`; Eric semantic review pending** | Actual downloads build new self a5b0255 (48 files, 3 layers, 38 links) and quest 749d8b5 (272, 38, 415); real Ask, invalid all-byte preservation; declared self 47/48 scan, blocked unrestricted draft retained |
 | V1.3 full automated gate | **integrated main `c6543f6`** | All `.verify.json` recipes exit 0; 176 Python + 130 JS, strict parity/all legacy gates; onboarding14 / 10 inspected 1280/1920 screenshots, zero errors/network; worker samples not Eric-approved |
-| V1.4a opt-in history/labels | **worker verified; parent pending** | Explicit consent/OFF each load, indicator, completed scorer Ask, visible tour/impact exclusions, Correct/Wrong/Unclear independent expectations, local deletion/clear/download/atomic inert imports, bounds/unsaved fallback |
-| V1.4b provenance/evaluation | **worker verified; parent pending** | Full pin/map/scorer SHA/overlay, original/off/on, user/generated/dev/heldout separation, first-label heldout freeze; independent route BFS; counts/top1/top3/warm scorer p95; [report](docs/USER_EVAL_REPORT.md) |
+| V1.4a opt-in history/labels | **integrated main `99652d1`** | Explicit consent/OFF each load, indicator, completed scorer Ask, visible tour/impact exclusions, Correct/Wrong/Unclear independent expectations, local deletion/clear/download/atomic inert imports, bounds/unsaved fallback |
+| V1.4b provenance/evaluation | **integrated main `99652d1`** | Full pin/map/scorer SHA/overlay, original/off/on, user/generated/dev/heldout separation, first-label heldout freeze; independent route BFS; counts/top1/top3/warm scorer p95; [report](docs/USER_EVAL_REPORT.md) |
 | V1.4c real-user improvement | **deferred — user labels pending** | No scorer tuning on generated fixtures; actual runner.py intent unconfirmed; collect ideally ≥20 confirmed Eric cases and designate genuine holdout before tuning |
-| V1.4 full automated gate | **worker verified; parent pending** | 176 Python + 150 JS; 20 feedback tests, full build/test/smoke/legacy parity exit 0; feedback18 / 6 inspected screenshots, zero errors/network; actual generated export 8 records / 4 evaluable / 0 user-labeled |
-| V1.5 release | queued — not started | All milestone/legacy gates plus scale/accessibility and **Eric unaided session**; until human gate, release candidate only |
+| V1.4 full automated gate | **integrated main `99652d1`** | 176 Python + 150 JS; 20 feedback tests, full build/test/smoke/legacy parity exit 0; feedback18 / 6 inspected screenshots, zero errors/network; actual generated export 8 records / 4 evaluable / 0 user-labeled |
+| V1.5a full-session audit | worker audited; parent/human pending | Both actual find/inspect/tour-or-unavailable/impact/alias/export/grouping-download/refresh/import/feedback flows; `artifacts/release-browser.json` |
+| V1.5b scale/accessibility | worker checks; parent pending | Real maps + exact synthetic 1000/5000 nodes; separate scorer/layout/full Ask, Axe and computed SVG contrast, 1920/1280/390 and actual keyboard recovery; [release evidence](docs/V1_RELEASE.md) |
+| V1.5c packaging/docs | candidate only; parent/human pending | Repeatable fail-closed release runner, versioned local-only manifest/hashes/sizes, private-source review, install/build/test/storage guide; **Eric unaided session and semantic review still pending** |
 
 No automated V1.3 blocker within declared scope; unrestricted new self scan correctly
 rejects its generated fixture and remains visible. Parent owns independent acceptance/
@@ -192,9 +194,11 @@ Status: integrated on main at `4898578`; historical tours run from `3e811d9` bel
 - Eric review/correction of generated eval answers and map aliases.
 - M4 hosted backend remains dropped unless revisited.
 
-## Blocked
+## Current release acceptance pending
 
-- Nothing.
+- Eric unaided real-repo session and semantic grouping review.
+- Parent independent release review/rerun and direct-main integration/push.
+- V1.4 real-user tuning deferred until confirmed labels / pre-tuning holdout; ≥20 is a soft goal.
 
 ## Done
 

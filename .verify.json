@@ -9,6 +9,13 @@
     "test": "python3 -m unittest discover -s tests -q && node --test tests/*.test.cjs && node scripts/eval_scorer.cjs && node scripts/eval_lookup.cjs && node scripts/eval_alias.cjs && node scripts/eval_user_queries.cjs",
     "smoke": "python3 scripts/build_map.py --repo /Users/aibert/projects/quest-coder --ref 749d8b5de490cc2e6a0c98c713fab3ab856da799 --layers maps/quest-coder/layers.json --out artifacts/lookup-map-smoke.json && python3 scripts/check_snapshot.py maps/quest-coder/map.json artifacts/lookup-map-smoke.json && python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html --tours maps/quest-coder/tours.json --repo /Users/aibert/projects/quest-coder && node scripts/smoke_canvas.mjs dist/quest-coder.html artifacts/ && node scripts/check_interactions.cjs && node scripts/smoke_scorer.cjs && node scripts/smoke_m3.cjs && node scripts/smoke_lookup.cjs && node scripts/smoke_alias.cjs && python3 scripts/build_project.py --repo /Users/aibert/projects/quest-coder --ref 749d8b5de490cc2e6a0c98c713fab3ab856da799 --layers maps/quest-coder/layers.json --tops app components lib proxy.ts scripts browser-runtime runner --tours maps/quest-coder/tours.json --out-dir dist/quest-refresh --previous-map maps/quest-coder/map.json && python3 scripts/build_project.py --repo . --ref f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93 --layers maps/dag-gps/layers.json --out-dir dist/dag-gps && python3 scripts/smoke_refresh.py && node scripts/smoke_refresh.cjs && node scripts/smoke_tours.cjs && node scripts/smoke_impact.cjs && python3 scripts/build_project.py --repo /Users/aibert/projects/quest-coder --ref 749d8b5de490cc2e6a0c98c713fab3ab856da799 --layers maps/quest-coder/layers.json --tops app components lib proxy.ts scripts browser-runtime runner --without-tours --out-dir dist/quest-no-tours && node scripts/smoke_trust.cjs && node scripts/smoke_onboarding.cjs && node scripts/smoke_feedback.cjs"
   },
+  "release_commands": {
+    "release_session": "node scripts/smoke_release.cjs",
+    "accessibility": "node scripts/audit_release.cjs",
+    "performance": "node scripts/bench_release.cjs",
+    "ui_performance": "node scripts/bench_release_ui.cjs",
+    "milestone_acceptance": "python3 scripts/validate_release_evidence.py"
+  },
   "required_files": [
     "PROJECT.md",
     "TASKS.md",
@@ -87,7 +94,17 @@
     "scripts/eval_user_queries.cjs",
     "scripts/smoke_feedback.cjs",
     "tests/query-feedback.test.cjs",
-    "docs/USER_EVAL_REPORT.md"
+    "docs/USER_EVAL_REPORT.md",
+    "docs/V1_RELEASE.md",
+    "scripts/release_check.py",
+    "scripts/package_release.py",
+    "scripts/validate_release_evidence.py",
+    "scripts/bench_release.cjs",
+    "scripts/bench_release_ui.cjs",
+    "scripts/audit_release.cjs",
+    "scripts/smoke_release.cjs",
+    "tests/release.test.cjs",
+    "tests/test_release.py"
   ],
   "timeout_seconds": 600,
   "examples": {

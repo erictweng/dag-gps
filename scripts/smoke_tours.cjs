@@ -39,7 +39,7 @@ const spec=require('../maps/quest-coder/tours.json'),ROOT=path.resolve(__dirname
      assert.equal(await page.locator('#tour-evidence').evaluate(d=>d.open),true);
      assert.equal(await page.locator('#evidence-title').innerText(),`${e.path}:${e.start}–${e.end} · ${e.symbol}`);
      const actual=await page.locator('#evidence-source').innerText();
-     const pinned=require('node:child_process').execFileSync('git',['-C','/Users/aibert/projects/quest-coder','show',spec.commit+':'+e.path],{encoding:'utf8'}).split(/\r?\n/).slice(e.start-1,e.end).map((l,k)=>`${e.start+k} | ${l}`).join('\n');
+     const pinned=require('node:child_process').execFileSync('git',['-C',(process.env.DAG_GPS_QUEST_REPO||'/Users/aibert/projects/quest-coder'),'show',spec.commit+':'+e.path],{encoding:'utf8'}).split(/\r?\n/).slice(e.start-1,e.end).map((l,k)=>`${e.start+k} | ${l}`).join('\n');
      assert.equal(actual,pinned);
      assert.ok((await page.locator('#evidence-permalink').getAttribute('href')).includes('/blob/'+spec.commit+'/'));
      if(i===0&&j===0)await shot(tour.id+'-evidence');
@@ -55,7 +55,7 @@ const spec=require('../maps/quest-coder/tours.json'),ROOT=path.resolve(__dirname
    assert.equal(await linkCitations.count(),linkEvidence.length);
    for(let j=0;j<linkEvidence.length;j++){
     const e=linkEvidence[j];await linkCitations.nth(j).click();
-    const pinned=require('node:child_process').execFileSync('git',['-C','/Users/aibert/projects/quest-coder','show',spec.commit+':'+e.path],{encoding:'utf8'}).split(/\r?\n/).slice(e.start-1,e.end).map((l,k)=>`${e.start+k} | ${l}`).join('\n');
+    const pinned=require('node:child_process').execFileSync('git',['-C',(process.env.DAG_GPS_QUEST_REPO||'/Users/aibert/projects/quest-coder'),'show',spec.commit+':'+e.path],{encoding:'utf8'}).split(/\r?\n/).slice(e.start-1,e.end).map((l,k)=>`${e.start+k} | ${l}`).join('\n');
     assert.equal(await page.locator('#evidence-source').innerText(),pinned);
     const index=(await state()).tour.index;await page.keyboard.press('ArrowRight');assert.equal((await state()).tour.index,index);
     await page.keyboard.press('Escape');assert.equal(await page.locator('#tour-evidence').evaluate(d=>d.open),false);

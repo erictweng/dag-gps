@@ -1,33 +1,57 @@
 # Status — DAG GPS
 
-Last updated: 2026-10-07 PDT
+Last updated: 2026-10-08 PDT
 
-## Current focus — V1.4 query feedback/evaluation worker verified / parent pending
+## Current focus — V1.5 release candidate worker audit / parent and Eric pending
 
-Worker `v1-feedback` starts from clean main `c6543f6` (integrated V1.3). No worker
-merge/push. Full opt-in capture and evaluation infrastructure implemented; parent
-independent review and Eric's confirmed real labels remain pending.
+Worker branch `v1-release` from clean main `99652d1` (V1.4 integrated). Eric
+explicitly authorized all V1.5a/b/c together. No worker push or merge. Current
+release guide: [V1_RELEASE.md](docs/V1_RELEASE.md); automated evidence is local/ignored.
 
-- OFF each load, explicit local consent, persistent recording badge, completed ordinary
-  Ask including abstentions/PATH; tours/impact visibly excluded (no fake operation map).
-- Correct/Wrong/Unclear and editable expectations/separate PATH endpoints; Wrong can
-  have unknown intent, Unclear is never NOT_SURE truth. No labels automatically teach
-  aliases. Separate feedback store, deletion/confirmed clear, actual download/export.
-- Bounded atomic consented imports; stale source/scorer retained ineligible, IDs not
-  rebound. 200 records / 90 days / 2 MiB retention, denied/quota unsaved export fallback.
-- Full source pin/metadata/map/scorer SHA/alias provenance, original/alias-off/on metrics;
-  user/generated + immutable development/heldout separation, frozen first-label holdout.
-- Full `.verify.json` build/test/smoke exit 0; 176 Python + 150 JS, 20 feedback tests;
-  strict pinned parity and all legacy gates. Browser 18 checks / 6 inspected 1280/1920
-  screenshots; no errors/external requests. See [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md).
-- Exact browser export: 8 generated fixtures, 4 evaluable, zero real-user labels. Known
-  bearer-auth miss preserved; actual Eric runner.py intent still unconfirmed. No scorer
-  tuning; mini c real-user improvement deferred until confirmed cases / pre-tuning holdout.
-- Evidence: `artifacts/feedback-verification.json`, `feedback-{build,test,smoke}.log`,
-  `feedback-browser.json`, `feedback-export-{generated,eval}.json`, `feedback-*.png`;
-  regenerated navigator `dist/quest-refresh/index.html`. Artifacts local/ignored.
-- ≥20 Eric cases is a soft collection goal, not feature blocker; no real-user accuracy
-  or v1 release claims. V1.5/Eric semantic review and unaided session still pending.
+- Full real-browser sessions on approved quest and legacy self, then **actual downloaded
+  corrected grouping JSON** rebuilds at the separate onboarding pins. Find/inspect,
+  tours or unavailable, impact witness/recovery, explicit alias review/export/import,
+  generated feedback consent/label/export and reload OFF: 2 demos / 22 step groups.
+- Narrow fixes: low-contrast dim text and faded SVG labels, keyboard-accessible graph /
+  sidebar links, Readable zoom vs Fit overview, phone document scrolling, 80-file canvas
+  and 150-row list paging with visible counts/omission and full-corpus Ask target paging.
+  A screenshot-discovered readable-zoom overlay issue is fixed by separate toolbar/legend
+  rows outside the clipped SVG; actual1280/390 geometry assertions and legacy interactions pass.
+- Scale API benchmark retains every node/edge and cycles: real quest 290 nodes, legacy
+  self 30, newer self 51; exact synthetic 1000/5000 nodes. Before optimization an
+  exploratory 5001-node fixture exceeded target badly; indexed stable sorting, bounded
+  spelling DP/prefix-suffix removal, lazy zero-score metadata and validation lookup
+  preserve full baseline distributions/evidence. No matching-rule/user tuning.
+- Latest extended scorer measurement: <10ms per-query p95 at 1000 samples/query/mode;
+  exact final-run numbers are in release-performance.json. Earlier candidate attempt
+  **10.457ms** miss at 100 samples is retained, not erased. Shared system load affects
+  wall latency; raw layout, synchronous Ask/render and two paint opportunities separate.
+- Axe WCAG2 A/AA + WCAG2.1 AA: 23 recorded states, zero violations; incomplete color
+  checks remain explicitly listed, including off-screen text. Computed SVG contrast for
+  194 displayed text instances in active states had minimum 5.932:1. Real keyboard /
+  modal focus/Escape and reduced-motion scope checked; no screen-reader certification.
+- Full candidate-2 build/test/smoke plus all release/milestone gates passed with
+  **180 Python + 152 JS tests**, 32 primary screenshots, 70 recorded click/key events.
+  Candidate-2 worst warm scorer p95 was8.322ms (50,000 samples), no end-to-end claim.
+  The later narrow SVG-control overlap fix passed legacy interaction/scale/Axe and focused
+  regression checks. Source-integrity/manifest packaging is rerun after local commit;
+  `artifacts/release-check/verification.json` is the final authoritative report.
+- Versioned local-only candidate `dist/release/v1.0.0-rc.1/`; hashes/sizes/source pins /
+  exact build commit and pending human gates. Private tour excerpts require sharing
+  review; bounded credential-pattern scan is not comprehensive secret certification.
+- Eric's **unaided real session and semantic grouping review remain pending**. Parent
+  independently reviews/reruns/integrates. No blanket no-P0/P1, final release or real-user
+  accuracy claim. V1.4 real-user improvement remains deferred (zero confirmed labels).
+
+## Integrated V1.4 — main `99652d1`, historical worker evidence
+
+V1.4 opt-in capture/evaluation infrastructure is integrated. Its report retains the
+original worker context: [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md). OFF each load,
+explicit consent, separate alias confirmation, bounded inert imports/local export,
+source/map/scorer/overlay provenance, frozen pre-label holdout, and original/off/on
+metrics remain. Historic feature gates: 176 Python + 150 JS, feedback18 / 6 screenshots.
+All exports in worker smoke are generated fixtures; actual runner.py intent remains
+unconfirmed, ≥20 Eric cases soft collection goal. No real-user tuning/accuracy claim.
 
 ## Integrated V1.3 — historical worker evidence (main `c6543f6`)
 
@@ -122,18 +146,19 @@ not only the pure engine. `v1-impact` starts from that clean main; no worker pus
 
 ## Active worker / next action
 
-V1.3 implementation and local verification complete. Parent independently reviews
-onboarding spec/code quality, explicit new self extraction scope, actual downloads,
-cycle/migration safety and browser evidence, reruns gates, then integrates/pushes main
-per [WORKFLOW](docs/WORKFLOW.md). Eric reviews semantic grouping; automated samples do
-not satisfy that gate. V1.4 writes stay serialized against shared UI/scorer.
+V1.3 and V1.4 are integrated at c6543f6 / 99652d1. V1.5 worker supplies a locally
+committed release candidate after verified gates; parent independently reviews/reruns,
+then integrates/pushes only under [WORKFLOW](docs/WORKFLOW.md). Eric performs semantic
+review and the unaided acceptance script in V1_RELEASE.md. Neither automation nor a
+worker sample review marker satisfies either human gate.
 
 ## Blockers and release boundary
 
-No automated V1.3 blocker within its declared supported scope; unrestricted self
-extraction correctly fails on the generated fixture and is visibly retained. Parent
-V1.3 acceptance and Eric semantic review remain pending. Entire v1 is **not** complete:
-optional evaluation/release and Eric's unaided session remain.
+Unrestricted newer self extraction still correctly fails on generated untracked
+JSON; the declared 47/48 scan is retained, not a universal extraction success.
+V1.5 automated gates and candidate packaging are distinct from final acceptance.
+Entire v1 is **not** complete: Eric semantic review / unaided session and parent
+release review remain pending; earlier performance failures are recorded explicitly.
 Impact is static potential reachability, not execution/coverage or guaranteed breakage.
 Known prior limitations retained: mixed layer/file routes, bearer-auth abstention,
 dynamic Python/conditional paths and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,

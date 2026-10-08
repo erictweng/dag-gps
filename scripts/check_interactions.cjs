@@ -1,4 +1,4 @@
-const {chromium}=require('/Users/aibert/projects/quest-coder-assist/node_modules/playwright');
+const {chromium}=require(process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright');
 const {pathToFileURL}=require('node:url');
 const assert=require('node:assert/strict');
 (async()=>{const b=await chromium.launch();try{const p=await b.newPage({viewport:{width:1920,height:1080}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(pathToFileURL(require('node:path').resolve('dist/quest-coder.html')).href);
