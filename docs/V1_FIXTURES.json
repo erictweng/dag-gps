@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "purpose": "V1 acceptance fixture inventory; current fixtures versus future planned tests, not a claim of complete release coverage",
+  "baseline_implementation_commit": "489857805e06e250462e545d213b09111417362e",
+  "real_repositories": [
+    {
+      "id": "quest-coder-pinned",
+      "repo": "erictweng/quest-coder",
+      "local_path": "/Users/aibert/projects/quest-coder",
+      "commit": "749d8b5de490cc2e6a0c98c713fab3ab856da799",
+      "layers": "maps/quest-coder/layers.json",
+      "map": "maps/quest-coder/map.json",
+      "tours": "maps/quest-coder/tours.json",
+      "tops": ["app", "components", "lib", "proxy.ts", "scripts", "browser-runtime", "runner"],
+      "counts": {"layers": 18, "files": 272, "layer_connections": 52, "file_connections": 413},
+      "provenance": "real immutable Git source; worker-drafted layers, generated lookup labels and manually source-audited tours; not Eric-approved target labels",
+      "current_gates": [".verify.json:build", ".verify.json:smoke", "scripts/check_snapshot.py", "tests/test_tours.py", "scripts/smoke_tours.cjs"],
+      "limitations": ["182 extracted nodes versus 272 assignment inventory files", "relative Python import and computed Pyodide import omitted", "14 non-source targets dropped", "one unresolved HTTP reference", "mixed layer/file routing unsupported"]
+    },
+    {
+      "id": "dag-gps-pinned",
+      "repo": "erictweng/dag-gps",
+      "local_path": "/Users/aibert/projects/dag-gps",
+      "commit": "f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93",
+      "layers": "maps/dag-gps/layers.json",
+      "map": "dist/dag-gps/map.json",
+      "tours": null,
+      "scope": "generic included source inventory at this commit; output is generated and ignored",
+      "counts": {"layers": 3, "files": 27, "layer_connections": 3, "file_connections": 19},
+      "provenance": "real immutable pre-refresh/pre-tours source; worker-drafted layer spec, not Eric semantic approval",
+      "current_gates": [".verify.json:build", ".verify.json:smoke", "scripts/smoke_refresh.cjs"],
+      "limitations": ["old snapshot does not demonstrate current implementation coverage", "no curated tours", "four computed Playwright requires unsupported", "11 JSON target imports dropped"],
+      "future_snapshot_policy": "V1.3 explicitly choose and record a newer commit; never silently replace this baseline pin"
+    }
+  ],
+  "synthetic_cases": [
+    {
+      "id": "static-extraction-and-publish",
+      "provenance": "generated development fixtures; not real user queries",
+      "status": "existing and rerun in V1.0",
+      "fixtures": ["tests/test_refresh.py::RefreshTests", "tests/test_build_map.py"],
+      "cases": ["CommonJS UMD imports with comment/string masking", "multiline Python local-script import", "nonliteral require and relative Python unsupported", "ambiguous Python suffix rejection", "unmapped/duplicate/unresolved/layer-cycle rejection", "mutable worktree isolation", "render/promotion failure preservation", "added/deleted typed links and reassignment", "excluded vendor/generated directories"]
+    },
+    {
+      "id": "routes-and-lookup",
+      "provenance": "generated development regressions/challenge; not held-out or Eric-authored",
+      "status": "existing and rerun in V1.0",
+      "fixtures": ["tests/router.test.cjs", "tests/lookup.test.cjs", "eval/eval.jsonl", "eval/lookup.jsonl"],
+      "cases": ["cycles, lexical shortest ties, isolated/unreachable/unknown IDs", "mixed endpoint rejection", "missing runner.py and typo suggestion-only", "duplicate basename choice outside top three", "zero-evidence abstention", "bearer-auth responsibility miss retained"]
+    },
+    {
+      "id": "alias-consent-and-refresh",
+      "provenance": "generated development fixtures, including actual temporary Git commits; not Eric-authored labels",
+      "status": "existing and rerun in V1.0",
+      "fixtures": ["tests/alias.test.cjs", "scripts/eval_alias.cjs", "scripts/smoke_alias.cjs", "scripts/smoke_refresh.py", "scripts/smoke_refresh.cjs"],
+      "cases": ["Python judge baseline already correct", "Python judge station abstention then separately confirmed correction", "cancel/override/review do not persist", "invalid imports inert and atomic", "storage failure/session export", "surviving IDs retained, deleted IDs orphaned"],
+      "generated_commit_evidence": "artifacts/v1-baseline/legacy-artifacts/refresh-fixture.json and refresh-browser.json"
+    },
+    {
+      "id": "tour-validation",
+      "provenance": "generated negative fixtures around source-audited real tours; not observed application execution",
+      "status": "existing and rerun in V1.0",
+      "fixtures": ["tests/test_tours.py", "tests/tours.test.cjs", "scripts/smoke_tours.cjs"],
+      "cases": ["wrong repo/commit/ID/path/range/excerpt rejection", "stale/invalid tour preservation", "malicious strings inert", "zero-tour repository", "every step and citation against immutable source"]
+    },
+    {
+      "id": "future-v1-edges-and-scale",
+      "provenance": "planned generated fixtures only; no tests or results claimed yet",
+      "status": "not implemented in V1.0",
+      "milestones": ["V1.1a", "V1.2", "V1.3", "V1.4", "V1.5"],
+      "cases": ["impact-specific direct/transitive shortest witnesses and HTTP separation", "test classification and coverage-unknown", "affected-tour citation references", "trust diagnostics and static relative Python improvement", "human-reviewed layer editor roundtrip", "opt-in feedback capture provenance/privacy", "synthetic 1000/5000-node performance and accessibility"],
+      "owner": "respective milestone worker implements; parent independently verifies"
+    }
+  ],
+  "user_feedback": {
+    "runner.py": {"origin": "real Eric feedback recorded in approved plan", "intended_target": null, "label_status": "needs Eric confirmation; do not infer quest_runner.py or runner-service"},
+    "eric_authored_labeled_query_set": null,
+    "release_session": "Eric must complete real workflow without operational assistant help; pending"
+  }
+}

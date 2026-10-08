@@ -8,6 +8,24 @@ The indexed-table, operation-head and per-target-head pattern is borrowed from
 [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast). Validated
 normalized distributions remain available, but are not correctness probabilities.
 
+## v1 foundation and release contract
+
+Eric approved V1.0 only. Baseline worker verification passes; parent independent
+acceptance/integration is pending. V1.1a impact analysis is **not started**, and
+v1 release requires Eric's unaided real repository session, not just automated gates.
+
+- [Approved v1 milestone plan](.hermes/plans/2026-10-07_203500-v1-milestones.md)
+- [Locked acceptance contract and evidence owners](docs/V1_ACCEPTANCE.md)
+- [Supported-source matrix / extraction limits](docs/SUPPORTED_SOURCES.md)
+- [Fresh baseline report](docs/V1_BASELINE_REPORT.md) and [fixture provenance](docs/V1_FIXTURES.json)
+- [Current status](STATUS.md), [tasks](TASKS.md), [authorized delivery workflow](docs/WORKFLOW.md)
+
+V1.0 reran unchanged `.verify.json` build/test/smoke: 138 Python + 93 JS tests,
+all exit 0. Evidence is local/ignored under `artifacts/v1-baseline/`; earlier
+sections below describe integrated pre-v1 functionality, not a complete v1 release.
+Desktop-first offline/local, optional query capture off by default, no execution
+tracing, and human-reviewed onboarding are locked defaults, not newly shipped features.
+
 ## Architecture-guided tours
 
 ```bash
@@ -152,7 +170,8 @@ There is no server, model training, automatic alias generation or network learni
 
 ## Verification and limits
 
-- Commands: `.verify.json`; current report: `docs/REFRESH_REPORT.md`; alias history: `docs/ALIAS_LEARNING_REPORT.md`.
+- Commands: `.verify.json`; current baseline: `docs/V1_BASELINE_REPORT.md`;
+  integrated feature history: `docs/REFRESH_REPORT.md`, `docs/TOURS_REPORT.md`, `docs/ALIAS_LEARNING_REPORT.md`.
 - Filename lookup history: `docs/LOOKUP_REPORT.md`; M3 routing: `docs/M3_REPORT.md`;
   scorer provenance: `docs/M2_REPORT.md`.
 - 138 Python + 93 JS tests (15 tour fixtures + 5 controller tests, 17 refresh fixtures, 15 alias tests);

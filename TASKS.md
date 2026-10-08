@@ -5,7 +5,29 @@ should be small enough for one worker run to finish and verify.
 
 Status values: `queued` | `running` | `verified` | `blocked` | `failed`
 
-## Now
+## Now — approved v1 sequence
+
+Authoritative [v1 plan](.hermes/plans/2026-10-07_203500-v1-milestones.md),
+[acceptance/evidence owners](docs/V1_ACCEPTANCE.md), [supported sources](docs/SUPPORTED_SOURCES.md),
+[fixture manifest](docs/V1_FIXTURES.json). Eric approved starting **V1.0 only**.
+
+| Milestone | Status | Evidence / next action |
+|---|---|---|
+| V1.0 baseline and contract | **verified by worker; parent pending** | Unchanged build/test/smoke exit 0; 138 Python + 93 JS; [fresh baseline](docs/V1_BASELINE_REPORT.md); parent independent spec/quality review and rerun before main integration |
+| V1.1a pure impact analysis | **queued — not started** | Next after V1.0 acceptance; audit actual import witnesses/test classification, deterministic analysis tests, no UI/scorer/extractor redesign |
+| V1.1b impact UI/Ask | queued — not started | Follows 1.1a, real-file browser evidence |
+| V1.2 trust / narrow extraction / stale tours | queued — not started | Fixtures first; existing gaps disclosed, no runtime-completeness fiction |
+| V1.3 reviewed onboarding | queued — not started | Human review/export/rebuild; explicitly newer supported self snapshot |
+| V1.4 opt-in query evaluation | queued — not started | May run alongside after V1.0; consent off by default; no inferred Eric labels, shared writes serialized |
+| V1.5 release | queued — not started | All milestone/legacy gates plus scale/accessibility and **Eric unaided session**; until human gate, release candidate only |
+
+No automated V1.0 blocker. Parent owns independent acceptance/integration/direct
+main push per WORKFLOW; worker commits locally only. V1.0 added no impact feature.
+The old worker-local/pending statuses below are historical and now integrated as
+of baseline main 4898578; old metrics are not a fresh execution. Fresh quest
+non-source drops are 14 versus historical prose's 15 (see baseline discrepancy).
+
+## Integrated pre-v1 history
 
 ### Milestone 1 — Canvas
 
@@ -57,7 +79,7 @@ Status: verified on `m2-scorer`; parent independently verified before M3.
 ## Milestone 3 — Offline Ask + route highlighting
 
 Eric approved M3 after parent verified M2.
-Status: verified locally on `m3-routing`; parent rerun/review pending.
+Status: integrated on main; historical `m3-routing` worker results below.
 
 - Inlined scorer/router, safe script serialization, enabled Enter + visible Ask button.
 - Validated IDs; LOCATE/Dependencies/Dependents/directed deterministic BFS; realtime
@@ -72,7 +94,7 @@ Status: verified locally on `m3-routing`; parent rerun/review pending.
 ## Filename lookup + evidence-first answers
 
 Eric approved the next milestone after M3.
-Status: verified locally on `lookup-evidence`, based on `1844aa2`; parent independent review pending.
+Status: integrated on main; historical `lookup-evidence` run based on `1844aa2` below.
 
 - Separate file/architecture retrieval; exact path, basename, stem, partial and conservative
   spelling tiers. All duplicate paths; missing runner.py is honest; no fuzzy auto-action.
@@ -90,8 +112,8 @@ Status: verified locally on `lookup-evidence`, based on `1844aa2`; parent indepe
 ## Explicit correction-driven alias learning
 
 Eric approved running this next milestone without waiting for real failed queries.
-Status: verified locally on `alias-learning` from `ba72d1b`; parent independent
-verification/PR pending. All regression examples are synthetic, not user evidence.
+Status: integrated on main; historical `alias-learning` run from `ba72d1b` below.
+All regression examples are synthetic, not user evidence.
 
 - Opt-in only after a real alternative choice; exact alias and real target shown
   before a separate confirmation. Override/review/cancel/asking do not persist.
@@ -115,8 +137,7 @@ verification/PR pending. All regression examples are synthetic, not user evidenc
 
 ## Reusable maps and safe refresh
 
-Status: verified locally on `reusable-refresh` from `f92d0cf`; parent review and
-independent rerun pending. Worker local commit only; parent handles authorized main push.
+Status: integrated on main; historical `reusable-refresh` run from `f92d0cf` below.
 
 - One-command repo/ref/layers → staged validated map.json/index.html/diff.json/report.json.
 - Immutable Git archives; generic source discovery or explicit scope; actual origin identity.
@@ -134,8 +155,7 @@ independent rerun pending. Worker local commit only; parent handles authorized m
 
 ## Architecture-guided tours
 
-Status: verified locally on `architecture-tours` from main `3e811d9`; parent independent
-verification/integration pending. Worker local commit only, no push/merge.
+Status: integrated on main at `4898578`; historical tours run from `3e811d9` below.
 
 - Three tours at exact quest-coder archive SHA `749d8b5de490cc2e6a0c98c713fab3ab856da799`:
   Run basic (5), Submit (8), Sign in (5), grounded in code/function/constant evidence.

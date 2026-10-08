@@ -1,11 +1,61 @@
 # Status — DAG GPS
 
-Last updated: 2026-10-07
+Last updated: 2026-10-07 PDT
 
-## Current Focus
+## Current focus — V1.0 worker verified / parent pending
+
+`v1-baseline` starts at current main `489857805e06e250462e545d213b09111417362e`.
+The prior tours/refresh/alias/lookup/routing implementations are already integrated
+on main; older worker-pending prose below has been reconciled against Git.
+
+- V1.0 only: baseline, locked release contract, truthful supported-source matrix,
+  fixture provenance and coherent status. No new runtime user feature.
+- Unchanged `.verify.json` build/test/smoke each exit 0 on 2026-10-07 PDT:
+  **138 Python + 93 JS tests**, 10 map checks and full pinned parity.
+- Generated original eval op 47/47, target top1/top3 44/44; lookup op/label 39/40,
+  top1 16/17, top3 17/17, negative false accepts 0/24; alias synthetic 15/15.
+  Bearer-auth abstention remains. These are not Eric-authored/held-out accuracy.
+- Exact pins: quest `749d8b5de490cc2e6a0c98c713fab3ab856da799`; old self demo
+  `f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93`. Map/layers/tours/evals unchanged.
+- Current non-source quest drops are **14**, not older reports' 15; extractor prints
+  364 JS + 44 Python pairs. Frozen map still has 413 links. Historical discrepancy
+  explicitly retained in [baseline report](docs/V1_BASELINE_REPORT.md).
+- Contracts: [acceptance](docs/V1_ACCEPTANCE.md), [sources](docs/SUPPORTED_SOURCES.md),
+  [fixtures](docs/V1_FIXTURES.json), [approved plan](.hermes/plans/2026-10-07_203500-v1-milestones.md).
+- Evidence: `/Users/aibert/projects/dag-gps/artifacts/v1-baseline/verification.json`,
+  separate gate stdout/stderr, metrics, copied browser reports/screenshots and builds.
+
+## Active worker / next action
+
+V1.0 implementation worker finished local verification; parent independently
+reviews contracts/spec/code quality and reruns gates before integrating/pushing
+main per [WORKFLOW](docs/WORKFLOW.md). Worker does not merge/push.
+**V1.1a not started**: pure impact analysis is the next handoff after parent acceptance.
+V1.4 optional query evaluation can start after V1.0; shared scorer/UI writes serialized.
+
+## Blockers and release boundary
+
+No automated baseline blocker. Parent V1.0 acceptance remains pending. Entire v1
+is not complete: impact/trust/onboarding/feedback/release gates and **Eric's unaided
+real repository session** are future work. Defaults locked: desktop-first offline/local,
+static import impact/no execution tracing, optional local query capture off by default,
+human-reviewed onboarding. See acceptance checklist for evidence and owners.
+
+Known limitations: mixed endpoint routes; bearer-auth abstention; dynamic/relative
+Python and lexical JS gaps; omitted CSS/JSON nodes; old self snapshot; best-effort
+file:// storage/export fallback; no cross-tab sync; per-file atomic publication, not
+power-loss transaction; source tours, not observed execution. Do not hide these by
+loosening tests or inventing user labels.
+
+## Integrated milestone history (not current pending work)
+
+The following preserves earlier counts and observations as historical results;
+new V1.0 logs above govern current metrics. Prior reports retain original worker context.
+
+### Architecture tours — historical worker evidence
 
 Architecture-guided tours locally verified on `architecture-tours` from main `3e811d9`.
-Parent independently verifies then integrates/pushes main; worker has not merged/pushed.
+Integrated on main at 4898578; the following are historical worker results, not current pending integration.
 
 - quest-coder audited archive SHA `749d8b5de490cc2e6a0c98c713fab3ab856da799`: Run basic
   5 steps, Submit 8, Sign in 5; 20 source files, source excerpts and exact line evidence.
@@ -21,11 +71,10 @@ Parent independently verifies then integrates/pushes main; worker has not merged
 - Open `dist/quest-refresh/index.html` or `dist/quest-coder.html`. Report:
   `docs/TOURS_REPORT.md`; logs `artifacts/tour-{build,test,smoke}.log`.
 
-## Previous milestone focus
+### Reusable refresh — historical worker evidence
 
 Reusable maps and safe refresh locally verified on `reusable-refresh` from `f92d0cf`.
-Parent independent review/verification then authorized direct-to-main integration pending;
-worker commits locally only, no merge/push. Open `dist/dag-gps/index.html` or
+Integrated on main before 4898578; historical local-worker evidence follows. Open `dist/dag-gps/index.html` or
 `dist/quest-refresh/index.html`; report `docs/REFRESH_REPORT.md`.
 
 - One-command pinned Git archive → validated map/offline HTML/deterministic diff/report;
@@ -44,13 +93,9 @@ worker commits locally only, no merge/push. Open `dist/dag-gps/index.html` or
   browser alias migration; clearly labeled as synthetic, not user accuracy evidence.
 - Exact gates/logs: artifacts/refresh-final-verification.json and refresh-{build,test,smoke}.log.
 
-## Active Worker
+### Earlier integrated milestones — historical evidence
 
-None.
-
-## Last Verified
-
-Alias learning, branch `alias-learning` (local worker; parent review pending):
+Alias learning, branch `alias-learning` (historical worker run; now integrated on main):
 
 - `.verify.json` build/test/smoke exit 0: **106 Python + 87 JS tests**, including
   14 pure alias tests and safe trusted-source inlining; all 272 exact file paths
@@ -75,7 +120,7 @@ Alias learning, branch `alias-learning` (local worker; parent review pending):
 
 ### Filename lookup evidence
 
-Filename lookup, branch `lookup-evidence` (local worker; parent review pending):
+Filename lookup, branch `lookup-evidence` (historical worker run; now integrated on main):
 
 - `.verify.json` build/test/smoke exit 0: **104 Python + 73 JS tests**, pinned map
   10/10 + full snapshot parity. Map, layers, router and original eval unchanged.
@@ -98,7 +143,7 @@ Filename lookup, branch `lookup-evidence` (local worker; parent review pending):
 
 ### M3 evidence
 
-2026-10-07, branch `m3-routing` (local worker; parent review pending):
+2026-10-07, branch `m3-routing` (historical worker run; now integrated on main):
 
 - `.verify.json` build/test/smoke exit 0: **104 Python + 46 JS tests**, map 10/10
   at pinned `749d8b5de490cc2e6a0c98c713fab3ab856da799`; committed map untouched.
@@ -116,7 +161,7 @@ Filename lookup, branch `lookup-evidence` (local worker; parent review pending):
 
 ### M2 evidence
 
-2026-10-07, branch `m2-scorer` (parent independently verified before M3):
+2026-10-07, branch `m2-scorer` (historical parent verification before M3):
 
 - `.verify.json` build/test/smoke all exit 0: 99 Python tests, 40 JS tests,
   map 10/10 checks; existing canvas screenshots and real-click smoke pass.
@@ -143,15 +188,6 @@ Filename lookup, branch `lookup-evidence` (local worker; parent review pending):
   byte-identical to the M0 map; the only additions are the top-level `file_edges` array
   and `meta.counts.file_edges`.
 
-## Blockers
-
-None.
-
-Noted, not blocking: the smoke prints two notes. 15 import edges are dropped because the
-target is not a map file node (`app/globals.css`, the `content/{public,server}/*.json`
-quest packs) — `SOURCE_EXTS` is ts/tsx/js/mjs/py/sql, so those files have no node to point
-at. And `scripts/deployment_smoke.mjs` fetches `/api/private-pack`, which has no route
-handler. Both are reported rather than silently swallowed.
 
 ## Rule
 
