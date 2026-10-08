@@ -354,3 +354,25 @@ final handoff: `artifacts/phase0-completion.json`.
 Do not treat worker verification as final acceptance.
 Parent independent re-review, Eric semantic grouping and unaided real session remain
 pending. No push/merge/public artifact upload or later milestone in this follow-up.
+
+## Phase 0 — repository-evidence workspace foundation (local only)
+
+Eric authorized Phase 0 on 2026-10-08. The separate roadmap commit is aa6a1e8;
+release-fix commit 9a5a327 passed exact-postcommit all eight unchanged gates and
+packaging with clean provenance. Independent IR source review passed; parent fresh
+17/17 negatives (including promotion/readback rollback) preserve all prior bundle bytes.
+Earlier load-sensitive performance failures remain retained; no gate or scorer tuning.
+
+The new foundation defines pure pinned snapshot/evidence guards and false-by-default
+query/agent controls, documented in docs/WORKSPACE_CONTRACT.md and
+WORKSPACE_ACCEPTANCE.md. Focused contract tests initially passed 38/38, but independent review found three
+medium-severity gaps. Stricter fixes now pass 47/47 focused and all Python 239 /
+JS 152; initial review and 47-test/16-failure RED remain retained.
+New-contract independent review and exact final-commit full verification are required
+before handoff; artifacts/phase0-completion.json and artifacts/phase0-final/ are the
+final authority, not a claim that future features are implemented.
+
+No GitHub-link importer, workspace service/UI, agent invocation, live updates or
+third-party graph mapping was started. Local-versus-hosted and agent-provider choices
+remain pending before Phase 1. Human unaided workflow and semantic review are pending;
+no push/merge, deployment, private-source upload or final v1 acceptance.

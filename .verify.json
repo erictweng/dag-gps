@@ -107,7 +107,12 @@
     "tests/test_release.py",
     "scripts/release_contract.py",
     "tests/test_release_contract.py",
-    "docs/RELEASE_REVIEW_FIXES.md"
+    "docs/RELEASE_REVIEW_FIXES.md",
+    "app/__init__.py",
+    "app/contracts.py",
+    "tests/test_workspace_contract.py",
+    "docs/WORKSPACE_CONTRACT.md",
+    "docs/WORKSPACE_ACCEPTANCE.md"
   ],
   "timeout_seconds": 600,
   "examples": {
