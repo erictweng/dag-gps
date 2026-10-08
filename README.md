@@ -10,9 +10,10 @@ normalized distributions remain available, but are not correctness probabilities
 
 ## v1 foundation and release contract
 
-Eric approved V1.0 only. Baseline worker verification passes; parent independent
-acceptance/integration is pending. V1.1a impact analysis is **not started**, and
-v1 release requires Eric's unaided real repository session, not just automated gates.
+V1.0 was parent-accepted on main `6bfc5ee`. Eric authorized full **V1.1a+b**;
+impact engine and UI/Ask are worker-verified on `v1-impact`, with parent independent
+review/integration pending. v1 release still requires later gates and Eric's unaided
+real repository session, not just automated tests.
 
 - [Approved v1 milestone plan](.hermes/plans/2026-10-07_203500-v1-milestones.md)
 - [Locked acceptance contract and evidence owners](docs/V1_ACCEPTANCE.md)
@@ -25,6 +26,25 @@ all exit 0. Evidence is local/ignored under `artifacts/v1-baseline/`; earlier
 sections below describe integrated pre-v1 functionality, not a complete v1 release.
 Desktop-first offline/local, optional query capture off by default, no execution
 tracing, and human-reviewed onboarding are locked defaults, not newly shipped features.
+
+## Potential change impact (V1.1)
+
+Inspect a real file and click **Inspect potential impact**, or Ask
+`what could be affected if I change lib/runner-client.ts?` / `impact of runner/quest_runner.py`.
+Direct/transitive consumers use reverse **import-only** evidence. Linked tests are
+observed import reachability, never coverage proof; **coverage unknown** even with
+links. Exact tour citations and transitive HTTP/RPC boundary witnesses are separate
+sections. Realtime excluded. “Potentially affected” does not mean “will break”.
+Ambiguous/missing files require explicit choice; unknowns clear stale highlights.
+Click a result for its shortest typed chain and real-node inspection; Return to impact
+graph preserves recovery after inspection/tour evidence. `what depends on …` retains
+legacy DOWNSTREAM behavior. No filesystem-opening claim or source/extractor changes.
+
+Open rebuilt `dist/quest-refresh/index.html` or `dist/quest-coder.html`; old pinned
+self graph `dist/dag-gps/index.html` honestly has no tours. Worker gates: **138 Python +
+103 JS**, **14 impact browser checks / 9 screenshots**, zero errors/external requests;
+all legacy gates/evals retained. [Impact API, path classification, semantics, source
+audit and actual evidence](docs/IMPACT_REPORT.md). Parent acceptance remains pending.
 
 ## Architecture-guided tours
 

@@ -188,6 +188,11 @@
   dialog a { color:#56d4c7; display:block; margin-top:10px; }
   :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
   @media(max-width:650px) { main { flex-direction:column; } #stage { min-height:38vh; } aside { flex:1; min-width:0; border-left:0; border-top:1px solid var(--line); } .ask { margin-left:0; width:100%; } .ask input { min-width:0; width:100%; } .ask .tag,.hint { display:none; } header { gap:7px; } .meta { font-size:10px; gap:6px; } }
+  #impact-panel { overflow-wrap:anywhere; border-bottom:1px solid var(--line); margin-bottom:14px; padding-bottom:14px; }
+  #impact-panel h3 { color:var(--fg); }
+  #impact-panel .alternative { font-size:12px; }
+  #impact-chain { border:1px solid var(--node-br); border-radius:6px; padding:8px; }
+  .impact-legend { margin:6px 0 0; }
   .warn { padding: 30px; color: var(--accent); font-family: ui-monospace, monospace; }
 </style>
 </head>
@@ -217,7 +222,7 @@
     <div class="legend" id="legend"></div>
     <div class="hint">wheel = zoom · drag = pan · click = focus · double-click = expand · Esc = back</div>
   </div>
-  <aside><details id="alias-manager"><summary>Manage learned aliases</summary><p>No secrets. Local to this repository/browser; file storage is best-effort. Export for backup.</p><div id="alias-status" role="status"></div><div id="alias-list"></div><button class="btn" id="alias-export" type="button">Export JSON</button><button class="btn ghost" id="alias-clear" type="button">Clear aliases…</button><label>Import JSON <input id="alias-import" type="file" accept="application/json,.json"></label><label>Import mode <select id="alias-mode"><option value="merge">Merge (default)</option><option value="replace">Replace all</option></select></label><div id="alias-preview"></div></details><section id="tour-panel" hidden aria-live="polite"></section><section id="answer" aria-live="polite"></section><section id="panel"></section></aside>
+  <aside><details id="alias-manager"><summary>Manage learned aliases</summary><p>No secrets. Local to this repository/browser; file storage is best-effort. Export for backup.</p><div id="alias-status" role="status"></div><div id="alias-list"></div><button class="btn" id="alias-export" type="button">Export JSON</button><button class="btn ghost" id="alias-clear" type="button">Clear aliases…</button><label>Import JSON <input id="alias-import" type="file" accept="application/json,.json"></label><label>Import mode <select id="alias-mode"><option value="merge">Merge (default)</option><option value="replace">Replace all</option></select></label><div id="alias-preview"></div></details><section id="tour-panel" hidden aria-live="polite"></section><section id="answer" aria-live="polite"></section><section id="impact-panel" hidden aria-live="polite"></section><section id="panel"></section></aside>
 </main>
 
 <dialog id="tour-evidence" aria-labelledby="evidence-title"><h2 id="evidence-title"></h2><p id="evidence-meta"></p><pre id="evidence-source"></pre><button class="btn" id="evidence-close" type="button">Close evidence</button><button class="btn ghost" id="evidence-locate" type="button">Locate real file in map</button><a id="evidence-permalink" target="_blank" rel="noopener noreferrer">GitHub · pinned source (external, optional)</a></dialog>
@@ -227,6 +232,7 @@
 /*__ROUTER__*/
 /*__ALIASES__*/
 /*__TOURS__*/
+/*__IMPACT__*/
 var TOUR_DATA = /*__TOUR_DATA__*/null;
 var MAP = /*__MAP__*/null;
 
@@ -817,7 +823,7 @@ function drawLegend() {
         st.color + "' stroke-width='2.2'" +
         (st.dash ? " stroke-dasharray='" + st.dash + "'" : "") + "/></svg>" +
         st.title + " <span class='n'>" + (counts[t] || 0) + "</span></li>";
-    }).join("") + "</ul>";
+    }).join("") + "</ul>" + (typeof impactUI !== 'undefined' && impactUI && impactUI.state() && S.view === 'route' && !tourController.state().active ? '<p class="impact-legend">Potentially affected · not guaranteed breakage. HTTP/RPC dashed separately.</p>' : '');
 }
 
 // ================================================================ highlight
@@ -840,6 +846,7 @@ function highlightSets() {
 }
 
 function applyHighlight() {
+  if (typeof impactUI !== 'undefined' && impactUI && impactUI.highlight()) return;
   if (answerRoute) return applyAnswerHighlight();
   var vp = document.getElementById("viewport");
   if (!vp) return;
@@ -945,7 +952,7 @@ function panelFile(id) {
     '<div class="sub">' + esc(id) + "</div>" +
     '<div class="sub">' + esc(layerLabel(n.layer)) + " · " + plural(n.lines, "line") + "</div>" +
     (n.desc ? '<p class="desc">' + esc(n.desc) + "</p>" : "") +
-    '<div><button class="btn ghost" data-clear="1">Clear</button></div>' +
+    '<div><button type="button" class="btn" data-impact="' + esc(id) + '">Inspect potential impact</button><button class="btn ghost" data-clear="1">Clear</button></div>' +
     "<h3>Imports (" + outs.length + ")</h3>" +
     fileRows(outs.map(function (e) { return e.to; }),
              { type: function (p) { return otype.get(p) || ""; } }) +
@@ -1213,6 +1220,7 @@ document.getElementById('answer').addEventListener('click', function (ev) {
 
 /*__ALIAS_UI__*/
 /*__TOUR_UI__*/
+/*__IMPACT_UI__*/
 // ============================================================ interactions
 svg.addEventListener("wheel", function (ev) {
   ev.preventDefault();
@@ -1298,6 +1306,7 @@ window.dagGps = {
       visibleNodes: S.nodes.length, visibleEdges: S.edges.length,
       zoom: S.k, showTests: S.showTests,
       answer: answer, route: answerRoute, latencyMs: answerLatency,
+      impact: impactUI.state(),
       tour: tourController.state().active ? {id: tourController.state().active.id, index: tourController.state().index} : null
     };
   },

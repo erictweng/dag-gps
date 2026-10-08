@@ -2,50 +2,49 @@
 
 Last updated: 2026-10-07 PDT
 
-## Current focus — V1.0 worker verified / parent pending
+## Current focus — V1.1a+b worker verified / parent pending
 
-`v1-baseline` starts at current main `489857805e06e250462e545d213b09111417362e`.
-The prior tours/refresh/alias/lookup/routing implementations are already integrated
-on main; older worker-pending prose below has been reconciled against Git.
+V1.0 parent acceptance is integrated on main `6bfc5ee`. Eric authorized full V1.1,
+not only the pure engine. `v1-impact` starts from that clean main; no worker push/merge.
 
-- V1.0 only: baseline, locked release contract, truthful supported-source matrix,
-  fixture provenance and coherent status. No new runtime user feature.
-- Unchanged `.verify.json` build/test/smoke each exit 0 on 2026-10-07 PDT:
-  **138 Python + 93 JS tests**, 10 map checks and full pinned parity.
-- Generated original eval op 47/47, target top1/top3 44/44; lookup op/label 39/40,
-  top1 16/17, top3 17/17, negative false accepts 0/24; alias synthetic 15/15.
-  Bearer-auth abstention remains. These are not Eric-authored/held-out accuracy.
-- Exact pins: quest `749d8b5de490cc2e6a0c98c713fab3ab856da799`; old self demo
-  `f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93`. Map/layers/tours/evals unchanged.
-- Current non-source quest drops are **14**, not older reports' 15; extractor prints
-  364 JS + 44 Python pairs. Frozen map still has 413 links. Historical discrepancy
-  explicitly retained in [baseline report](docs/V1_BASELINE_REPORT.md).
-- Contracts: [acceptance](docs/V1_ACCEPTANCE.md), [sources](docs/SUPPORTED_SOURCES.md),
-  [fixtures](docs/V1_FIXTURES.json), [approved plan](.hermes/plans/2026-10-07_203500-v1-milestones.md).
-- Evidence: `/Users/aibert/projects/dag-gps/artifacts/v1-baseline/verification.json`,
-  separate gate stdout/stderr, metrics, copied browser reports/screenshots and builds.
+- Dependency-free `analyzeImpact(map,tours,fileId)` with deterministic shortest
+  import-only reverse BFS witnesses, distinct direct/transitive results, real tests,
+  exact raw/compiled tour citations and separate transitive HTTP/RPC boundaries.
+- File-detail **Inspect potential impact** and explicit natural Ask; ambiguity/missing
+  suggestions require choice, unknowns clear stale state, existing DOWNSTREAM unchanged.
+  Recoverable summary, typed witness graph, real-file inspection and offline tour evidence.
+- `.verify.json` build/test/smoke **exit 0**: **138 Python + 103 JS** (10 impact tests),
+  pinned map 10/10 + full parity; all legacy eval/canvas/scorer/M3/lookup/alias/refresh/tours
+  gates retained. New browser: **14 checks / 9 screenshots**, zero page/console errors
+  and external requests, both real files plus self no-tour map; 1280/1920 visual inspection.
+- Audited `lib/runner-client.ts`: 3 direct imports + 1 farther consumer, **no observed
+  linked tests / coverage unknown**; 6 separate boundary witnesses and 4 exact tour
+  citations (steps and links). `runner/quest_runner.py`: 14 direct imports, 11 real
+  linked tests visible despite hidden canvas test layer; coverage still unknown.
+- Quest map/layers/source/tours/evals/scorer/router/extractor unchanged from `6bfc5ee`.
+  Pins retained: quest `749d8b5de490cc2e6a0c98c713fab3ab856da799`, old self
+  `f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93` (not today's source graph).
+- Report: [IMPACT_REPORT](docs/IMPACT_REPORT.md). Evidence: `artifacts/impact-verification.json`,
+  `impact-{build,test,smoke}.log`, `impact-browser.json`, `impact-*.png`.
+  Open `dist/quest-refresh/index.html`, `dist/quest-coder.html`, `dist/dag-gps/index.html`.
 
 ## Active worker / next action
 
-V1.0 implementation worker finished local verification; parent independently
-reviews contracts/spec/code quality and reruns gates before integrating/pushing
-main per [WORKFLOW](docs/WORKFLOW.md). Worker does not merge/push.
-**V1.1a not started**: pure impact analysis is the next handoff after parent acceptance.
-V1.4 optional query evaluation can start after V1.0; shared scorer/UI writes serialized.
+V1.1 implementation and local verification complete. Parent independently reviews
+engine correctness/spec/code quality and browser evidence, reruns gates, then integrates
+and pushes main per [WORKFLOW](docs/WORKFLOW.md). No next milestone worker launched.
+V1.2 and later remain queued; V1.4 writes must stay serialized against shared UI/scorer.
 
 ## Blockers and release boundary
 
-No automated baseline blocker. Parent V1.0 acceptance remains pending. Entire v1
-is not complete: impact/trust/onboarding/feedback/release gates and **Eric's unaided
-real repository session** are future work. Defaults locked: desktop-first offline/local,
-static import impact/no execution tracing, optional local query capture off by default,
-human-reviewed onboarding. See acceptance checklist for evidence and owners.
-
-Known limitations: mixed endpoint routes; bearer-auth abstention; dynamic/relative
-Python and lexical JS gaps; omitted CSS/JSON nodes; old self snapshot; best-effort
-file:// storage/export fallback; no cross-tab sync; per-file atomic publication, not
-power-loss transaction; source tours, not observed execution. Do not hide these by
-loosening tests or inventing user labels.
+No automated V1.1 blocker; parent V1.1 acceptance remains pending. Entire v1 is **not**
+complete: trust/onboarding/optional evaluation/release and Eric's unaided session remain.
+Impact is static potential reachability, not execution/coverage or guaranteed breakage.
+Known prior limitations retained: mixed layer/file routes, bearer-auth abstention,
+relative/dynamic Python and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,
+best-effort file storage/export fallback, per-file publication not power-loss transaction,
+source walkthroughs not observed runtime. See [acceptance](docs/V1_ACCEPTANCE.md),
+[supported sources](docs/SUPPORTED_SOURCES.md), [baseline](docs/V1_BASELINE_REPORT.md).
 
 ## Integrated milestone history (not current pending work)
 

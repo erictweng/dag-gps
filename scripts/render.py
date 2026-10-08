@@ -37,7 +37,7 @@ def render(template_text, map_data, tours=None):
     Function executes only shipped local source, never map/query contents. This
     preserves source syntax even for closing script tags in strings or comments.
     """
-    for name in ("scorer", "router", "aliases", "tours"):
+    for name in ("scorer", "router", "aliases", "tours", "impact"):
         marker = "/*__%s__*/" % name.upper()
         if template_text.count(marker) > 1:
             raise ValueError("duplicate module placeholder: " + marker)
@@ -49,6 +49,9 @@ def render(template_text, map_data, tours=None):
     if "/*__TOUR_UI__*/" in template_text:
         with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "tour-ui.js"), encoding="utf-8") as fh:
             template_text = template_text.replace("/*__TOUR_UI__*/", "var tourUI = eval(" + js_literal(fh.read()) + "); var tourController = tourUI.controller; var resolveTourQuery = tourUI.resolve; var exitTour = tourUI.exit;")
+    if "/*__IMPACT_UI__*/" in template_text:
+        with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "impact-ui.js"), encoding="utf-8") as fh:
+            template_text = template_text.replace("/*__IMPACT_UI__*/", "var impactUI = eval(" + js_literal(fh.read()) + ");")
     ui_marker = "/*__ALIAS_UI__*/"
     if template_text.count(ui_marker) > 1:
         raise ValueError("duplicate module placeholder: " + ui_marker)

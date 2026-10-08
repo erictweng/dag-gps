@@ -3,8 +3,10 @@
 Approved scope: Eric's “Start with v1.0” / “Execute DAG GPS V1.0 only” authorization,
 2026-10-07 PDT. The [user-authored milestone plan](../.hermes/plans/2026-10-07_203500-v1-milestones.md)
 is authoritative; this contract records its defaults, not an extension of scope.
-V1.0 is foundation only. Its worker verification does **not** declare v1 released;
-parent independent review/rerun and main integration remain pending.
+V1.0 is foundation only and was parent-accepted on main `6bfc5ee`.
+Eric subsequently authorized full **V1.1a+b** (engine AND UI/Ask), worker-verified
+on `v1-impact`. V1.1 parent independent review/rerun/integration remains pending;
+neither milestone declares v1 released.
 
 ## Goal and locked defaults
 
@@ -55,13 +57,14 @@ root and retains its own evidence. No placeholders count as passing release gate
 Unchecked entries are **future acceptance**, not tests claimed to exist. Worker
 owns implementation/test evidence; parent owns independent acceptance/integration;
 Eric owns semantic review and unaided session. Milestone anchors below link the
-approved plan. V1.0 worker checks are complete, but remain parent-pending.
+approved plan. V1.0 is parent-accepted; V1.1a+b worker checks are complete but
+remain parent-pending. Later unchecked gates are still future work.
 
 | State | Check / milestone | Required evidence | Owner |
 |---|---|---|---|
 | Parent accepted | [V1.0](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v10--freeze-the-release-contract-and-baseline): reproducible baseline, coherent status, matrix, contract | Non-null `.verify.json` build/test/smoke exit 0; exact pinned parity, retained miss, report and fixture manifest | Worker; parent independent rerun/review |
-| Not started | [V1.1a](../.hermes/plans/2026-10-07_203500-v1-milestones.md#mini-11a--pure-analysis): explainable FILE impact | Future pure fixture tests: cycles/shortest deterministic witnesses, direct/transitive/unknown/isolated, HTTP separation, classified linked tests, tour citations; coverage unknown if no link | V1.1 worker; parent |
-| Not started | V1.1b: UI and impact Ask | Future browser smoke on two real files; source-audited chains, ambiguity requires choice, click real result, potential-impact legend; preserve legacy Ask | V1.1 worker; parent |
+| Worker verified; parent pending | [V1.1a](../.hermes/plans/2026-10-07_203500-v1-milestones.md#mini-11a--pure-analysis): explainable FILE impact | 10 pure impact tests: cycles/shortest/order/immutability, distinct direct/transitive, unknown/isolated, HTTP/RPC separation, path-classified tests, raw/compiled exact citations/orphans; coverage always unknown. [Actual report](IMPACT_REPORT.md) | V1.1 worker; parent independent review |
+| Worker verified; parent pending | V1.1b: UI and impact Ask | 14 real browser checks / 9 inspected screenshots: runner-client and quest_runner, source-audited witnesses/tests, unknown/ambiguity fail closed, typed chain/real-file inspection/tour recovery, 1280/1920 and no-tours second map; all legacy gates retained, zero errors/network. [Evidence](IMPACT_REPORT.md) | V1.1 worker; parent independent browser/code review |
 | Not started | [V1.2](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v12--map-trust-and-completeness): evidence quality / extraction | Future trust fixtures/browser checks; concrete findings with path/reason, source vs runtime evidence, relevant limitation badges; static relative Python fixes fixture-first, no invented runtime completeness | V1.2 worker; parent |
 | Not started | V1.2 stale tours / refresh integrity | Exact-commit mismatch preserves prior bytes; explicit no-tour opt-out, legacy extractor parity retained or deliberately migrated with evidence; source cycles not deleted for a DAG gate | V1.2 worker; parent; Eric for architectural decisions |
 | Not started | [V1.3](../.hermes/plans/2026-10-07_203500-v1-milestones.md#v13--reviewable-repo-onboarding): draft → review → export → publish | Future draft/editor/export tests and second real repo onboarding without hand-editing JSON; zero missing/double assignments, invalid exports preserve output, stable IDs/warnings; newer self snapshot explicitly chosen, not silently substituted | V1.3 worker; parent; Eric reviews meaning |
@@ -89,9 +92,11 @@ multi-file transaction. Tours are audited source explanations, not observed exec
 These are documented limitations, not new scope decisions. Parent must return any
 contradictory scope or acceptance-blocking uncertainty to Eric rather than weaken tests.
 
-## V1.1a handoff boundary
+## V1.1 delivery boundary
 
-Only after parent accepts V1.0: audit actual graph around `lib/runner-client.ts`, then
-implement pure `analyzeImpact(map, tours, fileId)` with the plan's tests. Do not invent
-linked test reachability. UI, extractor redesign and scorer changes are not V1.1a.
-V1.4 may start after V1.0, but shared scorer/UI work remains serialized.
+Eric authorized both V1.1a+b after V1.0 parent acceptance. Actual pinned graph/source
+was audited before fixtures; `lib/runner-client.ts` has zero observed linked tests,
+while `runner/quest_runner.py` has eleven real import-linked tests. Neither establishes
+coverage. Engine plus Inspect/Ask UI are worker-verified, not parent-accepted.
+Extractor/trust redesign, onboarding and query logging remain outside V1.1.
+V1.4 shared scorer/UI writes remain serialized; no later milestone launched here.

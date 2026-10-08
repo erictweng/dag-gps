@@ -104,4 +104,13 @@ document.addEventListener('keydown',function(ev){
   if(ev.key==='Escape'){ev.preventDefault();exitTour();}
 },true);
 renderTour();
-({controller:tourController,resolve:resolveTourQuery,exit:exitTour});
+function openTourReference(ref){
+  startTour(ref.tourId);
+  var t=tourController.state().active;
+  var index=ref.step?ref.step-1:t.steps.findIndex(function(s){return s.evidence.some(function(e){return e.path===ref.path;});});
+  for(var i=0;i<Math.max(0,index);i++)tourController.move(1);
+  tourStep();
+  var citation=Array.from(tourPanel.querySelectorAll('[data-tour-evidence]')).find(function(el){var e=JSON.parse(el.dataset.tourEvidence);return e.path===ref.path&&e.start===ref.start&&e.end===ref.end;});
+  if(citation){var detail=citation.closest('details');if(detail)detail.open=true;citation.click();}
+}
+({controller:tourController,resolve:resolveTourQuery,exit:exitTour,openReference:openTourReference});
