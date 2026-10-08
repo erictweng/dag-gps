@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAG GPS</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #11161f;
+    --panel: #141a24;
+    --line: #253040;
+    --fg: #d7e0ea;
+    --mut: #8a97a8;
+    --dim: #5a6675;
+    --accent: #ffb454;
+    --node: #1b2432;
+    --node-br: #33415a;
+    --hi: #ffb454;
+    --up: #7ee787;
+    --down: #79c0ff;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font: 13px/1.45 ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* ---------------------------------------------------------------- header */
+  header {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 18px;
+    padding: 9px 16px; background: var(--bg2); border-bottom: 1px solid var(--line);
+  }
+  .brand { font-weight: 700; font-size: 14px; letter-spacing: .04em; color: var(--accent); }
+  .brand span { color: var(--mut); font-weight: 400; letter-spacing: 0; margin-left: 8px; }
+  .meta { display: flex; gap: 16px; font-size: 11.5px; color: var(--mut); flex-wrap: wrap; }
+  .meta b { color: var(--fg); font-weight: 600; }
+  .ask { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .ask input {
+    width: 260px; padding: 6px 10px; border-radius: 6px;
+    border: 1px solid var(--line); background: #0b0f16; color: var(--mut);
+    font: inherit; font-size: 12px;
+  }
+  .ask input:disabled { cursor: not-allowed; }
+  .ask .tag {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--dim); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px;
+  }
+
+  /* ------------------------------------------------------------------ body */
+  main { flex: 1 1 auto; display: flex; min-height: 0; }
+  #stage { position: relative; flex: 1 1 auto; min-width: 0; background: var(--bg); }
+  svg#dag { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+  svg#dag.panning { cursor: grabbing; }
+
+  .toolbar {
+    position: absolute; top: 10px; left: 12px; z-index: 3;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .toolbar button, .toolbar label {
+    font: inherit; font-size: 12px; color: var(--fg);
+    background: rgba(20,26,36,.92); border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px 10px; cursor: pointer;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+  .toolbar label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .toolbar input[type=checkbox] { accent-color: var(--accent); margin: 0; }
+  .toolbar .crumb { color: var(--mut); background: none; border: none; padding: 5px 0; cursor: default; }
+  .toolbar .crumb b { color: var(--accent); }
+  .hidden { display: none !important; }
+
+  .legend {
+    position: absolute; bottom: 12px; left: 12px; z-index: 3;
+    background: rgba(17,22,31,.93); border: 1px solid var(--line); border-radius: 7px;
+    padding: 8px 11px; font-size: 11px; color: var(--mut);
+  }
+  .legend h4 { margin: 0 0 6px; font-size: 10px; letter-spacing: .09em; text-transform: uppercase; color: var(--dim); font-weight: 600; }
+  .legend ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 14px; flex-wrap: wrap; }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  .legend svg { display: block; }
+  .legend .n { color: var(--dim); }
+
+  .hint {
+    position: absolute; bottom: 12px; right: 12px; z-index: 3;
+    font-size: 11px; color: var(--dim);
+  }
+
+  /* ----------------------------------------------------------------- panel */
+  aside {
+    flex: 0 0 332px; min-width: 332px; background: var(--panel);
+    border-left: 1px solid var(--line); overflow-y: auto; padding: 14px 15px 40px;
+  }
+  aside h2 { margin: 0 0 3px; font-size: 16px; line-height: 1.25; }
+  aside .sub { color: var(--mut); font-size: 11.5px; margin-bottom: 9px; }
+  aside .desc { color: var(--fg); font-size: 12.5px; margin: 0 0 11px; }
+  aside .empty { color: var(--dim); font-size: 12.5px; }
+  aside h3 {
+    margin: 15px 0 6px; font-size: 10.5px; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--dim); font-weight: 600;
+    border-top: 1px solid var(--line); padding-top: 10px;
+  }
+  aside h3:first-of-type { border-top: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    font-size: 11.5px; padding: 2.5px 7px; border-radius: 11px; cursor: pointer;
+    border: 1px solid var(--node-br); background: var(--node); color: var(--fg);
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.plain { cursor: default; border-style: dashed; color: var(--mut); }
+  .chip.up:hover { border-color: var(--up); color: var(--up); }
+  .chip.down:hover { border-color: var(--down); color: var(--down); }
+  ul.rows { list-style: none; margin: 0; padding: 0; }
+  ul.rows li {
+    display: flex; gap: 8px; align-items: baseline; padding: 2.5px 0;
+    border-bottom: 1px solid rgba(37,48,64,.5); font-size: 12px;
+  }
+  ul.rows li:last-child { border-bottom: none; }
+  ul.rows .nm {
+    flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap; cursor: pointer; direction: rtl; text-align: left;
+  }
+  ul.rows .nm:hover { color: var(--accent); }
+  ul.rows .num { flex: 0 0 auto; color: var(--dim); font-variant-numeric: tabular-nums; font-size: 11px; }
+  ul.rows .ty {
+    flex: 0 0 auto; font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--dim); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px;
+  }
+  .btn {
+    font: inherit; font-size: 12px; margin: 2px 6px 4px 0; padding: 5px 11px;
+    border-radius: 6px; cursor: pointer; color: var(--bg); background: var(--accent);
+    border: 1px solid var(--accent); font-weight: 600;
+  }
+  .btn.ghost { background: transparent; color: var(--fg); border-color: var(--node-br); font-weight: 400; }
+  .btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ------------------------------------------------------------------- svg */
+  .edge { fill: none; }
+  .node { cursor: pointer; }
+  .node rect { stroke-width: 1.4px; }
+  .node .box { fill: var(--node); stroke: var(--node-br); }
+  .node .t1 { fill: var(--fg); font-weight: 600; }
+  .node .t2 { fill: var(--mut); }
+  .node:hover .box { stroke: var(--accent); }
+  .node.stub .box { fill: #161d29; stroke: #3b4a63; stroke-dasharray: 4 3; }
+  .node.sel .box { stroke: var(--hi); stroke-width: 2.4px; fill: #2a2214; }
+  .node.sel .t1 { fill: var(--hi); }
+  .node.rel-up .box { stroke: var(--up); fill: #16251b; }
+  .node.rel-down .box { stroke: var(--down); fill: #15202e; }
+  .faded { opacity: .13; }
+  .emph { opacity: 1; }
+  #viewport.dimming .edge:not(.emph) { opacity: .07; }
+  .warn { padding: 30px; color: var(--accent); font-family: ui-monospace, monospace; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DAG GPS<span id="h-repo">—</span></div>
+  <div class="meta" id="h-meta"></div>
+  <div class="ask">
+    <span class="tag">M2</span>
+    <input id="ask" type="text" disabled placeholder="Ask (M2) — e.g. where does grading live?" aria-label="Ask (M2)">
+  </div>
+</header>
+
+<main>
+  <div id="stage">
+    <div class="toolbar">
+      <button id="btn-back" class="hidden" type="button">← Back to layers</button>
+      <button id="btn-fit" type="button">Fit</button>
+      <label><input type="checkbox" id="t-tests"> Show tests layer</label>
+      <span class="crumb" id="crumb"></span>
+    </div>
+    <svg id="dag" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="legend" id="legend"></div>
+    <div class="hint">wheel = zoom · drag = pan · click = focus · double-click = expand · Esc = back</div>
+  </div>
+  <aside id="panel"></aside>
+</main>
+
+<script>
+"use strict";
+var MAP = /*__MAP__*/null;
+
+if (!MAP) {
+  document.body.innerHTML = '<div class="warn">No map inlined.<br>' +
+    'Run: python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html</div>';
+} else { (function () {
+
+// ====================================================================== data
+var NODE = new Map(MAP.nodes.map(function (n) { return [n.id, n]; }));
+var LAYER_IDS = MAP.nodes.filter(function (n) { return n.kind === "layer"; })
+                         .map(function (n) { return n.id; });
+var LAYER_INFO = MAP.layers || {};
+var FILE_EDGES = MAP.file_edges || [];
+var HIDE_BY_DEFAULT = "tests";
+var STUB = "stub:";   // id prefix for the other-layer stub boxes in a file view
+function isStub(id) { return typeof id === "string" && id.slice(0, STUB.length) === STUB; }
+
+// file -> outgoing / incoming file edges
+var OUT = new Map(), IN = new Map();
+FILE_EDGES.forEach(function (e) {
+  if (!OUT.has(e.from)) OUT.set(e.from, []);
+  if (!IN.has(e.to)) IN.set(e.to, []);
+  OUT.get(e.from).push(e);
+  IN.get(e.to).push(e);
+});
+
+var EDGE_TYPES = {
+  "import":   { color: "#7aa2f7", dash: "",          title: "import" },
+  "http":     { color: "#f7768e", dash: "8 5",       title: "http" },
+  "rpc":      { color: "#bb9af7", dash: "3 4",       title: "rpc" },
+  "data":     { color: "#e0af68", dash: "11 5",      title: "data" },
+  "build":    { color: "#9ece6a", dash: "2 4",       title: "build" },
+  "realtime": { color: "#2ac3de", dash: "13 4 3 4",  title: "realtime" },
+  "other":    { color: "#6e7a8a", dash: "5 5",       title: "other" }
+};
+function ety(t) { return EDGE_TYPES[t] || EDGE_TYPES.other; }
+
+// ==================================================================== sizes
+var LAYER_W = 212, LAYER_H = 62;
+var FILE_W = 214,  FILE_H = 44;
+var STUB_W = 204,  STUB_H = 56;
+var COL_GAP = 118, V_GAP = 24, DUMMY_H = 3, DUMMY_GAP = 6, MAX_BAND = 72;
+var MAX_GAP = 58, MAX_LANE_GAP = 26;
+var SWEEPS = 14, YPASSES = 12;
+
+// ==================================================================== state
+var S = {
+  view: "layers",      // "layers" | "files"
+  focused: null,       // node id or null
+  expanded: null,      // layer id when view === "files"
+  showTests: false,
+  nodes: [],           // laid-out real nodes of the current view
+  edges: [],           // drawn edges of the current view
+  k: 1, tx: 0, ty: 0
+};
+
+// =================================================================== helpers
+function esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function num(n) { return Number(n || 0).toLocaleString("en-US"); }
+function plural(n, word) { return num(n) + " " + word + (Number(n) === 1 ? "" : "s"); }
+
+var _mc = document.createElement("canvas").getContext("2d");
+function textW(s, font) { _mc.font = font; return _mc.measureText(s).width; }
+
+// Shorten `s` to fit `max` px, keeping the tail when `mid` (file names).
+function fit(s, max, font, mid) {
+  s = String(s == null ? "" : s);
+  if (textW(s, font) <= max) return s;
+  if (!mid) {
+    var lo = 0, hi = s.length;
+    while (lo < hi) {
+      var m = (lo + hi + 1) >> 1;
+      if (textW(s.slice(0, m) + "…", font) <= max) lo = m; else hi = m - 1;
+    }
+    return s.slice(0, Math.max(1, lo)) + "…";
+  }
+  var keep = s.length - 1;
+  while (keep > 2) {
+    var head = Math.ceil(keep * 0.55), tail = keep - head;
+    var cand = s.slice(0, head) + "…" + (tail ? s.slice(s.length - tail) : "");
+    if (textW(cand, font) <= max) return cand;
+    keep--;
+  }
+  return "…";
+}
+var F_T1 = '600 14px ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+var F_T2 = '400 11px ui-sans-serif, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+
+function layerLines(id) {
+  var n = NODE.get(id);
+  return n ? n.lines || 0 : 0;
+}
+function layerFiles(id) {
+  return (LAYER_INFO[id] && LAYER_INFO[id].files) || [];
+}
+function layerLabel(id) {
+  var n = NODE.get(id);
+  return n && n.label ? n.label : id;
+}
+
+// ==================================================================== layout
+// Sugiyama-lite: longest-path columns (consumers left, dependencies right),
+// dummy nodes for edges that span more than one column so edges travel in the
+// gaps instead of across boxes, barycenter ordering, then y relaxation.
+function layout(nodes, edges) {
+  var byId = new Map(nodes.map(function (n) { return [n.id, n]; }));
+  var keep = edges.filter(function (e) {
+    return byId.has(e.from) && byId.has(e.to) && e.from !== e.to;
+  });
+
+  // --- 1. columns (longest path; `realtime` is drawn but never ranks)
+  var preds = new Map();
+  nodes.forEach(function (n) { preds.set(n.id, []); });
+  keep.forEach(function (e) {
+    if (e.type !== "realtime") preds.get(e.to).push(e.from);
+  });
+  var col = new Map(), mark = new Map();
+  function depth(id) {
+    var m = mark.get(id);
+    if (m === 2) return col.get(id);
+    if (m === 1) return 0;                 // back edge: ignore for ranking
+    mark.set(id, 1);
+    var d = 0, ps = preds.get(id);
+    for (var i = 0; i < ps.length; i++) d = Math.max(d, depth(ps[i]) + 1);
+    mark.set(id, 2); col.set(id, d);
+    return d;
+  }
+  nodes.forEach(function (n) { n.col = depth(n.id); });
+
+  // --- 2. dummy chains
+  var chains = [], dummies = [], vid = 0;
+  keep.forEach(function (e) {
+    var a = byId.get(e.from), b = byId.get(e.to);
+    var chain = [a];
+    if (b.col - a.col > 1) {
+      for (var c = a.col + 1; c < b.col; c++) {
+        var d = { id: "__d" + (vid++), dummy: true, col: c, w: 0, h: DUMMY_H, x: 0, y: 0 };
+        dummies.push(d); chain.push(d);
+      }
+    }
+    chain.push(b);
+    e.back = b.col <= a.col;
+    if (e.back) chain = [a, b];
+    chains.push({ e: e, chain: chain });
+  });
+
+  // --- 3. ordering
+  var all = nodes.concat(dummies);
+  var ncols = 1;
+  all.forEach(function (n) { ncols = Math.max(ncols, n.col + 1); });
+  var cols = [];
+  for (var c = 0; c < ncols; c++) cols.push([]);
+  all.forEach(function (n) { cols[n.col].push(n); });
+
+  var succ = new Map(), pred = new Map();
+  all.forEach(function (n) { succ.set(n.id, []); pred.set(n.id, []); });
+  chains.forEach(function (ch) {
+    if (ch.e.back) return;                 // back edges do not steer ordering
+    for (var i = 0; i < ch.chain.length - 1; i++) {
+      succ.get(ch.chain[i].id).push(ch.chain[i + 1]);
+      pred.get(ch.chain[i + 1].id).push(ch.chain[i]);
+    }
+  });
+
+  cols.forEach(function (cc) { cc.forEach(function (n, i) { n.order = i; }); });
+  for (var s = 0; s < SWEEPS; s++) {
+    var down = s % 2 === 0;
+    for (var j = 0; j < ncols; j++) {
+      var ci = down ? j : ncols - 1 - j;
+      if (down ? ci === 0 : ci === ncols - 1) continue;
+      var nb = down ? pred : succ;
+      cols[ci].forEach(function (n) {
+        var ns = nb.get(n.id);
+        var sum = 0;
+        for (var i = 0; i < ns.length; i++) sum += ns[i].order;
+        n.bary = ns.length ? sum / ns.length : n.order;
+      });
+      cols[ci].sort(function (a, b) { return (a.bary - b.bary) || (a.order - b.order); });
+      cols[ci].forEach(function (n, i) { n.order = i; });
+    }
+  }
+
+  // --- 4. coordinates
+  var x = 0, colW = [];
+  for (var ci2 = 0; ci2 < ncols; ci2++) {
+    var w = 0;
+    cols[ci2].forEach(function (n) { w = Math.max(w, n.w); });
+    colW[ci2] = w;
+    var cx = x + w / 2;
+    cols[ci2].forEach(function (n) { n.x = cx; });
+    x += w + COL_GAP;
+  }
+  cols.forEach(function (cc) {
+    var y = 0;
+    cc.forEach(function (n, i) {
+      if (i) y += gapOf(cc[i - 1], n);
+      n.y = y + n.h / 2; y += n.h;
+    });
+  });
+  // Edge bundles (dummy next to dummy) pack tighter than boxes do.
+  function gapOf(a, b) { return a.dummy && b.dummy ? DUMMY_GAP : V_GAP; }
+  function separate(cc) {
+    var bottom = -1e9, prev = null;
+    cc.forEach(function (n) {
+      var g = prev ? gapOf(prev, n) : 0;
+      if (prev && n.y - n.h / 2 < bottom + g) n.y = bottom + g + n.h / 2;
+      bottom = n.y + n.h / 2; prev = n;
+    });
+  }
+  for (var p = 0; p < YPASSES; p++) {
+    var down2 = p % 2 === 0;
+    for (var j2 = 0; j2 < ncols; j2++) {
+      var ci3 = down2 ? j2 : ncols - 1 - j2;
+      var nb2 = down2 ? pred : succ, other = down2 ? succ : pred;
+      cols[ci3].forEach(function (n) {
+        // A node with nothing in the sweep direction still gets anchored by the
+        // other side, otherwise it is stranded wherever the initial stack put it.
+        var ns = nb2.get(n.id);
+        if (!ns.length) ns = other.get(n.id);
+        if (!ns.length) return;
+        var sum = 0;
+        for (var i = 0; i < ns.length; i++) sum += ns[i].y;
+        n.y = sum / ns.length;
+      });
+      cols[ci3].sort(function (a, b) { return (a.y - b.y) || (a.order - b.order); });
+      cols[ci3].forEach(function (n, i) { n.order = i; });
+      separate(cols[ci3]);
+    }
+  }
+
+  // --- 4a. final compaction. `separate` only ever pushes down, so a column can
+  // keep a stale gap at its top. Place each node at the average of *all* its
+  // neighbours, in the established order, taking up any slack above it.
+  function place(cc) {
+    cc.forEach(function (n) {
+      var ns = pred.get(n.id).concat(succ.get(n.id));
+      if (!ns.length) { n.want = n.y; return; }
+      var sum = 0;
+      for (var i = 0; i < ns.length; i++) sum += ns[i].y;
+      n.want = sum / ns.length;
+    });
+    var bottom = -1e9, prev = null;
+    cc.forEach(function (n) {
+      n.y = prev ? Math.max(bottom + gapOf(prev, n) + n.h / 2, n.want) : n.want;
+      bottom = n.y + n.h / 2; prev = n;
+    });
+    // Placing from the top makes every fan hang below its source and the whole
+    // graph drift downward column by column; re-centre on what the nodes wanted.
+    var drift = 0;
+    cc.forEach(function (n) { drift += n.y - n.want; });
+    if (cc.length) {
+      drift /= cc.length;
+      cc.forEach(function (n) { n.y -= drift; });
+    }
+  }
+  for (var q = 0; q < 6; q++) {
+    for (var j3 = 0; j3 < ncols; j3++) place(cols[q % 2 === 0 ? j3 : ncols - 1 - j3]);
+  }
+
+  // --- 4b. stack the weakly connected components instead of letting the
+  // relaxation drag the connected cluster away from the orphan nodes.
+  var adj = new Map();
+  all.forEach(function (n) { adj.set(n.id, []); });
+  chains.forEach(function (ch) {
+    for (var i = 0; i < ch.chain.length - 1; i++) {
+      adj.get(ch.chain[i].id).push(ch.chain[i + 1]);
+      adj.get(ch.chain[i + 1].id).push(ch.chain[i]);
+    }
+  });
+  var seen = new Set(), comps = [];
+  all.forEach(function (n) {
+    if (seen.has(n.id)) return;
+    var members = [], stack = [n];
+    seen.add(n.id);
+    while (stack.length) {
+      var m = stack.pop();
+      members.push(m);
+      adj.get(m.id).forEach(function (k) {
+        if (!seen.has(k.id)) { seen.add(k.id); stack.push(k); }
+      });
+    }
+    var top = 1e9, bot = -1e9, real = 0;
+    members.forEach(function (m) {
+      top = Math.min(top, m.y - m.h / 2);
+      bot = Math.max(bot, m.y + m.h / 2);
+      if (!m.dummy) real++;
+    });
+    comps.push({ members: members, top: top, bot: bot, real: real });
+  });
+  if (comps.length > 1) {
+    comps.sort(function (a, b) { return (b.real - a.real) || (a.top - b.top); });
+    var cursor = 0;
+    comps.forEach(function (c) {
+      var dy = cursor - c.top;
+      c.members.forEach(function (m) { m.y += dy; });
+      cursor += (c.bot - c.top) + V_GAP * 1.6;
+    });
+  }
+
+  // --- 4d. cap the gap between neighbours inside a column. Averaging neighbour
+  // positions spreads a wide fan over far more rows than it has nodes, which
+  // costs zoom; this pulls the slack out without reordering or overlapping.
+  cols.forEach(function (cc) {
+    cc.sort(function (a, b) { return a.y - b.y; });
+    for (var i = 1; i < cc.length; i++) {
+      var gap = (cc[i].y - cc[i].h / 2) - (cc[i - 1].y + cc[i - 1].h / 2);
+      var max = (cc[i - 1].dummy || cc[i].dummy) ? MAX_LANE_GAP : MAX_GAP;
+      if (gap > max) {
+        var d = gap - max;
+        for (var j = i; j < cc.length; j++) cc[j].y -= d;
+      }
+    }
+  });
+
+  // --- 4e. collapse horizontal bands that nothing (box or edge bundle) occupies.
+  // The relaxation is free to leave wide empty strips; squeezing them out keeps
+  // the whole graph legible at fit-to-screen zoom without moving anything
+  // relative to its own column.
+  var iv = all.map(function (n) {
+    return [n.y - n.h / 2 - V_GAP / 2, n.y + n.h / 2 + V_GAP / 2];
+  }).sort(function (a, b) { return a[0] - b[0]; });
+  var merged = [], cur = null;
+  iv.forEach(function (r) {
+    if (!cur || r[0] > cur[1]) { cur = [r[0], r[1]]; merged.push(cur); }
+    else cur[1] = Math.max(cur[1], r[1]);
+  });
+  var shifts = [], cum = 0;
+  for (var mi = 1; mi < merged.length; mi++) {
+    var gap = merged[mi][0] - merged[mi - 1][1];
+    if (gap > MAX_BAND) cum += gap - MAX_BAND;
+    shifts.push([merged[mi][0], cum]);
+  }
+  if (cum > 0) {
+    all.forEach(function (n) {
+      var sh = 0;
+      for (var i = 0; i < shifts.length; i++) if (n.y >= shifts[i][0]) sh = shifts[i][1];
+      n.y -= sh;
+    });
+  }
+
+  // --- 5. edge geometry
+  chains.forEach(function (ch) {
+    var a = ch.chain[0], b = ch.chain[ch.chain.length - 1], pts = [];
+    if (ch.e.back) {
+      ch.e.points = [[a.x - a.w / 2, a.y], [b.x + b.w / 2, b.y]];
+      return;
+    }
+    pts.push([a.x + a.w / 2, a.y]);
+    for (var i = 1; i < ch.chain.length - 1; i++) pts.push([ch.chain[i].x, ch.chain[i].y]);
+    pts.push([b.x - b.w / 2, b.y]);
+    ch.e.points = pts;
+  });
+
+  // --- 6. bbox over boxes *and* edge geometry, so fitting never clips a curve
+  var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  all.forEach(function (n) {
+    x0 = Math.min(x0, n.x - n.w / 2); x1 = Math.max(x1, n.x + n.w / 2);
+    y0 = Math.min(y0, n.y - n.h / 2); y1 = Math.max(y1, n.y + n.h / 2);
+  });
+  var anyBack = false;
+  edges.forEach(function (e) { if (e.back) anyBack = true; });
+  if (anyBack) y1 += 110;                 // room for the loop under a back edge
+  if (!all.length) { x0 = y0 = 0; x1 = y1 = 1; }
+  return { nodes: nodes, edges: edges, bbox: { x: x0, y: y0, w: x1 - x0, h: y1 - y0 } };
+}
+
+function edgePath(e) {
+  var p = e.points;
+  if (!p || p.length < 2) return "";
+  if (e.back) {
+    var a = p[0], b = p[1], bulge = Math.max(70, Math.abs(a[0] - b[0]) * 0.22);
+    var drop = Math.max(60, Math.abs(a[1] - b[1]) * 0.35 + 50);
+    return "M " + a[0] + " " + a[1] +
+           " C " + (a[0] - bulge) + " " + (a[1] + drop) + ", " +
+           (b[0] + bulge) + " " + (b[1] + drop) + ", " + b[0] + " " + b[1];
+  }
+  var d = "M " + p[0][0] + " " + p[0][1];
+  for (var i = 1; i < p.length; i++) {
+    var q = p[i - 1], r = p[i], dx = Math.max(26, (r[0] - q[0]) * 0.5);
+    d += " C " + (q[0] + dx) + " " + q[1] + ", " + (r[0] - dx) + " " + r[1] +
+         ", " + r[0] + " " + r[1];
+  }
+  return d;
+}
+function strokeW(weight) {
+  var w = Math.max(1, Math.min(14, weight || 1));
+  return (1.2 + (w - 1) * 0.2).toFixed(2);
+}
+
+// =================================================================== graphs
+function visibleLayerIds() {
+  return LAYER_IDS.filter(function (id) {
+    return S.showTests || id !== HIDE_BY_DEFAULT;
+  });
+}
+
+function layerGraph() {
+  var ids = visibleLayerIds(), set = new Set(ids);
+  var nodes = ids.map(function (id) {
+    var n = NODE.get(id);
+    return {
+      id: id, kind: "layer", w: LAYER_W, h: LAYER_H,
+      t1: n.label || id,
+      t2: plural(layerFiles(id).length, "file") + " · " + plural(n.lines, "line"),
+      tip: (n.label || id) + " — " + (n.desc || "")
+    };
+  });
+  var edges = MAP.edges.filter(function (e) {
+    return set.has(e.from) && set.has(e.to);
+  }).map(function (e) {
+    return {
+      from: e.from, to: e.to, type: e.type, weight: e.weight || 1,
+      tip: layerLabel(e.from) + " → " + layerLabel(e.to) + "  (" + e.type +
+           ", weight " + (e.weight || 1) + ")" +
+           (e.why ? "\n" + e.why : "") +
+           (e.sample ? "\n" + e.sample.join("  →  ") : "")
+    };
+  });
+  return layout(nodes, edges);
+}
+
+function fileGraph(layerId) {
+  var files = layerFiles(layerId);
+  var inside = new Set(files);
+  var nodes = files.map(function (f) {
+    var n = NODE.get(f) || { label: f, lines: 0 };
+    return {
+      id: f, kind: "file", w: FILE_W, h: FILE_H,
+      t1: n.label || f, t2: plural(n.lines, "line"), mid: true,
+      tip: f + (n.desc ? "\n" + n.desc : "")
+    };
+  });
+
+  // Cross-layer traffic collapses into one stub per other layer.
+  var stubs = new Map();   // layerId -> {in, out}
+  var agg = new Map();     // key -> edge
+  function stub(lid) {
+    if (!stubs.has(lid)) stubs.set(lid, { in: 0, out: 0 });
+    return stubs.get(lid);
+  }
+  function bump(from, to, type, lid, dir) {
+    var key = from + "\n" + to + "\n" + type;
+    var e = agg.get(key);
+    if (!e) {
+      e = { from: from, to: to, type: type, weight: 0, stub: lid, dir: dir };
+      agg.set(key, e);
+    }
+    e.weight++;
+  }
+  var internal = [];
+  FILE_EDGES.forEach(function (fe) {
+    var a = inside.has(fe.from), b = inside.has(fe.to);
+    if (a && b) {
+      internal.push({
+        from: fe.from, to: fe.to, type: fe.type, weight: 1,
+        tip: fe.from + " → " + fe.to + "  (" + fe.type + ")"
+      });
+    } else if (a) {
+      var lo = (NODE.get(fe.to) || {}).layer;
+      if (!lo) return;
+      stub(lo).out++;
+      bump(fe.from, STUB + lo, fe.type, lo, "out");
+    } else if (b) {
+      var li = (NODE.get(fe.from) || {}).layer;
+      if (!li) return;
+      stub(li).in++;
+      bump(STUB + li, fe.to, fe.type, li, "in");
+    }
+  });
+
+  stubs.forEach(function (c, lid) {
+    nodes.push({
+      id: STUB + lid, kind: "stub", layerRef: lid, w: STUB_W, h: STUB_H,
+      t1: layerLabel(lid),
+      t2: c.in + " in · " + c.out + " out",
+      tip: layerLabel(lid) + " (other layer)\n" +
+           c.in + " edges " + layerLabel(lid) + " \u2192 " + layerLabel(layerId) + "\n" +
+           c.out + " edges " + layerLabel(layerId) + " \u2192 " + layerLabel(lid) +
+           "\ndouble-click to open this layer"
+    });
+  });
+
+  var edges = internal;
+  agg.forEach(function (e) {
+    var other = layerLabel(e.stub);
+    e.tip = (e.dir === "out"
+      ? e.from + " → " + other
+      : other + " → " + e.to) + "  (" + e.type + ", " + e.weight +
+      " edge" + (e.weight === 1 ? "" : "s") + ")";
+    edges.push(e);
+  });
+  return layout(nodes, edges);
+}
+
+// ==================================================================== render
+var svg = document.getElementById("dag");
+var panel = document.getElementById("panel");
+var crumb = document.getElementById("crumb");
+var btnBack = document.getElementById("btn-back");
+var G = null;   // current laid-out graph
+
+function markers() {
+  return Object.keys(EDGE_TYPES).map(function (t) {
+    return '<marker id="ar-' + t + '" viewBox="0 0 10 10" refX="9.2" refY="5" ' +
+      'markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto">' +
+      '<path d="M0.6,1 L9.4,5 L0.6,9 z" fill="' + EDGE_TYPES[t].color + '"/></marker>';
+  }).join("");
+}
+
+function nodeSVG(n) {
+  var pad = 13, maxw = n.w - pad * 2;
+  var t1 = fit(n.t1, maxw, F_T1, n.mid);
+  var t2 = fit(n.t2, maxw, F_T2, false);
+  var cls = "node " + n.kind;
+  var y1 = n.kind === "stub" ? -7 : -4, y2 = n.kind === "stub" ? 11 : 14;
+  return '<g class="' + cls + '" data-id="' + esc(n.id) + '" transform="translate(' +
+    n.x.toFixed(1) + ',' + n.y.toFixed(1) + ')">' +
+    '<title>' + esc(n.tip) + '</title>' +
+    '<rect class="box" x="' + (-n.w / 2) + '" y="' + (-n.h / 2) + '" width="' + n.w +
+      '" height="' + n.h + '" rx="7"/>' +
+    '<text class="t1" x="' + (-n.w / 2 + pad) + '" y="' + y1 + '" font-size="14">' + esc(t1) + '</text>' +
+    '<text class="t2" x="' + (-n.w / 2 + pad) + '" y="' + y2 + '" font-size="11">' + esc(t2) + '</text>' +
+    '</g>';
+}
+
+function draw() {
+  var W = svg.clientWidth, H = svg.clientHeight;
+  var eHTML = G.edges.map(function (e, i) {
+    var st = ety(e.type);
+    return '<path class="edge" data-e="' + i + '" d="' + edgePath(e) + '" stroke="' +
+      st.color + '" stroke-width="' + strokeW(e.weight) + '"' +
+      (st.dash ? ' stroke-dasharray="' + st.dash + '"' : "") +
+      ' marker-end="url(#ar-' + (EDGE_TYPES[e.type] ? e.type : "other") + ')">' +
+      '<title>' + esc(e.tip || "") + '</title></path>';
+  }).join("");
+  var nHTML = G.nodes.map(nodeSVG).join("");
+  svg.innerHTML = '<defs>' + markers() + '</defs>' +
+    '<g id="viewport"><g id="edges">' + eHTML + '</g><g id="nodes">' + nHTML + '</g></g>';
+  applyTransform();
+  applyHighlight();
+  drawLegend();
+  void W; void H;
+}
+
+function applyTransform() {
+  var vp = document.getElementById("viewport");
+  if (vp) vp.setAttribute("transform",
+    "translate(" + S.tx.toFixed(2) + "," + S.ty.toFixed(2) + ") scale(" + S.k.toFixed(4) + ")");
+}
+
+function fitView(minZoom) {
+  var W = svg.clientWidth || 1600, H = svg.clientHeight || 900, pad = 46;
+  var b = G.bbox;
+  var k = Math.min((W - pad * 2) / Math.max(b.w, 1), (H - pad * 2) / Math.max(b.h, 1));
+  k = Math.min(k, 1.35);
+  var anchorTL = false;
+  if (minZoom && k < minZoom) { k = minZoom; anchorTL = true; }
+  S.k = k;
+  if (anchorTL) { S.tx = pad - b.x * k; S.ty = pad - b.y * k; }
+  else {
+    S.tx = (W - b.w * k) / 2 - b.x * k;
+    S.ty = (H - b.h * k) / 2 - b.y * k;
+  }
+  applyTransform();
+}
+
+function drawLegend() {
+  var counts = {};
+  G.edges.forEach(function (e) { counts[e.type] = (counts[e.type] || 0) + 1; });
+  var items = Object.keys(EDGE_TYPES).filter(function (t) { return counts[t]; });
+  if (!items.length) items = ["import"];
+  document.getElementById("legend").innerHTML =
+    "<h4>Edge types</h4><ul>" + items.map(function (t) {
+      var st = ety(t);
+      return "<li><svg width='26' height='8'><line x1='0' y1='4' x2='26' y2='4' stroke='" +
+        st.color + "' stroke-width='2.2'" +
+        (st.dash ? " stroke-dasharray='" + st.dash + "'" : "") + "/></svg>" +
+        st.title + " <span class='n'>" + (counts[t] || 0) + "</span></li>";
+    }).join("") + "</ul>";
+}
+
+// ================================================================ highlight
+function highlightSets() {
+  var sel = S.focused, up = new Set(), down = new Set();
+  if (!sel) return null;
+  if (S.view === "layers") {
+    var inf = LAYER_INFO[sel] || { upstream: [], downstream: [] };
+    (inf.upstream || []).forEach(function (i) { up.add(i); });
+    (inf.downstream || []).forEach(function (i) { down.add(i); });
+  } else {
+    // In a file view the drawn edges already fold outside neighbours into stubs,
+    // so read the neighbourhood off them; that also works for a focused stub.
+    G.edges.forEach(function (e) {
+      if (e.from === sel) up.add(e.to);
+      else if (e.to === sel) down.add(e.from);
+    });
+  }
+  return { sel: sel, up: up, down: down };
+}
+
+function applyHighlight() {
+  var vp = document.getElementById("viewport");
+  if (!vp) return;
+  var h = highlightSets();
+  var groups = vp.querySelectorAll("g.node");
+  vp.classList.toggle("dimming", !!h);
+  if (!h) {
+    Array.prototype.forEach.call(groups, function (g) {
+      g.classList.remove("faded", "sel", "rel-up", "rel-down");
+    });
+    Array.prototype.forEach.call(vp.querySelectorAll("path.edge"), function (p) {
+      p.classList.remove("emph");
+    });
+    return;
+  }
+  var lit = new Set([h.sel]);
+  h.up.forEach(function (i) { lit.add(i); });
+  h.down.forEach(function (i) { lit.add(i); });
+  Array.prototype.forEach.call(groups, function (g) {
+    var id = g.getAttribute("data-id");
+    g.classList.remove("faded", "sel", "rel-up", "rel-down");
+    if (id === h.sel) g.classList.add("sel");
+    else if (h.up.has(id)) g.classList.add("rel-up");
+    else if (h.down.has(id)) g.classList.add("rel-down");
+    else g.classList.add("faded");
+  });
+  Array.prototype.forEach.call(vp.querySelectorAll("path.edge"), function (p) {
+    var e = G.edges[+p.getAttribute("data-e")];
+    p.classList.toggle("emph", !!e && lit.has(e.from) && lit.has(e.to));
+  });
+}
+
+// ==================================================================== panel
+function chipRow(ids, cls) {
+  if (!ids || !ids.length) return '<div class="empty">none</div>';
+  return '<div class="chips">' + ids.map(function (id) {
+    return '<span class="chip ' + cls + '" data-go="' + esc(id) + '">' +
+      esc(layerLabel(id)) + "</span>";
+  }).join("") + "</div>";
+}
+function fileRows(paths, opts) {
+  if (!paths || !paths.length) return '<div class="empty">none</div>';
+  return '<ul class="rows">' + paths.map(function (p) {
+    var n = NODE.get(p) || {};
+    var ty = opts && opts.type ? '<span class="ty">' + esc(opts.type(p)) + "</span>" : "";
+    return "<li><span class='nm' data-file='" + esc(p) + "' title='" + esc(p) + "'>" +
+      esc(p) + "</span>" + ty + "<span class='num'>" + num(n.lines || 0) + "</span></li>";
+  }).join("") + "</ul>";
+}
+
+function panelEmpty() {
+  var tot = LAYER_IDS.reduce(function (a, id) { return a + layerFiles(id).length; }, 0);
+  panel.innerHTML =
+    "<h2>" + esc(MAP.meta.repo) + "</h2>" +
+    '<div class="sub">' + LAYER_IDS.length + " layers · " + num(tot) + " files · " +
+      num(MAP.edges.length) + " layer edges · " + num(FILE_EDGES.length) + " file edges</div>" +
+    '<p class="desc">Click a layer to highlight it with everything upstream and downstream. ' +
+      "Double-click (or <b>Expand</b>) to open its files.</p>" +
+    "<h3>Layers by lines</h3>" +
+    '<ul class="rows">' + LAYER_IDS.slice().sort(function (a, b) {
+      return layerLines(b) - layerLines(a);
+    }).map(function (id) {
+      return "<li><span class='nm' data-go='" + esc(id) + "' title='" + esc(id) + "'>" +
+        esc(layerLabel(id)) + "</span><span class='num'>" +
+        layerFiles(id).length + "f</span><span class='num'>" + num(layerLines(id)) +
+        "</span></li>";
+    }).join("") + "</ul>";
+}
+
+function panelLayer(id) {
+  var n = NODE.get(id) || {};
+  var inf = LAYER_INFO[id] || {};
+  var files = (inf.files || []).slice().sort(function (a, b) {
+    return ((NODE.get(b) || {}).lines || 0) - ((NODE.get(a) || {}).lines || 0);
+  });
+  var aliases = n.aliases || inf.aliases || null;
+  panel.innerHTML =
+    "<h2>" + esc(n.label || id) + "</h2>" +
+    '<div class="sub">' + esc(id) + " · " + plural(files.length, "file") + " · " +
+      plural(n.lines, "line") + "</div>" +
+    (n.desc ? '<p class="desc">' + esc(n.desc) + "</p>" : "") +
+    (aliases ? "<h3>Aliases</h3><div class='chips'>" + aliases.map(function (a) {
+      return "<span class='chip plain'>" + esc(a) + "</span>";
+    }).join("") + "</div>" : "") +
+    '<div><button class="btn" data-expand="' + esc(id) + '">Expand to files</button>' +
+      '<button class="btn ghost" data-clear="1">Clear</button></div>' +
+    "<h3>Upstream — depends on (" + ((inf.upstream || []).length) + ")</h3>" +
+    chipRow(inf.upstream, "up") +
+    "<h3>Downstream — depended on by (" + ((inf.downstream || []).length) + ")</h3>" +
+    chipRow(inf.downstream, "down") +
+    "<h3>Top fan-in</h3>" + fileRows(inf.top_fan_in) +
+    "<h3>Files (" + files.length + ", by lines)</h3>" + fileRows(files);
+}
+
+function panelFile(id) {
+  var n = NODE.get(id) || {};
+  var outs = (OUT.get(id) || []), ins = (IN.get(id) || []);
+  var otype = new Map(), itype = new Map();
+  outs.forEach(function (e) { otype.set(e.to, e.type); });
+  ins.forEach(function (e) { itype.set(e.from, e.type); });
+  panel.innerHTML =
+    "<h2>" + esc(n.label || id) + "</h2>" +
+    '<div class="sub">' + esc(id) + "</div>" +
+    '<div class="sub">' + esc(layerLabel(n.layer)) + " · " + plural(n.lines, "line") + "</div>" +
+    (n.desc ? '<p class="desc">' + esc(n.desc) + "</p>" : "") +
+    '<div><button class="btn ghost" data-clear="1">Clear</button></div>' +
+    "<h3>Imports (" + outs.length + ")</h3>" +
+    fileRows(outs.map(function (e) { return e.to; }),
+             { type: function (p) { return otype.get(p) || ""; } }) +
+    "<h3>Importers (" + ins.length + ")</h3>" +
+    fileRows(ins.map(function (e) { return e.from; }),
+             { type: function (p) { return itype.get(p) || ""; } });
+}
+
+function panelStub(stubId) {
+  var lid = stubId.slice(STUB.length);
+  panelLayer(lid);
+  var head = panel.querySelector(".sub");
+  if (head) head.insertAdjacentHTML("afterend",
+    '<div class="sub">shown as a stub: traffic between <b>' +
+    esc(layerLabel(S.expanded)) + "</b> and this layer</div>");
+}
+
+function panelFor() {
+  if (S.view === "files") {
+    if (!S.focused) {
+      var lid = S.expanded;
+      panelLayer(lid);
+      var b = panel.querySelector("[data-expand]");
+      if (b) {
+        b.outerHTML = '<button class="btn" data-back="1">← Back to layers</button>';
+      }
+      return;
+    }
+    if (isStub(S.focused)) return panelStub(S.focused);
+    return panelFile(S.focused);
+  }
+  if (!S.focused) return panelEmpty();
+  return panelLayer(S.focused);
+}
+
+// ===================================================================== views
+function header() {
+  var m = MAP.meta, c = m.counts || {};
+  document.getElementById("h-repo").textContent = m.repo || "";
+  document.getElementById("h-meta").innerHTML =
+    "<span>commit <b>" + esc(m.commit) + "</b> <span style='color:var(--dim)'>(" +
+      esc(m.ref || "") + ")</span></span>" +
+    "<span>built <b>" + esc(m.built_at) + "</b></span>" +
+    "<span><b>" + num(c.layers) + "</b> layers</span>" +
+    "<span><b>" + num(c.files) + "</b> files</span>" +
+    "<span><b>" + num(c.edges) + "</b> layer edges</span>" +
+    "<span><b>" + num(c.file_edges) + "</b> file edges</span>";
+  document.title = "DAG GPS — " + (m.repo || "") + " @ " + (m.commit || "");
+}
+
+function showLayers(keepFocus) {
+  S.view = "layers"; S.expanded = null;
+  if (!keepFocus) S.focused = null;
+  G = layerGraph();
+  S.nodes = G.nodes; S.edges = G.edges;
+  btnBack.classList.add("hidden");
+  crumb.innerHTML = "layer view · <b>" + G.nodes.length + "</b> layers, " +
+    G.edges.length + " edges" + (S.showTests ? "" : " · tests hidden");
+  draw();
+  fitView(null);
+  panelFor();
+}
+
+function showFiles(layerId) {
+  if (!LAYER_INFO[layerId]) return;
+  S.view = "files"; S.expanded = layerId; S.focused = null;
+  G = fileGraph(layerId);
+  S.nodes = G.nodes; S.edges = G.edges;
+  btnBack.classList.remove("hidden");
+  var nf = layerFiles(layerId).length;
+  crumb.innerHTML = "<b>" + esc(layerLabel(layerId)) + "</b> · " + nf +
+    " files + " + (G.nodes.length - nf) + " layer stubs, " + G.edges.length + " edges";
+  draw();
+  fitView(G.nodes.length > 40 ? 0.6 : null);
+  panelFor();
+}
+
+function setFocus(id) {
+  S.focused = id && (NODE.has(id) || isStub(id)) ? id : null;
+  if (S.focused && !S.nodes.some(function (n) { return n.id === S.focused; })) {
+    // focusing something off-screen: bring the right view up first
+    var n = NODE.get(S.focused);
+    if (n && n.kind === "layer") {
+      if (S.view !== "layers") { showLayers(true); return; }
+      if (!S.showTests && S.focused === HIDE_BY_DEFAULT) {
+        document.getElementById("t-tests").checked = S.showTests = true;
+        showLayers(true); return;
+      }
+    } else if (n && n.kind === "file") {
+      showFiles(n.layer); S.focused = id; applyHighlight(); panelFor(); return;
+    }
+  }
+  applyHighlight();
+  panelFor();
+}
+
+// ============================================================ interactions
+svg.addEventListener("wheel", function (ev) {
+  ev.preventDefault();
+  var r = svg.getBoundingClientRect(), cx = ev.clientX - r.left, cy = ev.clientY - r.top;
+  var k = S.k * Math.exp(-ev.deltaY * 0.0016);
+  k = Math.max(0.1, Math.min(4, k));
+  S.tx = cx - (cx - S.tx) * (k / S.k);
+  S.ty = cy - (cy - S.ty) * (k / S.k);
+  S.k = k;
+  applyTransform();
+}, { passive: false });
+
+var drag = null;
+svg.addEventListener("mousedown", function (ev) {
+  if (ev.button !== 0) return;
+  var onNode = ev.target.closest && ev.target.closest("g.node");
+  if (onNode) return;                     // never start a pan on a node
+  drag = { x: ev.clientX, y: ev.clientY, tx: S.tx, ty: S.ty, moved: 0 };
+  svg.classList.add("panning");
+});
+window.addEventListener("mousemove", function (ev) {
+  if (!drag) return;
+  var dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+  drag.moved = Math.max(drag.moved, Math.abs(dx) + Math.abs(dy));
+  S.tx = drag.tx + dx; S.ty = drag.ty + dy;
+  applyTransform();
+});
+window.addEventListener("mouseup", function () {
+  if (!drag) return;
+  if (drag.moved < 4) setFocus(null);     // a click on the background clears
+  drag = null;
+  svg.classList.remove("panning");
+});
+
+svg.addEventListener("click", function (ev) {
+  var g = ev.target.closest && ev.target.closest("g.node");
+  if (!g) return;
+  setFocus(g.getAttribute("data-id"));
+});
+svg.addEventListener("dblclick", function (ev) {
+  var g = ev.target.closest && ev.target.closest("g.node");
+  if (!g) return;
+  var id = g.getAttribute("data-id");
+  if (isStub(id)) { showFiles(id.slice(STUB.length)); return; }
+  var n = NODE.get(id);
+  if (n && n.kind === "layer") showFiles(id);
+});
+
+panel.addEventListener("click", function (ev) {
+  var t = ev.target.closest("[data-expand],[data-back],[data-clear],[data-go],[data-file]");
+  if (!t) return;
+  if (t.hasAttribute("data-expand")) return showFiles(t.getAttribute("data-expand"));
+  if (t.hasAttribute("data-back")) return showLayers(false);
+  if (t.hasAttribute("data-clear")) return setFocus(null);
+  if (t.hasAttribute("data-go")) return setFocus(t.getAttribute("data-go"));
+  if (t.hasAttribute("data-file")) return setFocus(t.getAttribute("data-file"));
+});
+
+btnBack.addEventListener("click", function () { showLayers(false); });
+document.getElementById("btn-fit").addEventListener("click", function () { fitView(null); });
+document.getElementById("t-tests").addEventListener("change", function (ev) {
+  S.showTests = ev.target.checked;
+  if (S.view === "files") showLayers(false);
+  else showLayers(S.focused !== HIDE_BY_DEFAULT || S.showTests);
+});
+document.addEventListener("keydown", function (ev) {
+  if (ev.key !== "Escape") return;
+  if (S.view === "files") showLayers(false);
+  else setFocus(null);
+});
+var rt = null;
+window.addEventListener("resize", function () {
+  clearTimeout(rt);
+  rt = setTimeout(function () { if (G) fitView(null); }, 120);
+});
+
+// ================================================================ test hook
+window.dagGps = {
+  state: function () {
+    return {
+      view: S.view, focused: S.focused, expanded: S.expanded,
+      visibleNodes: S.nodes.length, visibleEdges: S.edges.length,
+      zoom: S.k, showTests: S.showTests
+    };
+  },
+  focus: function (id) { setFocus(id); return window.dagGps.state(); },
+  expand: function (id) { showFiles(id); return window.dagGps.state(); },
+  back: function () { showLayers(false); return window.dagGps.state(); }
+};
+
+// ====================================================================== boot
+header();
+showLayers(false);
+
+})(); }
+</script>
+</body>
+</html>

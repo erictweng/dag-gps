@@ -53,3 +53,6 @@ Update this file whenever a worker starts, finishes, or gets blocked.
   389 edges after dedupe and dropping 15 non-source targets.
 - New check: every `file_edges` endpoint must be a **file** node id (a layer id FAILs too).
 - `edges` is unchanged in shape and content, so nothing that reads the M0 map breaks.
+
+## M1.2 — verified 2026-10-07
+Recovered Claude partial implementation after session quota exhaustion. Offline HTML canvas, renderer, unit tests, browser smoke, real-click interaction check complete. 97 unit tests pass; map checks 10/10; four screenshot states with zero page errors and zero external requests. Real clicks, expand, file details, Escape, test toggle, double-click, back, zoom and fit pass. Artifact: dist/quest-coder.html. Scorer remains M2 (Ask disabled deliberately).

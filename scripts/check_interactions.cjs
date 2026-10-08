@@ -1,0 +1,13 @@
+const {chromium}=require('/Users/aibert/projects/quest-coder-assist/node_modules/playwright');
+const {pathToFileURL}=require('node:url');
+const assert=require('node:assert/strict');
+(async()=>{const b=await chromium.launch();try{const p=await b.newPage({viewport:{width:1920,height:1080}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(pathToFileURL(require('node:path').resolve('dist/quest-coder.html')).href);
+await p.locator('g.node[data-id="solve-ui"]').click();assert.equal((await p.evaluate(()=>dagGps.state())).focused,'solve-ui');
+await p.locator('[data-expand="solve-ui"]').click();assert.equal((await p.evaluate(()=>dagGps.state())).expanded,'solve-ui');
+await p.locator('g.node[data-id="components/solve/action-bar.tsx"]').click();assert.equal((await p.evaluate(()=>dagGps.state())).focused,'components/solve/action-bar.tsx');assert.ok((await p.locator('#panel').innerText()).toLowerCase().includes('imports'));
+await p.keyboard.press('Escape');assert.equal((await p.evaluate(()=>dagGps.state())).view,'layers');
+await p.locator('#t-tests').check();assert.equal((await p.evaluate(()=>dagGps.state())).visibleNodes,18);await p.locator('#t-tests').uncheck();
+await p.locator('g.node[data-id="persistence"]').dblclick();assert.equal((await p.evaluate(()=>dagGps.state())).expanded,'persistence');await p.locator('#btn-back').click();
+const before=(await p.evaluate(()=>dagGps.state())).zoom;await p.mouse.move(500,500);await p.mouse.wheel(0,-200);await p.waitForTimeout(100);assert.ok((await p.evaluate(()=>dagGps.state())).zoom>before);await p.locator('#btn-fit').click();
+assert.deepEqual(errors,[]);console.log('PASS real clicks, expand, file details, Esc, tests toggle, double-click, back, zoom/fit; zero page errors');
+}finally{await b.close();}})().catch(e=>{console.error(e);process.exit(1);});
