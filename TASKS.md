@@ -69,6 +69,24 @@ Status: verified locally on `m3-routing`; parent rerun/review pending.
   plus 11 extra checks; zero errors/external requests; screenshots inspected.
 - No map/scorer changes, push, merge or quest-coder edits. See `docs/M3_REPORT.md`.
 
+## Filename lookup + evidence-first answers
+
+Eric approved the next milestone after M3.
+Status: verified locally on `lookup-evidence`, based on `1844aa2`; parent independent review pending.
+
+- Separate file/architecture retrieval; exact path, basename, stem, partial and conservative
+  spelling tiers. All duplicate paths; missing runner.py is honest; no fuzzy auto-action.
+- Evidence-first four labels; reasons/paths/aliases, uncalibrated raw Details. No learned aliases/persistence.
+- 104 Python + 73 JS tests; full pinned map parity and 10/10 checks; graph/router unchanged.
+- Legacy M3 5 canonical + 11 extra checks and new lookup 19 UI checks pass; shipped
+  scorer parity for 47 original + 40 lookup cases; zero page/console errors or external requests.
+- Original eval rows unchanged: operation 47/47, top-1/top-3 44/44. Separate challenge
+  39/40 operation/label, 16/17 top-1, 17/17 top-3; false accepted negatives 0/24,
+  wrong accepted requests 0/15; bearer-auth challenge failure retained honestly.
+- Nine lookup screenshots inspected; recipe, README, report and progress note updated.
+- No push/merge, quest-coder edits, membership changes, or next milestone launch.
+  See `docs/LOOKUP_REPORT.md` and `.hsub/build-updates/lookup-evidence.md`.
+
 ## Backlog
 
 - Eric review/correction of generated eval answers and map aliases.

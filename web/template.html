@@ -48,7 +48,10 @@
   #answer { border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 14px; overflow-wrap: anywhere; }
   #answer:empty { display: none; }
   .alternative { display: block; width: 100%; text-align: left; white-space: normal; overflow-wrap: anywhere; margin: 4px 0; }
-  #answer progress { width: 100%; accent-color: var(--accent); }
+  .match-label { color: var(--accent); }
+  #match-details { border-top: 1px solid var(--line); padding: 9px 0; margin-top: 10px; }
+  #match-details summary { cursor: pointer; color: var(--fg); }
+  #match-details .sub { margin: 8px 0; }
   .node.endpoint-to .box { stroke: #d2a8ff; fill: #261b32; stroke-width: 2.4px; }
   .ask .tag {
     font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
@@ -1066,27 +1069,48 @@ function displayRoute(op, from, to) {
 var OP_LABEL = {LOCATE: 'Locate', UPSTREAM: 'Dependencies', DOWNSTREAM: 'Dependents', PATH: 'Directed path', NOT_SURE: 'Not sure'};
 function renderAnswer(status) {
   if (!answer) return;
-  var op = answer.operation.choice;
-  var html = '<h2>' + esc(OP_LABEL[op]) + ' · ' + esc(op) + '</h2>' +
-    '<div class="sub">Scorer accepted: <b>' + (answer.yes ? 'yes' : 'no') + '</b> · ' + answerLatency.toFixed(2) + ' ms (score + validate + route + draw)</div>' +
-    '<p class="desc" id="route-status">' + esc(status || (answerRoute ? answerRoute.status : 'No action — choose an alternative explicitly.')) + '</p>' +
-    '<p class="desc">' + esc(answer.reason.replace('graph traversal is deferred to M3', 'endpoint matching only; routing is reported separately')) + '</p>' +
-    '<div class="sub">Heuristic operation confidence: ' + (answer.operation.confidence * 100).toFixed(1) + '% — not calibrated correctness</div>' +
-    '<progress max="1" value="' + answer.operation.confidence + '" aria-label="Heuristic operation confidence"></progress>';
+  var op = answer.operation.choice, heads = Object.values(answer.targets);
+  var labels = heads.map(function (h) { return h.match ? h.match.label : h.yes ? 'Likely match' : 'No match'; });
+  var label = labels.includes('No match') ? 'No match' : labels.includes('Needs your choice') ? 'Needs your choice' :
+    labels.includes('Likely match') ? 'Likely match' : 'Exact match';
+  if (!answer.yes && heads.every(function (h) { return h.yes; })) label = 'No match'; // malformed intent
+  var html = '<h2 class="match-label">' + esc(label) + '</h2>' +
+    '<div class="sub">' + esc(OP_LABEL[op]) + ' · ' + esc(op) + ' · ' + answerLatency.toFixed(2) + ' ms</div>' +
+    '<p class="desc" id="route-status">' + esc(status || (answerRoute ? answerRoute.status :
+      label === 'No match' ? 'No action — no supported match.' : 'No action — choose an alternative explicitly.')) + '</p>';
+  if (!answer.yes) html += '<p class="desc">' + esc(answer.reason) + '</p>';
   if (answerRoute && answerRoute.path) html += '<p class="desc">' + answerRoute.path.map(esc).join(' → ') + '</p>';
   Object.keys(answer.targets).forEach(function (key) {
-    var h = answer.targets[key];
-    html += '<h3>' + esc(key.replace('_target', '').replace('locate', 'Target')) + ' — heuristic score ' + (h.confidence * 100).toFixed(1) + '%</h3>' +
-      '<progress max="1" value="' + h.confidence + '" aria-label="Heuristic target confidence"></progress>' +
+    var h = answer.targets[key], suggestions = h.suggestions || h.top3;
+    html += '<h3>' + esc(key.replace('_target', '').replace('locate', 'Target')) + ' — ' + esc(h.match ? h.match.label : label) + '</h3>' +
       '<div class="sub">' + esc(h.reason) + '</div>';
     if (overrides[key]) html += '<div class="sub">Explicit override: ' + esc(overrides[key]) + '</div>';
-    h.top3.forEach(function (a) {
-      var components = Object.keys(a.components).filter(function (k) { return a.components[k] > 0; }).map(function (k) { return k + ' ' + a.components[k].toFixed(2); }).join(', ') || 'no lexical evidence';
+    suggestions.forEach(function (a) {
+      var n = NODE.get(a.id);
       html += '<button type="button" class="btn ghost alternative" data-override="' + esc(a.id) + '" data-head="' + key + '">' +
-        esc(a.id) + ' · ' + (a.probability * 100).toFixed(1) + '% heuristic weight<br><small>raw ' + a.score.toFixed(2) + ': ' + esc(components) + '</small></button>';
+        '<b>Override: ' + esc(a.path || a.id) + '</b><br><small>' + esc(a.reason || h.reason) + '</small>' +
+        (n.aliases && n.aliases.length ? '<br><small>Aliases: ' + esc(n.aliases.join(', ')) + '</small>' : '') + '</button>';
     });
   });
-  html += '<div class="sub">Edges point consumer → dependency. Realtime ignored. Endpoint matching does not imply route success. Alternatives are explicit user overrides.</div>';
+  html += '<details id="match-details"><summary>Details · uncalibrated heuristic scores</summary>' +
+    '<div class="sub">Scorer accepted: ' + (answer.yes ? 'yes' : 'no') +
+    '. Raw scores and normalized weights are not calibrated correctness probabilities.</div>' +
+    '<div class="sub">Operation weights: ' + esc(JSON.stringify(answer.operation.probabilities)) + '</div>';
+  Object.keys(answer.targets).forEach(function (key) {
+    var h = answer.targets[key];
+    html += '<h3>' + esc(key) + '</h3><div class="sub">' + esc(h.match ?
+      'Mode: ' + h.match.mode + '; tier: ' + h.match.tier + '; runner-up margin: ' + h.match.margin.toFixed(3) + '; coverage: ' + h.match.coverage.toFixed(3) : h.reason) + '</div>';
+    var detailItems = h.top3.concat(h.suggestions || []).filter(function (a, i, list) {
+      return list.findIndex(function (x) { return x.id === a.id; }) === i;
+    });
+    detailItems.forEach(function (a) {
+      var components = Object.keys(a.components).filter(function (k) { return a.components[k] > 0; }).map(function (k) {
+        return k + ' ' + a.components[k].toFixed(2);
+      }).join(', ') || 'no lexical evidence';
+      html += '<div class="sub">' + esc(a.id) + '<br>raw ' + a.score.toFixed(2) + '; normalized weight ' + a.probability.toFixed(6) + ': ' + esc(components) + '</div>';
+    });
+  });
+  html += '</details><div class="sub">Edges point consumer → dependency. Realtime ignored. Endpoint matching does not imply route success. Alternatives are explicit user overrides; nothing is learned or saved.</div>';
   document.getElementById('answer').innerHTML = html;
 }
 document.getElementById('ask-form').addEventListener('submit', function (ev) {
@@ -1113,7 +1137,7 @@ document.getElementById('answer').addEventListener('click', function (ev) {
   if (!button || !answer) return;
   var key = button.getAttribute('data-head'), id = button.getAttribute('data-override');
   DagGpsScorer.validateResult(answer, MAP);
-  if (!answer.targets[key] || !answer.targets[key].top3.some(function (a) { return a.id === id; }) || !NODE.has(id)) return;
+  if (!answer.targets[key] || !(answer.targets[key].suggestions || answer.targets[key].top3).some(function (a) { return a.id === id; }) || !NODE.has(id)) return;
   overrides[key] = id;
   var op = answer.requestedOperation, t = answer.targets;
   if (op === 'PATH') {
