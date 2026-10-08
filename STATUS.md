@@ -4,15 +4,31 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
-M1.1 (`file_edges` in `map.json`) is done. Next: M1.2, the canvas
-(`web/template.html` + `render.py` + a Playwright smoke) — handoff
-`.hsub/handoffs/m1-2-canvas.md`.
+M2 scorer + generated benchmark is locally verified on `m2-scorer` (parent review
+pending). M1 canvas is preserved and Ask stays disabled. Next scoped milestone:
+M3 routing/highlighting, after parent independently verifies M2.
 
 ## Active Worker
 
 None.
 
 ## Last Verified
+
+2026-10-07, branch `m2-scorer` (local worker; parent review pending):
+
+- `.verify.json` build/test/smoke all exit 0: 99 Python tests, 40 JS tests,
+  map 10/10 checks; existing canvas screenshots and real-click smoke pass.
+- 47 generated eval cases, not user-ground-truth: operation 46/47 (97.87%),
+  raw target top-1 42/44 (95.45%), top-3 43/44 (97.73%), PATH endpoints 14/14.
+- Abstention 11/47; negatives 10/10 abstained, false accepts 0/10.
+- p95 warm: Node 0.7754 ms, Chromium 0.7000 ms, 940 samples each (<10 ms).
+- Chromium parity across 47 outputs (numeric tolerance 1e-12), zero errors/external
+  requests; Ask still disabled. M1 template, renderer, node IDs and edges unchanged.
+- Remaining scorer errors: grading → run-gateway (expected runner-service),
+  authentication → NOT_SURE. Generated expectations need Eric review.
+- Full report: `docs/M2_REPORT.md`; actual logs: `artifacts/m2-final-verification.json`.
+
+### Previous milestone evidence
 
 2026-10-07, branch `m1-file-edges`:
 
