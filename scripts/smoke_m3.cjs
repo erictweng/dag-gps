@@ -46,9 +46,9 @@ const canonical = [
       assert.deepEqual(await lit(),(c.ids || c.route).slice().sort());
       assert.equal((await emph()).length,s.route.edges.length);
       if(c.expanded) assert.equal(s.expanded,c.expanded);
-      assert.match(await page.locator('#answer').innerText(),/not calibrated correctness/);
+      assert.match(await page.locator('#answer').innerText(),/uncalibrated heuristic scores/);
       assert.ok(Number.isFinite(s.latencyMs));
-      assert.equal(await page.locator('#answer [data-override]').count(),c.op==='PATH'?6:3);
+      assert.equal(await page.locator('#answer [data-override]').count(),Object.values(s.answer.targets).reduce((n,h)=>n+h.suggestions.length,0));
       const screenshot = path.join(ROOT,`artifacts/m3-${c.name}.png`);
       await page.screenshot({path:screenshot});
       states.push({question:c.question,operation:c.op,target:c.from,path:s.route.path,latencyMs:s.latencyMs,screenshot});
@@ -59,7 +59,8 @@ const canonical = [
       assert.equal(s.answer.operation.choice,'NOT_SURE');assert.equal(s.route,null);assert.equal(s.focused,null);
       assert.equal(await page.locator('g.sel,g.rel-up,g.rel-down,g.endpoint-to').count(),0);
       assert.equal((await emph()).length,0);
-      assert.equal(await page.locator('#answer [data-override]').count(),3);
+      assert.equal(await page.locator('#answer [data-override]').count(),s.answer.targets.locate_target.suggestions.length);
+      if(q==='quantum teleporter')assert.equal(s.answer.targets.locate_target.suggestions.length,0);
     }
     // Explicit single-target override works while keeping scorer no/NOT_SURE honest.
     const choice = await page.locator('#answer [data-override]').first().getAttribute('data-override');
@@ -89,7 +90,7 @@ const canonical = [
     assert.equal(s.answer.operation.choice,'PATH');assert.equal(s.route.path,null);
     assert.deepEqual(s.route.edges,[]);assert.match(await page.locator('#route-status').innerText(),/mixed layer\/file endpoints unsupported/);
     // Abstained PATH: neither endpoint is acted on until both explicitly selected.
-    s = await ask('path from mystery engine to database');
+    s = await ask('path from top bar to database');
     assert.equal(s.answer.yes,false);assert.equal(s.route,null);
     await page.locator('[data-head="from_target"]').first().click();
     assert.equal((await page.evaluate(()=>dagGps.state())).route,null);

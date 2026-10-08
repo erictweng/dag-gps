@@ -1,0 +1,40 @@
+{"id":"l01","kind":"exact-path","question":"locate runner/quest_runner.py","operation":"LOCATE","target":"runner/quest_runner.py","label":"Exact match"}
+{"id":"l02","kind":"exact-path","question":"app/api/health/route.ts","operation":"LOCATE","target":"app/api/health/route.ts","label":"Exact match"}
+{"id":"l03","kind":"exact-basename","question":"quest_runner.py","operation":"LOCATE","target":"runner/quest_runner.py","label":"Exact match"}
+{"id":"l04","kind":"exact-basename","question":"friends-store.ts","operation":"LOCATE","target":"lib/friends-store.ts","label":"Exact match"}
+{"id":"l05","kind":"stem","question":"quest_runner","operation":"LOCATE","target":"runner/quest_runner.py","label":"Likely match"}
+{"id":"l06","kind":"stem","question":"friends-store","operation":"LOCATE","target":"lib/friends-store.ts","label":"Likely match"}
+{"id":"l07","kind":"stem","question":"runner/quest_runner","operation":"LOCATE","target":"runner/quest_runner.py","label":"Likely match"}
+{"id":"l08","kind":"partial","question":"file bounded_sub","operation":"LOCATE","target":"runner/bounded_subprocess.py","label":"Likely match"}
+{"id":"l09","kind":"responsibility","question":"where does grading live?","operation":"LOCATE","target":"runner-service","label":"Likely match"}
+{"id":"l10","kind":"responsibility","question":"where is authentication?","operation":"LOCATE","target":"auth","label":"Likely match"}
+{"id":"l11","kind":"responsibility","question":"grading request","operation":"LOCATE","target":"run-gateway","label":"Exact match"}
+{"id":"l12","kind":"responsibility","question":"where is bearer auth?","operation":"LOCATE","target":"runner-service","label":"Likely match"}
+{"id":"l13","kind":"intent","question":"dependencies of quest_runner.py","operation":"UPSTREAM","target":"runner/quest_runner.py","label":"Exact match"}
+{"id":"l14","kind":"intent","question":"what depends on lib/friends-store.ts","operation":"DOWNSTREAM","target":"lib/friends-store.ts","label":"Exact match"}
+{"id":"l15","kind":"intent","question":"route handlers","operation":"LOCATE","target":"api","label":"Exact match"}
+{"id":"l16","kind":"path","question":"path from app/api/friends/route.ts to friends-store","operation":"PATH","from_target":"app/api/friends/route.ts","to_target":"lib/friends-store.ts","label":"Likely match"}
+{"id":"l17","kind":"ambiguous","question":"route.ts","operation":"NOT_SURE","label":"Needs your choice","suggestion":"app/api/health/route.ts"}
+{"id":"l18","kind":"ambiguous","question":"file route","operation":"NOT_SURE","label":"Needs your choice","suggestion":"app/api/health/route.ts"}
+{"id":"l19","kind":"ambiguous","question":"page.tsx","operation":"NOT_SURE","label":"Needs your choice","suggestion":"app/page.tsx"}
+{"id":"l20","kind":"ambiguous","question":"__init__.py","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/__init__.py"}
+{"id":"l21","kind":"ambiguous","question":"file worker","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/case_worker.py"}
+{"id":"l22","kind":"missing","question":"where is runner.py?","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/quest_runner.py"}
+{"id":"l23","kind":"missing","question":"file runner.ts","operation":"NOT_SURE","label":"Needs your choice","suggestion":"lib/runner-client.ts"}
+{"id":"l24","kind":"typo","question":"quest_runer.py","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/quest_runner.py"}
+{"id":"l25","kind":"typo","question":"quest_runer","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/quest_runner.py"}
+{"id":"l26","kind":"typo","question":"quest_runner.pz","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/quest_runner.py"}
+{"id":"l27","kind":"typo","question":"file friends-stroe","operation":"NOT_SURE","label":"Needs your choice","suggestion":"lib/friends-store.ts"}
+{"id":"l28","kind":"typo","question":"proxyy","operation":"NOT_SURE","label":"Needs your choice","suggestion":"proxy.ts"}
+{"id":"l29","kind":"path-ambiguous","question":"path from route.ts to friends-store.ts","operation":"NOT_SURE","label":"Needs your choice","suggestion":"app/api/health/route.ts"}
+{"id":"l30","kind":"path-missing","question":"path from runner.py to database","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/quest_runner.py"}
+{"id":"l31","kind":"path-typo","question":"path from quest_runer.py to database","operation":"NOT_SURE","label":"Needs your choice","suggestion":"runner/quest_runner.py"}
+{"id":"l32","kind":"unknown","question":"quantum teleporter","operation":"NOT_SURE","label":"No match"}
+{"id":"l33","kind":"unknown","question":"file asdfghjkl.py","operation":"NOT_SURE","label":"No match"}
+{"id":"l34","kind":"unknown","question":"file authentication.py","operation":"NOT_SURE","label":"No match"}
+{"id":"l35","kind":"unknown","question":"file ox","operation":"NOT_SURE","label":"No match"}
+{"id":"l36","kind":"unknown","question":"unicorn-spacecraft.ts","operation":"NOT_SURE","label":"No match"}
+{"id":"l37","kind":"unknown","question":"database quantum banana","operation":"NOT_SURE","label":"No match"}
+{"id":"l38","kind":"unknown","question":"where is grader xyzzy?","operation":"NOT_SURE","label":"No match"}
+{"id":"l39","kind":"ambiguous","question":"where is top bar","operation":"NOT_SURE","label":"Needs your choice"}
+{"id":"l40","kind":"unknown","question":"please show me","operation":"NOT_SURE","label":"No match"}

@@ -4,15 +4,38 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
-M3 offline Ask + directed routing/highlights is locally verified on `m3-routing`.
-M2 was independently verified by parent before M3. M3 awaits parent rerun/review;
-no push or merge. Open `dist/quest-coder.html` for the offline demo.
+Filename lookup + evidence-first answers is locally verified on `lookup-evidence`,
+based on approved M3 `1844aa2`. Parent independent rerun/review pending; no push
+or merge. Open `dist/quest-coder.html` for the offline demo.
 
 ## Active Worker
 
 None.
 
 ## Last Verified
+
+Filename lookup, branch `lookup-evidence` (local worker; parent review pending):
+
+- `.verify.json` build/test/smoke exit 0: **104 Python + 73 JS tests**, pinned map
+  10/10 + full snapshot parity. Map, layers, router and original eval unchanged.
+- File-first path/basename/stem/partial/spelling tiers; missing runner.py and typos
+  require explicit override. Every duplicate basename path is offered; no-evidence
+  unknowns have no arbitrary buttons and clear prior highlights. No persistence.
+- Exact / Likely / Needs your choice / No match labels from evidence and margin,
+  not percentages. Paths/reasons/aliases visible; raw uncalibrated Details accessible.
+- Existing canvas interactions; M3 **5 canonical + 11 extra checks**; lookup **19 UI
+  checks**, 47 original + 40 lookup shipped-source parity; zero errors/requests.
+- Original generated regression: op 47/47, raw top-1/top-3 44/44, PATH 14/14, false
+  accepted negatives 0/10. Separate worker-draft lookup challenge: op/labels 39/40,
+  top-1 16/17, top-3 17/17, suggestion recall 15/15, false accepted negatives 0/24,
+  wrong accepted requests 0/15. Bearer-auth responsibility abstention retained.
+- Final p95: Node original 1.3480 ms (940), lookup 0.9129 ms (800); original
+  Chromium 1.1000 ms (940). Draft fixtures, not held-out/user accuracy.
+- Report: `docs/LOOKUP_REPORT.md`; logs: `artifacts/lookup-final-verification.json`;
+  screenshots: `artifacts/lookup-{exact,missing,override,unknown,ambiguous,typo,stem,details,1280}.png`
+  (nine inspected states; final Details/smaller viewport reinspected).
+
+### M3 evidence
 
 2026-10-07, branch `m3-routing` (local worker; parent review pending):
 
