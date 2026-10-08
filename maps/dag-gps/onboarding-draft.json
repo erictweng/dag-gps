@@ -1,0 +1,2632 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "unresolved imports == 0 (got 0)",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "unmapped files == 0 (got 0)",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "double-mapped files == 0 (got 0)",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "empty layers == 0 (got 0)",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "no layer cycles (realtime ignored)",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "manual edges reference known layers (0 edges)",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "map.json round-trips, every edge endpoint is a known id",
+      "ok": true
+    },
+    {
+      "detail": "",
+      "name": "every file_edge endpoint is a known file node (38 edges)",
+      "ok": true
+    },
+    {
+      "detail": "    scripts/eval_alias.cjs -> maps/quest-coder/map.json (import)\n    scripts/eval_lookup.cjs -> maps/quest-coder/map.json (import)\n    scripts/smoke_alias.cjs -> maps/quest-coder/map.json (import)\n    scripts/smoke_impact.cjs -> maps/quest-coder/map.json (import)\n    scripts/smoke_impact.cjs -> maps/quest-coder/tours.json (import)\n    scripts/smoke_lookup.cjs -> maps/quest-coder/map.json (import)\n    scripts/smoke_m3.cjs -> maps/quest-coder/map.json (import)\n    scripts/smoke_tours.cjs -> maps/quest-coder/tours.json (import)\n    scripts/smoke_tours.cjs -> maps/quest-coder/map.json (import)\n    tests/alias.test.cjs -> maps/quest-coder/map.json (import)",
+      "name": "note: 20 file edge(s) dropped, endpoint is not a file node",
+      "ok": true
+    }
+  ],
+  "commit": "a5b02554e479b5184204ab6aa7c7190d6605fe91",
+  "diagnostics": {
+    "duplicate_assignments": {},
+    "empty_layers": [],
+    "external": {
+      "scripts/build_map.py": [
+        "argparse",
+        "collections",
+        "datetime",
+        "fnmatch",
+        "json",
+        "os",
+        "re",
+        "shutil",
+        "subprocess",
+        "sys",
+        "tempfile"
+      ],
+      "scripts/build_project.py": [
+        "argparse",
+        "json",
+        "os",
+        "pathlib",
+        "re",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "urllib"
+      ],
+      "scripts/check_interactions.cjs": [
+        "/Users/aibert/projects/quest-coder-assist/node_modules/playwright",
+        "node:assert",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/check_layers.py": [
+        "collections",
+        "fnmatch",
+        "json",
+        "subprocess",
+        "sys"
+      ],
+      "scripts/check_snapshot.py": [
+        "copy",
+        "json",
+        "sys"
+      ],
+      "scripts/eval_alias.cjs": [
+        "node:fs",
+        "node:path",
+        "node:perf_hooks"
+      ],
+      "scripts/eval_lookup.cjs": [
+        "node:fs",
+        "node:path",
+        "node:perf_hooks"
+      ],
+      "scripts/eval_scorer.cjs": [
+        "node:fs",
+        "node:path",
+        "node:perf_hooks"
+      ],
+      "scripts/import_graph.py": [
+        "ast",
+        "collections",
+        "glob",
+        "json",
+        "os",
+        "re",
+        "sys"
+      ],
+      "scripts/python_static.py": [
+        "ast",
+        "os"
+      ],
+      "scripts/render.py": [
+        "argparse",
+        "copy",
+        "json",
+        "os",
+        "re",
+        "sys"
+      ],
+      "scripts/smoke_alias.cjs": [
+        "node:assert",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_canvas.mjs": [
+        "node:fs",
+        "node:module",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_impact.cjs": [
+        "node:assert",
+        "node:child_process",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_lookup.cjs": [
+        "node:assert",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_m3.cjs": [
+        "node:assert",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_refresh.py": [
+        "json",
+        "pathlib",
+        "shutil",
+        "subprocess",
+        "sys"
+      ],
+      "scripts/smoke_scorer.cjs": [
+        "node:assert",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_tours.cjs": [
+        "node:assert",
+        "node:child_process",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/smoke_trust.cjs": [
+        "node:assert",
+        "node:fs",
+        "node:path",
+        "node:url"
+      ],
+      "scripts/tours.py": [
+        "copy",
+        "pathlib",
+        "re",
+        "subprocess"
+      ],
+      "scripts/trust.py": [
+        "collections"
+      ],
+      "tests/alias.test.cjs": [
+        "node:assert",
+        "node:test"
+      ],
+      "tests/eval.test.cjs": [
+        "node:assert",
+        "node:path",
+        "node:test"
+      ],
+      "tests/impact.test.cjs": [
+        "node:assert",
+        "node:test"
+      ],
+      "tests/lookup.test.cjs": [
+        "node:assert",
+        "node:test"
+      ],
+      "tests/router.test.cjs": [
+        "node:assert",
+        "node:test"
+      ],
+      "tests/scorer.test.cjs": [
+        "node:assert",
+        "node:fs",
+        "node:test",
+        "node:vm"
+      ],
+      "tests/test_aliases.py": [
+        "importlib",
+        "pathlib",
+        "unittest"
+      ],
+      "tests/test_build_map.py": [
+        "json",
+        "os",
+        "sys",
+        "tempfile",
+        "unittest"
+      ],
+      "tests/test_extraction_trust.py": [
+        "build_project",
+        "check_snapshot",
+        "collections",
+        "copy",
+        "json",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "trust",
+        "unittest"
+      ],
+      "tests/test_refresh.py": [
+        "copy",
+        "json",
+        "os",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "unittest"
+      ],
+      "tests/test_render.py": [
+        "json",
+        "os",
+        "re",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "unittest"
+      ],
+      "tests/test_snapshot.py": [
+        "copy",
+        "os",
+        "sys",
+        "unittest"
+      ],
+      "tests/test_tours.py": [
+        "copy",
+        "json",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "tempfile",
+        "unittest"
+      ],
+      "tests/tours.test.cjs": [
+        "node:assert",
+        "node:test"
+      ],
+      "tests/trust.test.cjs": [
+        "node:assert",
+        "node:test"
+      ]
+    },
+    "file_cycles": [],
+    "layer_cycle": null,
+    "non_source_connections": [
+      [
+        "scripts/eval_alias.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "scripts/eval_lookup.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_alias.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_impact.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_impact.cjs",
+        "maps/quest-coder/tours.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_lookup.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_m3.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_tours.cjs",
+        "maps/quest-coder/tours.json",
+        "import"
+      ],
+      [
+        "scripts/smoke_tours.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/alias.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/eval.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/impact.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/impact.test.cjs",
+        "maps/quest-coder/tours.json",
+        "import"
+      ],
+      [
+        "tests/impact.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/lookup.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/router.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/scorer.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ],
+      [
+        "tests/scorer.test.cjs",
+        "maps/quest-coder/layers.json",
+        "import"
+      ],
+      [
+        "tests/tours.test.cjs",
+        "maps/quest-coder/tours.json",
+        "import"
+      ],
+      [
+        "tests/trust.test.cjs",
+        "maps/quest-coder/map.json",
+        "import"
+      ]
+    ],
+    "unmapped": [],
+    "unresolved": [],
+    "unresolved_http": [],
+    "unresolved_rpc": [],
+    "unsupported": [
+      [
+        "scripts/smoke_alias.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "scripts/smoke_impact.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "scripts/smoke_lookup.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "scripts/smoke_m3.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "scripts/smoke_scorer.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "scripts/smoke_tours.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "scripts/smoke_trust.cjs",
+        "nonliteral require",
+        "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      ],
+      [
+        "tests/test_extraction_trust.py",
+        "Python search path not modeled",
+        "build_project could refer to scripts.build_project; no suffix guessing"
+      ],
+      [
+        "tests/test_extraction_trust.py",
+        "Python search path not modeled",
+        "check_snapshot could refer to scripts.check_snapshot; no suffix guessing"
+      ],
+      [
+        "tests/test_extraction_trust.py",
+        "Python search path not modeled",
+        "sys.path.insert(0, str(ROOT / 'scripts'))"
+      ],
+      [
+        "tests/test_extraction_trust.py",
+        "Python search path not modeled",
+        "trust could refer to scripts.trust; no suffix guessing"
+      ]
+    ]
+  },
+  "file_edges": [
+    {
+      "cross_layer": false,
+      "from": "scripts/build_map.py",
+      "to": "scripts/trust.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/build_project.py",
+      "to": "scripts/build_map.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/build_project.py",
+      "to": "scripts/render.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/build_project.py",
+      "to": "scripts/tours.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/eval_alias.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/eval_lookup.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/eval_scorer.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/import_graph.py",
+      "to": "scripts/build_map.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/import_graph.py",
+      "to": "scripts/python_static.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/render.py",
+      "to": "scripts/tours.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/render.py",
+      "to": "scripts/trust.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/smoke_alias.cjs",
+      "to": "web/aliases.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/smoke_alias.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/smoke_impact.cjs",
+      "to": "web/impact.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/smoke_lookup.cjs",
+      "to": "scripts/eval_lookup.cjs",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/smoke_lookup.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/smoke_refresh.py",
+      "to": "scripts/build_project.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": false,
+      "from": "scripts/smoke_scorer.cjs",
+      "to": "scripts/eval_scorer.cjs",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "scripts/smoke_scorer.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/alias.test.cjs",
+      "to": "web/aliases.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/alias.test.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/eval.test.cjs",
+      "to": "scripts/eval_scorer.cjs",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/impact.test.cjs",
+      "to": "web/impact.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/lookup.test.cjs",
+      "to": "scripts/eval_lookup.cjs",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/lookup.test.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/router.test.cjs",
+      "to": "web/router.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/scorer.test.cjs",
+      "to": "web/scorer.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_aliases.py",
+      "to": "scripts/build_map.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_build_map.py",
+      "to": "scripts/build_map.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_refresh.py",
+      "to": "scripts/build_map.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_refresh.py",
+      "to": "scripts/build_project.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_render.py",
+      "to": "scripts/render.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_snapshot.py",
+      "to": "scripts/check_snapshot.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_tours.py",
+      "to": "scripts/build_project.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_tours.py",
+      "to": "scripts/render.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/test_tours.py",
+      "to": "scripts/tours.py",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/tours.test.cjs",
+      "to": "web/tours.js",
+      "type": "import"
+    },
+    {
+      "cross_layer": true,
+      "from": "tests/trust.test.cjs",
+      "to": "web/trust.js",
+      "type": "import"
+    }
+  ],
+  "layers": [
+    {
+      "desc": "Same parent folder; not a claim of architectural responsibility.",
+      "files": [
+        "scripts/build_map.py",
+        "scripts/build_project.py",
+        "scripts/check_interactions.cjs",
+        "scripts/check_layers.py",
+        "scripts/check_snapshot.py",
+        "scripts/eval_alias.cjs",
+        "scripts/eval_lookup.cjs",
+        "scripts/eval_scorer.cjs",
+        "scripts/import_graph.py",
+        "scripts/python_static.py",
+        "scripts/render.py",
+        "scripts/smoke_alias.cjs",
+        "scripts/smoke_canvas.mjs",
+        "scripts/smoke_impact.cjs",
+        "scripts/smoke_lookup.cjs",
+        "scripts/smoke_m3.cjs",
+        "scripts/smoke_refresh.cjs",
+        "scripts/smoke_refresh.py",
+        "scripts/smoke_scorer.cjs",
+        "scripts/smoke_tours.cjs",
+        "scripts/smoke_trust.cjs",
+        "scripts/tours.py",
+        "scripts/trust.py"
+      ],
+      "id": "folder-8c5967fd8486f344",
+      "label": "scripts",
+      "reason": "Same parent folder; not a claim of architectural responsibility."
+    },
+    {
+      "desc": "Same parent folder; not a claim of architectural responsibility.",
+      "files": [
+        "tests/alias.test.cjs",
+        "tests/eval.test.cjs",
+        "tests/impact.test.cjs",
+        "tests/lookup.test.cjs",
+        "tests/router.test.cjs",
+        "tests/scorer.test.cjs",
+        "tests/test_aliases.py",
+        "tests/test_build_map.py",
+        "tests/test_extraction_trust.py",
+        "tests/test_refresh.py",
+        "tests/test_render.py",
+        "tests/test_snapshot.py",
+        "tests/test_tours.py",
+        "tests/tours.test.cjs",
+        "tests/trust.test.cjs"
+      ],
+      "id": "folder-59830ebc3a418411",
+      "label": "tests",
+      "reason": "Same parent folder; not a claim of architectural responsibility."
+    },
+    {
+      "desc": "Same parent folder; not a claim of architectural responsibility.",
+      "files": [
+        "web/alias-ui.js",
+        "web/aliases.js",
+        "web/impact-ui.js",
+        "web/impact.js",
+        "web/router.js",
+        "web/scorer.js",
+        "web/tour-ui.js",
+        "web/tours.js",
+        "web/trust-ui.js",
+        "web/trust.js"
+      ],
+      "id": "folder-4b5e57f6eb2f42b9",
+      "label": "web",
+      "reason": "Same parent folder; not a claim of architectural responsibility."
+    }
+  ],
+  "limitations": [
+    "Folder proposals are not architectural truth. Human semantic review required.",
+    "Only supported static links; unknown runtime behavior and coverage.",
+    "Changing/removing layer IDs requires manual alias/tour review; no automatic migration."
+  ],
+  "reference_warnings": [],
+  "repo": "erictweng/dag-gps",
+  "reviewed": false,
+  "schema": "dag-gps-layer-draft/v1",
+  "source_files": [
+    "scripts/build_map.py",
+    "scripts/build_project.py",
+    "scripts/check_interactions.cjs",
+    "scripts/check_layers.py",
+    "scripts/check_snapshot.py",
+    "scripts/eval_alias.cjs",
+    "scripts/eval_lookup.cjs",
+    "scripts/eval_scorer.cjs",
+    "scripts/import_graph.py",
+    "scripts/python_static.py",
+    "scripts/render.py",
+    "scripts/smoke_alias.cjs",
+    "scripts/smoke_canvas.mjs",
+    "scripts/smoke_impact.cjs",
+    "scripts/smoke_lookup.cjs",
+    "scripts/smoke_m3.cjs",
+    "scripts/smoke_refresh.cjs",
+    "scripts/smoke_refresh.py",
+    "scripts/smoke_scorer.cjs",
+    "scripts/smoke_tours.cjs",
+    "scripts/smoke_trust.cjs",
+    "scripts/tours.py",
+    "scripts/trust.py",
+    "tests/alias.test.cjs",
+    "tests/eval.test.cjs",
+    "tests/impact.test.cjs",
+    "tests/lookup.test.cjs",
+    "tests/router.test.cjs",
+    "tests/scorer.test.cjs",
+    "tests/test_aliases.py",
+    "tests/test_build_map.py",
+    "tests/test_extraction_trust.py",
+    "tests/test_refresh.py",
+    "tests/test_render.py",
+    "tests/test_snapshot.py",
+    "tests/test_tours.py",
+    "tests/tours.test.cjs",
+    "tests/trust.test.cjs",
+    "web/alias-ui.js",
+    "web/aliases.js",
+    "web/impact-ui.js",
+    "web/impact.js",
+    "web/router.js",
+    "web/scorer.js",
+    "web/tour-ui.js",
+    "web/tours.js",
+    "web/trust-ui.js",
+    "web/trust.js"
+  ],
+  "tops": [
+    "scripts/build_map.py",
+    "scripts/build_project.py",
+    "scripts/check_interactions.cjs",
+    "scripts/check_layers.py",
+    "scripts/check_snapshot.py",
+    "scripts/eval_alias.cjs",
+    "scripts/eval_lookup.cjs",
+    "scripts/eval_scorer.cjs",
+    "scripts/import_graph.py",
+    "scripts/python_static.py",
+    "scripts/render.py",
+    "scripts/smoke_alias.cjs",
+    "scripts/smoke_canvas.mjs",
+    "scripts/smoke_impact.cjs",
+    "scripts/smoke_lookup.cjs",
+    "scripts/smoke_m3.cjs",
+    "scripts/smoke_refresh.py",
+    "scripts/smoke_scorer.cjs",
+    "scripts/smoke_tours.cjs",
+    "scripts/smoke_trust.cjs",
+    "scripts/tours.py",
+    "scripts/trust.py",
+    "tests/alias.test.cjs",
+    "tests/eval.test.cjs",
+    "tests/impact.test.cjs",
+    "tests/lookup.test.cjs",
+    "tests/router.test.cjs",
+    "tests/scorer.test.cjs",
+    "tests/test_aliases.py",
+    "tests/test_build_map.py",
+    "tests/test_extraction_trust.py",
+    "tests/test_refresh.py",
+    "tests/test_render.py",
+    "tests/test_snapshot.py",
+    "tests/test_tours.py",
+    "tests/tours.test.cjs",
+    "tests/trust.test.cjs",
+    "web/alias-ui.js",
+    "web/aliases.js",
+    "web/impact-ui.js",
+    "web/impact.js",
+    "web/router.js",
+    "web/scorer.js",
+    "web/tour-ui.js",
+    "web/tours.js",
+    "web/trust-ui.js",
+    "web/trust.js"
+  ],
+  "trust": {
+    "categories": [
+      "resolved_source",
+      "non_source_target",
+      "unresolved_local_reference",
+      "unsupported_dynamic_construct",
+      "external_dependency"
+    ],
+    "counts": {
+      "external_dependency": 164,
+      "non_source_target": 19,
+      "resolved_source": 38,
+      "unresolved_local_reference": 0,
+      "unsupported_dynamic_construct": 11
+    },
+    "extractor": "dag-gps-static-v2",
+    "file_cycles": [],
+    "findings": [
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "argparse"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "collections"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "datetime"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "fnmatch"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "re"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "shutil"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "argparse"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "re"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/build_project.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "urllib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_interactions.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "/Users/aibert/projects/quest-coder-assist/node_modules/playwright"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_interactions.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_interactions.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_interactions.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_layers.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "collections"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_layers.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "fnmatch"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_layers.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_layers.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_layers.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/check_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:perf_hooks"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:perf_hooks"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/eval_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:perf_hooks"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "ast"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "collections"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "glob"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "re"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/import_graph.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/python_static.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "ast"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/python_static.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "argparse"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "re"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_canvas.mjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_canvas.mjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:module"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_canvas.mjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_canvas.mjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:child_process"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_m3.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_m3.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_m3.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_m3.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "shutil"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:child_process"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_trust.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_trust.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_trust.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/smoke_trust.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:url"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "re"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "scripts/trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "collections"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/alias.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/alias.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/eval.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/eval.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:path"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/eval.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/impact.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/impact.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/lookup.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/lookup.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/router.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/router.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:fs"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:vm"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_aliases.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "importlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_aliases.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_aliases.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_build_map.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "build_project"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "check_snapshot"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "collections"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "trust"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_refresh.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "re"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_render.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "os"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_snapshot.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "copy"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "json"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "pathlib"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "subprocess"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "sys"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "tempfile"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/test_tours.py",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "unittest"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/tours.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/tours.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/trust.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:assert"
+      },
+      {
+        "category": "external_dependency",
+        "evidence": "external_unverified",
+        "path": "tests/trust.test.cjs",
+        "reason": "Bare/external dependency; installed package and configured alias resolution not verified. Not an unresolved local error.",
+        "target": "node:test"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/eval_alias.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/eval_lookup.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/tours.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_m3.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/tours.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/alias.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/eval.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/impact.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/impact.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/tours.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/lookup.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/router.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/layers.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/tours.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/tours.json"
+      },
+      {
+        "category": "non_source_target",
+        "evidence": "static_resolution",
+        "path": "tests/trust.test.cjs",
+        "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+        "target": "maps/quest-coder/map.json"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/build_map.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/trust.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/build_project.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_map.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/build_project.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/render.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/build_project.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/tours.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/eval_alias.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/eval_lookup.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/eval_scorer.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/import_graph.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_map.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/import_graph.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/python_static.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/render.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/tours.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/render.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/trust.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/aliases.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/impact.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/eval_lookup.cjs"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_refresh.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_project.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/eval_scorer.cjs"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/alias.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/aliases.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/alias.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/eval.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/eval_scorer.cjs"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/impact.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/impact.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/lookup.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/eval_lookup.cjs"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/lookup.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/router.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/router.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/scorer.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/scorer.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_build_map.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_map.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_refresh.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_map.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_refresh.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_project.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_render.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/render.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_snapshot.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/check_snapshot.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_tours.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/build_project.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_tours.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/render.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/test_tours.py",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "scripts/tours.py"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/tours.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/tours.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_lexical_import",
+        "path": "tests/trust.test.cjs",
+        "reason": "Resolved static import; consumer \u2192 dependency, not execution order.",
+        "target": "web/trust.js"
+      },
+      {
+        "category": "resolved_source",
+        "evidence": "resolved_static_loader",
+        "path": "tests/test_aliases.py",
+        "reason": "Explicit static Python loader file path resolved; consumer \u2192 dependency, no loader code executed or runtime verified.",
+        "target": "scripts/build_map.py"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_alias.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_impact.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_lookup.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_m3.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_scorer.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_tours.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "scripts/smoke_trust.cjs",
+        "reason": "nonliteral require: process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'; not evaluated or guessed.",
+        "target": "process.env.PLAYWRIGHT_DIR||'/Users/aibert/projects/quest-coder-assist/node_modules/playwright'"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Python search path not modeled: build_project could refer to scripts.build_project; no suffix guessing; not evaluated or guessed.",
+        "target": "build_project could refer to scripts.build_project; no suffix guessing"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Python search path not modeled: check_snapshot could refer to scripts.check_snapshot; no suffix guessing; not evaluated or guessed.",
+        "target": "check_snapshot could refer to scripts.check_snapshot; no suffix guessing"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Python search path not modeled: sys.path.insert(0, str(ROOT / 'scripts')); not evaluated or guessed.",
+        "target": "sys.path.insert(0, str(ROOT / 'scripts'))"
+      },
+      {
+        "category": "unsupported_dynamic_construct",
+        "evidence": "unsupported",
+        "path": "tests/test_extraction_trust.py",
+        "reason": "Python search path not modeled: trust could refer to scripts.trust; no suffix guessing; not evaluated or guessed.",
+        "target": "trust could refer to scripts.trust; no suffix guessing"
+      }
+    ],
+    "limitations": [
+      "Static source links are not runtime execution, coverage or guaranteed impact.",
+      "JS uses lexical imports, not a full parser; regex literals and template interpolation are not modeled.",
+      "Only relative and root @/ JS specs resolve locally; configured aliases/package exports are not interpreted.",
+      "Python resolves exact modules, relative package names and same-directory scripts; sys.path changes and dynamic loading are not executed.",
+      "HTTP/RPC links are inferred from literal patterns, not verified runtime calls.",
+      "Diagnostics are observed findings, not an exhaustive list of blind spots. Missing edges do not prove absence of consumers."
+    ],
+    "scope": {
+      "extracted_files": 47,
+      "extracted_paths": [
+        "scripts/build_map.py",
+        "scripts/build_project.py",
+        "scripts/check_interactions.cjs",
+        "scripts/check_layers.py",
+        "scripts/check_snapshot.py",
+        "scripts/eval_alias.cjs",
+        "scripts/eval_lookup.cjs",
+        "scripts/eval_scorer.cjs",
+        "scripts/import_graph.py",
+        "scripts/python_static.py",
+        "scripts/render.py",
+        "scripts/smoke_alias.cjs",
+        "scripts/smoke_canvas.mjs",
+        "scripts/smoke_impact.cjs",
+        "scripts/smoke_lookup.cjs",
+        "scripts/smoke_m3.cjs",
+        "scripts/smoke_refresh.py",
+        "scripts/smoke_scorer.cjs",
+        "scripts/smoke_tours.cjs",
+        "scripts/smoke_trust.cjs",
+        "scripts/tours.py",
+        "scripts/trust.py",
+        "tests/alias.test.cjs",
+        "tests/eval.test.cjs",
+        "tests/impact.test.cjs",
+        "tests/lookup.test.cjs",
+        "tests/router.test.cjs",
+        "tests/scorer.test.cjs",
+        "tests/test_aliases.py",
+        "tests/test_build_map.py",
+        "tests/test_extraction_trust.py",
+        "tests/test_refresh.py",
+        "tests/test_render.py",
+        "tests/test_snapshot.py",
+        "tests/test_tours.py",
+        "tests/tours.test.cjs",
+        "tests/trust.test.cjs",
+        "web/alias-ui.js",
+        "web/aliases.js",
+        "web/impact-ui.js",
+        "web/impact.js",
+        "web/router.js",
+        "web/scorer.js",
+        "web/tour-ui.js",
+        "web/tours.js",
+        "web/trust-ui.js",
+        "web/trust.js"
+      ],
+      "inventory_files": 48,
+      "js_inputs": [
+        "scripts/build_map.py",
+        "scripts/build_project.py",
+        "scripts/check_interactions.cjs",
+        "scripts/check_layers.py",
+        "scripts/check_snapshot.py",
+        "scripts/eval_alias.cjs",
+        "scripts/eval_lookup.cjs",
+        "scripts/eval_scorer.cjs",
+        "scripts/import_graph.py",
+        "scripts/python_static.py",
+        "scripts/render.py",
+        "scripts/smoke_alias.cjs",
+        "scripts/smoke_canvas.mjs",
+        "scripts/smoke_impact.cjs",
+        "scripts/smoke_lookup.cjs",
+        "scripts/smoke_m3.cjs",
+        "scripts/smoke_refresh.py",
+        "scripts/smoke_scorer.cjs",
+        "scripts/smoke_tours.cjs",
+        "scripts/smoke_trust.cjs",
+        "scripts/tours.py",
+        "scripts/trust.py",
+        "tests/alias.test.cjs",
+        "tests/eval.test.cjs",
+        "tests/impact.test.cjs",
+        "tests/lookup.test.cjs",
+        "tests/router.test.cjs",
+        "tests/scorer.test.cjs",
+        "tests/test_aliases.py",
+        "tests/test_build_map.py",
+        "tests/test_extraction_trust.py",
+        "tests/test_refresh.py",
+        "tests/test_render.py",
+        "tests/test_snapshot.py",
+        "tests/test_tours.py",
+        "tests/tours.test.cjs",
+        "tests/trust.test.cjs",
+        "web/alias-ui.js",
+        "web/aliases.js",
+        "web/impact-ui.js",
+        "web/impact.js",
+        "web/router.js",
+        "web/scorer.js",
+        "web/tour-ui.js",
+        "web/tours.js",
+        "web/trust-ui.js",
+        "web/trust.js"
+      ],
+      "python": "repository-wide included .py files",
+      "sql": "repository-wide included migrations/*.sql function scan",
+      "unscanned_paths": [
+        "scripts/smoke_refresh.cjs"
+      ]
+    },
+    "snapshot_commit": "a5b02554e479b5184204ab6aa7c7190d6605fe91",
+    "version": 2
+  }
+}

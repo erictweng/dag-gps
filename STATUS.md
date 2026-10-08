@@ -2,7 +2,40 @@
 
 Last updated: 2026-10-07 PDT
 
-## Current focus — V1.2a+b+c worker verified / parent pending
+## Current focus — V1.3 onboarding worker verified / parent pending
+
+Worker `v1-onboarding` starts from clean main `a5b0255` (integrated V1.2).
+No worker push/merge. Full draft → offline review → actual download → validated build
+implemented; parent independent acceptance and Eric semantic review remain pending.
+
+- Deterministic pinned folder proposals use the same archive/discovery/exclusion and
+  extraction pipeline; explicit flat-root/helper reasoning, exact ownership and stable IDs.
+- Dependency-free offline editor: real path search, rename/move/split/merge/delete,
+  coverage/empty/cycle evidence, undo/reset, bounded inert imports, visible manual
+  alias/tour migration warnings and explicit confirmation before reviewed download.
+- Drafts reject publication. Reviewed exact-file specs validate repo/full pin/inventory/
+  scope/coverage/dependencies before promotion; legacy glob specs remain compatible.
+- Actual browser downloads built BOTH real demos with real-path Ask: new self `a5b0255`
+  **48 files / 3 layers / 38 file links**; quest `749d8b5` **272 / 38 / 415**. Existing
+  approved quest map/layers/tours and old self `f92d0cf` matrix preserved.
+- Both initial folder drafts are acyclic. Real quest runner-client split reveals grouping
+  cycle with source pairs; UI merge repairs it without deleting any file links.
+- New self full discovery correctly blocks on generated untracked refresh-fixture.json.
+  Explicit supported scope scans **47/48**, keeps **all 48 assignments**; blocked draft
+  retained. No source mutation/fixture injection or full-coverage claim. Details:
+  [ONBOARDING_REPORT](docs/ONBOARDING_REPORT.md).
+- `.verify.json` build/test/smoke **exit 0**, **176 Python + 130 JS**; every legacy gate
+  retained, full strict pinned parity/10 checks. Onboarding **14 browser checks / 10
+  inspected 1280/1920 screenshots**, zero errors/external requests. Invalid downloaded
+  candidates preserve all four output bytes; reviewed reimports clear confirmation.
+- Evidence: `artifacts/onboarding-verification.json`, `onboarding-{build,test,smoke}.log`,
+  `onboarding-browser.json`, `onboarding-*.png`. Editors `dist/onboarding-{dag-gps,quest}.html`;
+  built demos `dist/onboarding-{dag-gps,quest}/index.html`. Existing user artifact
+  `dist/quest-refresh/index.html` still carries approved map/tours. Outputs local/ignored.
+- **Automated worker review samples are not Eric-approved semantics**. Eric still reviews
+  proposed responsibilities/reference meaning; no V1.4 query capture or v1 release claim.
+
+## Integrated V1.2 — historical worker evidence (main `a5b0255`)
 
 Worker `v1-trust` starts from clean, verified main `7bc6769` (integrated V1.1).
 No worker push/merge. All approved trust, narrow extraction and stale-tour minis built.
@@ -62,15 +95,18 @@ not only the pure engine. `v1-impact` starts from that clean main; no worker pus
 
 ## Active worker / next action
 
-V1.2 implementation and local verification complete. Parent independently reviews
-trust semantics/spec/code quality, extraction migrations and browser evidence, reruns
-gates, then integrates/pushes main per [WORKFLOW](docs/WORKFLOW.md). No V1.3+ worker
-launched. V1.4 writes must stay serialized against shared UI/scorer.
+V1.3 implementation and local verification complete. Parent independently reviews
+onboarding spec/code quality, explicit new self extraction scope, actual downloads,
+cycle/migration safety and browser evidence, reruns gates, then integrates/pushes main
+per [WORKFLOW](docs/WORKFLOW.md). Eric reviews semantic grouping; automated samples do
+not satisfy that gate. V1.4 writes stay serialized against shared UI/scorer.
 
 ## Blockers and release boundary
 
-No automated V1.2 blocker; parent V1.2 acceptance remains pending. Entire v1 is **not**
-complete: onboarding/optional evaluation/release and Eric's unaided session remain.
+No automated V1.3 blocker within its declared supported scope; unrestricted self
+extraction correctly fails on the generated fixture and is visibly retained. Parent
+V1.3 acceptance and Eric semantic review remain pending. Entire v1 is **not** complete:
+optional evaluation/release and Eric's unaided session remain.
 Impact is static potential reachability, not execution/coverage or guaranteed breakage.
 Known prior limitations retained: mixed layer/file routes, bearer-auth abstention,
 dynamic Python/conditional paths and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,

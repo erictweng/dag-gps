@@ -76,7 +76,8 @@ def tokens_of(*texts):
 
 def assign_layers(files, layers):
     """-> (layer_of, unmapped, double). Every file lands in exactly one layer or is reported."""
-    owners = {f: [l["id"] for l in layers if any(match(f, g) for g in l["globs"])] for f in files}
+    owners = {f: [l["id"] for l in layers if (f in l['files'] if 'files' in l else
+              any(match(f, g) for g in l["globs"]))] for f in files}
     unmapped = sorted(f for f, o in owners.items() if not o)
     double = {f: o for f, o in sorted(owners.items()) if len(o) > 1}
     layer_of = {f: o[0] for f, o in owners.items() if o}
@@ -419,7 +420,7 @@ def layer_node(layer, idx, files, texts):
         "aliases": list(layer.get("aliases", [])),
         "lines": sum(texts[f].count("\n") for f in files),
         "tokens": tokens_of(layer["label"], *layer.get("aliases", []), layer.get("desc", ""),
-                            *[g.replace("/**", "") for g in layer["globs"]]),
+                            *[g.replace("/**", "") for g in layer.get("globs", layer.get('files', []))]),
     }
 
 
@@ -429,6 +430,9 @@ def build(repo, ref, layers_path, out_path, tops):
     pinned = git(repo, "rev-parse", "--verify", ref + '^{commit}').strip()
     commit = git(repo, "rev-parse", "--short", pinned).strip()
     files = source_files(repo, pinned)
+    from onboarding import validate_spec
+    from onboarding import repo_identity
+    validate_spec(spec, files, repo_identity(repo), pinned, tops)
 
     tmp = tempfile.mkdtemp(prefix="dag-gps-")
     try:

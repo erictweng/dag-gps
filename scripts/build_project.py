@@ -17,26 +17,7 @@ class BuildFailure(ValueError):
     pass
 
 
-def repo_identity(repo):
-    """Origin-derived identity, never a layer spec's hardcoded repository name."""
-    try:
-        remote = subprocess.check_output(['git', '-C', repo, 'remote', 'get-url', 'origin'], text=True, stderr=subprocess.DEVNULL).strip()
-    except Exception:
-        return 'local:' + str(Path(repo).resolve())
-    # Normalize common SSH/HTTPS spellings to the same host/path namespace.
-    ssh = re.fullmatch(r'(?:[^@/]+@)?([^:/]+):(.+)', remote) if '://' not in remote else None
-    if ssh:
-        host, path = ssh.groups()
-    elif '://' in remote:
-        from urllib.parse import urlsplit
-        parsed = urlsplit(remote)
-        host, path = parsed.hostname, parsed.path.lstrip('/')
-        if not host:
-            return 'local:' + str(Path(repo).resolve())
-    else:
-        return 'local:' + str(Path(repo).resolve())
-    path = path.removesuffix('.git').rstrip('/')
-    return path if host.lower() == 'github.com' else host.lower() + '/' + path
+from onboarding import repo_identity
 
 
 def snapshot_diff(previous, current):

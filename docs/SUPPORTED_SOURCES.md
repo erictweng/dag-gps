@@ -67,3 +67,28 @@ Build/UI evidence and count discrepancy with historical reports:
 [V1_BASELINE_REPORT.md](V1_BASELINE_REPORT.md). Current trust evidence:
 [TRUST_REPORT.md](TRUST_REPORT.md); later onboarding/release gates:
 [V1_ACCEPTANCE.md](V1_ACCEPTANCE.md); fixture provenance: [V1_FIXTURES.json](V1_FIXTURES.json).
+
+## V1.3 onboarding — separate newer self source and reviewed ownership
+
+The legacy matrix above remains frozen. New onboarding also demonstrates self snapshot
+`a5b02554e479b5184204ab6aa7c7190d6605fe91`: **48 assigned source files, 3 folder
+proposals, 38 typed file links / 3 layer links**. Its unrestricted scan correctly blocks
+on `scripts/smoke_refresh.cjs` requiring generated untracked `artifacts/refresh-fixture.json`.
+The supported demo explicitly excludes only that JS extraction input, keeps all 48 source
+assignments and reports **47 scanned / 1 unscanned**. It neither invents that fixture nor
+changes unresolved validation. Findings: 38 resolved, 19 non-source, 0 unresolved,
+11 unsupported, 164 external; conditional Python test paths remain unsupported.
+
+Quest onboarding preserves its exact pin/tops and file links, with **38 parent-folder
+proposals / 272 files / 76 layer links / 415 file links**. The separate old approved
+quest architecture remains 18 layers / 52 layer links with existing tours untouched.
+Automatic proposal coverage is not approval or runtime completeness. Human review is
+required; the automated exports are worker samples, not Eric's semantic verdict.
+
+Exact `files` ownership is supported alongside legacy `globs` (never both per layer);
+dynamic-route brackets are literal paths. Drafts cannot publish; reviewed V1 specs carry
+explicit confirmation and matching repo/full commit/inventory/scope. Editor cycle
+witnesses and builder validation use the same actual static file links; no edges are
+removed to repair grouping. Manual alias/tour reference review is required for changed
+layer IDs. Full schema/limits, actual browser downloads/builds and failure evidence:
+[ONBOARDING_REPORT.md](ONBOARDING_REPORT.md).

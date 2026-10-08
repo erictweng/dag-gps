@@ -10,26 +10,31 @@ Status values: `queued` | `running` | `verified` | `blocked` | `failed`
 Authoritative [v1 plan](.hermes/plans/2026-10-07_203500-v1-milestones.md),
 [acceptance/evidence owners](docs/V1_ACCEPTANCE.md), [supported sources](docs/SUPPORTED_SOURCES.md),
 [fixture manifest](docs/V1_FIXTURES.json). V1.0 is parent-accepted on main `6bfc5ee`,
-V1.1 integrated at `7bc6769`; Eric authorized full **V1.2a+b+c**.
+V1.1 integrated at `7bc6769`, V1.2 integrated at `a5b0255`; Eric authorized full
+**V1.3a+b+c**. Worker samples do not replace Eric's semantic review.
 
 | Milestone | Status | Evidence / next action |
 |---|---|---|
 | V1.0 baseline and contract | **parent accepted** | Main `6bfc5ee`; [baseline](docs/V1_BASELINE_REPORT.md), 138 Python + 93 JS at that milestone |
 | V1.1a pure impact analysis | **integrated main `7bc6769`** | 10 pure impact tests; audited real witnesses, import-only BFS, separate HTTP/RPC, coverage unknown; [historical report](docs/IMPACT_REPORT.md) |
 | V1.1b impact UI/Ask | **integrated main `7bc6769`** | Historical 14 browser checks / 9 screenshots; legacy gates retained in V1.2 |
-| V1.2a trust contract / diagnostics UI | **worker verified; parent pending** | Map/report V2 scope/category/count provenance; concrete findings/filter/navigation, relevant Ask/impact warning or explicit repo-level uncertainty; [report](docs/TRUST_REPORT.md) |
-| V1.2b narrow extraction | **worker verified; parent pending** | Fixture-first relative Python/namespace/init/symbol vs submodule, explicit static paths/loaders with no suffix guessing, narrow CommonJS/TS; cycles retained; same source pins, audited +2 quest / +1 self pairs, none removed |
-| V1.2c stale-tour handling | **worker verified; parent pending** | Exact validation preserved; explicit mutually-exclusive `--without-tours`, malformed/stale all-byte preservation, legacy/comparison omission bypass blocked, no stale natural query |
-| V1.2 full automated gate | **worker verified; parent pending** | `.verify.json` build/test/smoke exit 0; 161 Python + 109 JS, strict pinned parity/10 checks; all legacy browser/eval gates plus trust10 / 13 inspected 1280/1920 screenshots, zero errors/network |
-| V1.3 reviewed onboarding | queued — not started | Human review/export/rebuild; explicitly newer supported self snapshot |
+| V1.2a trust contract / diagnostics UI | **integrated main `a5b0255`** | Map/report V2 scope/category/count provenance; concrete findings/filter/navigation, relevant Ask/impact warning or explicit repo-level uncertainty; [report](docs/TRUST_REPORT.md) |
+| V1.2b narrow extraction | **integrated main `a5b0255`** | Fixture-first relative Python/namespace/init/symbol vs submodule, explicit static paths/loaders with no suffix guessing, narrow CommonJS/TS; cycles retained; same source pins, audited +2 quest / +1 self pairs, none removed |
+| V1.2c stale-tour handling | **integrated main `a5b0255`** | Exact validation preserved; explicit mutually-exclusive `--without-tours`, malformed/stale all-byte preservation, legacy/comparison omission bypass blocked, no stale natural query |
+| V1.2 full automated gate | **integrated main `a5b0255`** | `.verify.json` build/test/smoke exit 0; 161 Python + 109 JS, strict pinned parity/10 checks; all legacy browser/eval gates plus trust10 / 13 inspected 1280/1920 screenshots, zero errors/network |
+| V1.3a deterministic draft | **worker verified; parent pending** | Same pinned archive/discovery/exclusions/extractor; complete ownership, stable folder IDs, root/helper reasons, no auto architecture claim; [report](docs/ONBOARDING_REPORT.md) |
+| V1.3b offline review editor | **worker verified; parent pending** | Rename/move/split/merge/delete/search/undo/reset, migration warnings/no rebinding, inert ≤8 MiB imports, real cycle evidence and explicit review/export |
+| V1.3c real export/build roundtrip | **worker verified; parent pending; Eric semantic review pending** | Actual downloads build new self a5b0255 (48 files, 3 layers, 38 links) and quest 749d8b5 (272, 38, 415); real Ask, invalid all-byte preservation; declared self 47/48 scan, blocked unrestricted draft retained |
+| V1.3 full automated gate | **worker verified; parent pending** | All `.verify.json` recipes exit 0; 176 Python + 130 JS, strict parity/all legacy gates; onboarding14 / 10 inspected 1280/1920 screenshots, zero errors/network; worker samples not Eric-approved |
 | V1.4 opt-in query evaluation | queued — not started | May run alongside after V1.0; consent off by default; no inferred Eric labels, shared writes serialized |
 | V1.5 release | queued — not started | All milestone/legacy gates plus scale/accessibility and **Eric unaided session**; until human gate, release candidate only |
 
-No automated V1.2 blocker. Parent owns independent acceptance/integration/direct
-main push per WORKFLOW; worker commits locally only. No onboarding/query logging,
-source-pin advance, quest-coder source edits or v1 release claim. Later gates and
-Eric's unaided session remain. Current evidence: `artifacts/trust-verification.json`,
-`trust-migration.json`, `trust-browser.json`, `trust-*.png`, `.hsub/build-updates/v1-trust*.md`.
+No automated V1.3 blocker within declared scope; unrestricted new self scan correctly
+rejects its generated fixture and remains visible. Parent owns independent acceptance/
+integration/direct main push per WORKFLOW; worker commits locally only. Eric semantic
+review remains pending. No query logging, quest-coder source edits or v1 release claim.
+Current evidence: `artifacts/onboarding-verification.json`, `onboarding-browser.json`,
+`onboarding-*.png`, `.hsub/build-updates/v1-onboarding*.md`; legacy pins/maps retained.
 The old worker-local/pending statuses below are historical and now integrated as
 of baseline main 4898578; old metrics are not a fresh execution. Fresh quest
 non-source drops are 14 versus historical prose's 15 (see baseline discrepancy).
