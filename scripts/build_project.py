@@ -113,7 +113,7 @@ def publish(stage, output, names):
         raise
 
 
-def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None):
+def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None, tours=None):
     repo = str(Path(repo).resolve())
     pinned = git(repo, 'rev-parse', '--verify', ref + '^{commit}').strip()
     tip = git(repo, 'rev-parse', '--verify', 'HEAD^{commit}').strip()
@@ -149,7 +149,9 @@ def build_project(repo, ref, layers, out_dir, previous_map=None, tops=None):
         doc['refresh'] = diff
         for name, data in [('map.json', doc), ('diff.json', diff), ('report.json', report)]:
             (Path(stage) / name).write_text(json.dumps(data, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-        html = render(Path(DEFAULT_TEMPLATE).read_text(encoding='utf-8'), doc)
+        from tours import compile_tours
+        compiled = compile_tours(load_json(tours), doc, repo) if tours else None
+        html = render(Path(DEFAULT_TEMPLATE).read_text(encoding='utf-8'), doc, compiled)
         (Path(stage) / 'index.html').write_text(html, encoding='utf-8')
         # Exercise serialized artifacts before touching any previous valid output.
         if check_map(load_json(Path(stage) / 'map.json')) or load_json(Path(stage) / 'diff.json') != diff:
@@ -163,10 +165,11 @@ def main(argv=None):
     for arg in ('repo', 'ref', 'layers', 'out-dir'):
         ap.add_argument('--' + arg, required=True)
     ap.add_argument('--previous-map')
+    ap.add_argument('--tours', help='Reviewed tours JSON pinned to the same repository and commit')
     ap.add_argument('--tops', nargs='+', help='Explicit extractor scope; all source files must still be assigned')
     a = ap.parse_args(argv)
     try:
-        report = build_project(a.repo, a.ref, a.layers, a.out_dir, a.previous_map, a.tops)
+        report = build_project(a.repo, a.ref, a.layers, a.out_dir, a.previous_map, a.tops, a.tours)
     except (BuildFailure, OSError, ValueError, KeyError, RuntimeError, subprocess.CalledProcessError) as exc:
         print('Refresh failed; candidates are validated before promotion (caught promotion errors trigger rollback).\n' + str(exc), file=sys.stderr)
         return 1

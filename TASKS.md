@@ -132,6 +132,24 @@ independent rerun pending. Worker local commit only; parent handles authorized m
   five screenshots inspected; synthetic fixture compares actual before/after Git commits.
 - Report docs/REFRESH_REPORT.md; .verify.json exercises both repos. Quest map/layers untouched.
 
+## Architecture-guided tours
+
+Status: verified locally on `architecture-tours` from main `3e811d9`; parent independent
+verification/integration pending. Worker local commit only, no push/merge.
+
+- Three tours at exact quest-coder archive SHA `749d8b5de490cc2e6a0c98c713fab3ab856da799`:
+  Run basic (5), Submit (8), Sign in (5), grounded in code/function/constant evidence.
+- Brief receives/does/passes narration, actual inline excerpts/path/lines, immutable links;
+  overview highlights involved layers, current-step files/context and distinct typed tour edges.
+- Explicit natural Ask resolver before scorer/learned aliases; previous/next/reset/exit,
+  appropriate keyboard controls, modal focus and real node inspection. No import trace fiction.
+- Generic optional tours compiler/render/build, exact repo/SHA/IDs/line/source checks;
+  failed stale/invalid builds preserve prior artifacts; second self repo has zero tours.
+- 138 Python + 93 JS tests; 29 real browser checks for all 18 steps/every citation;
+  11 inspected screenshots, zero errors/external requests; all legacy gates/evals retained.
+- Report `docs/TOURS_REPORT.md`; verification logs `artifacts/tour*`; no quest-coder edits,
+  model/network/training changes or graph/scorer/alias mutation.
+
 ## Backlog
 
 - Eric review/correction of generated eval answers and map aliases.

@@ -1,0 +1,1035 @@
+{
+  "version": 1,
+  "repo": "erictweng/quest-coder",
+  "commit": "749d8b5de490cc2e6a0c98c713fab3ab856da799",
+  "tours": [
+    {
+      "id": "run-basic",
+      "title": "Run basic",
+      "queries": [
+        "walk me through run basic",
+        "tour run basic",
+        "how does run basic work"
+      ],
+      "overview": "Advisory public-case execution in a browser Web Worker. This is source order, not an observed trace. Submit is a separate authoritative path. Missing public inputs or unavailable Python falls back to the server; a hard timeout stops the attempt.",
+      "steps": [
+        {
+          "title": "Choose public Run inputs",
+          "does": "Selects the browser path only for mode run.",
+          "receives": "Editor source, current quest and runtime.",
+          "passes": "Public challenge and runtime to BrowserRunner.run.",
+          "explanation": "No hidden tests or reward writes are sent to the browser.",
+          "nodeIds": [
+            "app/page.tsx",
+            "lib/browser-runner.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 931,
+              "end": 949,
+              "symbol": "submit"
+            },
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 154,
+              "end": 160,
+              "symbol": "browserRunInputs"
+            }
+          ]
+        },
+        {
+          "title": "Send a worker message",
+          "does": "Starts a shared module worker and correlates each request by ID.",
+          "receives": "Source, public challenge and runtime.",
+          "passes": "A run message; resolves result, unavailable or timed_out.",
+          "explanation": "Loading has a 60-second deadline. A hung run replaces the worker rather than awarding a result.",
+          "nodeIds": [
+            "lib/browser-runner.ts"
+          ],
+          "evidence": [
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 61,
+              "end": 75,
+              "symbol": "BrowserRunner.run"
+            },
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 89,
+              "end": 124,
+              "symbol": "BrowserRunner.start"
+            }
+          ]
+        },
+        {
+          "title": "Boot Python and call the public driver",
+          "does": "Loads local Pyodide assets and Python engine files into the worker filesystem.",
+          "receives": "Run message and serialized public inputs.",
+          "passes": "run_public JSON, then result message to the page.",
+          "explanation": "These are quest-coder runtime asset fetches; the DAG GPS walkthrough itself makes no requests.",
+          "nodeIds": [
+            "browser-runtime/run-worker.mjs"
+          ],
+          "evidence": [
+            {
+              "path": "browser-runtime/run-worker.mjs",
+              "start": 8,
+              "end": 25,
+              "symbol": "boot"
+            },
+            {
+              "path": "browser-runtime/run-worker.mjs",
+              "start": 33,
+              "end": 46,
+              "symbol": "self.onmessage"
+            }
+          ]
+        },
+        {
+          "title": "Grade public cases",
+          "does": "Uses tests.run with isolate=False and a whole-run budget.",
+          "receives": "Source, public challenge and runtime JSON.",
+          "passes": "JSON verdict and replay.",
+          "explanation": "run_challenge delegates to the shared engine. This advisory interpreter is not the server process-isolation path.",
+          "nodeIds": [
+            "runner/browser_run.py",
+            "runner/quest_runner.py"
+          ],
+          "evidence": [
+            {
+              "path": "runner/browser_run.py",
+              "start": 20,
+              "end": 27,
+              "symbol": "run_public"
+            },
+            {
+              "path": "runner/quest_runner.py",
+              "start": 974,
+              "end": 999,
+              "symbol": "run_challenge"
+            }
+          ]
+        },
+        {
+          "title": "Show the advisory result",
+          "does": "Updates result and replay cursor, records the local attempt and returns.",
+          "receives": "Worker result for the still-current quest.",
+          "passes": "UI result only; no authoritative clear or reward.",
+          "explanation": "Unavailable Python falls through to POST /api/run; timed_out throws instead. Submit bypasses this local branch.",
+          "nodeIds": [
+            "app/page.tsx",
+            "lib/browser-runner.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 933,
+              "end": 955,
+              "symbol": "submit"
+            },
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 111,
+              "end": 124,
+              "symbol": "worker.onmessage"
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "from": "app/page.tsx",
+          "to": "lib/browser-runner.ts",
+          "type": "data",
+          "label": "Public run inputs \u2192 browser runner",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 933,
+              "end": 935,
+              "symbol": "submit"
+            }
+          ]
+        },
+        {
+          "from": "lib/browser-runner.ts",
+          "to": "browser-runtime/run-worker.mjs",
+          "type": "message",
+          "label": "run message \u2192 module worker",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 74,
+              "end": 74,
+              "symbol": "postMessage"
+            },
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 92,
+              "end": 92,
+              "symbol": "new Worker"
+            }
+          ]
+        },
+        {
+          "from": "browser-runtime/run-worker.mjs",
+          "to": "runner/browser_run.py",
+          "type": "data",
+          "label": "Serialized public inputs \u2192 run_public",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "browser-runtime/run-worker.mjs",
+              "start": 24,
+              "end": 25,
+              "symbol": "boot"
+            },
+            {
+              "path": "browser-runtime/run-worker.mjs",
+              "start": 42,
+              "end": 43,
+              "symbol": "self.onmessage"
+            }
+          ]
+        },
+        {
+          "from": "runner/browser_run.py",
+          "to": "runner/quest_runner.py",
+          "type": "data",
+          "label": "Public cases \u2192 shared grading engine",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "runner/browser_run.py",
+              "start": 23,
+              "end": 27,
+              "symbol": "run_public"
+            }
+          ]
+        },
+        {
+          "from": "browser-runtime/run-worker.mjs",
+          "to": "lib/browser-runner.ts",
+          "type": "message",
+          "label": "result message \u2192 pending request",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "browser-runtime/run-worker.mjs",
+              "start": 42,
+              "end": 43,
+              "symbol": "self.onmessage"
+            },
+            {
+              "path": "lib/browser-runner.ts",
+              "start": 120,
+              "end": 124,
+              "symbol": "worker.onmessage"
+            }
+          ]
+        },
+        {
+          "from": "lib/browser-runner.ts",
+          "to": "app/page.tsx",
+          "type": "data",
+          "label": "Resolved advisory result \u2192 UI",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 935,
+              "end": 947,
+              "symbol": "submit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "submit",
+      "title": "Submit",
+      "queries": [
+        "walk me through submitting code",
+        "walk me through submit",
+        "tour submit",
+        "how does submit work"
+      ],
+      "overview": "Authoritative solo Submit: browser \u2192 authenticated Next.js API \u2192 external runner \u2192 grading result \u2192 server-owned progress/rewards \u2192 browser. The result arrives at the API BEFORE clear writes, but the browser response is sent AFTER those writes and a progress reread. Party rewards are disclosed alternatives, not this solo sequence.",
+      "steps": [
+        {
+          "title": "Send Submit to the API",
+          "does": "Skips browser grading for mode submit and posts the editor source.",
+          "receives": "Source, quest ID, pack slug and local calendar date.",
+          "passes": "POST /api/run.",
+          "explanation": "localDate dates activity, not grading. Request-generation checks prevent a stale UI response from being adopted.",
+          "nodeIds": [
+            "app/page.tsx"
+          ],
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 931,
+              "end": 959,
+              "symbol": "submit"
+            }
+          ]
+        },
+        {
+          "title": "Authorize and validate before execution",
+          "does": "Requires currentSession, caps and parses JSON, checks prerequisites and party locks, then obtains a usage slot.",
+          "receives": "Untrusted browser request and verified session identity.",
+          "passes": "Validated run payload to submitToRunner.",
+          "explanation": "Rejects unauthorized, rate-limited and locked requests before execution. Party boss grading uses a different route.",
+          "nodeIds": [
+            "app/api/run/route.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 23,
+              "end": 50,
+              "symbol": "POST"
+            },
+            {
+              "path": "app/api/run/route.ts",
+              "start": 53,
+              "end": 69,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "title": "Cross the runner HTTP boundary",
+          "does": "Sends only source, packSlug, challengeId and mode with the configured server credential.",
+          "receives": "Validated run request.",
+          "passes": "POST /v1/runs; returns parsed runner result.",
+          "explanation": "Missing configuration and bad responses fail closed. queue_full gets one retry; other errors do not.",
+          "nodeIds": [
+            "lib/runner-client.ts"
+          ],
+          "evidence": [
+            {
+              "path": "lib/runner-client.ts",
+              "start": 31,
+              "end": 46,
+              "symbol": "submitToRunner"
+            },
+            {
+              "path": "lib/runner-client.ts",
+              "start": 49,
+              "end": 83,
+              "symbol": "submitOnce"
+            }
+          ]
+        },
+        {
+          "title": "Spawn the bounded CLI",
+          "does": "Authenticates, validates and takes a runner slot before starting the Python CLI.",
+          "receives": "Credential-protected /v1/runs request.",
+          "passes": "JSON payload on CLI stdin; parsed result on stdout.",
+          "explanation": "The Next.js process does not spawn Python. The gateway applies output caps and timeout, then redacts hidden case details (a failed replay case can be revealed).",
+          "nodeIds": [
+            "runner/service/app.py"
+          ],
+          "evidence": [
+            {
+              "path": "runner/service/app.py",
+              "start": 83,
+              "end": 108,
+              "symbol": "Handler.do_POST"
+            },
+            {
+              "path": "runner/service/app.py",
+              "start": 188,
+              "end": 214,
+              "symbol": "redact_hidden_cases"
+            }
+          ]
+        },
+        {
+          "title": "Load Submit tests and grade",
+          "does": "Loads private pack tests for the selected mode, then calls run_challenge with isolate=True.",
+          "receives": "CLI stdin and server-only pack.",
+          "passes": "Serialized grading result to the gateway.",
+          "explanation": "The shared engine compares actual vs expected and budgets. Submit isolates case execution; browser Run uses isolate=False.",
+          "nodeIds": [
+            "runner/quest_runner_cli.py",
+            "runner/quest_runner.py"
+          ],
+          "evidence": [
+            {
+              "path": "runner/quest_runner_cli.py",
+              "start": 30,
+              "end": 39,
+              "symbol": "load_pack_challenge"
+            },
+            {
+              "path": "runner/quest_runner_cli.py",
+              "start": 65,
+              "end": 74,
+              "symbol": "main"
+            },
+            {
+              "path": "runner/quest_runner.py",
+              "start": 779,
+              "end": 803,
+              "symbol": "run_one_case"
+            },
+            {
+              "path": "runner/quest_runner.py",
+              "start": 974,
+              "end": 999,
+              "symbol": "run_challenge"
+            }
+          ]
+        },
+        {
+          "title": "Write activity and successful clears",
+          "does": "After runner return, records Submit activity best-effort; passing Submit applies the authoritative clear.",
+          "receives": "Grading result plus server-owned reward parameters.",
+          "passes": "Reward grant and updated stored progress.",
+          "explanation": "Failed Submit still records activity but does not clear. Party solver/leader rewards and already-rewarded clears branch separately. No browser-provided assistance flag determines the grant here.",
+          "nodeIds": [
+            "app/api/run/route.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 71,
+              "end": 94,
+              "symbol": "POST"
+            },
+            {
+              "path": "app/api/run/route.ts",
+              "start": 95,
+              "end": 114,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "title": "Choose the progress backend",
+          "does": "Uses a Supabase service-role RPC or a local SQLite transaction, depending on complete configuration.",
+          "receives": "Verified progress key and clear input.",
+          "passes": "Stored progress and grant back to API.",
+          "explanation": "No Supabase values means local; partial configuration throws, not fallback. SQLite commits a read-modify-write transaction; Supabase RPC locks the progress row and writes it. Both derive assistance from stored progress and grant only on first clear. These are alternatives, not successive writes; migrations must be deployed separately.",
+          "nodeIds": [
+            "lib/progress-store.ts",
+            "lib/progress.ts",
+            "supabase/migrations/202610150001_quest_coder_xp_floor_small_quests.sql"
+          ],
+          "evidence": [
+            {
+              "path": "lib/progress-store.ts",
+              "start": 54,
+              "end": 61,
+              "symbol": "configuredProgressBackend"
+            },
+            {
+              "path": "lib/progress-store.ts",
+              "start": 152,
+              "end": 156,
+              "symbol": "LocalProgressStore.applyAuthoritativeClear"
+            },
+            {
+              "path": "lib/progress-store.ts",
+              "start": 183,
+              "end": 204,
+              "symbol": "mutate / transaction"
+            },
+            {
+              "path": "lib/progress-store.ts",
+              "start": 249,
+              "end": 252,
+              "symbol": "SupabaseProgressStore.applyAuthoritativeClear"
+            },
+            {
+              "path": "lib/progress-store.ts",
+              "start": 281,
+              "end": 291,
+              "symbol": "getProgressStore"
+            },
+            {
+              "path": "lib/progress.ts",
+              "start": 245,
+              "end": 275,
+              "symbol": "applyClear"
+            },
+            {
+              "path": "supabase/migrations/202610150001_quest_coder_xp_floor_small_quests.sql",
+              "start": 33,
+              "end": 61,
+              "symbol": "quest_coder_apply_clear"
+            },
+            {
+              "path": "supabase/migrations/202610150001_quest_coder_xp_floor_small_quests.sql",
+              "start": 101,
+              "end": 109,
+              "symbol": "quest_coder_apply_clear write / grants"
+            }
+          ]
+        },
+        {
+          "title": "Return the authoritative snapshot, then render",
+          "does": "API rereads progress after writes; browser adopts server-owned progress before showing result and rewards.",
+          "receives": "Runner result, persisted progress and reward.",
+          "passes": "JSON response \u2192 UI state and optional celebration.",
+          "explanation": "The service result precedes database updates; the API response follows them. Animation can delay celebration, not the authoritative write.",
+          "nodeIds": [
+            "app/api/run/route.ts",
+            "app/page.tsx"
+          ],
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 115,
+              "end": 124,
+              "symbol": "POST response"
+            },
+            {
+              "path": "app/page.tsx",
+              "start": 956,
+              "end": 975,
+              "symbol": "submit"
+            },
+            {
+              "path": "app/page.tsx",
+              "start": 1021,
+              "end": 1031,
+              "symbol": "submit"
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "from": "app/page.tsx",
+          "to": "app/api/run/route.ts",
+          "type": "http",
+          "label": "Browser POST \u2192 API",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 950,
+              "end": 955,
+              "symbol": "submit"
+            }
+          ]
+        },
+        {
+          "from": "app/api/run/route.ts",
+          "to": "lib/runner-client.ts",
+          "type": "data",
+          "label": "Validated payload \u2192 runner client",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 59,
+              "end": 68,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "from": "lib/runner-client.ts",
+          "to": "runner/service/app.py",
+          "type": "http",
+          "label": "Credentialed POST \u2192 runner gateway",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "lib/runner-client.ts",
+              "start": 56,
+              "end": 62,
+              "symbol": "submitOnce"
+            }
+          ]
+        },
+        {
+          "from": "runner/service/app.py",
+          "to": "runner/quest_runner_cli.py",
+          "type": "spawn",
+          "label": "Bounded CLI stdin \u2192 grading process",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "runner/service/app.py",
+              "start": 94,
+              "end": 108,
+              "symbol": "Handler.do_POST"
+            }
+          ]
+        },
+        {
+          "from": "runner/quest_runner_cli.py",
+          "to": "runner/quest_runner.py",
+          "type": "data",
+          "label": "Private mode tests \u2192 grading engine",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "runner/quest_runner_cli.py",
+              "start": 65,
+              "end": 70,
+              "symbol": "main"
+            }
+          ]
+        },
+        {
+          "from": "runner/service/app.py",
+          "to": "lib/runner-client.ts",
+          "type": "http",
+          "label": "Redacted runner result \u2192 client",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "runner/service/app.py",
+              "start": 107,
+              "end": 108,
+              "symbol": "Handler.do_POST"
+            },
+            {
+              "path": "lib/runner-client.ts",
+              "start": 63,
+              "end": 79,
+              "symbol": "submitOnce"
+            }
+          ]
+        },
+        {
+          "from": "lib/runner-client.ts",
+          "to": "app/api/run/route.ts",
+          "type": "data",
+          "label": "Runner result \u2192 API before clear writes",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 59,
+              "end": 84,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "from": "app/api/run/route.ts",
+          "to": "lib/progress-store.ts",
+          "type": "data",
+          "label": "Passing Submit \u2192 authoritative clear",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 109,
+              "end": 122,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "from": "app/api/run/route.ts",
+          "to": "app/page.tsx",
+          "type": "http",
+          "label": "Post-write snapshot \u2192 browser",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 115,
+              "end": 124,
+              "symbol": "POST"
+            },
+            {
+              "path": "app/page.tsx",
+              "start": 959,
+              "end": 975,
+              "symbol": "submit"
+            }
+          ]
+        },
+        {
+          "from": "lib/progress-store.ts",
+          "to": "lib/progress.ts",
+          "type": "data",
+          "direction": "from-to",
+          "status": "source-supported",
+          "label": "Local alternative: stored progress \u2192 applyClear",
+          "evidence": [
+            {
+              "path": "lib/progress-store.ts",
+              "start": 152,
+              "end": 156,
+              "symbol": "LocalProgressStore.applyAuthoritativeClear"
+            }
+          ]
+        },
+        {
+          "from": "lib/progress-store.ts",
+          "to": "supabase/migrations/202610150001_quest_coder_xp_floor_small_quests.sql",
+          "type": "data",
+          "direction": "from-to",
+          "status": "source-supported",
+          "label": "Supabase alternative: apply_clear RPC \u2192 locked progress row",
+          "evidence": [
+            {
+              "path": "lib/progress-store.ts",
+              "start": 249,
+              "end": 252,
+              "symbol": "SupabaseProgressStore.applyAuthoritativeClear"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sign-in",
+      "title": "Sign in",
+      "queries": [
+        "walk me through signing in",
+        "walk me through sign in",
+        "tour sign in",
+        "how does sign in work"
+      ],
+      "overview": "Shipped Supabase sign-in controls expose Google only. Passwordless email remains a supported API alternative, not a visible email form in this snapshot. PKCE callback or token-hash confirmation establishes cookies; protected requests verify the user and derive a stable identity. Local cookie/SQLite development sessions are an alternative, not Supabase authentication.",
+      "steps": [
+        {
+          "title": "Choose an authentication entry route",
+          "does": "The shipped Supabase control links to Google OAuth. Separately, POST /api/session supports email OTP in Supabase mode.",
+          "receives": "Google sign-in navigation, or a direct email API request.",
+          "passes": "Email link pending response OR Google provider redirect.",
+          "explanation": "The current UI shows Google in Supabase mode and a display-name form locally. The email branch exists in the API/handler, but is not exposed by these controls. No configuration selects local; partial configuration fails.",
+          "nodeIds": [
+            "app/api/session/route.ts",
+            "app/auth/google/route.ts",
+            "lib/progress-store.ts",
+            "app/page.tsx",
+            "components/sign-in-controls.tsx"
+          ],
+          "evidence": [
+            {
+              "path": "app/api/session/route.ts",
+              "start": 27,
+              "end": 35,
+              "symbol": "POST"
+            },
+            {
+              "path": "app/api/session/route.ts",
+              "start": 50,
+              "end": 67,
+              "symbol": "requestMagicLink"
+            },
+            {
+              "path": "app/auth/google/route.ts",
+              "start": 18,
+              "end": 31,
+              "symbol": "GET"
+            },
+            {
+              "path": "lib/progress-store.ts",
+              "start": 54,
+              "end": 61,
+              "symbol": "configuredProgressBackend"
+            },
+            {
+              "path": "app/page.tsx",
+              "start": 1059,
+              "end": 1081,
+              "symbol": "signIn"
+            },
+            {
+              "path": "components/sign-in-controls.tsx",
+              "start": 1,
+              "end": 12,
+              "symbol": "SignInControls"
+            }
+          ]
+        },
+        {
+          "title": "Finish the selected Supabase route",
+          "does": "Exchanges a PKCE code at callback OR verifies token_hash and an allowed OTP type at confirm.",
+          "receives": "Provider/email return parameters.",
+          "passes": "Session cookies and redirect home, or auth_error.",
+          "explanation": "These endpoints are alternatives, not two consecutive steps. The SSR client reads and writes cookie values through Next.js cookies.",
+          "nodeIds": [
+            "app/auth/callback/route.ts",
+            "app/auth/confirm/route.ts",
+            "lib/supabase/server.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/auth/callback/route.ts",
+              "start": 4,
+              "end": 18,
+              "symbol": "GET"
+            },
+            {
+              "path": "app/auth/confirm/route.ts",
+              "start": 5,
+              "end": 21,
+              "symbol": "GET"
+            },
+            {
+              "path": "lib/supabase/server.ts",
+              "start": 5,
+              "end": 21,
+              "symbol": "createSupabaseServerClient"
+            }
+          ]
+        },
+        {
+          "title": "Verify identity on each protected request",
+          "does": "currentSession calls Supabase getUser rather than trusting getSession cookie contents.",
+          "receives": "Incoming cookies.",
+          "passes": "Verified user mapped to progress and rate-limit keys, or null.",
+          "explanation": "Local mode instead looks up the opaque session token and uses its stored tokenHash. Display names are not authorization keys.",
+          "nodeIds": [
+            "lib/session.ts",
+            "lib/auth-identity.ts"
+          ],
+          "evidence": [
+            {
+              "path": "lib/session.ts",
+              "start": 18,
+              "end": 37,
+              "symbol": "currentSession"
+            },
+            {
+              "path": "lib/auth-identity.ts",
+              "start": 16,
+              "end": 27,
+              "symbol": "sessionFromSupabaseUser"
+            }
+          ]
+        },
+        {
+          "title": "Expose session status and guard execution",
+          "does": "Session GET reports authenticated identity; run POST rejects null sessions before grading.",
+          "receives": "currentSession result.",
+          "passes": "Session status OR a protected request scoped to progressKey.",
+          "explanation": "Sign-in alone does not grade or award rewards. No session yields 401 at /api/run.",
+          "nodeIds": [
+            "app/api/session/route.ts",
+            "app/api/run/route.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/api/session/route.ts",
+              "start": 17,
+              "end": 24,
+              "symbol": "GET"
+            },
+            {
+              "path": "app/api/run/route.ts",
+              "start": 23,
+              "end": 39,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "title": "Disclosed local alternative",
+          "does": "When configured backend is local, resumes or creates a profile and sets an opaque HTTP-only cookie.",
+          "receives": "Display name and any existing session cookie.",
+          "passes": "Local session/progress response; future currentSession uses stored token hash.",
+          "explanation": "This development fallback is not email or Google sign-in. Existing cookies resume the same save; Supabase requires the provider routes above.",
+          "nodeIds": [
+            "app/api/session/route.ts",
+            "lib/session.ts"
+          ],
+          "evidence": [
+            {
+              "path": "app/api/session/route.ts",
+              "start": 70,
+              "end": 95,
+              "symbol": "createLocalSession / localSessionResponse"
+            },
+            {
+              "path": "lib/session.ts",
+              "start": 8,
+              "end": 16,
+              "symbol": "SESSION_COOKIE_OPTIONS"
+            },
+            {
+              "path": "lib/session.ts",
+              "start": 28,
+              "end": 37,
+              "symbol": "currentSession"
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "from": "app/api/session/route.ts",
+          "to": "app/auth/callback/route.ts",
+          "type": "http",
+          "label": "Email redirect target \u2192 PKCE callback (alternative)",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/session/route.ts",
+              "start": 57,
+              "end": 60,
+              "symbol": "requestMagicLink"
+            }
+          ]
+        },
+        {
+          "from": "app/auth/google/route.ts",
+          "to": "app/auth/callback/route.ts",
+          "type": "http",
+          "label": "OAuth redirect target \u2192 PKCE callback (alternative)",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/auth/google/route.ts",
+              "start": 23,
+              "end": 26,
+              "symbol": "GET"
+            }
+          ]
+        },
+        {
+          "from": "app/auth/callback/route.ts",
+          "to": "lib/supabase/server.ts",
+          "type": "data",
+          "label": "Code exchange \u2192 cookie-capable SSR client",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/auth/callback/route.ts",
+              "start": 14,
+              "end": 17,
+              "symbol": "GET"
+            },
+            {
+              "path": "lib/supabase/server.ts",
+              "start": 8,
+              "end": 19,
+              "symbol": "createSupabaseServerClient"
+            }
+          ]
+        },
+        {
+          "from": "app/auth/confirm/route.ts",
+          "to": "lib/supabase/server.ts",
+          "type": "data",
+          "label": "OTP verification \u2192 SSR client (alternative)",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/auth/confirm/route.ts",
+              "start": 17,
+              "end": 20,
+              "symbol": "GET"
+            }
+          ]
+        },
+        {
+          "from": "lib/session.ts",
+          "to": "lib/auth-identity.ts",
+          "type": "data",
+          "label": "Verified user \u2192 stable identity",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "lib/session.ts",
+              "start": 20,
+              "end": 25,
+              "symbol": "currentSession"
+            }
+          ]
+        },
+        {
+          "from": "app/api/run/route.ts",
+          "to": "lib/session.ts",
+          "type": "data",
+          "label": "Protected request \u2192 currentSession verification",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/run/route.ts",
+              "start": 25,
+              "end": 27,
+              "symbol": "POST"
+            }
+          ]
+        },
+        {
+          "from": "app/api/session/route.ts",
+          "to": "lib/session.ts",
+          "type": "data",
+          "label": "Session status \u2192 currentSession verification",
+          "direction": "from-to",
+          "status": "source-supported",
+          "evidence": [
+            {
+              "path": "app/api/session/route.ts",
+              "start": 17,
+              "end": 24,
+              "symbol": "GET"
+            }
+          ]
+        },
+        {
+          "from": "app/page.tsx",
+          "to": "app/api/session/route.ts",
+          "type": "http",
+          "direction": "from-to",
+          "status": "source-supported",
+          "label": "Email/display name POST \u2192 session route",
+          "evidence": [
+            {
+              "path": "app/page.tsx",
+              "start": 1069,
+              "end": 1076,
+              "symbol": "signIn"
+            }
+          ]
+        },
+        {
+          "from": "components/sign-in-controls.tsx",
+          "to": "app/auth/google/route.ts",
+          "type": "http",
+          "direction": "from-to",
+          "status": "source-supported",
+          "label": "Google link navigation \u2192 OAuth start",
+          "evidence": [
+            {
+              "path": "components/sign-in-controls.tsx",
+              "start": 1,
+              "end": 12,
+              "symbol": "SignInControls"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -171,6 +171,23 @@
   .faded { opacity: .13; }
   .emph { opacity: 1; }
   #viewport.dimming .edge:not(.emph) { opacity: .07; }
+  .node.tour-involved .box { stroke:#56d4c7; fill:#173730; stroke-width:2px; }
+  .node.tour-current .box { stroke: #56d4c7; stroke-width: 3px; fill: #173730; }
+  .tour-picker select { color:var(--fg); background:var(--panel); padding:5px; border:1px solid var(--line); border-radius:5px; }
+  #tour-panel { overflow-wrap:anywhere; border-bottom:1px solid var(--line); margin-bottom:14px; padding-bottom:14px; }
+  #tour-panel h3 { color:var(--fg); }
+  #tour-panel .tour-step-title { font-size:14px; text-transform:none; letter-spacing:0; }
+  #tour-panel dd { margin:0 0 8px; color:var(--mut); }
+  #tour-panel dt { font-weight:600; }
+  #tour-panel .tour-citation { display:block; width:100%; text-align:left; white-space:normal; overflow-wrap:anywhere; font-size:11px; }
+  button:disabled { opacity:.45; cursor:default; }
+  #tour-progress { color:#56d4c7; }
+  dialog { color:var(--fg); background:var(--panel); border:1px solid #56d4c7; border-radius:8px; width:min(920px,95vw); max-height:85vh; overflow:auto; overflow-wrap:anywhere; }
+  dialog::backdrop { background:rgba(0,0,0,.65); }
+  dialog pre { white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; padding:12px; background:var(--bg); }
+  dialog a { color:#56d4c7; display:block; margin-top:10px; }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  @media(max-width:650px) { main { flex-direction:column; } #stage { min-height:38vh; } aside { flex:1; min-width:0; border-left:0; border-top:1px solid var(--line); } .ask { margin-left:0; width:100%; } .ask input { min-width:0; width:100%; } .ask .tag,.hint { display:none; } header { gap:7px; } .meta { font-size:10px; gap:6px; } }
   .warn { padding: 30px; color: var(--accent); font-family: ui-monospace, monospace; }
 </style>
 </head>
@@ -179,6 +196,7 @@
 <header>
   <div class="brand">DAG GPS<span id="h-repo">—</span></div>
   <div class="meta" id="h-meta"></div>
+  <label class="tour-picker">Tours <select id="tour-select" aria-label="Architecture tour"><option value="">Choose a walkthrough…</option></select></label>
   <form class="ask" id="ask-form">
     <span class="tag">local / offline</span>
     <input id="ask" type="text" placeholder="e.g. locate a source file" aria-label="Ask about the graph">
@@ -199,14 +217,17 @@
     <div class="legend" id="legend"></div>
     <div class="hint">wheel = zoom · drag = pan · click = focus · double-click = expand · Esc = back</div>
   </div>
-  <aside><details id="alias-manager"><summary>Manage learned aliases</summary><p>No secrets. Local to this repository/browser; file storage is best-effort. Export for backup.</p><div id="alias-status" role="status"></div><div id="alias-list"></div><button class="btn" id="alias-export" type="button">Export JSON</button><button class="btn ghost" id="alias-clear" type="button">Clear aliases…</button><label>Import JSON <input id="alias-import" type="file" accept="application/json,.json"></label><label>Import mode <select id="alias-mode"><option value="merge">Merge (default)</option><option value="replace">Replace all</option></select></label><div id="alias-preview"></div></details><section id="answer" aria-live="polite"></section><section id="panel"></section></aside>
+  <aside><details id="alias-manager"><summary>Manage learned aliases</summary><p>No secrets. Local to this repository/browser; file storage is best-effort. Export for backup.</p><div id="alias-status" role="status"></div><div id="alias-list"></div><button class="btn" id="alias-export" type="button">Export JSON</button><button class="btn ghost" id="alias-clear" type="button">Clear aliases…</button><label>Import JSON <input id="alias-import" type="file" accept="application/json,.json"></label><label>Import mode <select id="alias-mode"><option value="merge">Merge (default)</option><option value="replace">Replace all</option></select></label><div id="alias-preview"></div></details><section id="tour-panel" hidden aria-live="polite"></section><section id="answer" aria-live="polite"></section><section id="panel"></section></aside>
 </main>
 
+<dialog id="tour-evidence" aria-labelledby="evidence-title"><h2 id="evidence-title"></h2><p id="evidence-meta"></p><pre id="evidence-source"></pre><button class="btn" id="evidence-close" type="button">Close evidence</button><button class="btn ghost" id="evidence-locate" type="button">Locate real file in map</button><a id="evidence-permalink" target="_blank" rel="noopener noreferrer">GitHub · pinned source (external, optional)</a></dialog>
 <script>
 "use strict";
 /*__SCORER__*/
 /*__ROUTER__*/
 /*__ALIASES__*/
+/*__TOURS__*/
+var TOUR_DATA = /*__TOUR_DATA__*/null;
 var MAP = /*__MAP__*/null;
 
 if (!MAP) {
@@ -1153,6 +1174,8 @@ function renderAnswer(status) {
 }
 document.getElementById('ask-form').addEventListener('submit', function (ev) {
   ev.preventDefault();
+  if (resolveTourQuery(document.getElementById('ask').value)) return;
+  if (tourController.state().active) exitTour();
   var start = performance.now();
   clearAnswerHighlight(); answer = null; overrides = {}; S.focused = null;
   applyHighlight(); panelFor();
@@ -1189,6 +1212,7 @@ document.getElementById('answer').addEventListener('click', function (ev) {
 });
 
 /*__ALIAS_UI__*/
+/*__TOUR_UI__*/
 // ============================================================ interactions
 svg.addEventListener("wheel", function (ev) {
   ev.preventDefault();
@@ -1256,7 +1280,7 @@ document.getElementById("t-tests").addEventListener("change", function (ev) {
   else showLayers(S.focused !== HIDE_BY_DEFAULT || S.showTests);
 });
 document.addEventListener("keydown", function (ev) {
-  if (ev.key !== "Escape") return;
+  if (ev.key !== "Escape" || ev.defaultPrevented || document.getElementById("tour-evidence").open || /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName) || ev.target.isContentEditable) return;
   if (S.view !== "layers") showLayers(false);
   else setFocus(null);
 });
@@ -1273,7 +1297,8 @@ window.dagGps = {
       view: S.view, focused: S.focused, expanded: S.expanded,
       visibleNodes: S.nodes.length, visibleEdges: S.edges.length,
       zoom: S.k, showTests: S.showTests,
-      answer: answer, route: answerRoute, latencyMs: answerLatency
+      answer: answer, route: answerRoute, latencyMs: answerLatency,
+      tour: tourController.state().active ? {id: tourController.state().active.id, index: tourController.state().index} : null
     };
   },
   focus: function (id) { setFocus(id); return window.dagGps.state(); },

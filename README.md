@@ -8,6 +8,40 @@ The indexed-table, operation-head and per-target-head pattern is borrowed from
 [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast). Validated
 normalized distributions remain available, but are not correctness probabilities.
 
+## Architecture-guided tours
+
+```bash
+python3 scripts/render.py --map maps/quest-coder/map.json --out dist/quest-coder.html \
+  --tours maps/quest-coder/tours.json --repo /Users/aibert/projects/quest-coder
+open dist/quest-coder.html
+```
+
+Choose **Run basic**, **Submit**, or **Sign in** in Tours, or Ask
+`walk me through submitting code`. Previous/Next/Reset/Exit step through brief
+input/output boundaries and actual offline line-numbered source evidence. Overview
+can highlight involved layers; Locate real file inspects a node, not a local editor.
+Arrow keys step and Escape exits outside typing/modal contexts.
+
+Tours audit quest-coder **749d8b5de490cc2e6a0c98c713fab3ab856da799** from immutable
+source, not the mutable checkout. **Import paths are not execution traces**: separately
+styled directed tour links carry HTTP, spawn/message or data-flow evidence; normal
+imports and Ask stay unchanged. Run basic is advisory; Submit returns its runner result
+to the API before progress writes, but responds to the browser after writes/reread.
+Google is the shipped Supabase sign-in UI; email OTP routes remain an API alternative.
+Supabase vs local SQLite and party reward branches are disclosed, not stitched into
+one false execution sequence. No live application execution or calibrated confidence claim.
+
+Optional `--tours PATH` also works with `scripts/build_project.py`. Repository, exact
+commit, node IDs, paths, evidence bounds and typed links validate before publishing;
+stale/invalid tours preserve previous artifacts. Tour data is per repo, not hardcoded
+into runtime. Omitting it gives an honest **No curated tours available**, as in the
+self demo. Supporting excerpts are inline, safely escaped; optional GitHub links
+point to the exact audited SHA. Full schema, commands and limits: **docs/TOURS_REPORT.md**.
+
+Verification: **138 Python + 93 JS tests**, all legacy gates plus **29 tour UI checks**,
+18 steps and every citation exercised with real clicks/typing, zero errors/requests.
+Eleven tour screenshots under `artifacts/tour-*.png`; gates in `.verify.json`.
+
 ## Reusable pinned maps + safe refresh
 
 ```bash
@@ -121,7 +155,8 @@ There is no server, model training, automatic alias generation or network learni
 - Commands: `.verify.json`; current report: `docs/REFRESH_REPORT.md`; alias history: `docs/ALIAS_LEARNING_REPORT.md`.
 - Filename lookup history: `docs/LOOKUP_REPORT.md`; M3 routing: `docs/M3_REPORT.md`;
   scorer provenance: `docs/M2_REPORT.md`.
-- 123 Python + 88 JS tests (17 refresh fixtures + 15 alias tests); refresh 7 UI checks, legacy M3 5 canonical + 11 extra
+- 138 Python + 93 JS tests (15 tour fixtures + 5 controller tests, 17 refresh fixtures, 15 alias tests);
+  tours 29 UI checks, refresh 7 UI checks, legacy M3 5 canonical + 11 extra
   browser checks, lookup 19 UI checks, alias 19 UI checks, and shipped scorer parity.
 - Synthetic alias regression: 15/15, zero wrong accepts or false accepts on negative requests.
   `Python judge` already matched runner-service before this milestone; the harder

@@ -4,6 +4,25 @@ Last updated: 2026-10-07
 
 ## Current Focus
 
+Architecture-guided tours locally verified on `architecture-tours` from main `3e811d9`.
+Parent independently verifies then integrates/pushes main; worker has not merged/pushed.
+
+- quest-coder audited archive SHA `749d8b5de490cc2e6a0c98c713fab3ab856da799`: Run basic
+  5 steps, Submit 8, Sign in 5; 20 source files, source excerpts and exact line evidence.
+- Offline menu/natural Ask resolver, typed directed runtime links kept separate from
+  imports, layer overview, step controls and scoped keyboard navigation, evidence modal
+  with real node inspection and optional pinned permalink. Normal Ask/aliases unchanged.
+- Reusable optional `--tours`; exact repo/commit/source bounds validation before publish;
+  stale/invalid artifacts preserved. Self demo honestly has no tours.
+- 138 Python + 93 JS; all prior gates plus 29 tour browser checks, 18 ordered steps and
+  every citation exercised, zero page/console errors or external requests; 11 screenshots.
+- Source walkthroughs, not observed production execution; Google-only shipped auth UI
+  vs email API alternative, Supabase/SQLite, Run/Submit and party reward branches disclosed.
+- Open `dist/quest-refresh/index.html` or `dist/quest-coder.html`. Report:
+  `docs/TOURS_REPORT.md`; logs `artifacts/tour-{build,test,smoke}.log`.
+
+## Previous milestone focus
+
 Reusable maps and safe refresh locally verified on `reusable-refresh` from `f92d0cf`.
 Parent independent review/verification then authorized direct-to-main integration pending;
 worker commits locally only, no merge/push. Open `dist/dag-gps/index.html` or

@@ -31,13 +31,13 @@ def js_literal(data):
     return text
 
 
-def render(template_text, map_data):
+def render(template_text, map_data, tours=None):
     """Inline trusted module source as safely encoded JS strings.
 
     Function executes only shipped local source, never map/query contents. This
     preserves source syntax even for closing script tags in strings or comments.
     """
-    for name in ("scorer", "router", "aliases"):
+    for name in ("scorer", "router", "aliases", "tours"):
         marker = "/*__%s__*/" % name.upper()
         if template_text.count(marker) > 1:
             raise ValueError("duplicate module placeholder: " + marker)
@@ -45,6 +45,10 @@ def render(template_text, map_data):
             with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), name + ".js"), encoding="utf-8") as fh:
                 source = fh.read()
             template_text = template_text.replace(marker, "new Function(" + js_literal(source) + ")();")
+    template_text = template_text.replace("/*__TOUR_DATA__*/null", js_literal(tours))
+    if "/*__TOUR_UI__*/" in template_text:
+        with open(os.path.join(os.path.dirname(DEFAULT_TEMPLATE), "tour-ui.js"), encoding="utf-8") as fh:
+            template_text = template_text.replace("/*__TOUR_UI__*/", "var tourUI = eval(" + js_literal(fh.read()) + "); var tourController = tourUI.controller; var resolveTourQuery = tourUI.resolve; var exitTour = tourUI.exit;")
     ui_marker = "/*__ALIAS_UI__*/"
     if template_text.count(ui_marker) > 1:
         raise ValueError("duplicate module placeholder: " + ui_marker)
@@ -98,6 +102,8 @@ def main(argv=None):
     ap.add_argument("--map", required=True, help="path to map.json")
     ap.add_argument("--out", required=True, help="path of the HTML page to write")
     ap.add_argument("--template", default=DEFAULT_TEMPLATE)
+    ap.add_argument("--tours", help="Reviewed tours JSON; requires --repo to validate immutable source")
+    ap.add_argument("--repo", help="Local Git repository for tour evidence verification")
     args = ap.parse_args(argv)
 
     with open(args.map, encoding="utf-8") as fh:
@@ -110,7 +116,14 @@ def main(argv=None):
     with open(args.template, encoding="utf-8") as fh:
         template_text = fh.read()
 
-    html = render(template_text, map_data)
+    tours = None
+    if args.tours:
+        if not args.repo:
+            raise ValueError("--tours requires --repo")
+        from tours import compile_tours
+        with open(args.tours, encoding="utf-8") as fh:
+            tours = compile_tours(json.load(fh), map_data, args.repo)
+    html = render(template_text, map_data, tours)
     out_dir = os.path.dirname(os.path.abspath(args.out))
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
