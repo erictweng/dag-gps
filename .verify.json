@@ -120,7 +120,13 @@
     "tests/test_repository_import.py",
     "tests/test_workspace_snapshot.py",
     "tests/test_workspace_preview.py",
-    "tests/workspace_preview_browser.cjs"
+    "tests/workspace_preview_browser.cjs",
+    "web/query-service.js",
+    "app/workspace_snapshot.py",
+    "scripts/query_worker.cjs",
+    "tests/query-service.test.cjs",
+    "tests/test_query_packets.py",
+    "docs/WORKSPACE_QUERY.md"
   ],
   "timeout_seconds": 600,
   "examples": {
