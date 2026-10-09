@@ -49,6 +49,7 @@ QUERY_FIELDS = {'snapshotId', 'requestId', 'query', 'continuation', 'chosenNodeI
 STATIC = {
     '/': ('web/workspace.html', 'text/html; charset=utf-8'),
     '/workspace.js': ('web/workspace.js', 'text/javascript; charset=utf-8'),
+    '/graph-view.js': ('web/graph-view.js', 'text/javascript; charset=utf-8'),
     '/workspace.css': ('web/workspace.css', 'text/css; charset=utf-8'),
 }
 CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; "

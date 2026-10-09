@@ -54,7 +54,7 @@ stderr is kept separately, bounded to 16 KiB. At most 8 requests wait at once.
 
 ## Not yet
 
-M2.3 adds the visual graph with highlighting. Source/context fetch is M3. There
+The graph view and three-panel UI are documented in `docs/WORKSPACE_UI.md`. Source/context fetch is M3. There
 is no live refresh (M4) and no persistent job history across restarts.
 
 ## Verify

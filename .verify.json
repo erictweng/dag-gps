@@ -135,7 +135,12 @@
     "tests/test_workspace_server.py",
     "tests/test_query_worker.py",
     "scripts/smoke_workspace_server.cjs",
-    "docs/WORKSPACE_SERVER.md"
+    "docs/WORKSPACE_SERVER.md",
+    "web/graph-view.js",
+    "tests/graph-view.test.cjs",
+    "tests/test_workspace_ui.py",
+    "scripts/smoke_workspace.cjs",
+    "docs/WORKSPACE_UI.md"
   ],
   "timeout_seconds": 600,
   "examples": {

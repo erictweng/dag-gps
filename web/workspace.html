@@ -7,49 +7,91 @@
 <link rel="stylesheet" href="/workspace.css">
 </head>
 <body>
-<main>
+<header class="topbar">
   <h1>DAG GPS workspace</h1>
-  <p id="session-warning" class="warn" hidden>Open this page using the private link printed by the server (it includes a session key).</p>
-
-  <section aria-labelledby="import-heading">
-    <h2 id="import-heading">Import a public GitHub repository</h2>
+  <div class="project-picker">
+    <label for="project-select">Project</label>
+    <select id="project-select"></select>
+    <label for="revision-select">Revision</label>
+    <select id="revision-select"></select>
+  </div>
+  <details id="import-box">
+    <summary>Import a repository</summary>
     <form id="import-form">
-      <label for="repo-url">Repository URL</label>
+      <label for="repo-url">Public GitHub URL</label>
       <input id="repo-url" name="url" type="url" required placeholder="https://github.com/owner/repo" autocomplete="off" spellcheck="false">
       <label for="repo-commit">Commit (optional, full 40-character SHA)</label>
       <input id="repo-commit" name="commit" type="text" pattern="[0-9a-f]{40}" autocomplete="off" spellcheck="false">
       <button type="submit">Import</button>
     </form>
-    <p id="import-status" role="status" aria-live="polite"></p>
-  </section>
+  </details>
+  <p id="import-status" role="status" aria-live="polite"></p>
+  <p id="session-warning" class="warn" hidden>Open this page with the private link printed by the server (it contains your session key).</p>
+</header>
 
-  <section aria-labelledby="projects-heading">
-    <h2 id="projects-heading">Projects</h2>
-    <label for="project-select">Project</label>
-    <select id="project-select"></select>
-    <p id="project-info"></p>
-  </section>
+<div class="layout">
+  <nav class="panel files-panel" aria-labelledby="files-heading">
+    <h2 id="files-heading">Files</h2>
+    <label for="file-filter">Filter files</label>
+    <input id="file-filter" type="search" autocomplete="off" spellcheck="false">
+    <p id="file-count" class="muted"></p>
+    <ul id="file-list"></ul>
+  </nav>
 
-  <section aria-labelledby="ask-heading">
-    <h2 id="ask-heading">Ask</h2>
-    <form id="ask-form">
-      <label for="question">Question</label>
-      <input id="question" type="text" required maxlength="2048" autocomplete="off" spellcheck="false"
-             placeholder="what depends on src/app.py · path from a.py to b.py · dependencies of x.py">
-      <button type="submit">Ask</button>
+  <main class="panel graph-panel">
+    <form id="ask-form" class="ask">
+      <label for="question">Ask about this repository</label>
+      <div class="ask-row">
+        <input id="question" type="text" required maxlength="2048" autocomplete="off" spellcheck="false"
+               placeholder="what depends on src/app.py · path from a.py to b.py · dependencies of x.py">
+        <button type="submit">Ask</button>
+        <button type="button" id="clear">Clear</button>
+      </div>
+      <p class="muted">Press Escape to clear the highlight.</p>
     </form>
+    <p id="project-info" class="muted"></p>
+    <ul class="legend" aria-label="Legend">
+      <li><span class="swatch seed"></span>Asked about</li>
+      <li><span class="swatch on"></span>Relevant</li>
+      <li><span class="swatch impact"></span>Potentially affected (dashed)</li>
+      <li><span class="swatch dim"></span>Not part of the answer</li>
+    </ul>
+    <div id="graph" class="graph" role="region" aria-label="Dependency graph" tabindex="0"></div>
+  </main>
+
+  <aside class="panel evidence-panel" aria-labelledby="evidence-heading">
+    <h2 id="evidence-heading">Evidence</h2>
     <div id="answer" aria-live="polite">
-      <p id="answer-status"></p>
+      <p id="answer-status" class="answer-status">Ask a question or pick a file.</p>
       <p id="answer-reason"></p>
-      <h3 id="choices-heading" hidden>Choose one</h3>
-      <ul id="choices"></ul>
-      <h3 id="files-heading" hidden>Files</h3>
-      <ol id="files"></ol>
-      <button id="more" type="button" hidden>Show more</button>
-      <details id="limitations-box" hidden><summary>Limitations</summary><ul id="limitations"></ul></details>
     </div>
-  </section>
-</main>
+    <h3 id="choices-heading" hidden>Choose one</h3>
+    <ul id="choices"></ul>
+    <h3 id="results-heading" hidden>Files in this answer</h3>
+    <ol id="results"></ol>
+    <button id="more" type="button" hidden>Show more</button>
+    <section id="detail" hidden aria-labelledby="detail-heading">
+      <h3 id="detail-heading">Selected file</h3>
+      <dl>
+        <dt>Path</dt><dd><code id="detail-path"></code></dd>
+        <dt>Group (proposed)</dt><dd id="detail-group"></dd>
+        <dt>Lines</dt><dd id="detail-lines"></dd>
+        <dt>SHA-256</dt><dd><code id="detail-sha"></code></dd>
+        <dt>Extraction</dt><dd id="detail-extraction"></dd>
+      </dl>
+      <div class="detail-actions">
+        <button type="button" id="detail-dependents">What depends on this?</button>
+        <button type="button" id="detail-dependencies">What does this use?</button>
+      </div>
+      <h4>Imports (uses)</h4>
+      <ul id="detail-out"></ul>
+      <h4>Imported by</h4>
+      <ul id="detail-in"></ul>
+    </section>
+    <details id="limitations-box" hidden><summary>Limitations</summary><ul id="limitations"></ul></details>
+  </aside>
+</div>
+<script src="/graph-view.js"></script>
 <script src="/workspace.js"></script>
 </body>
 </html>

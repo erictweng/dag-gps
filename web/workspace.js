@@ -1,7 +1,10 @@
-/* Minimal M2.2 workspace client. Renders untrusted data with textContent only. */
+/* DAG GPS workspace client (M2.3). Untrusted repository data is rendered with
+ * textContent / SVG text only. Highlights come from evidence packets or observed edges. */
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
+  const GV = window.DagGpsGraphView;
+  const MAX_LIST = 2000;
   const fromHash = /(?:^|[#&])session=([A-Za-z0-9_-]{20,128})/.exec(location.hash);
   if (fromHash) {
     sessionStorage.setItem('dag-gps-session', fromHash[1]);
@@ -20,45 +23,201 @@
   }
   const text = (id, value) => { $(id).textContent = value; };
   const clear = id => $(id).replaceChildren();
-  function item(listId, label, onClick) {
-    const li = document.createElement('li');
+  function li(listId, label, onClick, extra) {
+    const item = document.createElement('li');
     if (onClick) {
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = label; b.addEventListener('click', onClick);
-      li.appendChild(b);
-    } else li.textContent = label;
-    $(listId).appendChild(li);
-    return li;
+      if (extra) Object.assign(b.dataset, extra);
+      item.appendChild(b);
+    } else item.textContent = label;
+    $(listId).appendChild(item);
+    return item;
   }
 
-  let projects = [], current = null, lastRequest = null, counter = 0;
+  const graph = GV.createGraphView($('graph'), {onSelect: id => selectFile(id, {fromGraph: true})});
+  const state = {projects: [], project: null, snapshot: null, request: null, counter: 0,
+    files: new Map(), nodes: new Map(), groupLabel: new Map()};
+
+  // ---------------------------------------------------------------- projects
   async function loadProjects(selectId) {
-    projects = (await api('GET', '/api/projects')).projects;
+    state.projects = (await api('GET', '/api/projects')).projects;
     const select = $('project-select');
     select.replaceChildren();
-    for (const p of projects) {
+    for (const p of state.projects) {
       const option = document.createElement('option');
-      option.value = p.projectId;
-      option.textContent = p.repo + ' @ ' + p.current.commit.slice(0, 7);
+      option.value = p.projectId; option.textContent = p.repo;
       select.appendChild(option);
     }
     if (selectId) select.value = selectId;
-    pick();
+    if (!state.projects.length) {
+      text('project-info', 'No projects yet. Open "Import a repository" above.');
+      $('import-box').open = true;
+      return;
+    }
+    await pickProject();
   }
-  function pick() {
-    current = projects.find(p => p.projectId === $('project-select').value) || projects[0] || null;
-    if (!current) { text('project-info', 'No projects yet. Import a repository above.'); return; }
-    const c = current.current.counts || {};
-    text('project-info', current.repo + ' at ' + current.current.commit + ' — ' + (c.files || 0) + ' mapped files, ' +
-      (c.file_edges || 0) + ' file links, ' + (c.layers || 0) + ' proposed groups' +
-      (current.current.extractionState === 'partial' ? ' (partial extraction)' : '') + '.');
+  async function pickProject() {
+    state.project = state.projects.find(p => p.projectId === $('project-select').value) || state.projects[0];
+    const revs = Object.values(state.project.snapshots).sort((a, b) => b.importedAt - a.importedAt);
+    const select = $('revision-select');
+    select.replaceChildren();
+    for (const r of revs) {
+      const option = document.createElement('option');
+      option.value = r.snapshotId;
+      option.textContent = r.commit.slice(0, 7) + (r.snapshotId === state.project.current.snapshotId ? ' (latest)' : '');
+      select.appendChild(option);
+    }
+    select.value = state.project.current.snapshotId;
+    await loadSnapshot(select.value);
   }
-  $('project-select').addEventListener('change', pick);
+  async function loadSnapshot(snapshotId) {
+    const graphBox = $('graph'), scroll = [graphBox.scrollLeft, graphBox.scrollTop];
+    const sameProject = Boolean(state.snapshot && state.snapshot.projectId === state.project.projectId);
+    const snap = await api('GET', '/api/projects/' + state.project.projectId + '/snapshots/' + snapshotId);
+    state.snapshot = snap;
+    state.files = new Map(snap.inventory.map(f => [f.path, f]));
+    state.nodes = new Map(snap.map.nodes.map(n => [n.id, n]));
+    state.groupLabel = new Map(snap.map.nodes.filter(n => n.kind === 'layer').map(n => [n.id, n.label || n.id]));
+    const counts = (snap.map.meta && snap.map.meta.counts) || {};
+    text('project-info', snap.source.repo + ' @ ' + snap.source.commit.slice(0, 7) + ' — ' + snap.inventory.length + ' files, ' +
+      (counts.files || 0) + ' mapped, ' + (counts.file_edges || 0) + ' links' +
+      (snap.extractionState === 'partial' ? ' · partial extraction (some imports could not be resolved)' : '') +
+      '. Groups are proposed from folders, not reviewed.');
+    graph.render(snap.map);
+    if (sameProject) { graphBox.scrollLeft = scroll[0]; graphBox.scrollTop = scroll[1]; }
+    renderFileList();
+    resetAnswer();
+  }
+  $('project-select').addEventListener('change', () => pickProject().catch(showError));
+  $('revision-select').addEventListener('change', () => loadSnapshot($('revision-select').value).catch(showError));
 
+  // ---------------------------------------------------------------- file list
+  function renderFileList() {
+    const filter = $('file-filter').value.trim().toLowerCase();
+    clear('file-list');
+    const all = state.snapshot ? state.snapshot.inventory : [];
+    const shown = all.filter(f => !filter || f.path.toLowerCase().includes(filter));
+    for (const f of shown.slice(0, MAX_LIST)) {
+      const mapped = state.nodes.has(f.path);
+      li('file-list', f.path + (mapped ? '' : '  (not mapped)'), () => selectFile(f.path), {path: f.path});
+    }
+    text('file-count', shown.length + ' of ' + all.length + ' files' +
+      (shown.length > MAX_LIST ? ' (first ' + MAX_LIST + ' shown; filter to narrow)' : ''));
+  }
+  $('file-filter').addEventListener('input', renderFileList);
+
+  // ---------------------------------------------------------------- answers
+  const STATUS = {
+    'matched': 'Found', 'needs-choice': 'Several possible matches — choose one',
+    'no-match': 'No match', 'no-path': 'No directed path', 'unsupported': 'Not supported', 'stale': 'Out of date'
+  };
+  function hideAnswerLists() {
+    for (const id of ['choices', 'results', 'limitations']) clear(id);
+    $('choices-heading').hidden = $('results-heading').hidden = $('more').hidden = true;
+    $('limitations-box').hidden = true;
+  }
+  function resetAnswer(message) {
+    graph.apply(null);
+    text('answer-status', message || 'Ask a question or pick a file.');
+    text('answer-reason', '');
+    hideAnswerLists();
+    $('detail').hidden = true;
+    for (const b of document.querySelectorAll('#file-list button[aria-current]')) b.removeAttribute('aria-current');
+  }
+  function showError(error) { text('answer-status', 'Something went wrong: ' + error.message); }
+
+  async function ask(extra) {
+    if (!state.snapshot) { text('answer-status', 'Import or select a project first.'); return; }
+    const request = Object.assign({snapshotId: state.snapshot.snapshotId, requestId: 'ui-' + (++state.counter),
+      query: $('question').value.trim()}, extra || {});
+    if (!request.query) return;
+    try {
+      const packet = await api('POST', '/api/projects/' + state.project.projectId + '/query', request);
+      state.request = request;
+      render(packet, Boolean(extra && extra.continuation));
+    } catch (error) { showError(error); }
+  }
+  function render(packet, append) {
+    $('detail').hidden = true;
+    text('answer-status', (STATUS[packet.status] || packet.status) +
+      (packet.operation !== 'NOT_SURE' ? ' · ' + packet.operation.toLowerCase() : '') +
+      (packet.highlightState === 'potential-impact' ? ' · potentially affected, not guaranteed to break' : ''));
+    text('answer-reason', packet.reason || '');
+    clear('choices');
+    $('choices-heading').hidden = !packet.alternatives.length;
+    for (const a of packet.alternatives)
+      li('choices', (a.path || a.nodeId) + ' — ' + a.reason, () => ask({query: state.request.query, chosenNodeId: a.nodeId}));
+    if (!append) clear('results');
+    const witness = new Map(packet.witnesses.map(w => [w.nodeIds[0] === packet.seedNodeId ? w.nodeIds.at(-1) : w.nodeIds[0], w]));
+    for (const id of packet.selectedNodeIds) {
+      const w = witness.get(id);
+      const label = id + (id === packet.seedNodeId ? ' (asked about)' : '') +
+        (w && w.nodeIds.length > 2 ? '  via ' + w.nodeIds.join(' → ') : '');
+      li('results', label, () => selectFile(id, {keepAnswer: true}));
+    }
+    $('results-heading').hidden = !$('results').children.length;
+    $('more').hidden = !packet.truncated;
+    $('more').onclick = () => ask({query: state.request.query, continuation: packet.continuation});
+    clear('limitations');
+    for (const l of packet.limitations) li('limitations', l);
+    $('limitations-box').hidden = !packet.limitations.length;
+    graph.apply(GV.highlightFor(packet));
+  }
+  $('ask-form').addEventListener('submit', event => { event.preventDefault(); ask(); });
+
+  // ---------------------------------------------------------------- selection
+  function selectFile(path, options = {}) {
+    if (!state.snapshot) return;
+    const node = state.nodes.get(path);
+    if (node && node.kind === 'layer') { $('question').value = node.label || node.id; ask(); return; }
+    const file = state.files.get(path);
+    if (!file) return;
+    if (!options.keepAnswer) {
+      hideAnswerLists();
+      text('answer-status', 'Selected ' + path);
+      text('answer-reason', node ? 'Highlighted with its direct observed import links.'
+        : 'This file is inventoried but not part of the dependency map.');
+    }
+    text('detail-path', file.path);
+    text('detail-group', node ? (state.groupLabel.get(node.layer) || node.layer) : 'Not mapped');
+    text('detail-lines', file.lineCount === null ? 'Unknown' : String(file.lineCount));
+    text('detail-sha', file.sha256);
+    text('detail-extraction', file.extraction ?
+      (file.extraction.status + (file.extraction.reason ? ' — ' + file.extraction.reason : '')) : 'Unknown');
+    clear('detail-out'); clear('detail-in');
+    const edges = (state.snapshot.map.file_edges || []).filter(e => e.type !== 'realtime');
+    const out = edges.filter(e => e.from === path), inc = edges.filter(e => e.to === path);
+    for (const e of out) li('detail-out', e.to + ' (' + e.type + ')', () => selectFile(e.to));
+    for (const e of inc) li('detail-in', e.from + ' (' + e.type + ')', () => selectFile(e.from));
+    if (!out.length) li('detail-out', 'None observed');
+    if (!inc.length) li('detail-in', 'None observed');
+    $('detail-dependents').disabled = $('detail-dependencies').disabled = !node;
+    $('detail-dependents').onclick = () => { $('question').value = 'what depends on ' + path; ask(); };
+    $('detail-dependencies').onclick = () => { $('question').value = 'dependencies of ' + path; ask(); };
+    $('detail').hidden = false;
+    for (const b of document.querySelectorAll('#file-list button')) {
+      if (b.dataset.path === path) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    }
+    if (!options.keepAnswer) graph.apply(node ? GV.neighborhood(state.snapshot.map, path) : null);
+    if (!options.fromGraph) $('detail-heading').focus({preventScroll: true});
+  }
+  $('detail-heading').tabIndex = -1;
+
+  // ---------------------------------------------------------------- clear / keys
+  function clearAll() { resetAnswer(); $('question').focus(); }
+  $('clear').addEventListener('click', clearAll);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !event.defaultPrevented && document.activeElement.tagName !== 'SELECT') clearAll();
+  });
+
+  // ---------------------------------------------------------------- import
   $('import-form').addEventListener('submit', async event => {
     event.preventDefault();
     const body = {url: $('repo-url').value.trim()};
     if ($('repo-commit').value.trim()) body.commit = $('repo-commit').value.trim();
+    const button = $('import-form').querySelector('button');
+    button.disabled = true;
     try {
       let job = await api('POST', '/api/imports', body);
       text('import-status', 'Import queued…');
@@ -69,49 +228,15 @@
         text('import-status', 'Importing ' + job.repo + ': ' + (last ? last.stage : job.state) +
           (last && last.files ? ' (' + last.files + ' files)' : '') + '…');
       }
-      if (job.state === 'failed') { text('import-status', 'Import failed: ' + job.error); return; }
+      if (job.state === 'failed') { text('import-status', 'Import failed: ' + job.error + ' — fix the link and try again.'); return; }
       text('import-status', 'Imported ' + job.repo + ' at ' + job.commit.slice(0, 7) + '.');
+      $('import-box').open = false;
       await loadProjects(job.projectId);
-    } catch (error) { text('import-status', 'Import failed: ' + error.message); }
+      $('question').focus();
+    } catch (error) {
+      text('import-status', 'Import failed: ' + error.message + ' — fix the link and try again.');
+    } finally { button.disabled = false; }
   });
-
-  const STATUS = {
-    'matched': 'Found', 'needs-choice': 'Several possible matches — choose one',
-    'no-match': 'No match', 'no-path': 'No directed path', 'unsupported': 'Not supported', 'stale': 'Out of date'
-  };
-  async function ask(extra) {
-    if (!current) { text('answer-status', 'Import or select a project first.'); return; }
-    const request = Object.assign({snapshotId: current.current.snapshotId, requestId: 'ui-' + (++counter),
-      query: $('question').value}, extra || {});
-    try {
-      const packet = await api('POST', '/api/projects/' + current.projectId + '/query', request);
-      lastRequest = request;
-      render(packet, Boolean(extra && extra.continuation));
-    } catch (error) { text('answer-status', 'Query failed: ' + error.message); }
-  }
-  function render(packet, append) {
-    text('answer-status', (STATUS[packet.status] || packet.status) + ' · ' + packet.operation +
-      (packet.highlightState === 'potential-impact' ? ' · potentially affected (not guaranteed to break)' : ''));
-    text('answer-reason', packet.reason || '');
-    clear('choices');
-    $('choices-heading').hidden = !packet.alternatives.length;
-    for (const a of packet.alternatives)
-      item('choices', (a.path || a.nodeId) + ' — ' + a.reason, () => ask({chosenNodeId: a.nodeId}));
-    if (!append) clear('files');
-    const witnessFor = new Map(packet.witnesses.map(w => [w.nodeIds[0] === packet.seedNodeId ? w.nodeIds.at(-1) : w.nodeIds[0], w]));
-    for (const id of packet.selectedNodeIds) {
-      const w = witnessFor.get(id);
-      const role = id === packet.seedNodeId ? ' (asked about)' : '';
-      item('files', id + role + (w && w.nodeIds.length > 2 ? '  via ' + w.nodeIds.join(' → ') : ''));
-    }
-    $('files-heading').hidden = !$('files').children.length;
-    $('more').hidden = !packet.truncated;
-    $('more').onclick = () => ask({query: lastRequest.query, continuation: packet.continuation});
-    clear('limitations');
-    for (const l of packet.limitations) item('limitations', l);
-    $('limitations-box').hidden = !packet.limitations.length;
-  }
-  $('ask-form').addEventListener('submit', event => { event.preventDefault(); ask(); });
 
   if (session) loadProjects().catch(error => text('project-info', 'Could not load projects: ' + error.message));
 })();
