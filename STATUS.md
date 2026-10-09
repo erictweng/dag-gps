@@ -376,3 +376,50 @@ No GitHub-link importer, workspace service/UI, agent invocation, live updates or
 third-party graph mapping was started. Local-versus-hosted and agent-provider choices
 remain pending before Phase 1. Human unaided workflow and semantic review are pending;
 no push/merge, deployment, private-source upload or final v1 acceptance.
+
+## Phase 1 acquisition — worker availability blocked (2026-10-08)
+
+Eric approved local-first/existing-agent defaults. Isolated workspace-repo-import
+starts from verified e94cfba; current work is URL validation and immutable public
+GitHub acquisition, not a server/UI or agent runtime. Declared public fixture:
+pallets/itsdangerous at 672971d66a2ef9f85151e53283113f33d642dabd.
+
+Claude Code hsub run 20261008-150944-05823f exited 1 at its weekly usage limit
+before implementing source. Its reported reset is 6pm America/Los_Angeles.
+app/repositories.py and tests/test_repository_import.py are absent; no Phase 1
+success or commit is claimed. Handoff/build note and exact logs/report are retained.
+Await Eric's permission to switch to the configured OpenAI coding worker, or wait
+for reset. No raw Anthropic fallback, source execution, push/merge or future phase.
+
+### Worker fallback authorized and running
+
+Eric explicitly selected OpenAI GPT-5.6 Sol. Run 20261008-151949-a33182 is active
+on the acquisition mini, pinned to gpt-5.6-sol / openai-codex by per-invocation
+flags, with no global model/config change or silent alternate-model delegation.
+Prior Claude quota block is historical; fallback availability is resolved, not
+feature acceptance. Runtime metadata and initial RED-test creation were verified;
+implementation/full tests and actual public import remain pending parent checks.
+
+### Phase 1 receipt-bound fix + first full gate attempt (2026-10-08)
+
+IRP-01 residual fixed directly by the parent (Eric's instruction, no worker):
+`receipt.json` capped at MAX_RECEIPT_BYTES (64 KiB), rejected from lstat size
+before open; in-limit receipts read once via a no-follow fd whose dev/inode must
+match. RED retained (65,537-byte receipt fully decoded before rejection); GREEN
+snapshot 17/17, preview 9/9, acquisition 25/25. Reviewer's own follow-up probe
+now shows readAttempted=false on its 5.2 MB receipt; all 28 other independent
+properties still hold. Fresh pinned itsdangerous import and file:// browser
+click/Enter regression pass on the new bytes. Evidence: artifacts/phase1-receipt-bound-fix/.
+
+Full precommit `artifacts/phase1-precommit/`: build, test (290 Python / 152 JS),
+smoke, release_session, accessibility passed; performance FAILED, worst scorer p95
+12.4565 ms vs unchanged 10 ms target at load ~10-11 on 12 CPUs, host saturated by
+desktop Google Chrome. web/, bench scripts and maps are byte-identical to e94cfba
+(passed at 4.557 ms). UI performance, milestone acceptance and packaging not
+reached. No gate/sampling change, no commit; retry unchanged on a quieter host.
+
+Retry after Eric closed desktop Chrome: `artifacts/phase1-precommit-2/` passed all
+eight unchanged gates plus packaging; worst scorer p95 3.7377 ms (target 10 ms),
+290 Python / 152 JS. Confirms the earlier 12.46 ms failure was host contention;
+the failed receipt is retained. Exact-commit verification follows the local commit.
+Human unaided-workflow and semantic grouping acceptance remain pending; no push/merge.

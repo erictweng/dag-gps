@@ -112,7 +112,15 @@
     "app/contracts.py",
     "tests/test_workspace_contract.py",
     "docs/WORKSPACE_CONTRACT.md",
-    "docs/WORKSPACE_ACCEPTANCE.md"
+    "docs/WORKSPACE_ACCEPTANCE.md",
+    "app/repositories.py",
+    "app/snapshots.py",
+    "scripts/smoke_workspace_import.py",
+    "docs/WORKSPACE_IMPORT.md",
+    "tests/test_repository_import.py",
+    "tests/test_workspace_snapshot.py",
+    "tests/test_workspace_preview.py",
+    "tests/workspace_preview_browser.cjs"
   ],
   "timeout_seconds": 600,
   "examples": {
