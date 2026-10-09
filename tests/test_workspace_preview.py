@@ -141,8 +141,12 @@ class WorkspacePreviewTests(unittest.TestCase):
             built = build_workspace_snapshot(result, root / 'out')
             html = Path(built['html_path']).read_text()
             for marker in ('file-detail', 'detail-path', 'detail-sha256', 'detail-kind',
-                           'detail-lines', 'detail-reason', 'detail-group', 'detail-links'):
+                           'detail-lines', 'detail-reason', 'detail-group', 'detail-links',
+                           'id="group-links"'):
                 self.assertIn(marker, html)
+            # Groups render by folder label; opaque folder-<hash> ids are lookup keys only.
+            self.assertIn('groupName(node.layer)', html)
+            self.assertNotIn("li.textContent=id+': '", html)
             self.assertIn("button.type='button'", html)
             self.assertIn("addEventListener('keydown'", html)
             self.assertIn('.focus()', html)

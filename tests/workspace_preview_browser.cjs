@@ -69,7 +69,9 @@ function expected(directory) {
         ariaCurrent: await button.getAttribute('aria-current'),
       };
       const expectedReason = file.extraction.reason || 'Included in documented static extraction scope.';
-      const expectedGroup = node ? node.layer : 'Not in provisional graph (unsupported for extraction).';
+      const layerNode = node && data.preview.map.nodes.find(value => value.kind === 'layer' && value.id === node.layer);
+      const expectedGroup = node ? ((layerNode && layerNode.label) || node.layer)
+        : 'Not in provisional graph (unsupported for extraction).';
       if (actual.path !== file.path || actual.sha256 !== file.sha256 || actual.kind !== file.contentKind ||
           actual.lines !== (file.lineCount === null ? 'Unknown' : String(file.lineCount)) ||
           actual.reason !== expectedReason || actual.group !== expectedGroup || actual.focusId !== 'file-detail' ||
@@ -82,6 +84,26 @@ function expected(directory) {
         }
       }
       return {method, file: file.path, expectedIncidentLinks: incidents.length, ...actual};
+    }
+
+    // Groups and group links must be shown by human folder label, never by opaque hash id.
+    const layerLabels = new Map(data.preview.map.nodes.filter(n => n.kind === 'layer').map(n => [n.id, n.label || n.id]));
+    const groupTexts = await page.locator('#groups li').allInnerTexts();
+    const name = id => layerLabels.get(id) || id;
+    const byLabel = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+    const expectedGroups = Object.entries(data.preview.map.layers)
+      .sort((a, b) => byLabel(name(a[0]), name(b[0])) || byLabel(a[0], b[0]))
+      .map(([id, g]) => `${name(id)}: ${g.files.length} files`);
+    if (JSON.stringify(groupTexts) !== JSON.stringify(expectedGroups)) {
+      throw new Error(`${item.name} group labels mismatch: ${JSON.stringify(groupTexts)}`);
+    }
+    const groupLinkTexts = await page.locator('#group-links li').allInnerTexts();
+    const expectedGroupLinks = data.preview.map.edges.length ? [...data.preview.map.edges]
+      .sort((a, b) => byLabel(name(a.from), name(b.from)) || byLabel(name(a.to), name(b.to)) || byLabel(a.type, b.type))
+      .map(e => `${name(e.from)} → ${name(e.to)}: ${e.weight} ${e.type} links`)
+      : ['No links between groups.'];
+    if (JSON.stringify(groupLinkTexts) !== JSON.stringify(expectedGroupLinks)) {
+      throw new Error(`${item.name} group links mismatch: ${JSON.stringify(groupLinkTexts)}`);
     }
 
     const click = await assertDetail(supported, 'click');

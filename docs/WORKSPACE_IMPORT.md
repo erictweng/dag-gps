@@ -150,3 +150,11 @@ of every subprocess. Only the trusted absolute Git and shipped
 supports the no-source-execution/no-model-process claim within the Python
 process boundary; it is not a host-wide syscall trace. Git itself performs the
 approved GitHub network transport.
+
+## Preview display of proposed groups
+
+The offline page lists proposed groups and group-to-group links by their folder
+label (for example `(root)`, `screener`), sorted by label. Opaque
+`folder-<hash>` IDs remain internal lookup keys in `preview.json` and are shown
+only if a group has no label. File details report the group label. Grouping
+remains proposed and unreviewed.
