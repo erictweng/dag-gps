@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DAG GPS workspace</title>
+<link rel="stylesheet" href="/workspace.css">
+</head>
+<body>
+<main>
+  <h1>DAG GPS workspace</h1>
+  <p id="session-warning" class="warn" hidden>Open this page using the private link printed by the server (it includes a session key).</p>
+
+  <section aria-labelledby="import-heading">
+    <h2 id="import-heading">Import a public GitHub repository</h2>
+    <form id="import-form">
+      <label for="repo-url">Repository URL</label>
+      <input id="repo-url" name="url" type="url" required placeholder="https://github.com/owner/repo" autocomplete="off" spellcheck="false">
+      <label for="repo-commit">Commit (optional, full 40-character SHA)</label>
+      <input id="repo-commit" name="commit" type="text" pattern="[0-9a-f]{40}" autocomplete="off" spellcheck="false">
+      <button type="submit">Import</button>
+    </form>
+    <p id="import-status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section aria-labelledby="projects-heading">
+    <h2 id="projects-heading">Projects</h2>
+    <label for="project-select">Project</label>
+    <select id="project-select"></select>
+    <p id="project-info"></p>
+  </section>
+
+  <section aria-labelledby="ask-heading">
+    <h2 id="ask-heading">Ask</h2>
+    <form id="ask-form">
+      <label for="question">Question</label>
+      <input id="question" type="text" required maxlength="2048" autocomplete="off" spellcheck="false"
+             placeholder="what depends on src/app.py · path from a.py to b.py · dependencies of x.py">
+      <button type="submit">Ask</button>
+    </form>
+    <div id="answer" aria-live="polite">
+      <p id="answer-status"></p>
+      <p id="answer-reason"></p>
+      <h3 id="choices-heading" hidden>Choose one</h3>
+      <ul id="choices"></ul>
+      <h3 id="files-heading" hidden>Files</h3>
+      <ol id="files"></ol>
+      <button id="more" type="button" hidden>Show more</button>
+      <details id="limitations-box" hidden><summary>Limitations</summary><ul id="limitations"></ul></details>
+    </div>
+  </section>
+</main>
+<script src="/workspace.js"></script>
+</body>
+</html>

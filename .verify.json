@@ -126,7 +126,16 @@
     "scripts/query_worker.cjs",
     "tests/query-service.test.cjs",
     "tests/test_query_packets.py",
-    "docs/WORKSPACE_QUERY.md"
+    "docs/WORKSPACE_QUERY.md",
+    "app/server.py",
+    "app/query_worker.py",
+    "web/workspace.html",
+    "web/workspace.js",
+    "web/workspace.css",
+    "tests/test_workspace_server.py",
+    "tests/test_query_worker.py",
+    "scripts/smoke_workspace_server.cjs",
+    "docs/WORKSPACE_SERVER.md"
   ],
   "timeout_seconds": 600,
   "examples": {
