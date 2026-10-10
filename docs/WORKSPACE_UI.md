@@ -40,6 +40,10 @@
 
 - After an import, focus moves to the question box. A failed import shows the
   error, leaves the current project loaded and keeps the form ready to retry.
+  The message is `Import failed: <server error> — <hint>`. The hint says to check
+  the link only for URL, availability or unknown-commit errors; timeouts and
+  queue limits say to try again later; other Git download failures suggest
+  checking the connection; content or size limits say the link itself is fine.
 - Switching revisions within a project keeps the graph scroll position.
 - The page is keyboard-operable (file list, results, choices, file details;
   details take focus) and responsive: three panels at 1280 px and wider, one

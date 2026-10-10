@@ -21,6 +21,7 @@ NODE = shutil.which('node')
 PLAYWRIGHT = os.environ.get('PLAYWRIGHT_DIR', '/Users/aibert/projects/quest-coder-assist/node_modules/playwright')
 URL = 'https://github.com/example/ui-fixture'
 MISSING = 'https://github.com/example/does-not-exist'
+TOO_BIG = 'https://github.com/example/too-big'
 FILES = {
     'app/__init__.py': '', 'lib/__init__.py': '', 'tools/__init__.py': '',
     'app/main.py': 'from lib import core\nfrom app import helpers\n',
@@ -72,8 +73,10 @@ console.log('answer equality: positive + negative cases passed');
             repo, _ = repository(root / 'fixture', FILES)
 
             def acquire(url, cache_root, commit=None, *, progress=None, cancel=None):
+                if url == TOO_BIG:
+                    raise RepositoryAcquisitionError('Repository exceeds the configured cache quota')
                 if url != URL:
-                    raise RepositoryAcquisitionError('Repository is unavailable, private or empty')
+                    raise RepositoryAcquisitionError('Repository is unavailable, private, empty, or has no resolvable HEAD')
                 return _acquire_repository_for_test(url, cache_root, str(repo), commit, progress=progress, cancel=cancel)
 
             server = WorkspaceServer(root / 'workspace', port=0, acquire=acquire)
@@ -81,7 +84,7 @@ console.log('answer equality: positive + negative cases passed');
             thread.start()
             out = Path(os.environ.get('DAG_GPS_UI_SMOKE_OUT', str(root / 'smoke')))
             try:
-                done = subprocess.run([NODE, str(ROOT / 'scripts/smoke_workspace.cjs'), server.url, URL, MISSING, str(out), str(root / 'workspace')],
+                done = subprocess.run([NODE, str(ROOT / 'scripts/smoke_workspace.cjs'), server.url, URL, MISSING, str(out), str(root / 'workspace'), TOO_BIG],
                                       capture_output=True, text=True, timeout=300, cwd=str(ROOT))
             finally:
                 server.shutdown()

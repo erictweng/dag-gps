@@ -10,7 +10,7 @@ const {spawnSync} = require('child_process');
 const PW = process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright';
 const AXE = process.env.AXE_CORE_PATH || '/Users/aibert/projects/quest-coder-assist/node_modules/axe-core/axe.min.js';
 const {chromium} = require(PW);
-const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
+const [url, repoUrl, badRepoUrl, outDir, fixtureRoot, contentFailUrl] = process.argv.slice(2);
 
 (async () => {
   fs.mkdirSync(outDir, {recursive: true});
@@ -286,6 +286,20 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
   await page.waitForFunction(() => /^Import failed/.test(document.getElementById('import-status').textContent), null, {timeout: 60000});
   check('failed-import', {status: await page.textContent('#import-status'), nodes: await page.locator('#graph .node').count(),
     buttonEnabled: await page.isEnabled('#import-form button')});
+  assert.equal(await page.locator('#graph .node').count(), nodeCount);
+  assert.ok(await page.isEnabled('#import-form button'));
+  // The hint blames the link only when the link is the problem.
+  const missingStatus = await page.textContent('#import-status');
+  assert.match(missingStatus, /^Import failed: Repository is unavailable, private/);
+  assert.match(missingStatus, /Check the link \(public GitHub URL, optional full 40-character commit\) and try again\./);
+  assert.doesNotMatch(missingStatus, /fix the link/);
+  await page.fill('#repo-url', contentFailUrl);
+  await page.click('#import-form button');
+  await page.waitForFunction(() => /^Import failed: .*quota/.test(document.getElementById('import-status').textContent), null, {timeout: 60000});
+  const contentStatus = await page.textContent('#import-status');
+  check('import-error-hints', {missingStatus, contentStatus});
+  assert.doesNotMatch(contentStatus, /fix the link|Check the link/);
+  assert.match(contentStatus, /can't be imported yet; the link itself is fine/);
   assert.equal(await page.locator('#graph .node').count(), nodeCount);
   assert.ok(await page.isEnabled('#import-form button'));
   await askTyped('lib/core.py');

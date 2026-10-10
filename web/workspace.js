@@ -404,15 +404,35 @@
         text('import-status', 'Importing ' + job.repo + ': ' + (last ? last.stage : job.state) +
           (last && last.files ? ' (' + last.files + ' files)' : '') + '…');
       }
-      if (job.state === 'failed') { text('import-status', 'Import failed: ' + job.error + ' — fix the link and try again.'); return; }
+      if (job.state === 'failed') { text('import-status', importFailure(job.error)); return; }
       text('import-status', 'Imported ' + job.repo + ' at ' + job.commit.slice(0, 7) + '.');
       $('import-box').open = false;
       await loadProjects(job.projectId);
       $('question').focus();
     } catch (error) {
-      text('import-status', 'Import failed: ' + error.message + ' — fix the link and try again.');
+      text('import-status', importFailure(error.message));
     } finally { button.disabled = false; }
   });
+
+  // Hint only what the server's message supports: blame the link only for
+  // URL/commit/availability errors (app/repositories.py, app/server.py).
+  const LINK_ERRORS = [/^Use https:\/\/github\.com\//, /ambiguous characters/, /repository root, not a file or branch/,
+    /^Repository is unavailable, private/, /^commit must be a full/, /^Expected \{"url"/,
+    /not our ref|couldn't find remote ref|Fetched object is not a commit/];
+  function importFailure(message) {
+    const detail = String(message || 'Unknown error');
+    let hint;
+    if (LINK_ERRORS.some(pattern => pattern.test(detail))) {
+      hint = 'Check the link (public GitHub URL, optional full 40-character commit) and try again.';
+    } else if (/exceeded its deadline|Too many imports queued/.test(detail)) {
+      hint = 'The link looks fine; try again later.';
+    } else if (/^Git operation failed/.test(detail)) {
+      hint = "Couldn't download the repository; check your connection and try again.";
+    } else {
+      hint = "This repository can't be imported yet; the link itself is fine.";
+    }
+    return 'Import failed: ' + detail + ' — ' + hint;
+  }
 
   if (session) loadProjects().catch(error => text('project-info', 'Could not load projects: ' + error.message));
 })();
