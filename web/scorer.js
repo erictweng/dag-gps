@@ -20,12 +20,30 @@
   function normalized(text) { return tokens(text).map(t => MORPH[t] || t).join(' '); }
   function terms(text) { return [...new Set(tokens(text).filter(t => !STOP.has(t)).map(t => MORPH[t] || t))]; }
   function editDistance(a, b) {
-    let row = Array.from({length: b.length + 1}, (_, i) => i);
+    // Only distances <= 2 can affect retrieval; a diagonal band avoids quadratic
+    // work for unrelated filenames while returning their same nonmatch decision.
+    if (Math.abs(a.length - b.length) > 2) return 3;
+    // Levenshtein distance is unchanged by shared prefix/suffix removal.
+    // Real repositories commonly repeat directory and extension strings.
+    let start = 0, endA = a.length, endB = b.length;
+    while (start < endA && start < endB && a[start] === b[start]) start++;
+    while (endA > start && endB > start && a[endA - 1] === b[endB - 1]) { endA--; endB--; }
+    a = a.slice(start,endA); b = b.slice(start,endB);
+    if (!a.length || !b.length) return Math.min(3,Math.max(a.length,b.length));
+    let row = new Uint8Array(b.length + 1).fill(3), next = new Uint8Array(b.length + 1).fill(3);
+    for (let j = 0; j <= Math.min(2,b.length); j++) row[j] = j;
     for (let i = 1; i <= a.length; i++) {
-      const next = [i];
-      for (let j = 1; j <= b.length; j++) next[j] = Math.min(next[j - 1] + 1, row[j] + 1,
-        row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-      row = next;
+      const lo = Math.max(1,i - 2), hi = Math.min(b.length,i + 2);
+      next[0] = Math.min(i,3);
+      if (lo > 1) next[lo - 1] = 3;
+      if (hi < b.length) next[hi + 1] = 3;
+      let rowMin = next[0];
+      for (let j = lo; j <= hi; j++) {
+        next[j] = Math.min(3,next[j - 1] + 1,row[j] + 1,row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        rowMin = Math.min(rowMin,next[j]);
+      }
+      if (rowMin > 2) return 3;
+      const swap = row; row = next; next = swap;
     }
     return row[b.length];
   }
@@ -60,9 +78,13 @@
     const max = Math.max(...scores);
     const weights = scores.map(s => Math.exp((s - max) / 1.5));
     const sum = weights.reduce((a, b) => a + b, 0);
-    const probabilities = Object.fromEntries(ids.map((id, i) => [id, weights[i] / sum]));
+    const probabilities = {};
+    for (let i = 0; i < ids.length; i++) {
+      if (ids[i] === '__proto__') Object.defineProperty(probabilities,ids[i],{value:weights[i] / sum,enumerable:true,writable:true,configurable:true});
+      else probabilities[ids[i]] = weights[i] / sum;
+    }
     let winner = 0;
-    scores.forEach((s, i) => { if (s > scores[winner]) winner = i; });
+    for (let i = 1; i < scores.length; i++) if (scores[i] > scores[winner]) winner = i;
     return {choice: ids[winner], probabilities, confidence: probabilities[ids[winner]]};
   }
   function validateHead(h, ids) {
@@ -79,6 +101,7 @@
   }
   function validateResult(result, map) {
     const ids = map.nodes.map(n => n.id);
+    const nodesById = new Map(map.nodes.map(n => [n.id, n]));
     validateHead(result.operation, OPERATIONS);
     if (result.scoreKind !== SCORE_KIND || typeof result.yes !== 'boolean' ||
         typeof result.reason !== 'string' || !result.reason || !result.targets) throw new Error('Invalid result');
@@ -104,7 +127,7 @@
         let previous = Infinity;
         const seen = new Set();
         for (const a of h.suggestions) {
-          const n = map.nodes.find(n => n.id === a.id);
+          const n = nodesById.get(a.id);
           if (!n || seen.has(a.id) || (m.mode === 'filename' && n.kind !== 'file' && !(n.kind === undefined && n.path)) ||
               a.path !== (n.path || '') || JSON.stringify(a.aliases) !== JSON.stringify(n.aliases || []) ||
               typeof a.reason !== 'string' || !a.reason || !Number.isFinite(a.score) || a.score <= 0 ||
@@ -133,24 +156,28 @@
   function createScorer(map, learnedAliases = []) {
     if (!map || !Array.isArray(map.nodes) || !map.nodes.length) throw new Error('Map needs indexed nodes');
     const ids = map.nodes.map(n => n.id);
+    const idOrder = new Map(ids.map((id, i) => [id, i]));
+    const idSet = new Set(ids);
     if (ids.some(id => typeof id !== 'string' || !id) || new Set(ids).size !== ids.length)
       throw new Error('Map IDs must be unique strings');
     const aliasKey = value => value.trim().toLowerCase().replace(/\s+/g, ' ');
     if (!Array.isArray(learnedAliases) || learnedAliases.length > 1000) throw new Error('Invalid alias overlay');
     const overlay = learnedAliases.map(a => {
       if (!a || typeof a.alias !== 'string' || !a.alias.trim() || a.alias.length > 160 ||
-          /[\u0000-\u001f\u007f-\u009f\ud800-\udfff]/u.test(a.alias) || !ids.includes(a.nodeId))
+          /[\u0000-\u001f\u007f-\u009f\ud800-\udfff]/u.test(a.alias) || !idSet.has(a.nodeId))
         throw new Error('Invalid alias overlay');
       return {alias: aliasKey(a.alias), nodeId: a.nodeId};
     });
     const incoming = Object.fromEntries(ids.map(id => [id, 0]));
     for (const e of [...(map.edges || []), ...(map.file_edges || [])]) {
-      if (!ids.includes(e.from) || !ids.includes(e.to)) throw new Error('Unknown edge endpoint');
+      if (!idSet.has(e.from) || !idSet.has(e.to)) throw new Error('Unknown edge endpoint');
       if (e.type !== 'realtime') incoming[e.to]++;
     }
     const index = map.nodes.map(n => ({
       node: n, kind: n.kind, literalPath: n.path || '', basename: (n.path || '').split('/').at(-1),
       stem: (n.path || '').split('/').at(-1).replace(/\.[^.]+$/, ''),
+      stemTokens: tokens((n.path || '').split('/').at(-1).replace(/\.[^.]+$/, '')),
+      identityTerms: new Set(tokens(n.id)),
       id: n.id, label: normalized(n.label), aliases: (n.aliases || []).map(normalized),
       identity: normalized(n.id), path: normalized(n.path),
       labelTerms: new Set(terms(n.label)), aliasTerms: new Set(terms((n.aliases || []).join(' '))),
@@ -165,11 +192,12 @@
       const literal = /^[\w./@\[\]-]+$/.test(query);
       const explicit = /\bfile(?:name)?\b/i.test(text) || literalNames.length > 0 || (literal && /[/.]/.test(query));
       const known = index.some(n => n.kind === 'file' && (n.basename === query || n.stem === query));
+      const normalizedQuery = normalized(query);
       const layer = index.some(n => n.kind === 'layer' &&
-        [n.identity, n.label, ...n.aliases].includes(normalized(query)));
+        [n.identity, n.label, ...n.aliases].includes(normalizedQuery));
       // Bare architectural aliases remain layers unless syntax explicitly asks for a file.
       const shaped = literal && (/_|[a-z][A-Z]/.test(query) || (query.includes('-') && !layer));
-      const nearStem = !layer && literal && query.length >= 5 && index.some(n => {
+      const nearStem = !explicit && !known && !shaped && !layer && literal && query.length >= 5 && index.some(n => {
         if (n.kind !== 'file' || Math.abs(query.length - n.stem.length) > 2) return false;
         const d = editDistance(query.toLowerCase(), n.stem.toLowerCase());
         return d > 0 && d <= (query.length < 8 ? 1 : 2) && d / Math.max(query.length, n.stem.length) <= 0.2;
@@ -178,8 +206,9 @@
     }
     function finish(scored, mode, query, missingExact) {
       const h = head(ids, scored.map(s => s.score));
-      const sorted = scored.slice().sort((a, b) => b.score - a.score || ids.indexOf(a.id) - ids.indexOf(b.id));
+      const sorted = scored.slice().sort((a, b) => b.score - a.score || idOrder.get(a.id) - idOrder.get(b.id));
       const best = sorted[0], margin = best.score - (sorted[1]?.score || 0);
+      if (best.materialize) Object.assign(best,best.materialize());
       const present = sorted.filter(s => s.evidence > 0 && s.coverage >= 0.6);
       const exact = mode === 'filename' ? ['path', 'basename'].includes(best.tier) : best.exact;
       h.yes = best.evidence >= 4 && best.coverage >= 0.6 && margin >= 1 &&
@@ -194,7 +223,8 @@
             'Insufficient responsibility evidence or separation. Choose a supported alternative explicitly.';
       h.reason = (missingExact ? 'No exact file named ' + query + '. ' : '') + evidenceReason;
       const alternative = s => {
-        const n = map.nodes[ids.indexOf(s.id)];
+        if (s.materialize) Object.assign(s,s.materialize());
+        const n = map.nodes[idOrder.get(s.id)];
         return {id: s.id, probability: h.probabilities[s.id], score: s.score, components: s.components,
           path: n.path || '', aliases: (n.aliases || []).slice(), reason: s.matchReason || 'No lexical evidence.'};
       };
@@ -220,7 +250,7 @@
           else if (!hasPath && n.basename === query) { tier = 'basename'; score = 50; }
           else if (!extension && (hasPath ? n.literalPath.replace(/\.[^.]+$/, '') === query : n.stem === query)) { tier = 'stem'; score = 40; }
           else {
-            const nt = tokens(n.stem);
+            const nt = n.stemTokens;
             const tokenMatch = q.length > 0 && q.every(t => nt.includes(t));
             const partial = stem.length >= 4 && n.stem.toLowerCase().includes(stem.toLowerCase());
             if (!hasPath && (!extension || n.basename.endsWith(extension)) && stem.length >= 4 && (tokenMatch || partial)) {
@@ -275,7 +305,7 @@
       if (file) return rankFile(file);
       const q = terms(text); const phrase = q.join(' '); const raw = normalized(text);
       const overlap = set => q.length ? q.filter(t => set.has(t)).length / q.length : 0;
-      const scored = index.map(n => {
+      function architectureScore(n) {
         const exact = field => Boolean(field && (field === raw || field === phrase));
         // Preserve literal IDs/paths even when their segments are also intent words (route.ts).
         const literal = field => Boolean(field && (` ${raw} `).includes(` ${field} `));
@@ -292,7 +322,7 @@
         const evidence = c.label + c.alias + c.description + c.path + c.identity;
         if (evidence > 0) c.structural = n.prior;
         const covered = q.filter(t => n.labelTerms.has(t) || n.aliasTerms.has(t) ||
-          n.descTerms.has(t) || n.pathTerms.has(t) || tokens(n.id).includes(t)).length;
+          n.descTerms.has(t) || n.pathTerms.has(t) || n.identityTerms.has(t)).length;
         const matches = q.filter(t => n.labelTerms.has(t) || n.aliasTerms.has(t) || n.descTerms.has(t));
         const literalQuery = tokens(filenameText(text)).join(' ');
         const literalExact = value => Boolean(value && tokens(value).join(' ') === literalQuery);
@@ -302,7 +332,11 @@
             ((n.node.aliases || []).some(literalExact) ? ' (exact alias)' : n.aliases.some(exact) ?
               ' (morphology-normalized alias, not literal spelling)' : literalExact(n.id) ? ' (exact identity)' : '') + '.',
           coverage: q.length ? covered / q.length : 0};
-      });
+      }
+      // File responsibility scores are always zero. Materialize their legacy
+      // explanations only if displayed, preserving the full result contract.
+      const scored = index.map(n => n.kind === 'file' ? {id:n.id,score:0,evidence:0,coverage:0,
+        materialize:()=>architectureScore(n)} : architectureScore(n));
       return finish(scored, 'architecture', text, false);
     }
     function score(query) {

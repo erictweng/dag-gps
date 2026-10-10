@@ -1,33 +1,57 @@
 # Status — DAG GPS
 
-Last updated: 2026-10-07 PDT
+Last updated: 2026-10-08 PDT
 
-## Current focus — V1.4 query feedback/evaluation worker verified / parent pending
+## Current focus — V1.5 release candidate worker audit / parent and Eric pending
 
-Worker `v1-feedback` starts from clean main `c6543f6` (integrated V1.3). No worker
-merge/push. Full opt-in capture and evaluation infrastructure implemented; parent
-independent review and Eric's confirmed real labels remain pending.
+Worker branch `v1-release` from clean main `99652d1` (V1.4 integrated). Eric
+explicitly authorized all V1.5a/b/c together. No worker push or merge. Current
+release guide: [V1_RELEASE.md](docs/V1_RELEASE.md); automated evidence is local/ignored.
 
-- OFF each load, explicit local consent, persistent recording badge, completed ordinary
-  Ask including abstentions/PATH; tours/impact visibly excluded (no fake operation map).
-- Correct/Wrong/Unclear and editable expectations/separate PATH endpoints; Wrong can
-  have unknown intent, Unclear is never NOT_SURE truth. No labels automatically teach
-  aliases. Separate feedback store, deletion/confirmed clear, actual download/export.
-- Bounded atomic consented imports; stale source/scorer retained ineligible, IDs not
-  rebound. 200 records / 90 days / 2 MiB retention, denied/quota unsaved export fallback.
-- Full source pin/metadata/map/scorer SHA/alias provenance, original/alias-off/on metrics;
-  user/generated + immutable development/heldout separation, frozen first-label holdout.
-- Full `.verify.json` build/test/smoke exit 0; 176 Python + 150 JS, 20 feedback tests;
-  strict pinned parity and all legacy gates. Browser 18 checks / 6 inspected 1280/1920
-  screenshots; no errors/external requests. See [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md).
-- Exact browser export: 8 generated fixtures, 4 evaluable, zero real-user labels. Known
-  bearer-auth miss preserved; actual Eric runner.py intent still unconfirmed. No scorer
-  tuning; mini c real-user improvement deferred until confirmed cases / pre-tuning holdout.
-- Evidence: `artifacts/feedback-verification.json`, `feedback-{build,test,smoke}.log`,
-  `feedback-browser.json`, `feedback-export-{generated,eval}.json`, `feedback-*.png`;
-  regenerated navigator `dist/quest-refresh/index.html`. Artifacts local/ignored.
-- ≥20 Eric cases is a soft collection goal, not feature blocker; no real-user accuracy
-  or v1 release claims. V1.5/Eric semantic review and unaided session still pending.
+- Full real-browser sessions on approved quest and legacy self, then **actual downloaded
+  corrected grouping JSON** rebuilds at the separate onboarding pins. Find/inspect,
+  tours or unavailable, impact witness/recovery, explicit alias review/export/import,
+  generated feedback consent/label/export and reload OFF: 2 demos / 22 step groups.
+- Narrow fixes: low-contrast dim text and faded SVG labels, keyboard-accessible graph /
+  sidebar links, Readable zoom vs Fit overview, phone document scrolling, 80-file canvas
+  and 150-row list paging with visible counts/omission and full-corpus Ask target paging.
+  A screenshot-discovered readable-zoom overlay issue is fixed by separate toolbar/legend
+  rows outside the clipped SVG; actual1280/390 geometry assertions and legacy interactions pass.
+- Scale API benchmark retains every node/edge and cycles: real quest 290 nodes, legacy
+  self 30, newer self 51; exact synthetic 1000/5000 nodes. Before optimization an
+  exploratory 5001-node fixture exceeded target badly; indexed stable sorting, bounded
+  spelling DP/prefix-suffix removal, lazy zero-score metadata and validation lookup
+  preserve full baseline distributions/evidence. No matching-rule/user tuning.
+- Latest extended scorer measurement: <10ms per-query p95 at 1000 samples/query/mode;
+  exact final-run numbers are in release-performance.json. Earlier candidate attempt
+  **10.457ms** miss at 100 samples is retained, not erased. Shared system load affects
+  wall latency; raw layout, synchronous Ask/render and two paint opportunities separate.
+- Axe WCAG2 A/AA + WCAG2.1 AA: 23 recorded states, zero violations; incomplete color
+  checks remain explicitly listed, including off-screen text. Computed SVG contrast for
+  194 displayed text instances in active states had minimum 5.932:1. Real keyboard /
+  modal focus/Escape and reduced-motion scope checked; no screen-reader certification.
+- Full candidate-2 build/test/smoke plus all release/milestone gates passed with
+  **180 Python + 152 JS tests**, 32 primary screenshots, 70 recorded click/key events.
+  Candidate-2 worst warm scorer p95 was8.322ms (50,000 samples), no end-to-end claim.
+  The later narrow SVG-control overlap fix passed legacy interaction/scale/Axe and focused
+  regression checks. Source-integrity/manifest packaging is rerun after local commit;
+  `artifacts/release-check/verification.json` is the final authoritative report.
+- Versioned local-only candidate `dist/release/v1.0.0-rc.1/`; hashes/sizes/source pins /
+  exact build commit and pending human gates. Private tour excerpts require sharing
+  review; bounded credential-pattern scan is not comprehensive secret certification.
+- Eric's **unaided real session and semantic grouping review remain pending**. Parent
+  independently reviews/reruns/integrates. No blanket no-P0/P1, final release or real-user
+  accuracy claim. V1.4 real-user improvement remains deferred (zero confirmed labels).
+
+## Integrated V1.4 — main `99652d1`, historical worker evidence
+
+V1.4 opt-in capture/evaluation infrastructure is integrated. Its report retains the
+original worker context: [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md). OFF each load,
+explicit consent, separate alias confirmation, bounded inert imports/local export,
+source/map/scorer/overlay provenance, frozen pre-label holdout, and original/off/on
+metrics remain. Historic feature gates: 176 Python + 150 JS, feedback18 / 6 screenshots.
+All exports in worker smoke are generated fixtures; actual runner.py intent remains
+unconfirmed, ≥20 Eric cases soft collection goal. No real-user tuning/accuracy claim.
 
 ## Integrated V1.3 — historical worker evidence (main `c6543f6`)
 
@@ -122,18 +146,19 @@ not only the pure engine. `v1-impact` starts from that clean main; no worker pus
 
 ## Active worker / next action
 
-V1.3 implementation and local verification complete. Parent independently reviews
-onboarding spec/code quality, explicit new self extraction scope, actual downloads,
-cycle/migration safety and browser evidence, reruns gates, then integrates/pushes main
-per [WORKFLOW](docs/WORKFLOW.md). Eric reviews semantic grouping; automated samples do
-not satisfy that gate. V1.4 writes stay serialized against shared UI/scorer.
+V1.3 and V1.4 are integrated at c6543f6 / 99652d1. V1.5 worker supplies a locally
+committed release candidate after verified gates; parent independently reviews/reruns,
+then integrates/pushes only under [WORKFLOW](docs/WORKFLOW.md). Eric performs semantic
+review and the unaided acceptance script in V1_RELEASE.md. Neither automation nor a
+worker sample review marker satisfies either human gate.
 
 ## Blockers and release boundary
 
-No automated V1.3 blocker within its declared supported scope; unrestricted self
-extraction correctly fails on the generated fixture and is visibly retained. Parent
-V1.3 acceptance and Eric semantic review remain pending. Entire v1 is **not** complete:
-optional evaluation/release and Eric's unaided session remain.
+Unrestricted newer self extraction still correctly fails on generated untracked
+JSON; the declared 47/48 scan is retained, not a universal extraction success.
+V1.5 automated gates and candidate packaging are distinct from final acceptance.
+Entire v1 is **not** complete: Eric semantic review / unaided session and parent
+release review remain pending; earlier performance failures are recorded explicitly.
 Impact is static potential reachability, not execution/coverage or guaranteed breakage.
 Known prior limitations retained: mixed layer/file routes, bearer-auth abstention,
 dynamic Python/conditional paths and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,
@@ -304,3 +329,97 @@ Update this file whenever a worker starts, finishes, or gets blocked.
 
 ## M1.2 — verified 2026-10-07
 Recovered Claude partial implementation after session quota exhaustion. Offline HTML canvas, renderer, unit tests, browser smoke, real-click interaction check complete. 97 unit tests pass; map checks 10/10; four screenshot states with zero page errors and zero external requests. Real clicks, expand, file details, Escape, test toggle, double-click, back, zoom and fit pass. Artifact: dist/quest-coder.html. Scorer remains M2 (Ask disabled deliberately).
+
+## V1.5 independent-review fixes — local worker, parent/human pending
+
+Independent review of `757df72` blocked integration on IR-01 (P1 unbound generated
+payloads), IR-02 (P2 incomplete gate inputs/provenance) and IR-03 (P2 keyboard focus).
+The isolated `v1-release-fixes` follow-up adds regression-backed v2 byte/inventory
+binding, producer-boundary freezing, staged rejection preserving the previous bundle,
+complete recursive test/data/doc inventory and HEAD/worktree provenance, plus real
+keyboard paging/expansion focus assertions. Old receipts require a full rerun.
+Exact outcomes/evidence and residual risks: [RELEASE_REVIEW_FIXES.md](docs/RELEASE_REVIEW_FIXES.md).
+Two actual precommit complete runs and packaging passed; the later run had
+192 Python / 152 JS, all eight gates, 32 screenshots, 23 Axe states and 50,000
+scorer samples. Real receipt mirror accepted clean packaging and rejected 15/15
+negative probes with previous bundle bytes preserved. **Renewed Phase 0 precommit verification passed** all eight unchanged recipes and
+packaging (192 Python / 152 JS; worst scorer p95 4.557041 ms). Independent source
+review passed IR-01/IR-02/IR-03; fresh real-receipt probes accepted 1/1 clean package
+and rejected 17/17 negatives, preserving all previous bundle bytes, including
+injected promotion/readback faults. Earlier performance failures remain retained.
+Local fix commit and exact-postcommit rerun follow; only the final clean-provenance
+receipt certifies the exact committed bytes. No main integration or human acceptance
+is implied. Evidence: `artifacts/phase0-precommit/`, `artifacts/phase0-independent-review/`;
+final handoff: `artifacts/phase0-completion.json`.
+Do not treat worker verification as final acceptance.
+Parent independent re-review, Eric semantic grouping and unaided real session remain
+pending. No push/merge/public artifact upload or later milestone in this follow-up.
+
+## Phase 0 — repository-evidence workspace foundation (local only)
+
+Eric authorized Phase 0 on 2026-10-08. The separate roadmap commit is aa6a1e8;
+release-fix commit 9a5a327 passed exact-postcommit all eight unchanged gates and
+packaging with clean provenance. Independent IR source review passed; parent fresh
+17/17 negatives (including promotion/readback rollback) preserve all prior bundle bytes.
+Earlier load-sensitive performance failures remain retained; no gate or scorer tuning.
+
+The new foundation defines pure pinned snapshot/evidence guards and false-by-default
+query/agent controls, documented in docs/WORKSPACE_CONTRACT.md and
+WORKSPACE_ACCEPTANCE.md. Focused contract tests initially passed 38/38, but independent review found three
+medium-severity gaps. Stricter fixes now pass 47/47 focused and all Python 239 /
+JS 152; initial review and 47-test/16-failure RED remain retained.
+New-contract independent review and exact final-commit full verification are required
+before handoff; artifacts/phase0-completion.json and artifacts/phase0-final/ are the
+final authority, not a claim that future features are implemented.
+
+No GitHub-link importer, workspace service/UI, agent invocation, live updates or
+third-party graph mapping was started. Local-versus-hosted and agent-provider choices
+remain pending before Phase 1. Human unaided workflow and semantic review are pending;
+no push/merge, deployment, private-source upload or final v1 acceptance.
+
+## Phase 1 acquisition — worker availability blocked (2026-10-08)
+
+Eric approved local-first/existing-agent defaults. Isolated workspace-repo-import
+starts from verified e94cfba; current work is URL validation and immutable public
+GitHub acquisition, not a server/UI or agent runtime. Declared public fixture:
+pallets/itsdangerous at 672971d66a2ef9f85151e53283113f33d642dabd.
+
+Claude Code hsub run 20261008-150944-05823f exited 1 at its weekly usage limit
+before implementing source. Its reported reset is 6pm America/Los_Angeles.
+app/repositories.py and tests/test_repository_import.py are absent; no Phase 1
+success or commit is claimed. Handoff/build note and exact logs/report are retained.
+Await Eric's permission to switch to the configured OpenAI coding worker, or wait
+for reset. No raw Anthropic fallback, source execution, push/merge or future phase.
+
+### Worker fallback authorized and running
+
+Eric explicitly selected OpenAI GPT-5.6 Sol. Run 20261008-151949-a33182 is active
+on the acquisition mini, pinned to gpt-5.6-sol / openai-codex by per-invocation
+flags, with no global model/config change or silent alternate-model delegation.
+Prior Claude quota block is historical; fallback availability is resolved, not
+feature acceptance. Runtime metadata and initial RED-test creation were verified;
+implementation/full tests and actual public import remain pending parent checks.
+
+### Phase 1 receipt-bound fix + first full gate attempt (2026-10-08)
+
+IRP-01 residual fixed directly by the parent (Eric's instruction, no worker):
+`receipt.json` capped at MAX_RECEIPT_BYTES (64 KiB), rejected from lstat size
+before open; in-limit receipts read once via a no-follow fd whose dev/inode must
+match. RED retained (65,537-byte receipt fully decoded before rejection); GREEN
+snapshot 17/17, preview 9/9, acquisition 25/25. Reviewer's own follow-up probe
+now shows readAttempted=false on its 5.2 MB receipt; all 28 other independent
+properties still hold. Fresh pinned itsdangerous import and file:// browser
+click/Enter regression pass on the new bytes. Evidence: artifacts/phase1-receipt-bound-fix/.
+
+Full precommit `artifacts/phase1-precommit/`: build, test (290 Python / 152 JS),
+smoke, release_session, accessibility passed; performance FAILED, worst scorer p95
+12.4565 ms vs unchanged 10 ms target at load ~10-11 on 12 CPUs, host saturated by
+desktop Google Chrome. web/, bench scripts and maps are byte-identical to e94cfba
+(passed at 4.557 ms). UI performance, milestone acceptance and packaging not
+reached. No gate/sampling change, no commit; retry unchanged on a quieter host.
+
+Retry after Eric closed desktop Chrome: `artifacts/phase1-precommit-2/` passed all
+eight unchanged gates plus packaging; worst scorer p95 3.7377 ms (target 10 ms),
+290 Python / 152 JS. Confirms the earlier 12.46 ms failure was host contention;
+the failed receipt is retained. Exact-commit verification follows the local commit.
+Human unaided-workflow and semantic grouping acceptance remain pending; no push/merge.

@@ -1,0 +1,7 @@
+[BUILD] DAG GPS — GPT-5.6 Sol independent follow-up reviewer
+Milestone: Phase 1 acquisition
+Mini: 1/1 — corrected acquisition security/source re-review
+Status: failed
+Output: Exact-byte follow-up verdict FAIL. All independently reproduced AR-01..AR-05 attacks now reject, but AR-06 deletes a pre-existing valid cache entry when a stricter quota rejects reuse (`app/repositories.py:404-417`), and AR-07 lets repository-aware Git follow an out-of-entry local-config include before allowlisting (`app/repositories.py:330-363`). No source/test fixes or inventory/preview work. Report: `.hsub/reports/phase1-acquisition-review-followup.md`.
+Verification: Candidate SHA-256 remained d3c40eb850f30c8deb92288f991334c94f97e32cfca9d3c70f7251b2456f6b45 / 720d5840c9ef94d7dc330f617f2385f787167650aed72e8240850e7eb4fea368. Focused suite exit 0, 23/23 in 5.863s. Independent harness: 21 probes, 19 pass / 2 concrete property failures / 0 harness errors, intentional aggregate exit 1. Original AR-01..AR-05 variants, clean miss/hit, trusted-Git fail-closed, output/disk bounds passed. Declared real cached pin metadata/type/full-fsck read-only inspection exit 0. Original FAIL receipt hashes remained unchanged. Receipts: `artifacts/phase1-acquisition-review-followup/`.
+Next: Inventory/preview is not ready. Fix AR-06 and AR-07 with regressions, bind new fingerprints, and obtain another independent review; parent findings/tasks remain open.

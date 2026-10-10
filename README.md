@@ -8,27 +8,62 @@ The indexed-table, operation-head and per-target-head pattern is borrowed from
 [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast). Validated
 normalized distributions remain available, but are not correctness probabilities.
 
-## v1 foundation and release contract
+## Quickstart — offline navigator / release candidate
 
-V1.0 was parent-accepted on main `6bfc5ee`; full V1.1 impact is integrated at `7bc6769`.
-Full **V1.2 trust / narrow extraction / stale-tour safety** is integrated on main
-`a5b0255`. Full **V1.3 reviewable onboarding** is integrated at `c6543f6`; Eric
-semantic review remains pending. Eric authorized full **V1.4 opt-in query feedback /
-evaluation**, worker-verified on `v1-feedback`; parent independent review pending. v1 release still requires later gates and Eric's unaided real repository
-session, not just automated tests.
+**v1.0.0-rc.1 is a local release candidate, not v1 complete.** V1.4 is integrated
+on main `99652d1`; V1.5 worker release audit covers all three minis. Parent independent
+review, Eric's unaided session and semantic onboarding review remain pending.
 
-- [Approved v1 milestone plan](.hermes/plans/2026-10-07_203500-v1-milestones.md)
-- [Locked acceptance contract and evidence owners](docs/V1_ACCEPTANCE.md)
-- [Supported-source matrix / extraction limits](docs/SUPPORTED_SOURCES.md)
-- [Fresh baseline report](docs/V1_BASELINE_REPORT.md) and [fixture provenance](docs/V1_FIXTURES.json)
-- [Current status](STATUS.md), [tasks](TASKS.md), [authorized delivery workflow](docs/WORKFLOW.md)
+For your own supported Git repository (Python stdlib builds; no model/server):
 
-V1.0 reran unchanged `.verify.json` build/test/smoke: 138 Python + 93 JS tests,
-all exit 0. Evidence is local/ignored under `artifacts/v1-baseline/`; earlier
-sections below describe integrated pre-v1 functionality, not a complete v1 release.
-Desktop-first offline/local, optional query capture off by default, no execution
-tracing, and human-reviewed onboarding are locked defaults. Onboarding is implemented
-in V1.3 below; optional V1.4 query capture/evaluation is implemented below.
+```sh
+python3 scripts/draft_layers.py --repo /path/to/repo --ref FULL_COMMIT \
+  --out artifacts/my-draft.json
+python3 scripts/render_layer_editor.py --draft artifacts/my-draft.json \
+  --out dist/my-editor.html
+open dist/my-editor.html
+```
+
+Inspect ownership/evidence, edit grouping, explicitly review, then **download** the
+corrected JSON. Run the builder command displayed in the editor with the same pin
+and extraction scope. For an all-source draft, this also works:
+
+```sh
+python3 scripts/build_project.py --repo /path/to/repo --ref FULL_COMMIT \
+  --layers /path/to/actual-downloaded-layers.json --without-tours \
+  --out-dir dist/my-project
+open dist/my-project/index.html
+```
+
+Ask a full path → inspect → tour (or unavailable) → potential impact → explicit nickname
+review/confirmation → alias export → grouping edit/download/rebuild → alias import.
+Use **Readable zoom** for labels, Fit for overview; keyboard-accessible lists and paged
+80-file canvas / 150-row sidebar preserve whole-map Ask/routing/analysis. Phone layout
+supports inspection and ordinary vertical scrolling, not full desktop authoring parity.
+Optional feedback starts OFF after each reload and labels never silently teach aliases.
+
+[Release guide](docs/V1_RELEASE.md): tested CLI/pinned quest example, browser QA dependency
+setup, errors, source/tour regeneration, storage/export recovery, private-source sharing
+risk, exact manifest and **Eric's still-pending acceptance checklist**.
+
+```sh
+# Requires pinned private quest Git source and installed Playwright / Axe / Chromium.
+# See the release guide for portable PLAYWRIGHT_DIR / AXE_CORE_PATH setup.
+python3 scripts/release_check.py --quest-repo /path/to/quest-coder
+```
+
+Success generates `dist/release/v1.0.0-rc.1/manifest.json` and offline examples,
+with exact file hashes/sizes, build/source commits and pending human gates. Missing
+inputs/browser/check/performance target fail nonzero; no public upload. Standalone
+pages need only the browser; test tools are not shipped runtime dependencies.
+
+- [Locked acceptance contract](docs/V1_ACCEPTANCE.md), [supported-source limits](docs/SUPPORTED_SOURCES.md)
+- [Approved milestone plan](.hermes/plans/2026-10-07_203500-v1-milestones.md)
+- [Current status](STATUS.md), [tasks](TASKS.md), [delivery workflow](docs/WORKFLOW.md)
+
+The detailed feature sections below retain historical milestone measurements;
+only the release evidence reports describe the fresh V1.5 run. No labeled user
+accuracy/tuning claim: ≥20 confirmed Eric queries remains a soft collection goal.
 
 ## Opt-in query feedback and evaluation (V1.4)
 
@@ -69,7 +104,7 @@ intent. No scorer tuning on synthetic cases; real-user improvement is deferred.
 
 [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md): 176 Python / 150 JS, all full gates,
 20 feedback unit/eval tests; 18 real-browser checks / 6 inspected screenshots. Actual
-browser export is explicitly generated, not Eric ground truth. Parent review and V1.5 /
+browser export is explicitly generated, not Eric ground truth. V1.4 is now integrated at `99652d1`; parent release review and
 Eric's unaided acceptance remain pending.
 
 ## Reviewable project onboarding (V1.3)

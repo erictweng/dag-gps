@@ -6,7 +6,7 @@ const ROOT=path.resolve(__dirname,'..'),E=require('../web/layer-editor.js');
 const QUEST='749d8b5de490cc2e6a0c98c713fab3ab856da799',SELF='a5b02554e479b5184204ab6aa7c7190d6605fe91';
 function py(args,name){const r=spawnSync('python3',args,{cwd:ROOT,encoding:'utf8'});fs.writeFileSync(path.join(ROOT,'artifacts/onboarding-'+name+'.log'),(r.stdout||'')+(r.stderr||''));assert.equal(r.status,0,'python '+args.join(' ')+'\n'+r.stderr);return r;}
 function prepare(){fs.mkdirSync(path.join(ROOT,'artifacts'),{recursive:true});
- py(['scripts/draft_layers.py','--repo','/Users/aibert/projects/quest-coder','--ref',QUEST,'--tops','app','components','lib','proxy.ts','scripts','browser-runtime','runner','--out','artifacts/onboarding-quest-draft.json'],'quest-draft');
+ py(['scripts/draft_layers.py','--repo',(process.env.DAG_GPS_QUEST_REPO||'/Users/aibert/projects/quest-coder'),'--ref',QUEST,'--tops','app','components','lib','proxy.ts','scripts','browser-runtime','runner','--out','artifacts/onboarding-quest-draft.json'],'quest-draft');
  py(['scripts/draft_layers.py','--repo','.','--ref',SELF,'--out','artifacts/onboarding-self-all-source-draft.json'],'self-all-source');
  const full=JSON.parse(fs.readFileSync(path.join(ROOT,'artifacts/onboarding-self-all-source-draft.json')));
  assert.deepEqual(full.diagnostics.unresolved,[['scripts/smoke_refresh.cjs','UNRESOLVED:../artifacts/refresh-fixture.json']]);
@@ -30,7 +30,7 @@ function prepare(){fs.mkdirSync(path.join(ROOT,'artifacts'),{recursive:true});
   async function reset(){await page.locator('#reset').click();assert.equal(await page.locator('#review').isChecked(),false);}
   for(const cfg of [
    {name:'dag-gps',repo:'.',draft:'maps/dag-gps/onboarding-draft.json',file:'web/impact.js',renameFolder:'scripts',ask:'scripts/build_map.py',demo:'dist/onboarding-dag-gps'},
-   {name:'quest',repo:'/Users/aibert/projects/quest-coder',draft:'artifacts/onboarding-quest-draft.json',file:'lib/runner-client.ts',renameFolder:'lib',ask:'lib/runner-client.ts',demo:'dist/onboarding-quest'}]){
+   {name:'quest',repo:(process.env.DAG_GPS_QUEST_REPO||'/Users/aibert/projects/quest-coder'),draft:'artifacts/onboarding-quest-draft.json',file:'lib/runner-client.ts',renameFolder:'lib',ask:'lib/runner-client.ts',demo:'dist/onboarding-quest'}]){
    const base=JSON.parse(fs.readFileSync(path.join(ROOT,cfg.draft))),owner=base.layers.find(l=>l.files.includes(cfg.file)),renameLayer=base.layers.find(l=>l.label===cfg.renameFolder);
    assert.equal(E.findings(base).valid,true);assert.equal(base.reviewed,false);
    await page.goto(file('dist/onboarding-'+cfg.name+'.html'));assert.match(await page.locator('#provenance').innerText(),new RegExp(base.commit));assert.equal(await page.locator('#export').isEnabled(),false);
