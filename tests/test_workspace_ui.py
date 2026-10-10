@@ -38,6 +38,34 @@ FILES = {
 
 @unittest.skipUnless(NODE and Path(PLAYWRIGHT).exists(), 'node + Playwright required for the browser smoke')
 class WorkspaceUiTests(unittest.TestCase):
+    def test_answer_equality_ignores_only_top_level_request_id(self):
+        assert NODE is not None
+        done = subprocess.run([NODE, '-e', r'''
+const fs = require('fs'), vm = require('vm'), assert = require('assert/strict');
+const source = fs.readFileSync('web/workspace.js', 'utf8');
+const start = source.indexOf('  function sameAnswer(');
+assert.ok(start >= 0);
+const same = vm.runInNewContext(source.slice(start, source.indexOf('  async function refreshExplanations', start)) + '; sameAnswer');
+const a = {requestId: 'agent-1', query: 'q', snapshotId: 's', projectId: 'p',
+  continuation: null, seedNodeId: 'a', selectedNodeIds: ['a', 'b'],
+  nested: {requestId: 'nested', first: 1, second: true}};
+const b = {nested: {second: true, first: 1, requestId: 'nested'},
+  selectedNodeIds: ['a', 'b'], seedNodeId: 'a', continuation: null,
+  projectId: 'p', snapshotId: 's', query: 'q', requestId: 'ui-2'};
+assert.equal(same(a, b), true);
+for (const change of [{query: 'other'}, {snapshotId: 'other'}, {projectId: 'other'},
+  {continuation: 'offset:2'}, {seedNodeId: 'b'}, {selectedNodeIds: ['b', 'a']},
+  {selectedNodeIds: ['a']}, {nested: {...a.nested, requestId: 'different'}},
+  {nested: {...a.nested, first: '1'}}, {nested: null}, {extra: null}]) {
+  assert.equal(same(a, {...b, ...change}), false, JSON.stringify(change));
+}
+const missing = {...b}; delete missing.continuation;
+assert.equal(same(a, missing), false);
+assert.equal(same([1], {'0': 1}), false);
+console.log('answer equality: positive + negative cases passed');
+'''], capture_output=True, text=True, cwd=str(ROOT))
+        self.assertEqual(0, done.returncode, done.stdout + done.stderr)
+
     def test_real_browser_import_ask_highlight_choose_clear_select_and_recover(self):
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
@@ -62,6 +90,7 @@ class WorkspaceUiTests(unittest.TestCase):
             import json
             report = json.loads((out / 'report.json').read_text())
             self.assertTrue(any(c['name'] == 'm3-agent-evidence' for c in report['checks']))
+            self.assertTrue(any(c['name'] == 'external-explanation-answer-match' for c in report['checks']))
 
 
 if __name__ == '__main__':

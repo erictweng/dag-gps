@@ -231,7 +231,8 @@
     $('attach-explanation').disabled = false;
     $('context-export').hidden = true;
     $('context-json').value = $('explanation-json').value = '';
-    for (const id of ['agent-error', 'copy-status', 'explanation-warning', 'explanation-list']) clear(id);
+    for (const id of ['agent-error', 'copy-status', 'explanation-warning', 'explanation-list', 'other-explanations']) clear(id);
+    $('other-explanations-section').hidden = true;
   }
   async function openSource(path, start = null, end = null, append = false) {
     const snapshot = state.snapshot, project = state.project;
@@ -321,18 +322,43 @@
       b.addEventListener('click', () => openSource(citation.path, citation.start, citation.end));
     }
   }
+  // JSON objects are unordered; arrays and every nested key remain significant.
+  // Only the packet's top-level request identity is transport-specific.
+  function sameAnswer(a, b, topLevel = true) {
+    if (a === b) return true;
+    if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') return false;
+    if (Array.isArray(a) || Array.isArray(b)) {
+      return Array.isArray(a) && Array.isArray(b) && a.length === b.length &&
+        a.every((value, i) => sameAnswer(value, b[i], false));
+    }
+    const keys = Object.keys(a).filter(key => !topLevel || key !== 'requestId');
+    const otherKeys = Object.keys(b).filter(key => !topLevel || key !== 'requestId');
+    return keys.length === otherKeys.length && keys.every(key =>
+      Object.prototype.hasOwnProperty.call(b, key) && sameAnswer(a[key], b[key], false));
+  }
   async function refreshExplanations(request) {
     const snapshot = state.snapshot;
     const result = await api('GET', '/api/projects/' + snapshot.projectId + '/snapshots/' + snapshot.snapshotId + '/explanations');
     if (request !== state.request || snapshot !== state.snapshot) return;
     clear('explanation-list');
+    clear('other-explanations');
+    $('other-explanations-section').hidden = true;
     const invalid = result.explanations.filter(item => !item.valid).length;
     text('explanation-warning', invalid ? invalid + ' invalid stored explanation(s) hidden.' : '');
     for (const item of result.explanations) {
       if (!item.valid) continue; // Never render invalid record text or errors.
       const explanation = item.record.explanation;
-      if (explanation.requestId !== state.packet.requestId || explanation.snapshotId !== snapshot.snapshotId ||
-          (state.context && explanation.packetSha256 !== state.context.packetSha256)) continue;
+      const packet = item.record.packet;
+      if (packet.projectId !== snapshot.projectId || packet.snapshotId !== snapshot.snapshotId) continue;
+      if (!sameAnswer(packet, state.packet)) {
+        li('other-explanations', packet.query + ' — ' + explanation.agent.name + ' — Ask again', () => {
+          $('question').value = packet.query;
+          $('question').focus();
+          ask({query: packet.query});
+        });
+        $('other-explanations-section').hidden = false;
+        continue;
+      }
       const article = element($('explanation-list'), 'article', '');
       element(article, 'h4', 'Agent explanation — ' + explanation.agent.name);
       element(article, 'p', 'Model: ' + (explanation.agent.model ?? 'unknown') +

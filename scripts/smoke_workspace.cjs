@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert/strict');
+const {spawnSync} = require('child_process');
 const PW = process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright';
 const AXE = process.env.AXE_CORE_PATH || '/Users/aibert/projects/quest-coder-assist/node_modules/axe-core/axe.min.js';
 const {chromium} = require(PW);
@@ -66,8 +67,44 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
   assert.ok((await page.locator('#graph .lane-label').allTextContents()).some(t => t.startsWith('lib')), 'lanes use folder labels');
   assert.equal(await page.evaluate(() => document.activeElement.id), 'question', 'focus moves to the question after import');
 
+  // Store through the real external-agent CLI, not the browser request identity.
+  assert.ok(fixtureRoot, 'fixture workspace required for external explanation regression');
+  const projectId = await page.inputValue('#project-select');
+  const snapshotId = await page.inputValue('#revision-select');
+  function bridge(tool, args) {
+    const done = spawnSync('python3', ['scripts/workspace_cli.py', '--workspace', fixtureRoot], {
+      input: JSON.stringify({tool, projectId, snapshotId, args}), encoding: 'utf8', timeout: 30000
+    });
+    assert.equal(done.status, 0, done.stderr);
+    const reply = JSON.parse(done.stdout);
+    assert.equal(reply.ok, true, JSON.stringify(reply));
+    return reply.result;
+  }
+  const externalQuery = 'what depends on lib/util.py';
+  const externalBundle = bridge('get_context', {query: externalQuery});
+  const externalFile = externalBundle.context.files[0];
+  const externalText = 'CLI explanation for the util dependents answer.';
+  bridge('submit_explanation', {request: {query: externalQuery, requestId: externalBundle.packet.requestId},
+    useContext: true, explanation: {schema: 'dag-gps-explanation/v1',
+      requestId: externalBundle.packet.requestId, projectId, snapshotId,
+      packetSha256: externalBundle.context.packetSha256, agent: {name: 'External CLI agent', model: null},
+      paragraphs: [{text: externalText, inferred: false, citations: [
+        {path: externalFile.path, sha256: externalFile.sha256, start: null, end: null}]}],
+      suggestedRelationships: [], limitations: [], usage: {inputTokens: null, outputTokens: null}}});
+
   // Confident match: exact packet selection highlighted, everything else dimmed.
   await askTyped('what depends on lib/util.py');
+  await page.waitForFunction(t => document.getElementById('explanation-list').textContent.includes(t), externalText,
+    {timeout: 5000});
+  await askTyped('lib/core.py');
+  await page.waitForSelector('#other-explanations button');
+  assert.ok(!(await page.textContent('#explanation-list')).includes(externalText));
+  assert.match(await page.textContent('#other-explanations'), /what depends on lib\/util.py.*External CLI agent/);
+  await page.locator('#other-explanations button').focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(t => document.getElementById('explanation-list').textContent.includes(t), externalText);
+  assert.equal(await page.inputValue('#question'), externalQuery);
+  check('external-explanation-answer-match', {cli: true, keyboardReask: true});
   let s = await states();
   check('dependents', {status: await statusText(), s});
   assert.match(await statusText(), /^Found · downstream · potentially affected/);
@@ -108,7 +145,7 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
   const edgeCount = await page.locator('#graph .edge').count();
   await page.fill('#explanation-json', JSON.stringify(explanation));
   await page.click('#attach-explanation');
-  await page.waitForSelector('#explanation-list article');
+  await page.waitForFunction(() => document.querySelectorAll('#explanation-list article').length === 2);
   assert.match(await page.textContent('#explanation-list'), /Agent inference/);
   assert.match(await page.textContent('#explanation-list'), /Suggested \(unverified\) relationships/);
   assert.match(await page.textContent('#explanation-list'), /unknown/);
@@ -116,7 +153,7 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
   assert.equal(await page.locator('#explanation-list img').count(), 0);
   assert.equal(await page.evaluate(() => globalThis.__dagInjected || null), null);
   assert.equal(await page.locator('#graph .edge').count(), edgeCount);
-  await page.locator('#explanation-list .citation').first().click();
+  await page.locator('#explanation-list article').filter({hasText: hostileText}).locator('.citation').first().click();
   await page.waitForFunction(p => document.getElementById('source-meta').textContent.includes(p), f.path);
   assert.equal(await page.getAttribute('#source-lines', 'start'), String(f.start));
   await page.fill('#explanation-json', JSON.stringify({...explanation, packetSha256: '0'.repeat(64)}));
@@ -124,7 +161,7 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
   await page.click('#attach-explanation');
   await rejected;
   await page.waitForFunction(() => document.getElementById('agent-error').textContent.length > 0);
-  assert.equal(await page.locator('#explanation-list article').count(), 1);
+  assert.equal(await page.locator('#explanation-list article').count(), 2);
   assert.equal(await page.locator('#graph .edge').count(), edgeCount);
   report.errors = report.errors.filter(e => !/Failed to load resource:.*422/.test(e));
   await page.fill('#explanation-json', '{invalid');
@@ -283,6 +320,10 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
   await audit.waitForSelector('#explanation-list article');
   await audit.locator('#explanation-list .citation').first().click();
   await audit.waitForSelector('#source-lines li');
+  // Audit the newly populated other-questions section as well as matching articles.
+  await audit.fill('#question', 'lib/core.py');
+  await audit.keyboard.press('Enter');
+  await audit.waitForSelector('#other-explanations button');
   for (const [width, height] of [[1920, 1080], [1280, 900], [390, 844]]) {
     await audit.setViewportSize({width, height});
     await audit.waitForTimeout(150);
@@ -296,6 +337,13 @@ const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
       if (!(await audit.evaluate(() => typeof axe !== 'undefined'))) await audit.addScriptTag({path: AXE});
       const result = await audit.evaluate(() => axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa']}}));
       report.axe.push({width, violations: result.violations.map(v => ({id: v.id, nodes: v.nodes.slice(0, 3).map(n => n.target)}))});
+      await audit.locator('#other-explanations button').first().click();
+      await audit.waitForSelector('#explanation-list article');
+      const matching = await audit.evaluate(() => axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa']}}));
+      report.axe.push({width, state: 'matching-explanations', violations: matching.violations.map(v => ({id: v.id}))});
+      await audit.fill('#question', 'lib/core.py');
+      await audit.keyboard.press('Enter');
+      await audit.waitForSelector('#other-explanations button');
     } else report.axe.push({width, missing: AXE});
   }
   report.reducedMotion = await audit.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches);

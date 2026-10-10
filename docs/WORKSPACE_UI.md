@@ -59,10 +59,15 @@
 - Paste a `dag-gps-explanation/v1` response and **Attach explanation**. Validation
   errors appear inline; a failure does not replace stored explanations. Context
   exported in this answer is recomputed on intake to restrict citation coverage.
-- Only valid records for the current snapshot and current request appear (also
-  matching the packet digest when context exists). Fresh UUID request IDs prevent
-  old records from matching a new browser session. Invalid records produce only a
-  warning count; their contents and validation errors are not rendered.
+- Valid records appear for the same answer, including explanations submitted by
+  the CLI or a previous browser session. The server-validated stored packet must
+  deep-equal the current packet, ignoring only top-level `requestId`; object key
+  order is irrelevant, while arrays, nested keys, choices, continuation and revision
+  remain significant. Preparing context does not hide matching stored explanations.
+- **Other explained questions in this revision** lists nonmatching valid records
+  by stored question and agent name. Its keyboard-reachable buttons re-ask the
+  exact question through normal Ask (not the old choice or continuation).
+  Invalid records produce only a warning count; their text is never rendered.
 - Paragraphs, agent/model and token counts are plaintext. Null metadata is shown as
   `unknown`; inference has an explicit **Agent inference** label. Citation buttons
   open the exact file/range. **Suggested (unverified) relationships** are a separate
