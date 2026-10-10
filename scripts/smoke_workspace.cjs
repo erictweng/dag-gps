@@ -9,7 +9,7 @@ const assert = require('assert/strict');
 const PW = process.env.PLAYWRIGHT_DIR || '/Users/aibert/projects/quest-coder-assist/node_modules/playwright';
 const AXE = process.env.AXE_CORE_PATH || '/Users/aibert/projects/quest-coder-assist/node_modules/axe-core/axe.min.js';
 const {chromium} = require(PW);
-const [url, repoUrl, badRepoUrl, outDir] = process.argv.slice(2);
+const [url, repoUrl, badRepoUrl, outDir, fixtureRoot] = process.argv.slice(2);
 
 (async () => {
   fs.mkdirSync(outDir, {recursive: true});
@@ -18,6 +18,8 @@ const [url, repoUrl, badRepoUrl, outDir] = process.argv.slice(2);
   const context = await browser.newContext({viewport: {width: 1280, height: 900}, reducedMotion: 'reduce'});
   const page = await context.newPage();
   const report = {checks: [], external: [], errors: [], axe: [], widths: [], screenshots: []};
+  let contextRequests = 0;
+  page.on('request', r => { if (r.url().endsWith('/context')) contextRequests++; });
   page.on('request', r => { if (!r.url().startsWith(origin)) report.external.push(r.url()); });
   page.on('console', m => { if (m.type() === 'error') report.errors.push(m.text()); });
   page.on('pageerror', e => report.errors.push(String(e)));
@@ -77,6 +79,99 @@ const [url, repoUrl, badRepoUrl, outDir] = process.argv.slice(2);
   report.screenshots.push(path.join(outDir, 'dependents-1280.png'));
   await page.screenshot({path: report.screenshots.at(-1), fullPage: true});
 
+  // M3: source reads are revision-bound; agent export is opt-in, never automatic.
+  await page.locator('#results button').first().click();
+  await page.click('#view-source');
+  await page.waitForSelector('#source-lines li');
+  assert.match(await page.textContent('#source-meta'), /Commit.*SHA-256/);
+  assert.match(await page.textContent('#source-lines'), /from lib import core|Z = 1/);
+  assert.ok(await page.isDisabled('#prepare-context'));
+  assert.equal(contextRequests, 0, 'no context request before explicit consent');
+  assert.equal(await page.inputValue('#context-json'), '');
+  await page.check('#agent-consent');
+  const exported = page.waitForResponse(r => r.url().endsWith('/context') && r.request().method() === 'POST');
+  await page.click('#prepare-context');
+  const bundle = await (await exported).json();
+  await page.waitForFunction(() => document.getElementById('context-json').value.length > 0);
+  assert.deepEqual(JSON.parse(await page.inputValue('#context-json')), bundle);
+  const f = bundle.context.files.find(f => f.start !== null);
+  const citation = {path: f.path, sha256: f.sha256, start: f.start, end: f.start};
+  const hostileText = '<img src=x onerror=globalThis.__dagInjected=1> Observed source.';
+  const explanation = {schema: 'dag-gps-explanation/v1', requestId: bundle.packet.requestId,
+    projectId: bundle.packet.projectId, snapshotId: bundle.packet.snapshotId,
+    packetSha256: bundle.context.packetSha256, agent: {name: 'Fixture agent', model: null},
+    paragraphs: [{text: hostileText, inferred: false, citations: [citation]},
+      {text: 'This may be a shared dependency.', inferred: true, citations: []}],
+    suggestedRelationships: [{from: 'app/main.py', to: 'lib/util.py', type: 'possible coupling',
+      reason: 'A suggestion, not an observed import.', citations: [citation]}],
+    limitations: ['Synthetic test only.'], usage: {inputTokens: null, outputTokens: null}};
+  const edgeCount = await page.locator('#graph .edge').count();
+  await page.fill('#explanation-json', JSON.stringify(explanation));
+  await page.click('#attach-explanation');
+  await page.waitForSelector('#explanation-list article');
+  assert.match(await page.textContent('#explanation-list'), /Agent inference/);
+  assert.match(await page.textContent('#explanation-list'), /Suggested \(unverified\) relationships/);
+  assert.match(await page.textContent('#explanation-list'), /unknown/);
+  assert.ok((await page.textContent('#explanation-list')).includes(hostileText));
+  assert.equal(await page.locator('#explanation-list img').count(), 0);
+  assert.equal(await page.evaluate(() => globalThis.__dagInjected || null), null);
+  assert.equal(await page.locator('#graph .edge').count(), edgeCount);
+  await page.locator('#explanation-list .citation').first().click();
+  await page.waitForFunction(p => document.getElementById('source-meta').textContent.includes(p), f.path);
+  assert.equal(await page.getAttribute('#source-lines', 'start'), String(f.start));
+  await page.fill('#explanation-json', JSON.stringify({...explanation, packetSha256: '0'.repeat(64)}));
+  const rejected = page.waitForResponse(r => r.url().endsWith('/explanations') && r.status() === 422);
+  await page.click('#attach-explanation');
+  await rejected;
+  await page.waitForFunction(() => document.getElementById('agent-error').textContent.length > 0);
+  assert.equal(await page.locator('#explanation-list article').count(), 1);
+  assert.equal(await page.locator('#graph .edge').count(), edgeCount);
+  report.errors = report.errors.filter(e => !/Failed to load resource:.*422/.test(e));
+  await page.fill('#explanation-json', '{invalid');
+  await page.click('#attach-explanation');
+  await page.waitForFunction(() => document.getElementById('agent-error').textContent.length > 0);
+  // Corrupt disk records are reported only as a warning count, never rendered.
+  if (fixtureRoot) {
+    const directory = path.join(fixtureRoot, 'projects', bundle.packet.projectId, 'explanations', bundle.packet.snapshotId);
+    fs.writeFileSync(path.join(directory, 'invalid.json'), JSON.stringify({schema: 'HOSTILE_INVALID_RECORD'}));
+    await page.click('#prepare-context');
+    await page.waitForFunction(() => document.getElementById('explanation-warning').textContent.includes('1 invalid'));
+    assert.ok(!(await page.textContent('body')).includes('HOSTILE_INVALID_RECORD'));
+  }
+  // Revoking consent clears exports; keyboard copy has a selectable-text fallback.
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', {value: undefined, configurable: true}));
+  await page.focus('#copy-context');
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => document.getElementById('copy-status').textContent.includes('JSON selected'));
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'context-json');
+  assert.ok(await page.evaluate(() => document.getElementById('context-json').selectionEnd > 0));
+  await page.uncheck('#agent-consent');
+  assert.ok(await page.isDisabled('#prepare-context'));
+  assert.equal(await page.inputValue('#context-json'), '');
+
+  let releaseContext;
+  const contextGate = new Promise(resolve => { releaseContext = resolve; });
+  await page.route('**/context', async route => {
+    const response = await route.fetch();
+    await contextGate;
+    await route.fulfill({response});
+  });
+  await page.check('#agent-consent');
+  const pendingContext = page.waitForRequest(r => r.url().endsWith('/context'));
+  await page.click('#prepare-context');
+  await pendingContext;
+  await page.uncheck('#agent-consent');
+  const returnedContext = page.waitForResponse(r => r.url().endsWith('/context'));
+  releaseContext();
+  await returnedContext;
+  await page.waitForTimeout(50);
+  assert.equal(await page.inputValue('#context-json'), '', 'late export stays hidden after consent is revoked');
+  assert.ok(await page.isHidden('#context-export'));
+  await page.unroute('**/context');
+  check('m3-agent-evidence', {source: f.path, edgeCount, inert: true, consent: true});
+  report.screenshots.push(path.join(outDir, 'agent-evidence-1280.png'));
+  await page.screenshot({path: report.screenshots.at(-1), fullPage: true});
+
   // Ambiguous: nothing highlighted or dimmed until the user chooses.
   await askTyped('helpers.py');
   s = await states();
@@ -121,6 +216,24 @@ const [url, repoUrl, badRepoUrl, outDir] = process.argv.slice(2);
   assert.equal((await states()).dim, 0);
   await page.fill('#file-filter', '');
 
+  // Unmapped text is still readable; large files paginate without duplicate lines.
+  await page.fill('#file-filter', 'long.txt');
+  await page.locator('#file-list button').click();
+  await page.click('#view-source');
+  await page.waitForFunction(() => document.querySelectorAll('#source-lines li').length === 200);
+  await page.click('#source-more');
+  await page.waitForFunction(() => document.querySelectorAll('#source-lines li').length === 240);
+  assert.ok(await page.isHidden('#source-more'));
+  await page.fill('#file-filter', 'binary.dat');
+  await page.locator('#file-list button').click();
+  const expectedMetadata = page.waitForResponse(r => r.url().endsWith('/source') && r.status() === 400);
+  await page.click('#view-source');
+  await expectedMetadata;
+  await page.waitForFunction(() => document.getElementById('source-error').textContent === 'metadata only');
+  // Chromium logs the expected 400 as a resource error; exclude just that expected status.
+  report.errors = report.errors.filter(e => !/Failed to load resource:.*400/.test(e));
+  await page.fill('#file-filter', '');
+
   // Hostile names stay inert text.
   const hostile = await page.locator('#file-list button', {hasText: 'onerror'}).count();
   check('hostile', {rows: hostile, injected: await page.evaluate(() => globalThis.__dagInjected || null),
@@ -159,6 +272,17 @@ const [url, repoUrl, badRepoUrl, outDir] = process.argv.slice(2);
   await audit.keyboard.press('Enter');
   await audit.waitForSelector('#graph .node[data-state=seed]');
   await audit.locator('#results button').first().click();
+  await audit.check('#agent-consent');
+  await audit.click('#prepare-context');
+  await audit.waitForFunction(() => document.getElementById('context-json').value.length > 0);
+  const auditBundle = JSON.parse(await audit.inputValue('#context-json'));
+  const auditExplanation = {...explanation, requestId: auditBundle.packet.requestId,
+    packetSha256: auditBundle.context.packetSha256};
+  await audit.fill('#explanation-json', JSON.stringify(auditExplanation));
+  await audit.click('#attach-explanation');
+  await audit.waitForSelector('#explanation-list article');
+  await audit.locator('#explanation-list .citation').first().click();
+  await audit.waitForSelector('#source-lines li');
   for (const [width, height] of [[1920, 1080], [1280, 900], [390, 844]]) {
     await audit.setViewportSize({width, height});
     await audit.waitForTimeout(150);

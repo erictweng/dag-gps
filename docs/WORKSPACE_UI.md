@@ -46,6 +46,31 @@
   column at 390 px with no page-level horizontal overflow.
 - Reduced motion disables smooth scrolling and transitions.
 
+## Revision-bound source and agent explanations (M3)
+
+- **View source** in file details opens numbered, hash-verified commit source, first
+  200 lines, with **Load more** following `nextStart`. Full commit and source SHA-256
+  are labelled. Unmapped text is readable; binary files show `metadata only`.
+- After a query, **Explain with an agent** appears beside deterministic evidence.
+  **Prepare agent context** is disabled until the unchecked-by-default consent box
+  is selected. Preparation only assembles local JSON; the user chooses whether to
+  copy it to an external agent. **Copy JSON** uses the clipboard or selects a
+  readonly textarea for manual copying when permission/API access fails.
+- Paste a `dag-gps-explanation/v1` response and **Attach explanation**. Validation
+  errors appear inline; a failure does not replace stored explanations. Context
+  exported in this answer is recomputed on intake to restrict citation coverage.
+- Only valid records for the current snapshot and current request appear (also
+  matching the packet digest when context exists). Fresh UUID request IDs prevent
+  old records from matching a new browser session. Invalid records produce only a
+  warning count; their contents and validation errors are not rendered.
+- Paragraphs, agent/model and token counts are plaintext. Null metadata is shown as
+  `unknown`; inference has an explicit **Agent inference** label. Citation buttons
+  open the exact file/range. **Suggested (unverified) relationships** are a separate
+  text list, never graph edges. Validation does not certify an agent's claims.
+- A new answer, selection, revision or Escape resets consent/export state. Revoking
+  consent removes prepared JSON. Async responses are guarded against selection or
+  revision changes; source and explanation data cannot overwrite a newer view.
+
 ## Verification
 
 - `node --test tests/graph-view.test.cjs`: layout and highlight rules.
@@ -55,10 +80,16 @@
   question with no dimming, choice, Escape, keyboard and graph selection,
   unmapped files, inert hostile file names, failed-import recovery, real CSP
   blocking inline script, axe (WCAG 2.1 A/AA) at 1920, 1280 and 390 px, and no
-  external requests or page errors. It skips if Playwright is unavailable.
+  external requests or unexpected page errors. M3 also covers numbered source and
+  pagination, binary messages, consent gating and in-flight revocation, clipboard
+  fallback, valid attachment, rejected digest/invalid JSON, inference/citations,
+  inert hostile prose, invalid-record warnings, unchanged graph edge counts and
+  populated agent/source panels at all three axe widths. Expected 400/422 resource
+  errors are explicitly excluded from the console-error assertion. It skips if
+  Playwright is unavailable.
 - `scripts/smoke_workspace_server.cjs`: the same flow against a real GitHub import.
 
 ## Not yet
 
-There is no fit-to-screen zoom yet; wide graphs scroll. Source excerpts and
-agent explanations are M3; live refresh is M4.
+There is no fit-to-screen zoom yet; wide graphs scroll. Live refresh is M4.
+No provider integration, credentials or automatic model calls are included.

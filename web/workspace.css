@@ -70,6 +70,17 @@ button:disabled { cursor: not-allowed; color: #4b5563; background: #f3f4f6; }
 .graph .node[data-state=seed] rect { fill: #fef3c7; stroke: var(--seed); stroke-width: 3.5; }
 .graph[data-highlight=mark] .node[data-state=on] rect { stroke-dasharray: 2 2; }
 
+textarea { width: 100%; max-width: 100%; min-width: 0; resize: vertical; font: inherit;
+  padding: 0.4rem; border: 1px solid #6b7280; border-radius: 4px; color: var(--ink); background: #fff; }
+#agent-section, #source-viewer { overflow-wrap: anywhere; border-top: 1px solid var(--line); margin-top: 0.8rem; }
+.consent-label { font-weight: normal; margin: 0.5rem 0; }
+.source-lines { padding-left: 3.5rem; font: 0.82rem ui-monospace, SFMono-Regular, Menlo, monospace; }
+.source-lines li { white-space: pre-wrap; overflow-wrap: anywhere; padding-left: 0.3rem; }
+#explanation-list article { border-top: 1px solid var(--line); margin-top: 0.6rem; }
+#explanation-list p { white-space: pre-wrap; }
+.inference-label { display: block; margin-top: 0.6rem; }
+.citation { max-width: 100%; overflow-wrap: anywhere; text-align: left; margin: 0.2rem; font-size: 0.85rem; }
+
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; height: auto; }
   .graph { min-height: 24rem; max-height: 70vh; }

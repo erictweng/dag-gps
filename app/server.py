@@ -32,6 +32,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from app.context import ContextError, build_context, git_dir_for, read_source
+from app.explanations import ExplanationError, validate_explanation
+from app.explanation_store import list_explanations, store_explanation
+
 from app.query_worker import QueryBusy, QueryTimeout, QueryWorkerError, WorkerPool  # noqa: E402
 from app.repositories import RepositoryAcquisitionError, acquire_repository, parse_github_repository  # noqa: E402
 from app.snapshots import SnapshotError, build_workspace_snapshot  # noqa: E402
@@ -115,7 +119,7 @@ class WorkspaceStore:
             return index
 
     def snapshot(self, project_id: str, snapshot_id: str) -> tuple[Path, dict[str, Any]]:
-        if not SNAPSHOT_ID.fullmatch(snapshot_id or ''):
+        if type(snapshot_id) is not str or not SNAPSHOT_ID.fullmatch(snapshot_id):
             raise ApiError(404, 'Unknown snapshot')
         index = self._index(project_id)
         entry = index and index['snapshots'].get(snapshot_id)
@@ -251,14 +255,14 @@ class _Handler(BaseHTTPRequestHandler):
         if not hmac.compare_digest(supplied.encode('utf-8'), self.server.app.session_token.encode('utf-8')):
             raise ApiError(401, 'Missing or invalid session capability')
 
-    def _body(self) -> dict[str, Any]:
+    def _body(self, limit: int = MAX_BODY_BYTES) -> dict[str, Any]:
         if (self.headers.get('Content-Type') or '').split(';')[0].strip() != 'application/json':
             raise ApiError(415, 'Expected application/json')
         try:
             length = int(self.headers.get('Content-Length') or '')
         except ValueError:
             raise ApiError(411, 'Content-Length required')
-        if length < 0 or length > MAX_BODY_BYTES:
+        if length < 0 or length > limit:
             self.close_connection = True
             raise ApiError(413, 'Request body too large')
         try:
@@ -318,12 +322,32 @@ class _Handler(BaseHTTPRequestHandler):
         elif method == 'GET' and len(parts) == 4 and parts[0] == 'projects' and parts[2] == 'snapshots':
             _, snapshot = app.store.snapshot(parts[1], parts[3])
             self._json(200, snapshot)
-        elif method == 'POST' and len(parts) == 3 and parts[0] == 'projects' and parts[2] == 'query':
-            self._query(parts[1], self._body())
+        elif (method == 'GET' and len(parts) == 5 and parts[0] == 'projects'
+              and parts[2] == 'snapshots' and parts[4] == 'explanations'):
+            _, snapshot = app.store.snapshot(parts[1], parts[3])
+            self._json(200, {'explanations': list_explanations(app.store.root, snapshot)})
+        elif method == 'POST' and len(parts) == 3 and parts[0] == 'projects':
+            route = parts[2]
+            if route not in ('query', 'source', 'context', 'explanations'):
+                raise ApiError(404, 'Not found')
+            body = self._body(512 * 1024 if route == 'explanations' else MAX_BODY_BYTES)
+            if route == 'query':
+                self._query(parts[1], body)
+            elif route == 'source':
+                self._source(parts[1], body)
+            elif route == 'context':
+                self._context(parts[1], body)
+            else:
+                self._explanation(parts[1], body)
         else:
             raise ApiError(404, 'Not found')
 
     def _query(self, project_id: str, body: dict[str, Any]) -> None:
+        _, packet = self._packet(project_id, body)
+        self._json(200, packet)
+
+    def _packet(self, project_id: str, body: dict[str, Any]) -> tuple:
+        # All consumers re-run this exact validated request, never caller packets.
         app = self.server.app
         if set(body) - QUERY_FIELDS:
             raise ApiError(400, 'Unexpected query fields')
@@ -347,7 +371,71 @@ class _Handler(BaseHTTPRequestHandler):
             raise ApiError(504, str(error))
         except QueryWorkerError as error:
             raise ApiError(422, str(error))
-        self._json(200, packet)
+        return snapshot, packet
+
+    def _source(self, project_id: str, body: dict[str, Any]) -> None:
+        if set(body) - {'snapshotId', 'path', 'start', 'end'}:
+            raise ApiError(400, 'Unexpected source fields')
+        app = self.server.app
+        _, snapshot = app.store.snapshot(project_id, body.get('snapshotId'))
+        path = body.get('path')
+        if (type(path) is not str or not path or path.startswith('/') or
+                any(part in ('', '.', '..') for part in path.split('/')) or
+                '?' in path or '..' in path or '\\' in path):
+            raise ApiError(400, 'Invalid inventory path')
+        if path not in {f['path'] for f in snapshot['inventory']}:
+            raise ApiError(404, 'Path is not in this snapshot inventory')
+        try:
+            result = read_source(git_dir_for(app.store.root / 'git-cache', snapshot), snapshot,
+                                 path, start=body.get('start'), end=body.get('end'), max_lines=200)
+        except ContextError as error:
+            # Context errors are fixed public messages, never raw Git/OS stderr.
+            raise ApiError(400, str(error))
+        self._json(200, result)
+
+    def _build_context(self, snapshot: dict, packet: dict) -> dict:
+        try:
+            return build_context(git_dir_for(self.server.app.store.root / 'git-cache', snapshot),
+                                 snapshot, packet)
+        except ContextError as error:
+            raise ApiError(400, str(error))
+
+    def _context(self, project_id: str, body: dict[str, Any]) -> None:
+        if body.get('consent') is not True:
+            raise ApiError(403, 'Explicit consent required to export source to an agent')
+        if set(body) - (QUERY_FIELDS | {'consent'}):
+            raise ApiError(400, 'Unexpected context fields')
+        request = {k: v for k, v in body.items() if k != 'consent'}
+        snapshot, packet = self._packet(project_id, request)
+        self._json(200, {'packet': packet, 'context': self._build_context(snapshot, packet)})
+
+    def _explanation(self, project_id: str, body: dict[str, Any]) -> None:
+        if set(body) - {'snapshotId', 'request', 'explanation', 'useContext'}:
+            raise ApiError(400, 'Unexpected explanation fields')
+        request = body.get('request')
+        if type(request) is not dict or set(request) - (QUERY_FIELDS - {'snapshotId'}):
+            raise ApiError(400, 'Expected an explanation request, not a packet')
+        if 'useContext' in body and type(body['useContext']) is not bool:
+            raise ApiError(400, 'useContext must be boolean')
+        snapshot, packet = self._packet(project_id, dict(request, snapshotId=body.get('snapshotId')))
+        context = self._build_context(snapshot, packet) if body.get('useContext') else None
+        explanation = body.get('explanation')
+        try:
+            validate_explanation(explanation, snapshot, packet,
+                                 allowed_paths=[f['path'] for f in context['files']] if context else None)
+            if context is not None:
+                # The shared validator restricts paths; transport also restricts excerpt ranges.
+                files = {f['path']: f for f in context['files']}
+                for item in explanation['paragraphs'] + explanation['suggestedRelationships']:
+                    for citation in item['citations']:
+                        excerpt = files[citation['path']]
+                        if citation['start'] is not None and (excerpt['start'] is None or
+                                citation['start'] < excerpt['start'] or citation['end'] > excerpt['end']):
+                            raise ExplanationError('Citation range is outside the supplied context excerpt')
+            record = store_explanation(self.server.app.store.root, snapshot, packet, explanation, context)
+        except ExplanationError as error:
+            raise ApiError(422, str(error))
+        self._json(200, record)
 
 
 class WorkspaceServer:

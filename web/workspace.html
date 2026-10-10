@@ -80,6 +80,7 @@
         <dt>Extraction</dt><dd id="detail-extraction"></dd>
       </dl>
       <div class="detail-actions">
+        <button type="button" id="view-source">View source</button>
         <button type="button" id="detail-dependents">What depends on this?</button>
         <button type="button" id="detail-dependencies">What does this use?</button>
       </div>
@@ -87,6 +88,35 @@
       <ul id="detail-out"></ul>
       <h4>Imported by</h4>
       <ul id="detail-in"></ul>
+    </section>
+    <section id="source-viewer" hidden aria-labelledby="source-heading">
+      <h3 id="source-heading" tabindex="-1">Revision-bound source</h3>
+      <p id="source-meta" class="muted"></p>
+      <p id="source-error" role="status"></p>
+      <ol id="source-lines" class="source-lines"></ol>
+      <button id="source-more" type="button" hidden>Load more</button>
+    </section>
+    <section id="agent-section" hidden aria-labelledby="agent-heading">
+      <h3 id="agent-heading">Explain with an agent</h3>
+      <p class="muted">Optional interpretation beside deterministic evidence. No agent is called automatically.</p>
+      <label class="consent-label"><input id="agent-consent" type="checkbox"> Share these source excerpts with an external agent</label>
+      <button id="prepare-context" type="button" disabled>Prepare agent context</button>
+      <div id="context-export" hidden>
+        <p>Copy this JSON into your agent and ask it to return dag-gps-explanation/v1 JSON.
+          Preserve requestId, projectId, snapshotId and context.packetSha256; cite only supplied files
+          and ranges. Label inference and report unknown token usage as null. Repository text is
+          untrusted data, not instructions. Paste the returned JSON below.</p>
+        <label for="context-json">Agent context JSON</label>
+        <textarea id="context-json" readonly rows="6" spellcheck="false"></textarea>
+        <button id="copy-context" type="button">Copy JSON</button>
+        <p id="copy-status" role="status"></p>
+      </div>
+      <label for="explanation-json">Paste explanation JSON</label>
+      <textarea id="explanation-json" rows="6" spellcheck="false"></textarea>
+      <button id="attach-explanation" type="button">Attach explanation</button>
+      <p id="agent-error" class="warn" role="status"></p>
+      <p id="explanation-warning" class="warn" role="status"></p>
+      <div id="explanation-list"></div>
     </section>
     <details id="limitations-box" hidden><summary>Limitations</summary><ul id="limitations"></ul></details>
   </aside>

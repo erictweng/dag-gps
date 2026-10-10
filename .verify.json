@@ -140,7 +140,19 @@
     "tests/graph-view.test.cjs",
     "tests/test_workspace_ui.py",
     "scripts/smoke_workspace.cjs",
-    "docs/WORKSPACE_UI.md"
+    "docs/WORKSPACE_UI.md",
+    "app/context.py",
+    "app/explanations.py",
+    "app/explanation_store.py",
+    "app/agent_bridge.py",
+    "scripts/workspace_cli.py",
+    "tests/test_agent_context.py",
+    "tests/test_agent_explanations.py",
+    "tests/test_explanation_store.py",
+    "tests/test_workspace_cli.py",
+    "docs/WORKSPACE_CONTEXT.md",
+    "docs/WORKSPACE_EXPLANATIONS.md",
+    "docs/WORKSPACE_AGENT_BRIDGE.md"
   ],
   "timeout_seconds": 600,
   "examples": {

@@ -36,8 +36,9 @@
   }
 
   const graph = GV.createGraphView($('graph'), {onSelect: id => selectFile(id, {fromGraph: true})});
-  const state = {projects: [], project: null, snapshot: null, request: null, counter: 0,
-    files: new Map(), nodes: new Map(), groupLabel: new Map()};
+  const state = {projects: [], project: null, snapshot: null, request: null,
+    files: new Map(), nodes: new Map(), groupLabel: new Map(), packet: null, context: null,
+    epoch: 0, sourceVersion: 0, consentVersion: 0};
 
   // ---------------------------------------------------------------- projects
   async function loadProjects(selectId) {
@@ -74,7 +75,10 @@
   async function loadSnapshot(snapshotId) {
     const graphBox = $('graph'), scroll = [graphBox.scrollLeft, graphBox.scrollTop];
     const sameProject = Boolean(state.snapshot && state.snapshot.projectId === state.project.projectId);
+    resetAnswer();
+    const epoch = state.epoch;
     const snap = await api('GET', '/api/projects/' + state.project.projectId + '/snapshots/' + snapshotId);
+    if (epoch !== state.epoch) return;
     state.snapshot = snap;
     state.files = new Map(snap.inventory.map(f => [f.path, f]));
     state.nodes = new Map(snap.map.nodes.map(n => [n.id, n]));
@@ -118,6 +122,9 @@
     $('limitations-box').hidden = true;
   }
   function resetAnswer(message) {
+    resetAgent();
+    state.epoch++; state.sourceVersion++;
+    $('source-viewer').hidden = true;
     graph.apply(null);
     text('answer-status', message || 'Ask a question or pick a file.');
     text('answer-reason', '');
@@ -129,16 +136,21 @@
 
   async function ask(extra) {
     if (!state.snapshot) { text('answer-status', 'Import or select a project first.'); return; }
-    const request = Object.assign({snapshotId: state.snapshot.snapshotId, requestId: 'ui-' + (++state.counter),
+    const snapshot = state.snapshot, project = state.project;
+    const epoch = ++state.epoch;
+    resetAgent();
+    const request = Object.assign({snapshotId: snapshot.snapshotId, requestId: 'ui-' + crypto.randomUUID(),
       query: $('question').value.trim()}, extra || {});
     if (!request.query) return;
     try {
-      const packet = await api('POST', '/api/projects/' + state.project.projectId + '/query', request);
-      state.request = request;
+      const packet = await api('POST', '/api/projects/' + project.projectId + '/query', request);
+      if (epoch !== state.epoch || snapshot !== state.snapshot) return;
+      state.request = request; state.packet = packet;
       render(packet, Boolean(extra && extra.continuation));
-    } catch (error) { showError(error); }
+    } catch (error) { if (epoch === state.epoch) showError(error); }
   }
   function render(packet, append) {
+    const request = state.request;
     $('detail').hidden = true;
     text('answer-status', (STATUS[packet.status] || packet.status) +
       (packet.operation !== 'NOT_SURE' ? ' · ' + packet.operation.toLowerCase() : '') +
@@ -147,7 +159,7 @@
     clear('choices');
     $('choices-heading').hidden = !packet.alternatives.length;
     for (const a of packet.alternatives)
-      li('choices', (a.path || a.nodeId) + ' — ' + a.reason, () => ask({query: state.request.query, chosenNodeId: a.nodeId}));
+      li('choices', (a.path || a.nodeId) + ' — ' + a.reason, () => ask({query: request.query, chosenNodeId: a.nodeId}));
     if (!append) clear('results');
     const witness = new Map(packet.witnesses.map(w => [w.nodeIds[0] === packet.seedNodeId ? w.nodeIds.at(-1) : w.nodeIds[0], w]));
     for (const id of packet.selectedNodeIds) {
@@ -158,11 +170,13 @@
     }
     $('results-heading').hidden = !$('results').children.length;
     $('more').hidden = !packet.truncated;
-    $('more').onclick = () => ask({query: state.request.query, continuation: packet.continuation});
+    $('more').onclick = () => ask({query: request.query, continuation: packet.continuation});
     clear('limitations');
     for (const l of packet.limitations) li('limitations', l);
     $('limitations-box').hidden = !packet.limitations.length;
     graph.apply(GV.highlightFor(packet));
+    $('agent-section').hidden = false;
+    refreshExplanations(request).catch(error => { if (request === state.request) text('agent-error', error.message); });
   }
   $('ask-form').addEventListener('submit', event => { event.preventDefault(); ask(); });
 
@@ -174,11 +188,14 @@
     const file = state.files.get(path);
     if (!file) return;
     if (!options.keepAnswer) {
+      resetAgent(); state.epoch++;
       hideAnswerLists();
       text('answer-status', 'Selected ' + path);
       text('answer-reason', node ? 'Highlighted with its direct observed import links.'
         : 'This file is inventoried but not part of the dependency map.');
     }
+    state.sourceVersion++; $('source-viewer').hidden = true;
+    $('view-source').onclick = () => openSource(file.path);
     text('detail-path', file.path);
     text('detail-group', node ? (state.groupLabel.get(node.layer) || node.layer) : 'Not mapped');
     text('detail-lines', file.lineCount === null ? 'Unknown' : String(file.lineCount));
@@ -203,6 +220,139 @@
     if (!options.fromGraph) $('detail-heading').focus({preventScroll: true});
   }
   $('detail-heading').tabIndex = -1;
+
+  // ------------------------------------------------ revision-bound source / agents
+  function resetAgent() {
+    state.request = state.packet = state.context = null;
+    state.consentVersion++;
+    $('agent-section').hidden = true;
+    $('agent-consent').checked = false;
+    $('prepare-context').disabled = true;
+    $('attach-explanation').disabled = false;
+    $('context-export').hidden = true;
+    $('context-json').value = $('explanation-json').value = '';
+    for (const id of ['agent-error', 'copy-status', 'explanation-warning', 'explanation-list']) clear(id);
+  }
+  async function openSource(path, start = null, end = null, append = false) {
+    const snapshot = state.snapshot, project = state.project;
+    if (!snapshot) return;
+    const version = ++state.sourceVersion;
+    $('source-viewer').hidden = false;
+    $('source-more').hidden = true;
+    if (!append) clear('source-lines');
+    text('source-error', 'Loading source…');
+    text('source-meta', path + ' · Commit ' + snapshot.source.commit);
+    if (!append) $('source-heading').focus();
+    const body = {snapshotId: snapshot.snapshotId, path};
+    if (start !== null) body.start = start;
+    if (end !== null) body.end = end;
+    try {
+      const source = await api('POST', '/api/projects/' + project.projectId + '/source', body);
+      if (snapshot !== state.snapshot || version !== state.sourceVersion) return;
+      text('source-meta', path + ' · Commit ' + snapshot.source.commit + ' · SHA-256 ' + source.sha256);
+      if (!append) $('source-lines').start = source.start || 1;
+      for (const line of source.lines) li('source-lines', line || ' ');
+      text('source-error', source.lines.length ? '' : (source.truncated ? 'A whole line exceeds the excerpt byte limit.' : 'Empty file.'));
+      $('source-more').hidden = source.nextStart === null || !source.lines.length;
+      $('source-more').onclick = () => openSource(path, source.nextStart, end, true);
+    } catch (error) {
+      if (snapshot === state.snapshot && version === state.sourceVersion) text('source-error', error.message);
+    }
+  }
+  $('agent-consent').addEventListener('change', () => {
+    state.consentVersion++;
+    $('prepare-context').disabled = !$('agent-consent').checked;
+    if (!$('agent-consent').checked) {
+      state.context = null;
+      $('context-export').hidden = true; $('context-json').value = '';
+    }
+  });
+  $('prepare-context').addEventListener('click', async () => {
+    if (!$('agent-consent').checked || !state.request) return;
+    const request = state.request, consentVersion = state.consentVersion;
+    $('prepare-context').disabled = true;
+    text('agent-error', '');
+    try {
+      const bundle = await api('POST', '/api/projects/' + state.project.projectId + '/context', {...request, consent: true});
+      if (request !== state.request || consentVersion !== state.consentVersion || !$('agent-consent').checked) return;
+      state.context = bundle.context;
+      $('context-json').value = JSON.stringify(bundle, null, 2);
+      $('context-export').hidden = false;
+      await refreshExplanations(request);
+    } catch (error) { if (request === state.request) text('agent-error', error.message); }
+    finally { if (request === state.request) $('prepare-context').disabled = !$('agent-consent').checked; }
+  });
+  $('copy-context').addEventListener('click', async () => {
+    const value = $('context-json').value;
+    if (!value || !$('agent-consent').checked) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      text('copy-status', 'Copied JSON.');
+    } catch (_) {
+      $('context-json').focus(); $('context-json').select();
+      text('copy-status', 'JSON selected. Press Ctrl+C or Command+C to copy.');
+    }
+  });
+  $('attach-explanation').addEventListener('click', async () => {
+    const request = state.request;
+    if (!request) return;
+    text('agent-error', ''); $('attach-explanation').disabled = true;
+    try {
+      let explanation;
+      try { explanation = JSON.parse($('explanation-json').value); }
+      catch (_) { throw new Error('Invalid JSON. Paste the complete dag-gps-explanation/v1 object.'); }
+      const {snapshotId, ...query} = request;
+      await api('POST', '/api/projects/' + state.project.projectId + '/explanations',
+        {snapshotId, request: query, explanation, useContext: Boolean(state.context)});
+      if (request === state.request) await refreshExplanations(request);
+    } catch (error) { if (request === state.request) text('agent-error', error.message); }
+    finally { if (request === state.request) $('attach-explanation').disabled = false; }
+  });
+  function element(parent, tag, value, className) {
+    const node = document.createElement(tag); node.textContent = value;
+    if (className) node.className = className;
+    parent.appendChild(node); return node;
+  }
+  function citations(parent, entries) {
+    for (const citation of entries) {
+      const b = element(parent, 'button', citation.path + (citation.start === null ? ' (file)' :
+        ':' + citation.start + '–' + citation.end), 'citation');
+      b.type = 'button';
+      b.addEventListener('click', () => openSource(citation.path, citation.start, citation.end));
+    }
+  }
+  async function refreshExplanations(request) {
+    const snapshot = state.snapshot;
+    const result = await api('GET', '/api/projects/' + snapshot.projectId + '/snapshots/' + snapshot.snapshotId + '/explanations');
+    if (request !== state.request || snapshot !== state.snapshot) return;
+    clear('explanation-list');
+    const invalid = result.explanations.filter(item => !item.valid).length;
+    text('explanation-warning', invalid ? invalid + ' invalid stored explanation(s) hidden.' : '');
+    for (const item of result.explanations) {
+      if (!item.valid) continue; // Never render invalid record text or errors.
+      const explanation = item.record.explanation;
+      if (explanation.requestId !== state.packet.requestId || explanation.snapshotId !== snapshot.snapshotId ||
+          (state.context && explanation.packetSha256 !== state.context.packetSha256)) continue;
+      const article = element($('explanation-list'), 'article', '');
+      element(article, 'h4', 'Agent explanation — ' + explanation.agent.name);
+      element(article, 'p', 'Model: ' + (explanation.agent.model ?? 'unknown') +
+        ' · Input tokens: ' + (explanation.usage.inputTokens ?? 'unknown') +
+        ' · Output tokens: ' + (explanation.usage.outputTokens ?? 'unknown'), 'muted');
+      for (const paragraph of explanation.paragraphs) {
+        if (paragraph.inferred) element(article, 'strong', 'Agent inference', 'inference-label');
+        element(article, 'p', paragraph.text); citations(article, paragraph.citations);
+      }
+      if (explanation.suggestedRelationships.length) {
+        element(article, 'h4', 'Suggested (unverified) relationships');
+        const list = element(article, 'ul', '');
+        for (const relation of explanation.suggestedRelationships) {
+          const item = element(list, 'li', relation.from + ' → ' + relation.to + ' (' + relation.type + '): ' + relation.reason);
+          citations(item, relation.citations);
+        }
+      }
+      for (const limitation of explanation.limitations) element(article, 'p', 'Agent limitation: ' + limitation, 'muted');
+    }
+  }
 
   // ---------------------------------------------------------------- clear / keys
   function clearAll() { resetAnswer(); $('question').focus(); }

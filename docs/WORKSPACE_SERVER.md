@@ -21,9 +21,9 @@ address bar. Without the key, every API call is refused.
   A present `Origin` must be the same origin, and cross-site `Sec-Fetch-Site`
   values are rejected. No CORS headers are sent.
 - Every `/api/*` route requires the per-run `X-DAG-GPS-Session` capability,
-  compared in constant time. Static UI routes are an exact allowlist of three
+  compared in constant time. Static UI routes are an exact allowlist of four
   files; there is no directory serving.
-- JSON bodies only, at most 64 KiB, with exact field allowlists. Project,
+- JSON bodies only, at most 64 KiB (512 KiB only for explanation intake), with exact field allowlists. Project,
   snapshot and job IDs are opaque and regex-validated, never filesystem paths.
 - `Content-Security-Policy` is `default-src 'none'` plus self scripts, styles and
   connections only. The page renders all repository data with `textContent`.
@@ -42,6 +42,40 @@ address bar. Without the key, every API call is refused.
 Imports run one at a time, with at most 4 queued. Revisions live under
 `ROOT/projects/<projectId>/commits/<commit>/` and are never mutated in place.
 
+## Source and agent evidence (M3)
+
+All routes retain the same session, loopback, Host/Origin/Sec-Fetch and exact-field
+checks. Source is read from the acquired Git cache at the immutable snapshot commit,
+never a working tree; errors contain public messages, not host paths.
+
+- `POST /api/projects/{projectId}/source {snapshotId, path, start?, end?}` returns
+  `dag-gps-source/v1`: SHA-256-verified lines (at most 200 per response), inclusive
+  1-based range, and `nextStart` for pagination. Invalid path/range is 400; an
+  unknown inventory path or foreign/unknown snapshot is 404. Non-text files return
+  400 `metadata only`. Unmapped text files remain readable.
+- `POST /api/projects/{projectId}/context {snapshotId, requestId, query, continuation?, chosenNodeId?, consent}`
+  returns `{packet, context}`. Consent must be literal JSON `true`; otherwise 403
+  `Explicit consent required to export source to an agent`. The server re-runs its
+  own worker and builds bounded context from that packet. It never contacts an agent.
+- `GET /api/projects/{projectId}/snapshots/{snapshotId}/explanations` returns
+  `{explanations: [{record, valid, error}]}` from the re-validating store.
+- `POST /api/projects/{projectId}/explanations {snapshotId, request: {requestId, query, continuation?, chosenNodeId?}, explanation, useContext?}`
+  re-runs the request through the server worker, validates against that exact packet,
+  and atomically stores the explanation beside the revision. It returns the stored
+  record (200); `ExplanationError` becomes 422 with a validation message. Caller
+  `packet` fields are rejected (400), not treated as authority. `useContext` must be
+  boolean when present. If true, recomputed context restricts citation paths **and
+  non-null line ranges** to supplied excerpts; file-level citations remain allowed.
+  Only this route accepts up to 512 KiB, including whitespace; the explanation
+  contract separately caps canonical explanation bytes at 256 KiB.
+
+The original `/query` response remains unchanged. UI request IDs are fresh UUIDs;
+listing matches the current request, and additionally the packet digest after
+context export. Explanation validation verifies binding, not semantic truth or
+agent identity. Suggested relationships never mutate the snapshot or graph.
+
+See `WORKSPACE_CONTEXT.md` and `WORKSPACE_EXPLANATIONS.md` for contracts.
+
 ## Query worker (`app/query_worker.py`)
 
 One persistent Node process per snapshot (at most 4, least recently used
@@ -54,7 +88,7 @@ stderr is kept separately, bounded to 16 KiB. At most 8 requests wait at once.
 
 ## Not yet
 
-The graph view and three-panel UI are documented in `docs/WORKSPACE_UI.md`. Source/context fetch is M3. There
+The graph view and three-panel UI are documented in `docs/WORKSPACE_UI.md`. There
 is no live refresh (M4) and no persistent job history across restarts.
 
 ## Verify

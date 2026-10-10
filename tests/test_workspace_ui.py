@@ -31,6 +31,8 @@ FILES = {
     'tools/cli.py': 'from lib import core\n',
     'lib/x onerror=globalThis.__dagInjected=1 &amp;.py': 'W = 1\n',
     'README.md': '# fixture\n',
+    'long.txt': 'source line\n' * 240,
+    'binary.dat': b'\x00\xff',
 }
 
 
@@ -51,12 +53,15 @@ class WorkspaceUiTests(unittest.TestCase):
             thread.start()
             out = Path(os.environ.get('DAG_GPS_UI_SMOKE_OUT', str(root / 'smoke')))
             try:
-                done = subprocess.run([NODE, str(ROOT / 'scripts/smoke_workspace.cjs'), server.url, URL, MISSING, str(out)],
+                done = subprocess.run([NODE, str(ROOT / 'scripts/smoke_workspace.cjs'), server.url, URL, MISSING, str(out), str(root / 'workspace')],
                                       capture_output=True, text=True, timeout=300, cwd=str(ROOT))
             finally:
                 server.shutdown()
             self.assertEqual(0, done.returncode, done.stdout[-3000:] + done.stderr[-3000:])
             self.assertIn('"ok":true', done.stdout)
+            import json
+            report = json.loads((out / 'report.json').read_text())
+            self.assertTrue(any(c['name'] == 'm3-agent-evidence' for c in report['checks']))
 
 
 if __name__ == '__main__':
