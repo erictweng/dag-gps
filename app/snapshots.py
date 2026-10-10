@@ -145,7 +145,7 @@ def _parse_tree(raw: bytes, max_members: int) -> list[dict[str, Any]]:
         exact.add(path); portable.add(key)
         if kind not in {b'blob', b'commit'} or not _OBJECT.fullmatch(object_id):
             raise SnapshotError('Git tree contains an unsupported object')
-        if size_raw == b'-':
+        if size_raw.strip() == b'-':
             size = None
         else:
             try:
@@ -227,6 +227,22 @@ def _canonical(value: Any) -> bytes:
                        separators=(',', ':')) + '\n').encode('utf-8')
 
 
+_SYMLINK_MODE = '120000'
+_GITLINK_MODE = '160000'
+MAX_LINK_TARGET_BYTES = 1024
+
+
+def _link_target(data: bytes) -> Optional[str]:
+    """Return a symlink's target as inert text, or None if it is not short clean UTF-8."""
+    if len(data) > MAX_LINK_TARGET_BYTES:
+        return None
+    try:
+        text = data.decode('utf-8', 'strict')
+    except UnicodeDecodeError:
+        return None
+    return None if any(ord(ch) < 32 or ord(ch) == 127 for ch in text) else text
+
+
 def _sha(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
@@ -294,11 +310,12 @@ def _inventory(git_dir: Path, url: str, repo_id: str, commit: str,
     expanded = 0
     for record in records:
         mode, kind, size = record['mode'], record['kind'], record['size']
-        if mode == '120000':
-            raise SnapshotError('Git tree contains a symbolic link; targets are never followed')
-        if mode == '160000' or kind == 'commit':
-            raise SnapshotError('Git tree contains an unsupported submodule')
-        if mode not in {'100644', '100755'} or kind != 'blob' or size is None:
+        if mode == _GITLINK_MODE:
+            # Submodule: recorded by its commit ID only; never fetched or expanded.
+            if kind != 'commit' or size is not None:
+                raise SnapshotError('Git tree contains an unsupported special member')
+            continue
+        if mode not in {'100644', '100755', _SYMLINK_MODE} or kind != 'blob' or size is None:
             raise SnapshotError('Git tree contains an unsupported special member')
         if size > bounds['max_file_bytes']:
             raise SnapshotError('Git tree per-file byte limit exceeded')
@@ -313,6 +330,14 @@ def _inventory(git_dir: Path, url: str, repo_id: str, commit: str,
     for record in records:
         if _cancelled(cancel):
             raise SnapshotCancelled('Workspace snapshot cancelled')
+        if record['mode'] == _GITLINK_MODE:
+            files.append({
+                'path': record['path'], 'bytes': 0, 'sha256': _sha(record['object'].encode('ascii')),
+                'gitMode': record['mode'], 'contentKind': 'submodule', 'lineCount': None,
+                'submoduleCommit': record['object'],
+                'extraction': {'status': 'unsupported', 'reason': 'Git submodule; contents not included.'},
+            })
+            continue
         try:
             data = _run_git(['--git-dir', str(git_dir), 'cat-file', 'blob', record['object']],
                             text=False, timeout=float(bounds['timeout_seconds']), cancel=cancel,
@@ -321,6 +346,17 @@ def _inventory(git_dir: Path, url: str, repo_id: str, commit: str,
             raise SnapshotError('Unable to read authoritative Git blob') from error
         if len(data) != record['size']:
             raise SnapshotError('Git blob size differs from authoritative tree')
+        if record['mode'] == _SYMLINK_MODE:
+            # The blob is the link target text. It is recorded as data only: never
+            # materialized, resolved, followed, read through or extracted.
+            files.append({
+                'path': record['path'], 'bytes': len(data), 'sha256': _sha(data),
+                'gitMode': record['mode'], 'contentKind': 'symlink', 'lineCount': None,
+                'linkTarget': _link_target(data),
+                'extraction': {'status': 'unsupported',
+                               'reason': 'Symbolic link; target is recorded but never followed.'},
+            })
+            continue
         target = source_root.joinpath(*record['path'].split('/'))
         target.parent.mkdir(parents=True, exist_ok=True)
         if target.exists():
@@ -354,11 +390,13 @@ def _inventory(git_dir: Path, url: str, repo_id: str, commit: str,
         'counts': {'files': len(files), 'bytes': expanded,
                    'text': sum(item['contentKind'] == 'utf-8-text' for item in files),
                    'binary': sum(item['contentKind'] == 'binary' for item in files),
+                   'symlinks': sum(item['contentKind'] == 'symlink' for item in files),
+                   'submodules': sum(item['contentKind'] == 'submodule' for item in files),
                    'extractionIncluded': len(source_paths),
                    'extractionUnsupported': len(files) - len(source_paths)},
         'limits': dict(bounds), 'files': files,
         'limitations': [
-            'Authoritative committed regular files are inventoried from Git tree/blob objects; links, submodules and special members reject the snapshot.',
+            'Authoritative committed regular files are inventoried from Git tree/blob objects. Git symbolic links are listed with their target text but never followed; submodules are listed by commit but their contents are not included; other special members reject the snapshot.',
             'Unsupported and binary files remain visible but receive no fabricated dependency links.',
             'Inventory success is independent of static dependency extraction completeness.',
         ],

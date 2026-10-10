@@ -73,7 +73,9 @@ def exact_tree(path):
 
 
 class WorkspaceSnapshotTests(unittest.TestCase):
-    def test_symlink_rejection_preserves_previous_publication_bytes(self):
+    def test_rejection_preserves_previous_publication_bytes(self):
+        # Git-tree symlinks are now inventoried (see GitTreeLinkTests); a bound
+        # violation is the rejected input that must leave the old publication intact.
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
             good, _, _ = acquire(root / 'good', {'src/main.py': 'print("data")\n'})
@@ -81,14 +83,10 @@ class WorkspaceSnapshotTests(unittest.TestCase):
             build_workspace_snapshot(good, out)
             before = tree_hash(out)
 
-            repo, commit = repository(root / 'bad', {'safe.py': 'x = 1\n'})
-            (repo / 'unsafe').symlink_to('/etc/passwd')
-            git(repo, 'add', 'unsafe')
-            git(repo, 'commit', '--quiet', '-m', 'symlink')
-            commit = git(repo, 'rev-parse', 'HEAD')
+            repo, commit = repository(root / 'bad', {'safe.py': 'x = 1\n', 'big.py': '1234567890\n'})
             bad = _acquire_repository_for_test(URL, root / 'bad-cache', str(repo), commit)
-            with self.assertRaisesRegex(SnapshotError, 'symbolic link'):
-                build_workspace_snapshot(bad, out)
+            with self.assertRaisesRegex(SnapshotError, 'per-file'):
+                build_workspace_snapshot(bad, out, limits={'max_file_bytes': 8})
             self.assertEqual(before, tree_hash(out))
 
     def test_inventory_hashes_exact_bytes_and_labels_binary_unsupported(self):
@@ -123,17 +121,6 @@ class WorkspaceSnapshotTests(unittest.TestCase):
                     build_workspace_snapshot(result, root / 'published', limits=limits)
                 self.assertFalse((root / 'published').exists())
 
-    def test_git_symlink_and_submodule_modes_are_rejected_without_following(self):
-        with tempfile.TemporaryDirectory() as raw:
-            root = Path(raw)
-            repo, _ = repository(root, {'normal.py': 'x=1\n'})
-            blob = git(repo, 'hash-object', '-w', '--stdin', input_data='target')
-            git(repo, 'update-index', '--add', '--cacheinfo', f'120000,{blob},link')
-            git(repo, 'commit', '--quiet', '-m', 'link')
-            commit = git(repo, 'rev-parse', 'HEAD')
-            result = _acquire_repository_for_test(URL, root / 'cache', str(repo), commit)
-            with self.assertRaisesRegex(SnapshotError, 'symbolic link'):
-                build_workspace_snapshot(result, root / 'out')
 
     def test_export_attributes_do_not_change_authoritative_blob_bytes(self):
         with tempfile.TemporaryDirectory() as raw:
@@ -393,6 +380,101 @@ class WorkspaceSnapshotTests(unittest.TestCase):
             receipt = json.loads((output / 'receipt.json').read_text())
             self.assertEqual(receipt['producer']['files']['scripts/import_graph.py'],
                              hashlib.sha256(extractor.read_bytes()).hexdigest())
+
+
+class GitTreeLinkTests(unittest.TestCase):
+    """Git-tree symlinks (120000) and gitlinks (160000) are listed, never followed or fetched."""
+
+    def _link_repo(self, root):
+        repo, _ = repository(root, {'skills/tool.py': 'import os\n', 'main.py': 'x = 1\n'})
+        (repo / '.agents').mkdir()
+        (repo / '.agents' / 'skills').symlink_to('../skills')
+        (repo / 'evil.py').symlink_to('/etc/passwd')
+        git(repo, 'add', '.agents/skills', 'evil.py')
+        git(repo, 'commit', '--quiet', '-m', 'links')
+        return repo, git(repo, 'rev-parse', 'HEAD')
+
+    def test_git_tree_symlinks_are_inventoried_as_unsupported_and_never_followed(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            repo, commit = self._link_repo(root / 'r')
+            self.assertIn('120000', git(repo, 'ls-tree', '-r', commit))
+            result = _acquire_repository_for_test(URL, root / 'cache', str(repo), commit)
+            out = root / 'published'
+            built = build_workspace_snapshot(result, out)
+            inventory = json.loads(Path(built['inventory_path']).read_text())
+            preview = json.loads(Path(built['preview_path']).read_text())
+            by_path = {item['path']: item for item in inventory['files']}
+            for path, target in (('.agents/skills', '../skills'), ('evil.py', '/etc/passwd')):
+                entry = by_path[path]
+                self.assertEqual('symlink', entry['contentKind'])
+                self.assertEqual('120000', entry['gitMode'])
+                self.assertIsNone(entry['lineCount'])
+                self.assertEqual(len(target), entry['bytes'])
+                self.assertEqual(hashlib.sha256(target.encode()).hexdigest(), entry['sha256'])
+                self.assertEqual(target, entry['linkTarget'])
+                self.assertEqual('unsupported', entry['extraction']['status'])
+                self.assertIn('never followed', entry['extraction']['reason'])
+            self.assertEqual(2, inventory['counts']['symlinks'])
+            self.assertEqual(0, inventory['counts']['submodules'])
+            # No graph node or edge touches a link path, even one named *.py.
+            mapped = {n.get('path') for n in preview['map']['nodes']}
+            self.assertNotIn('evil.py', mapped)
+            self.assertNotIn('.agents/skills', mapped)
+            for edge in preview['map']['file_edges']:
+                self.assertFalse({edge['from'], edge['to']} & {'evil.py', '.agents/skills'})
+            # Nothing on the host is ever a link, and the host target is never read.
+            self.assertNotIn('symlink', {kind for kind, _ in exact_tree(out).values()})
+            secret = next((line for line in Path('/etc/passwd').read_text(errors='replace').splitlines()
+                           if line.startswith('root:')), None)
+            if secret:
+                for item in out.rglob('*'):
+                    if item.is_file():
+                        self.assertNotIn(secret, item.read_text(errors='replace'))
+
+    def test_git_submodule_is_inventoried_and_not_fetched(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            repo, _ = repository(root / 'r', {'a.py': 'x = 1\n'})
+            gitlink = 'ab' * 20
+            git(repo, 'update-index', '--add', '--cacheinfo', f'160000,{gitlink},vendor/lib')
+            git(repo, 'commit', '--quiet', '-m', 'submodule')
+            commit = git(repo, 'rev-parse', 'HEAD')
+            result = _acquire_repository_for_test(URL, root / 'cache', str(repo), commit)
+            built = build_workspace_snapshot(result, root / 'published')
+            inventory = json.loads(Path(built['inventory_path']).read_text())
+            entry = {item['path']: item for item in inventory['files']}['vendor/lib']
+            self.assertEqual('submodule', entry['contentKind'])
+            self.assertEqual('160000', entry['gitMode'])
+            self.assertEqual(gitlink, entry['submoduleCommit'])
+            self.assertEqual(hashlib.sha256(gitlink.encode()).hexdigest(), entry['sha256'])
+            self.assertEqual(0, entry['bytes'])
+            self.assertIsNone(entry['lineCount'])
+            self.assertEqual('unsupported', entry['extraction']['status'])
+            self.assertEqual(1, inventory['counts']['submodules'])
+
+    def test_links_count_against_member_and_byte_bounds(self):
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            repo, commit = self._link_repo(root / 'r')
+            result = _acquire_repository_for_test(URL, root / 'cache', str(repo), commit)
+            with self.assertRaisesRegex(SnapshotError, 'member'):
+                build_workspace_snapshot(result, root / 'a', limits={'max_members': 3})
+            with self.assertRaisesRegex(SnapshotError, 'per-file'):  # '/etc/passwd' is 11 bytes
+                build_workspace_snapshot(result, root / 'b', limits={'max_file_bytes': 10})
+
+    def test_publication_receipt_and_snapshot_load_with_links(self):
+        from app.contracts import validate_snapshot
+        from app.workspace_snapshot import load_publication
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            repo, commit = self._link_repo(root / 'r')
+            result = _acquire_repository_for_test(URL, root / 'cache', str(repo), commit)
+            build_workspace_snapshot(result, root / 'published')
+            snapshot = load_publication(root / 'published')
+            validate_snapshot(snapshot)
+            kinds = {f['path']: f['contentKind'] for f in snapshot['inventory']}
+            self.assertEqual('symlink', kinds['.agents/skills'])
 
 
 if __name__ == '__main__':

@@ -86,6 +86,15 @@ class SourceTests(PublicationFixture):
         with self.assertRaisesRegex(ContextError, 'metadata only'):
             read_source(self.git_dir, snapshot, 'lines.txt')
 
+    def test_git_symlink_and_submodule_entries_are_metadata_only(self):
+        for kind in ('symlink', 'submodule'):
+            with self.subTest(kind=kind):
+                snapshot = copy.deepcopy(self.snapshot)
+                entry = next(f for f in snapshot['inventory'] if f['path'] == 'lines.txt')
+                entry.update(contentKind=kind, lineCount=None)
+                with self.assertRaisesRegex(ContextError, 'metadata only'):
+                    read_source(self.git_dir, snapshot, 'lines.txt')
+
     def test_stale_digest_and_line_count_rejected(self):
         for key, value in (('sha256', '0' * 64), ('lineCount', 2)):
             snapshot = copy.deepcopy(self.snapshot)

@@ -73,7 +73,20 @@ portable key is component-wise NFC plus case-folding; trailing dots/spaces are
 rejected rather than rewritten, as are Windows device components (`CON`, `PRN`,
 `AUX`, `NUL`, `COM1`-`COM9`, and `LPT1`-`LPT9`, including extensions).
 Source tokens are never normalized into a different path.
-Symlinks, submodules, and special Git modes reject; no target is followed.
+Git-tree symbolic links (mode `120000`) are inventoried as `contentKind:
+"symlink"` entries: `bytes`/`sha256` describe the link blob (the stored target
+text), `linkTarget` records that text as inert data when it is clean UTF-8 of at
+most 1 KiB (otherwise `null`), `lineCount` is `null`, and extraction is
+`unsupported`. The target is never resolved, followed, materialized as a host
+symlink, read through, or parsed, so links (even ones named `*.py`) get no graph
+nodes or edges, and the source viewer treats them as metadata only. Submodules
+(gitlinks, mode `160000`) are inventoried as `contentKind: "submodule"` with
+`submoduleCommit`, `bytes: 0` and `sha256` = SHA-256 of the 40-hex commit string;
+they are never fetched. Both count against the member and byte bounds and appear
+in `counts.symlinks` / `counts.submodules`. They do not by themselves make the
+snapshot `partial`; like binary files they are visible, unsupported members.
+Other special Git modes still reject. Host-filesystem symlinks (cache entries,
+publication targets, outputs) remain rejected exactly as before.
 Executable Git modes are read only as bytes and are never run. `.gitattributes`
 `export-ignore`/`export-subst` cannot omit or alter inventory because no archive
 is used. Binary and unsupported files stay visible without graph links.
