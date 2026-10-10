@@ -422,7 +422,9 @@
   function importFailure(message) {
     const detail = String(message || 'Unknown error');
     let hint;
-    if (LINK_ERRORS.some(pattern => pattern.test(detail))) {
+    if (/session capability/.test(detail)) {
+      hint = 'Your session key is stale (the server was restarted). Reopen the private link the server printed (…/#session=…) and try again.';
+    } else if (LINK_ERRORS.some(pattern => pattern.test(detail))) {
       hint = 'Check the link (public GitHub URL, optional full 40-character commit) and try again.';
     } else if (/exceeded its deadline|Too many imports queued/.test(detail)) {
       hint = 'The link looks fine; try again later.';
