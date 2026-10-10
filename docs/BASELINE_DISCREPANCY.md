@@ -260,3 +260,103 @@ or release-readiness claim is made.
 
 This update is embedded here rather than adding a second file or modifying
 STATUS/TASKS, in accordance with this card's one-new-file constraint.
+
+## Resolution
+
+Card `t_fc3b941d` implements a start-aware regex iterator: after a masked
+start, retry at the next code position instead of consuming the rejected match.
+Accepted matches remain non-overlapping; accepted regex syntax is unchanged.
+The computed `require|import(...)` diagnostic scan shares the bug and uses the
+same iterator. Literal `require` cannot consume a later call across a comment
+terminator with its existing syntax; it uses the iterator consistently too.
+
+`python3 -m unittest discover -s tests -p test_import_comment_mask.py -v`
+failed before the fix (7 tests, 6 failing subtests), then passed all 7 tests.
+`python3 -m unittest discover -s tests -p test_extraction_trust.py -q`
+passed all 17 tests. No approval refusals.
+
+Pinned rebuilds into `/Users/aibert/.hermes/cache/scratch/dag-extractor-mask/`
+show quest raw JS/Python pairs **364/46 → 365/46**, with non-source findings
+**14 → 15**. Self at `f92d0cf` remains **27/4**, with **11 → 11** non-source
+findings. Quest builder checks pass 10/10. Both maps preserve `nodes`, `edges`,
+`file_edges` and `layers`: no added or removed navigable links.
+
+**Blocked pending parent migration decision; no fix commit yet.** Strict
+`check_snapshot.py` against the frozen quest map exits 1:
+`ValueError: Pinned rebuild differs from committed map; do not silently remap`.
+Only top-level `diagnostics` and `trust` change: the added non-source pair is
+`lib/public-packs.ts → content/public/forest-of-patience-climbing-stairs.json`;
+no findings are removed. This is expected corrected evidence, but strict parity
+also freezes diagnostics, not just links. Per the card's stop condition, no
+map/fixture/parity-test migration was made and full test/smoke recipes were not
+run after this failure.
+
+There is no checked-in `maps/dag-gps/map.json` (an attempted check reports
+FileNotFoundError). Self parity instead compares two fresh pinned builds:
+the unchanged `99652d1` builder snapshot and this working fix, both using the
+current self layer spec. `check_snapshot.py` passes: 30 nodes, 3 layer edges,
+20 file edges, only ref/time ignored. `compare.py` in the scratch directory
+records the precise field/finding comparisons and raw before counts; self
+`report.json` files retain both extraction summaries.
+
+### Build update
+
+[BUILD] DAG GPS — dag-engine
+
+- Milestone: extractor comment mask; Mini: 1/1.
+- Status: blocked on frozen diagnostic migration approval.
+- Output: minimal working fix and failing-before/passing-after regression tests.
+- Verification: focused tests 7 + 17 pass; quest strict parity fails only on
+  corrected diagnostics/trust; self before/after strict parity passes.
+- Next: parent decides migration scope; no next mini-milestone launched.
+
+Update embedded here to respect the card's three-file allowlist.
+
+### Authorized migration and final verification
+
+The parent subsequently authorized the diagnostic-only map migration on
+`t_fc3b941d`. The blocked status above records the first attempt, not the final
+outcome. Fix commit: `04309a8fde108c7c90554690e0a59543e90d84c3`.
+
+Before migration, raw JSON value bytes for `nodes`, `edges`, `file_edges`, and
+`layers` were confirmed identical to the rebuilt map. The committed map changes
+only `trust.counts.non_source_target` (14 → 15), one `trust.findings` entry, and
+one `diagnostics.non_source_connections` entry for the forest public-pack pair above.
+The existing build timestamp and all other metadata are preserved. No links
+are added or removed, and no fixtures or parity tests are changed.
+
+Final commands from the worktree root (all exit 0):
+
+```sh
+python3 scripts/check_snapshot.py maps/quest-coder/map.json /Users/aibert/.hermes/cache/scratch/dag-extractor-mask/quest-map.json
+python3 scripts/check_snapshot.py /Users/aibert/.hermes/cache/scratch/dag-extractor-mask/self-before/map.json /Users/aibert/.hermes/cache/scratch/dag-extractor-mask/self/map.json
+python3 -m unittest discover -s tests -p test_import_comment_mask.py -v
+python3 -m unittest discover -s tests -p test_extraction_trust.py -q
+python3 /Users/aibert/.hermes/cache/scratch/dag-extractor-mask/verify_resume.py test
+python3 /Users/aibert/.hermes/cache/scratch/dag-extractor-mask/verify_resume.py smoke
+```
+
+The helper runs the exact `.verify.json` recipes without modification, logging
+their command output to `test.log` and `smoke.log` in the same scratch directory.
+Focused tests pass 7 + 17; full tests pass 183 Python and 150 JS, followed by
+all evaluation commands. The existing bearer-auth challenge miss remains
+reported; generated examples do not establish real-user accuracy.
+Full smoke exits 0 including the pinned rebuild (10/10 checks), strict quest
+parity (290 nodes, 52 layer edges, 415 file edges), and all browser gates through
+feedback. Self strict parity passes (30 nodes, 3 layer edges, 20 file edges).
+The fresh smoke again reports 365 JS / 46 Python and 15 non-source findings;
+before was 364 / 46 and 14. Self remains 27 / 4 and 11 non-source findings.
+
+[BUILD] DAG GPS — dag-engine
+
+- Milestone: extractor comment mask; Mini: 1/1.
+- Status: verified; independent reviewer acceptance pending.
+- Output: fix, regression tests, authorized diagnostic-only migration and report.
+- Verification: failing-before evidence retained above; focused 7 + 17 pass;
+  full test and smoke recipes exit 0; both strict parity checks pass.
+- Next: dag-reviewer independent review; no push or next mini-milestone.
+- Risks: lightweight lexical extraction remains non-parser evidence; no runtime
+  or completeness claim. Approval refusals: none for this fix task.
+
+Final build update remains embedded in this append-only report to respect the
+expanded four-file allowlist; STATUS/TASKS and other maps remain untouched.

@@ -15372,7 +15372,7 @@
   ],
   "counts": {
    "resolved_source": 415,
-   "non_source_target": 14,
+   "non_source_target": 15,
    "unresolved_local_reference": 1,
    "unsupported_dynamic_construct": 8,
    "external_dependency": 280
@@ -17636,6 +17636,13 @@
     "path": "app/layout.tsx",
     "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
     "target": "app/globals.css"
+   },
+   {
+    "category": "non_source_target",
+    "evidence": "static_resolution",
+    "path": "lib/public-packs.ts",
+    "reason": "Resolved import target has no source node in the assignment inventory; omitted from graph.",
+    "target": "content/public/forest-of-patience-climbing-stairs.json"
    },
    {
     "category": "non_source_target",
@@ -21223,6 +21230,11 @@
    [
     "app/layout.tsx",
     "app/globals.css",
+    "import"
+   ],
+   [
+    "lib/public-packs.ts",
+    "content/public/forest-of-patience-climbing-stairs.json",
     "import"
    ],
    [
