@@ -1,19 +1,26 @@
 # Status — DAG GPS
 
-## Python function layer — local implementation, consultant review pending
+## Python function layer — consultant fixes verified, re-review pending
 
 Kanban `t_58cccce0`, isolated `function-layer`. Prerequisite main fixes merged as
 `eb72a73`; no push or integration into main. Added Python AST symbols/call sites,
 versioned optional map extension, deterministic LOCATE/CALLERS/CALLEES/FLOW/TRACE,
 focused function drawing, exact source ranges and agent bridge parity.
 
-Acceptance run: **412 Python / 178 JS pass**, including unchanged existing browser
+Follow-up `t_4977fa02` accepts all four consultant findings: conservative wildcard /
+definition-time binding scopes, non-traversable deferred/class-body sites, bounded
+oversized symbol packets, and legacy file/group dispatch parity. Six new regression
+methods reproduced RED failures before fixes; no push or main integration.
+
+Acceptance run: **418 Python / 178 JS pass**, including unchanged existing browser
 and accessibility tests. Real app import of Honcho at
 `3922af856d78ec41133916deec4d821fa9c5a92e`: **1,162 inventory files, 7,670 symbols,
-7,899 resolved / 37,049 unresolved call sites**; fresh build from acquired cache
-20.604s, warm JS-only query p95 0.462ms (800 samples). Eight real questions with
+7,836 resolved / 37,112 unresolved call sites** (63 sites moved to unresolved);
+real import-to-ready 50.480s, warm JS-only query p95 1.678ms (800 samples). Eight real questions with
 saved packets/screenshots, source checks, manual drill-down and three CLI tools.
+All eight statuses/selections/edges and seven audited source files unchanged.
 Three narrow spot-checks right / five partial, not general accuracy evidence.
+`.verify.json` build/smoke and four eval recipes pass; lookup retains 39/40.
 
 Initial 16 MiB sidecar limit failure fixed by removing JSON whitespace only;
 no bounds raised. Dynamic/instance/decorator/framework calls remain unresolved,

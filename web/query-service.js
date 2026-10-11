@@ -13,10 +13,24 @@
   const SNAPSHOT_SCHEMA = 'dag-gps-workspace/v1';
   // Mirrors app/contracts.py bounds; a full page leaves room for the seed.
   const LIMITS = Object.freeze({selectedNodes: 200, selectedEdges: 400, witnesses: 200,
-    alternatives: 20, sourceRefs: 200, queryChars: 2048});
+    alternatives: 20, sourceRefs: 200, queryChars: 2048, packetBytes: 1024 * 1024});
   const STATIC_LIMITATION = 'Static extracted relationships only; dynamic imports, runtime calls and unsupported files may be missing.';
   const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
   const edgeKey = e => JSON.stringify([e.from, e.to, e.type]);
+
+  // Python's contract serializes UTF-8 JSON with a space after each structural
+  // comma/colon. Count those outside strings, not punctuation in source evidence.
+  function packetBytes(packet) {
+    const text = JSON.stringify(packet);
+    let spaces = 0, quoted = false, escaped = false;
+    for (const c of text) {
+      if (escaped) { escaped = false; continue; }
+      if (quoted && c === '\\') { escaped = true; continue; }
+      if (c === '"') quoted = !quoted;
+      else if (!quoted && (c === ',' || c === ':')) spaces++;
+    }
+    return new TextEncoder().encode(text).length + spaces;
+  }
 
   function requireSnapshot(snapshot) {
     if (!snapshot || snapshot.schema !== SNAPSHOT_SCHEMA || !snapshot.map || !Array.isArray(snapshot.map.nodes))
@@ -283,7 +297,19 @@
       }
       const offset = parseContinuation(request.continuation);
       const symbolOp = symbolRequest(request.query);
-      if (symbolOp) return symbolQuery(packet, request, symbolOp, offset);
+      // Existing file/group questions keep the unchanged scorer/router path.
+      const legacyTarget = symbolOp && symbolOp.names.some(name => nodes.has(name) ||
+        [...nodes.values()].some(n => n.path === name || n.label === name));
+      if (symbolOp && symbols && !legacyTarget) {
+        const result = symbolQuery(packet, request, symbolOp, offset);
+        if (packetBytes(result) <= LIMITS.packetBytes) return result;
+        // Never cut call sites or whole-chain witnesses into misleading evidence.
+        // Oversized results explicitly abstain, with no selections to highlight.
+        const bounded = base(request);
+        bounded.operation = symbolOp.op; bounded.status = 'unsupported';
+        bounded.reason = 'Complete call evidence exceeds the 1 MiB packet budget; use a narrower symbol question.';
+        return bounded;
+      }
       // Explicit human choice from a previous needs-choice packet: only known IDs, never fuzzy.
       if (request.chosenNodeId !== undefined) {
         if (!nodes.has(request.chosenNodeId)) throw new Error('Unknown chosen node ID');

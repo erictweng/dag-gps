@@ -28,13 +28,14 @@ def extract_symbols(sources, import_edges):
                                 'reason': 'Python parse error: ' + str(error)})
 
     def new_scope(parent, owner=None, cls=None):
-        return {'parent': parent, 'owner': owner, 'class': cls, 'names': defaultdict(list)}
+        return {'parent': parent, 'owner': owner, 'class': cls, 'names': defaultdict(list),
+                'wildcard': False, 'invocable': True}
 
     def bind(scope, name, value):
         scope['names'][name].append(value)
 
     def collect(tree, path, scope, prefix=''):
-        for child in ast.iter_child_nodes(tree):
+        for child in tree if isinstance(tree, list) else ast.iter_child_nodes(tree):
             if isinstance(child, DEFS):
                 qualname = prefix + child.name
                 ident = path + '#' + qualname + '@' + str(child.lineno)
@@ -48,6 +49,7 @@ def extract_symbols(sources, import_edges):
                 bind(scope, child.name, ('def', node))
                 is_class = isinstance(child, ast.ClassDef)
                 nested = new_scope(scope, ident, ident if is_class else scope['class'])
+                nested['invocable'] = not is_class
                 scopes[id(child)] = nested
                 if not is_class:
                     args = child.args
@@ -60,7 +62,14 @@ def extract_symbols(sources, import_edges):
                     positional = args.posonlyargs + args.args
                     if scope['class'] == scope['owner'] and positional and positional[0].arg == 'self' and not child.decorator_list:
                         nested['names']['self'] = [('self', scope)]
-                collect(child, path, nested, qualname + ('.' if is_class else '.<locals>.'))
+                # Defaults, decorators, bases and annotations bind in the defining
+                # scope. Only the body and parameters belong to the new scope.
+                for field, value in ast.iter_fields(child):
+                    items = value if isinstance(value, list) else [value]
+                    items = [item for item in items if isinstance(item, ast.AST)]
+                    collect(items, path,
+                            nested if field == 'body' else scope,
+                            qualname + ('.' if is_class else '.<locals>.') if field == 'body' else prefix)
             elif isinstance(child, (ast.Import, ast.ImportFrom)):
                 package = path.rpartition('/')[0].replace('/', '.')
                 if isinstance(child, ast.ImportFrom):
@@ -75,6 +84,9 @@ def extract_symbols(sources, import_edges):
                     entries = [(a.asname or a.name.split('.')[0], a.name,
                                 '' if a.asname else a.name.partition('.')[2]) for a in child.names]
                 for local, module, attr in entries:
+                    if local == '*':
+                        scope['wildcard'] = True
+                        continue
                     candidates = []
                     submodule = None
                     for candidate in (module, (package + '.' + module).strip('.')):
@@ -107,6 +119,8 @@ def extract_symbols(sources, import_edges):
 
     def lookup(scope, name):
         while scope is not None:
+            if scope['wildcard']:
+                return None
             if name in scope['names']:
                 values = scope['names'][name]
                 return values[0] if len(values) == 1 else None
@@ -154,7 +168,9 @@ def extract_symbols(sources, import_edges):
 
     def walk(tree, path, scope):
         if isinstance(tree, (ast.Lambda, ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
-            scope = new_scope(scope, scope['owner'], scope['class'])
+            outer = scope
+            scope = new_scope(outer, outer['owner'], outer['class'])
+            scope['invocable'] = outer['invocable'] and not isinstance(tree, (ast.Lambda, ast.GeneratorExp))
             for item in ast.walk(tree):
                 if isinstance(item, ast.arg):
                     bind(scope, item.arg, None)
@@ -174,7 +190,7 @@ def extract_symbols(sources, import_edges):
                             walk(item, path, scope)
             return
         if isinstance(tree, ast.Call):
-            destination = target(scope, tree.func, path) if scope['owner'] else None
+            destination = target(scope, tree.func, path) if scope['owner'] and scope['invocable'] else None
             calls.append({'from': scope['owner'], 'to': destination,
                           'confidence': 'resolved' if destination else 'unresolved',
                           'path': path, 'start': tree.lineno, 'end': tree.end_lineno,

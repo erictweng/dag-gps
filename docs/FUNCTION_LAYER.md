@@ -1,6 +1,6 @@
 # Python function layer — local implementation, review pending
 
-Task `t_58cccce0`, branch `function-layer`. This extends the local workspace, not
+Tasks `t_58cccce0` / review fixes `t_4977fa02`, branch `function-layer`. This extends the local workspace, not
 legacy offline maps. No model/provider calls, source execution, push, PR or main
 integration. Consultant review and parent acceptance remain pending.
 
@@ -15,8 +15,12 @@ integration. Consultant review and parent acceptance remain pending.
   variable-held instances, inherited methods, reexports, framework scheduling,
   external functions, module-scope calls and unsupported bindings remain unknown.
   A class call targets its definition, not an inferred constructor/body execution.
+  Class-body, lambda and generator-expression calls remain non-traversable unresolved
+  evidence; they cannot compose into an invocation-flow chain.
 - AST parameters, lexical rebinding and duplicate definitions prevent confident
-  name selection. Literal attribute stores invalidate matching attribute calls
+  name selection. Wildcard-import scopes invalidate lookup conservatively; defaults,
+  decorators, bases and annotations are collected in their defining scope, not the
+  new function body. Literal attribute stores invalidate matching attribute calls
   conservatively across their file. Comprehension/lambda parameters are conservative. This is not a
   full Python interpreter: monkeypatching, conditional execution, runtime attribute
   mutation, import hooks and complete closure/dataflow semantics are not modeled.
@@ -26,6 +30,9 @@ integration. Consultant review and parent acceptance remain pending.
   Duplicate names require choice; FLOW endpoints can be chosen sequentially.
 - Call witnesses retain all observed call-site lines. No-path means no *resolved
   static* path, not that runtime flow cannot occur. Genuine call cycles remain.
+  Symbol packets exceeding the unchanged 1 MiB serialized contract budget return
+  bounded `unsupported` with no highlights, rather than clipping call-site evidence.
+  Whole-chain cardinality pagination remains; oversized byte results are not paged.
 - Proposed group → file → definition expansion; questions show only selected
   symbols in their source-file lanes. Symbol and call-site buttons open hash-
   verified, revision-bound source. Clear returns to the group overview.
@@ -61,7 +68,7 @@ Source: `https://github.com/plastic-labs/honcho`, exact commit
 The real app's import form was driven in Chromium against `WorkspaceServer`,
 using production acquisition, inventory, extraction, publication, query worker
 and source endpoints. Honcho itself was not run or installed. Snapshot:
-`e29d6017a12490d6c7043745cebcc50cf9e9c787afbe49ac49612b0199f72859`.
+`6f12d85256dcea4a07ef2ea841f77a574bc6468682531bd9b3d4cbfd80d09346`.
 
 | Measurement | Observed value |
 |---|---:|
@@ -69,20 +76,23 @@ and source endpoints. Honcho itself was not run or installed. Snapshot:
 | Mapped source files (all supported file languages) | 663 |
 | Python source files supplied to symbol extraction | 562 |
 | Python definitions, including tests/examples/SDK overloads | 7,670 |
-| Resolved call sites | 7,899 |
-| Unique resolved call edges | 6,544 |
-| Unresolved call sites | 37,049 |
+| Resolved call sites | 7,836 |
+| Unique resolved call edges | 6,506 |
+| Unresolved call sites | 37,112 |
 | Symbol syntax diagnostics | 2 |
-| Fresh inventory/extraction/publication build | 20.604 seconds |
-| Warm JS query p95 | 0.462 ms, 800 measured samples |
-| JS query index creation | 30.514 ms |
+| Real app import-to-ready | 50.480 seconds |
+| Warm JS query p95 | 1.678 ms, 800 measured samples |
+| JS query index creation | 68.051 ms |
 
-Build timing used the already-acquired immutable Git cache and a new publication:
-`publicationCacheHit:false`; it excludes GitHub download and browser rendering.
+The review-fix rerun used the real import form and a new snapshot identity. Its
+import-to-ready timing includes the acquisition/publication/UI path, unlike the
+original 20.604-second cache-only build measurement (historical `build-timing.json`).
+The conservative fixes move 63 previously resolved sites to unresolved evidence;
+definition count is unchanged. No source pin or contract limit changed.
 The query benchmark used all eight questions, 10 warm-up and 100 measured rounds
 per question. It excludes Python validation, worker IPC, HTTP and drawing. Actual
 browser request-to-render timings are separately retained in `browser-report.json`
-and are hundreds of milliseconds, not the sub-millisecond JS-only result.
+and range from roughly 528 to 1,497 milliseconds, not the JS-only result.
 
 The first symbol-enabled import failed with exactly:
 `Static extractor graph output exceeded its limit` (16,777,216 bytes).
@@ -104,7 +114,11 @@ Questions are checked in at `eval/function-honcho.json`. `packet-N.json`,
 `question-N.png` and corresponding source screenshots use the numbering below.
 “Right” means the checked narrow result agrees with source, not general accuracy.
 “Partial” means useful evidence remains missing even when displayed links are true.
-All Honcho file/line citations below refer to the exact commit above.
+All Honcho file/line citations below refer to the exact commit above. The review-fix
+rerun preserves all eight statuses, selected IDs and call edges, and hash comparison
+confirms all seven audited source files are unchanged. The table's source findings
+and three-right/five-partial disposition therefore remain unchanged. Evidence:
+`../artifacts/function-layer/review-fixes/honcho-comparison.json` (local/ignored).
 
 | # | Question | Source check and result |
 |---|---|---|
@@ -152,9 +166,18 @@ checks provenance/structure, not semantic completeness of every edge.
 - Prerequisite `origin/main` merged as `eb72a73`; baseline 401 Python / 173 JS passed.
 - RED evidence: `extraction-red.log`, `contract-query-red.log`, `drilldown-red.log`,
   `shadowing-red.log`, `attribute-rebinding-red.log` under `artifacts/function-layer/`.
-- Acceptance: 412 Python tests and 178 JS tests passed. Commands:
+- Review-fix acceptance: 418 Python tests and 178 JS tests passed. Commands:
   `env -u PYTHONPATH /usr/bin/python3 -m unittest discover -s tests -q` and
   `node --test tests/*.test.cjs`. Existing suites were not edited.
+- All four consultant points accepted and fixed. Six new Python test methods
+  exercise binding scope, wildcard invalidation, deferred ownership, 150-function
+  chains with 1 and 20 sites per edge through JS/Python validation, and exact legacy
+  packet parity against `eb72a73` both with and without the symbol extension.
+  The RED run records failures for every reported category; the GREEN run passes.
+- `.verify.json` build/smoke and all four eval commands exit 0. Lookup retains
+  39/40 operation/label correctness, not perfection; no scorer tuning. Separate
+  release packaging/performance recipes were not part of this follow-up acceptance.
+  Logs: `artifacts/function-layer/review-fixes/`.
 - One development failure found an SVG nested-interactive accessibility issue;
   the containing SVG now has role `group`, and the existing real-browser/Axe suite
   passes. A later unchanged-suite run hit an oversized-body connection reset in
