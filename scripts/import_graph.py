@@ -49,6 +49,19 @@ def code_mask(text):
     return mask
 
 
+def code_matches(pattern, text, mask):
+    """Keep normal non-overlapping matches; retry masked starts without consuming code."""
+    pos = 0
+    while (match := pattern.search(text, pos)) is not None:
+        if mask[match.start()]:
+            yield match
+            pos = match.end()
+        else:
+            pos = match.start() + 1
+            while pos < len(mask) and not mask[pos]:
+                pos += 1
+
+
 require_re = re.compile(r"""\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)""")
 unsupported = []
 nodes, edges, ext, api, rpcs = {}, [], {}, {}, {}
@@ -56,9 +69,9 @@ for f in sorted(files):
     t = open(f, encoding="utf-8", errors="ignore").read()
     nodes[f] = {"lines": t.count("\n"), "client": "use client" in t[:200]}
     mask = code_mask(t)
-    specs = [m.group(1) or m.group(2) or m.group(3) for m in imp.finditer(t) if mask[m.start()]] + [m.group(1) for m in require_re.finditer(t) if mask[m.start()]]
-    for m in re.finditer(r"\b(require|import)\s*\(\s*([^)]*)\)", t):
-        if mask[m.start()] and not re.fullmatch(r"[\'\"][^\'\"]+[\'\"]", m.group(2).strip()):
+    specs = [m.group(1) or m.group(2) or m.group(3) for m in code_matches(imp, t, mask)] + [m.group(1) for m in code_matches(require_re, t, mask)]
+    for m in code_matches(re.compile(r"\b(require|import)\s*\(\s*([^)]*)\)"), t, mask):
+        if not re.fullmatch(r"[\'\"][^\'\"]+[\'\"]", m.group(2).strip()):
             unsupported.append([f, "nonliteral " + m.group(1), m.group(2).strip()[:160]])
     for spec in specs:
         r = resolve(f, spec)
