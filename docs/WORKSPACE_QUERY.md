@@ -39,6 +39,20 @@ unchanged `web/scorer.js` and `web/router.js`.
 
 ## Limits
 
+### Python function questions
+
+Snapshots with `map.symbol_graph` support exact, case-sensitive symbol targets:
+bare unique name, qualified name, `path:qualified-name`, or full symbol ID.
+`where is X defined` / `locate symbol X`, `what calls X`, `what does X call`,
+`how does X reach Y`, and `trace from X` are deterministic operation templates.
+CALLERS/CALLEES are direct; FLOW/TRACE traverse resolved call edges only. Duplicate
+names require choice (including Python overload definitions); two ambiguous FLOW
+endpoints are chosen in sequence. Alternative `query` strings preserve already
+chosen endpoints. Unresolved calls and exact counts are returned separately.
+Missing static paths are not proof that a runtime flow is impossible.
+
+The legacy matching limits below remain for file/group questions.
+
 Matching is lexical over paths, filenames and group labels (the existing scorer).
 Concept questions such as "collision" return `no-match` unless a group label or
 alias matches. Only static extracted relationships are traversed.

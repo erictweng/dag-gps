@@ -1,5 +1,28 @@
 # Status — DAG GPS
 
+## Python function layer — local implementation, consultant review pending
+
+Kanban `t_58cccce0`, isolated `function-layer`. Prerequisite main fixes merged as
+`eb72a73`; no push or integration into main. Added Python AST symbols/call sites,
+versioned optional map extension, deterministic LOCATE/CALLERS/CALLEES/FLOW/TRACE,
+focused function drawing, exact source ranges and agent bridge parity.
+
+Acceptance run: **412 Python / 178 JS pass**, including unchanged existing browser
+and accessibility tests. Real app import of Honcho at
+`3922af856d78ec41133916deec4d821fa9c5a92e`: **1,162 inventory files, 7,670 symbols,
+7,899 resolved / 37,049 unresolved call sites**; fresh build from acquired cache
+20.604s, warm JS-only query p95 0.462ms (800 samples). Eight real questions with
+saved packets/screenshots, source checks, manual drill-down and three CLI tools.
+Three narrow spot-checks right / five partial, not general accuracy evidence.
+
+Initial 16 MiB sidecar limit failure fixed by removing JSON whitespace only;
+no bounds raised. Dynamic/instance/decorator/framework calls remain unresolved,
+Honcho remains a partial proposed-group preview, and large drawings still scroll.
+Review/parent acceptance pending. Report: `docs/FUNCTION_LAYER.md`; local evidence:
+`artifacts/function-layer/`, especially `honcho/browser-report.json` and `audit.json`.
+
+The dated sections below are historical milestone records.
+
 Last updated: 2026-10-08 PDT
 
 ## Current focus — V1.5 release candidate worker audit / parent and Eric pending

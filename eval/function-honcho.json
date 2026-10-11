@@ -1,0 +1,10 @@
+[
+  "where is create_messages_for_session defined",
+  "what does src/crud/message.py:create_messages call",
+  "what calls process_representation_tasks_batch",
+  "how does src/routers/peers.py:chat reach DialecticAgent",
+  "how does src/routers/peers.py:chat reach DialecticAgent.answer",
+  "trace from src/dialectic/chat.py:agentic_chat",
+  "where is chat defined",
+  "what does src/deriver/consumer.py:process_item call"
+]

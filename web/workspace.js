@@ -81,13 +81,15 @@
     if (epoch !== state.epoch) return;
     state.snapshot = snap;
     state.files = new Map(snap.inventory.map(f => [f.path, f]));
-    state.nodes = new Map(snap.map.nodes.map(n => [n.id, n]));
+    state.nodes = new Map([...snap.map.nodes, ...(snap.map.symbol_graph ? snap.map.symbol_graph.nodes : [])].map(n => [n.id, n]));
     state.groupLabel = new Map(snap.map.nodes.filter(n => n.kind === 'layer').map(n => [n.id, n.label || n.id]));
     const counts = (snap.map.meta && snap.map.meta.counts) || {};
+    const symbolCounts = snap.map.symbol_graph && snap.map.symbol_graph.counts;
     text('project-info', snap.source.repo + ' @ ' + snap.source.commit.slice(0, 7) + ' — ' + snap.inventory.length + ' files, ' +
       (counts.files || 0) + ' mapped, ' + (counts.file_edges || 0) + ' links' +
       (snap.extractionState === 'partial' ? ' · partial extraction (some imports could not be resolved)' : '') +
-      '. Groups are proposed from folders, not reviewed.');
+      '. Groups are proposed from folders, not reviewed.' + (symbolCounts ? ' Python: ' + symbolCounts.symbols +
+      ' symbols; ' + symbolCounts.resolved + ' resolved / ' + symbolCounts.unresolved + ' unresolved call sites.' : ''));
     graph.render(snap.map);
     if (sameProject) { graphBox.scrollLeft = scroll[0]; graphBox.scrollTop = scroll[1]; }
     renderFileList();
@@ -139,6 +141,7 @@
     const snapshot = state.snapshot, project = state.project;
     const epoch = ++state.epoch;
     resetAgent();
+    state.sourceVersion++; $('source-viewer').hidden = true;
     const request = Object.assign({snapshotId: snapshot.snapshotId, requestId: 'ui-' + crypto.randomUUID(),
       query: $('question').value.trim()}, extra || {});
     if (!request.query) return;
@@ -159,7 +162,7 @@
     clear('choices');
     $('choices-heading').hidden = !packet.alternatives.length;
     for (const a of packet.alternatives)
-      li('choices', (a.path || a.nodeId) + ' — ' + a.reason, () => ask({query: request.query, chosenNodeId: a.nodeId}));
+      li('choices', (a.path || a.nodeId) + ' — ' + a.reason, () => ask({query: a.query || request.query, chosenNodeId: a.nodeId}));
     if (!append) clear('results');
     const witness = new Map(packet.witnesses.map(w => [w.nodeIds[0] === packet.seedNodeId ? w.nodeIds.at(-1) : w.nodeIds[0], w]));
     for (const id of packet.selectedNodeIds) {
@@ -173,8 +176,14 @@
     $('more').onclick = () => ask({query: request.query, continuation: packet.continuation});
     clear('limitations');
     for (const l of packet.limitations) li('limitations', l);
+    for (const call of packet.unresolvedCalls || []) li('limitations', 'UNRESOLVED: ' + call.expression + ' — ' + call.path + ':' + call.start,
+      () => openSource(call.path, call.start, call.end));
+    for (const edge of packet.selectedEdges.filter(e => e.type === 'call')) for (const site of edge.sites)
+      li('results', 'Call site: ' + site.path + ':' + site.start + ' → ' + edge.to, () => openSource(site.path, site.start, site.end));
     $('limitations-box').hidden = !packet.limitations.length;
+    if (packet.unresolvedCallCount) $('limitations-box').open = true;
     graph.apply(GV.highlightFor(packet));
+    if (!append) document.querySelector('.evidence-panel').scrollTop = 0;
     $('agent-section').hidden = false;
     refreshExplanations(request).catch(error => { if (request === state.request) text('agent-error', error.message); });
   }
@@ -184,6 +193,7 @@
   function selectFile(path, options = {}) {
     if (!state.snapshot) return;
     const node = state.nodes.get(path);
+    if (node && node.kind === 'symbol') { openSource(node.path, node.start, node.end); return; }
     if (node && node.kind === 'layer') { $('question').value = node.label || node.id; ask(); return; }
     const file = state.files.get(path);
     if (!file) return;

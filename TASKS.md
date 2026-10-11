@@ -1,5 +1,15 @@
 # Tasks — DAG GPS
 
+## Python function layer — `t_58cccce0`
+
+Status: verified locally; consultant review and parent integration pending.
+One authorized long-build scope, branch `function-layer`: Python symbol extraction,
+call evidence/contract, deterministic function questions, drill-down/source and
+agent parity. Real Honcho UI proof at `3922af856d78ec41133916deec4d821fa9c5a92e`;
+412 Python / 178 JS tests pass, eight source-checked questions. Limitations and
+artifact paths: [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md). No next milestone,
+push, PR or main integration launched.
+
 Work is organized as milestones broken into mini-milestones. Each mini-milestone
 should be small enough for one worker run to finish and verify.
 
