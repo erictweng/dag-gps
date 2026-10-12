@@ -8,6 +8,16 @@ The deliberate extraction/provenance migration is in [TRUST_REPORT.md](TRUST_REP
 
 ## Current matrix
 
+Workspace previews additionally support Python definitions and conservative calls
+through the versioned `map.symbol_graph` extension. Module functions, classes,
+methods, async and nested definitions have exact source ranges. Direct lexical
+names, literal `self.method()` and repo-import-bound function/module calls can
+resolve; decorated targets, dynamic dispatch, instances stored in variables,
+external calls and framework scheduling remain unresolved. No imported code runs.
+Legacy offline maps and JS/TS extraction do not gain symbols. Parser syntax support
+is that of the Python interpreter running the importer (verified here with 3.9).
+See [FUNCTION_LAYER.md](FUNCTION_LAYER.md) and `tests/test_function_layer.py`.
+
 | Input / construct | Current behavior | Limits and evidence |
 |---|---|---|
 | Git source and assignment inventory | Pinned `git archive`; included `.ts/.tsx/.js/.jsx/.mjs/.cjs/.py/.sql` files become candidate source nodes; every included source file must have one layer | `build_map.source_files/included/build`; `RefreshTests.test_mutable_worktree_not_extracted`, `test_vendor_generated_and_node_modules_excluded`, unmapped/duplicate tests. Directory exclusions, not universal generated-file detection |

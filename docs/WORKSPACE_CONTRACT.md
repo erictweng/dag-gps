@@ -1,5 +1,45 @@
 # Workspace evidence contract — Phase 0
 
+## Python symbol extension (additive `dag-gps-symbols/v1`)
+
+The Phase 0 text below describes the frozen file/group contract. Current workspace
+previews optionally add `map.symbol_graph`; absence remains a valid legacy map.
+Legacy `nodes`, `edges`, `file_edges`, scorer heads and file/group packets do not
+change. Symbol IDs join the validated evidence catalog, not the legacy scorer index.
+
+- Extension `schema` is exactly `dag-gps-symbols/v1`. `nodes` carry `kind: symbol`,
+  `name`, `qualname`, `symbolKind`, `path`, inclusive `start`/`end`, `parentId`, and
+  a `decorated` marker. IDs are `path#qualname@definition-line`; nested names use
+  `<locals>`. IDs are revision-bound, not stable across line-moving edits.
+- `edges` carry unique `{from,to,type:call,confidence:resolved,sites:[...]}` pairs.
+  Every site includes path/start/end/expression. Multiple call sites share one edge.
+  Constructors target the class definition, not an inferred `__init__` invocation.
+- `unresolved` contains call-site records with `to:null`, nullable caller `from`,
+  `confidence:unresolved`, path/start/end/expression/reason. Module-level calls have
+  null caller. They never participate in traversal. Syntax errors are per-file
+  `diagnostics`; the file node remains. `counts.resolved/unresolved` count sites,
+  not graph edges; `counts.symbols` counts definitions.
+- Validator rejects unsupported extension versions, duplicate/dangling IDs,
+  invalid source ranges, fabricated call sites and guessed unresolved targets.
+  Call edges in packets/witnesses must equal the observed edge including all sites.
+- Existing LOCATE additionally supports symbol IDs. New CALLERS/CALLEES are direct
+  neighbors; FLOW is a shortest directed resolved-call path; TRACE is forward
+  reachability. FLOW permits `no-path`, with no edges/witnesses. None of these is
+  runtime execution or potential-impact evidence. Symbol source refs have exact
+  definition ranges. Call-site ranges live on the witness edges themselves.
+- `unresolvedCalls` lists the first 100 unresolved sites in selected symbols;
+  `unresolvedCallCount` reports the complete count and the limitation names any
+  omission. Both are checked against the snapshot. Existing node/edge/witness and
+  1 MiB packet bounds remain unchanged. Traversal/choice pages use explicit
+  `truncated`/`continuation`; a single oversized chain is unsupported, not chopped.
+- Producer fingerprints now include `scripts/python_symbols.py`. Receipt loading
+  accepts the exact old six-file producer set as well as the new seven-file set;
+  arbitrary missing/extra producer entries still reject. Old snapshots stay
+  readable; a fresh symbol build gets a new producer-bound snapshot identity.
+
+See [FUNCTION_LAYER.md](FUNCTION_LAYER.md) for supported binding rules, real Honcho
+measurements, source spot-checks, CLI parity and remaining limits. No model calls.
+
 Status: versioned contract foundation only. No GitHub importer, workspace server/UI,
 agent provider or live watcher is implemented by Phase 0. The existing offline
 navigator remains unchanged except for the independently reviewed release fixes.

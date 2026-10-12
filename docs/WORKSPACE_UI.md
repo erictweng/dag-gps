@@ -13,6 +13,16 @@
 
 ## Graph (`web/graph-view.js`)
 
+For symbol-enabled snapshots the initial view is proposed groups. Click or use
+Enter/Space on a group to expand files, then a file to expand its definitions.
+A symbol question switches to a focused drawing of selected functions/classes in
+their source-file lanes, excluding unrelated files rather than making a huge
+unreadable canvas. Clear/Escape restores the overview. A symbol click opens exact
+revision-bound source at its definition; call-site buttons open call ranges.
+Unresolved counts remain visible in the answer reason and sites in Limitations,
+never as edges. No-path marks endpoints without a claimed route. Large focused
+views still scroll; no fit-to-screen claim. Legacy maps keep the file layout below.
+
 - Columns run from consumers on the left to dependencies on the right. A file's
   column is the longest consumer depth of its strongly connected component, so
   files in a genuine import cycle share a column. Every edge is kept, and cycle

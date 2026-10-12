@@ -17,7 +17,7 @@ MAX_REQUEST_BYTES = 1024 * 1024
 MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 TOOLS = frozenset(('list_projects', 'find_nodes', 'get_dependencies',
                    'get_dependents', 'find_path', 'get_source', 'get_context',
-                   'submit_explanation'))
+                   'submit_explanation', 'find_symbols', 'get_callers', 'get_callees'))
 _PROJECT = re.compile(r'p-[0-9a-f]{20}\Z')
 _SNAPSHOT = re.compile(r'[0-9a-f]{64}\Z')
 _CONTINUATION = re.compile(r'offset:[0-9]{1,12}\Z')
@@ -116,7 +116,12 @@ class AgentBridge:
                     raise BridgeError('Invalid ' + key)
             return read_source(git_dir_for(self.root / 'git-cache', snapshot), snapshot, **args)
         paths = {}
-        if tool in ('get_dependencies', 'get_dependents', 'find_path'):
+        if tool in ('find_symbols', 'get_callers', 'get_callees'):
+            _fields(args, {'symbol'}, {'continuation', 'chosenNodeId'})
+            name = _text(args['symbol'], 'symbol', 512)
+            query = {'find_symbols': 'locate symbol ', 'get_callers': 'callers of ', 'get_callees': 'callees of '}[tool] + name
+            query_request = _query_request(dict({'query': query}, **{k: args[k] for k in ('continuation', 'chosenNodeId') if k in args}), snapshot['snapshotId'])
+        elif tool in ('get_dependencies', 'get_dependents', 'find_path'):
             keys = {'from', 'to'} if tool == 'find_path' else {'path'}
             _fields(args, keys)
             paths = {node['path']: node['id'] for node in snapshot['map']['nodes'] if node['kind'] == 'file'}

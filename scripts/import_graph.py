@@ -8,6 +8,7 @@ Output: nodes{path:{lines,client}}, edges, pyedges, ext, api_calls, rpcs, sqlfns
 import os, re, sys, json, glob, collections, ast
 from build_map import included
 from python_static import static_paths
+from python_symbols import extract_symbols
 
 src, out = sys.argv[1], os.path.abspath(sys.argv[2])
 tops = sys.argv[3:] or ["app", "components", "lib", "src", "pages", "proxy.ts", "middleware.ts", "scripts", "browser-runtime"]
@@ -203,7 +204,9 @@ result = {"nodes": nodes, "edges": edges, "pyedges": sorted(pyedges), "static_lo
           "unresolved": sorted([e for e in edges if e[1].startswith("UNRESOLVED")] + pyunresolved),
           "unsupported": sorted(unsupported),
           "fan_in": indeg.most_common(15), "fan_out": sorted(((len(v), k) for k, v in adj.items()), reverse=True)[:10]}
-json.dump(result, open(out, "w"), indent=1)
+result['symbol_graph'] = extract_symbols({p: open(p, encoding='utf-8', errors='replace').read() for p in py}, pyedges)
+# The bounded extractor sidecar is machine-read; whitespace need not consume its budget.
+json.dump(result, open(out, "w"), separators=(',', ':'))
 print(f"{len(nodes)} nodes, {len(edges)} js edges, {len(pyedges)} py edges, {len(cycles)} cycles, {len(result['unresolved'])} unresolved")
 print("fan-in:", result["fan_in"][:8])
 print("fan-out:", result["fan_out"][:5])

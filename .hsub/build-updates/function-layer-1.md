@@ -1,0 +1,7 @@
+[BUILD] DAG GPS — dag-generalist
+Milestone: Python function layer (t_58cccce0)
+Mini: 1/1 — symbols, code-flow questions and real Honcho proof
+Status: verified
+Output: Local-only Python AST symbol/call extension, deterministic function queries, focused drill-down, exact revision-bound source and agent bridge. No push/main merge/PR. Consultant and parent review pending.
+Verification: Prerequisite merge eb72a73; baseline 401 Python / 173 JS. Acceptance: env -u PYTHONPATH /usr/bin/python3 -m unittest discover -s tests -q (412 passed); node --test tests/*.test.cjs (178 passed). Real Chromium app import of Honcho 3922af856d78ec41133916deec4d821fa9c5a92e, eight packets/screenshots and source checks, manual group/file/function clicks, three CLI tools. 1,162 files; 7,670 symbols; 7,899 resolved / 37,049 unresolved call sites. Fresh build 20.604s from acquired cache; warm JS query p95 0.462ms over 800 samples. Initial sidecar quota failure fixed with compact JSON, no bound increase. SVG accessibility regression fixed; one later existing oversized-body socket-reset test run passed on unchanged full rerun; failed logs retained.
+Next: dag-consultant second opinion, then parent acceptance/integration. No next mini launched. Source spot-checks: three narrow right / five partial, no general accuracy claim. docs/FUNCTION_LAYER.md and artifacts/function-layer/honcho/ contain evidence and limits.

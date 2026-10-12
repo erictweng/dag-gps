@@ -85,7 +85,7 @@
       lanes.push({id: lane, label: laneLabel(lane), y, h, count: members.length});
       for (const [c, list] of perCol) list.forEach((id, r) => {
         const n = byId.get(id);
-        nodes.push({id, label: n.label, path: n.path || null, layer: lane, column: c,
+        nodes.push({id, label: n.label, kind: n.kind, path: n.path || null, layer: lane, column: c,
           x: G.margin + c * G.colW, y: y + G.laneTop + r * G.row, w: G.nodeW, h: G.nodeH});
       });
       y += h + G.laneGap;
@@ -96,12 +96,36 @@
     return {nodes, edges: drawn, lanes, width: G.margin * 2 + (maxCol + 1) * G.colW, height: y + G.margin};
   }
 
-  function layoutMap(map) {
+  function layoutMap(map, expansion = {}) {
     const all = map.nodes || [];
     const layers = new Map(all.filter(n => n.kind === 'layer').map(n => [n.id, n]));
     const files = all.filter(n => n.kind === 'file');
     const label = id => (layers.get(id) && layers.get(id).label) || id || 'ungrouped';
     const unique = list => [...new Map(list.map(e => [edgeKey(e), e])).values()];
+    if (map.symbol_graph && map.symbol_graph.nodes.length) {
+      if (expansion.focusedSymbols && expansion.focusedSymbols.size) {
+        const items = map.symbol_graph.nodes.filter(n => expansion.focusedSymbols.has(n.id))
+          .map(n => ({...n, label: n.qualname + ':' + n.start}));
+        const ids = new Set(items.map(n => n.id));
+        const links = map.symbol_graph.edges.filter(e => ids.has(e.from) && ids.has(e.to));
+        const placed = place(items, links, n => n.path, p => p);
+        return Object.assign({mode: 'symbols', notice: 'Focused call evidence: only selected symbols in their source files. Unresolved calls are listed, not drawn. Clear restores the group overview.'}, placed);
+      }
+      const groups = expansion.expandedGroups || new Set(), expanded = expansion.expandedFiles || new Set();
+      const fileById = new Map(files.map(n => [n.id, n]));
+      const items = [...layers.values()].filter(n => !groups.has(n.id));
+      items.push(...files.filter(n => groups.has(n.layer)));
+      for (const n of map.symbol_graph.nodes) if (expanded.has(n.path) && groups.has(fileById.get(n.path).layer))
+        items.push({...n, layer: fileById.get(n.path).layer, label: n.qualname + ':' + n.start});
+      const ids = new Set(items.map(n => n.id));
+      const collapse = id => ids.has(id) ? id : fileById.get(id).layer;
+      const links = (map.file_edges || []).filter(e => e.type !== 'realtime').map(e => ({...e, from: collapse(e.from), to: collapse(e.to)}))
+        .filter(e => e.from !== e.to && ids.has(e.from) && ids.has(e.to));
+      links.push(...map.symbol_graph.edges.filter(e => ids.has(e.from) && ids.has(e.to)));
+      const placed = place(items, unique(links), n => n.kind === 'layer' ? n.id : n.layer, label);
+      return Object.assign({mode: expanded.size ? 'symbols' : groups.size ? 'files' : 'groups',
+        notice: 'Proposed groups → click to expand files → click a file to expand Python symbols. Call edges are static; unresolved sites are listed, never drawn.'}, placed);
+    }
     if (files.length > LIMITS.maxFileNodes) {
       const ids = new Set(layers.keys());
       const edges = unique((map.edges || []).filter(e => e.type !== 'realtime' && ids.has(e.from) && ids.has(e.to)));
@@ -145,9 +169,12 @@
 
   function createGraphView(container, options = {}) {
     let layout = null, nodeEls = new Map(), edgeEls = new Map(), byId = new Map();
+    let currentMap = null, expandedGroups = new Set(), expandedFiles = new Set(), focusedSymbols = new Set();
     const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
     function render(map) {
-      layout = layoutMap(map);
+      if (map !== currentMap) { expandedGroups = new Set(); expandedFiles = new Set(); focusedSymbols = new Set(); }
+      currentMap = map;
+      layout = layoutMap(map, {expandedGroups, expandedFiles, focusedSymbols});
       byId = new Map(layout.nodes.map(n => [n.id, n]));
       nodeEls = new Map(); edgeEls = new Map();
       container.replaceChildren();
@@ -157,7 +184,7 @@
         container.appendChild(p);
       }
       const svg = el('svg', {width: layout.width, height: layout.height, viewBox: '0 0 ' + layout.width + ' ' + layout.height,
-        role: 'img', 'aria-label': summary(null)});
+        role: 'group', 'aria-label': summary(null)});
       container.appendChild(svg);
       const defs = el('defs', {}, svg);
       const marker = el('marker', {id: 'dg-arrow', viewBox: '0 0 10 10', refX: 10, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse'}, defs);
@@ -180,9 +207,19 @@
       for (const n of layout.nodes) {
         const g = el('g', {class: 'node', transform: 'translate(' + n.x + ',' + n.y + ')', 'data-id': n.id}, svg);
         el('rect', {width: n.w, height: n.h, rx: 4}, g);
-        el('text', {x: 8, y: 16, class: 'node-label'}, g).textContent = shorten(n.path || n.label, 28);
-        el('title', {}, g).textContent = (n.path || n.label) + (n.path ? '' : ' (group)');
-        g.addEventListener('click', () => options.onSelect && options.onSelect(n.id));
+        el('text', {x: 8, y: 16, class: 'node-label'}, g).textContent = shorten(n.kind === 'symbol' ? n.label : n.path || n.label, 28);
+        el('title', {}, g).textContent = n.kind === 'symbol' ? n.path + ':' + n.label : (n.path || n.label) + (n.path ? '' : ' (group)');
+        const select = () => {
+          if (map.symbol_graph && map.symbol_graph.nodes.length) {
+            if (n.kind === 'layer') { expandedGroups.add(n.id); render(map); return; }
+            if (n.kind === 'file') { expandedFiles.add(n.id); render(map); }
+          }
+          if (options.onSelect) options.onSelect(n.id);
+        };
+        g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', n.kind === 'symbol' ? n.path + ':' + n.label : n.path || n.label);
+        g.addEventListener('click', select);
+        g.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(); } });
         nodeEls.set(n.id, g);
       }
       return layout;
@@ -196,6 +233,20 @@
     }
     function apply(h) {
       h = h || EMPTY();
+      if (currentMap && currentMap.symbol_graph && currentMap.symbol_graph.nodes.length) {
+        const all = new Map([...currentMap.nodes, ...currentMap.symbol_graph.nodes].map(n => [n.id, n]));
+        focusedSymbols = new Set([...h.nodes].filter(id => all.get(id) && all.get(id).kind === 'symbol'));
+        if (h.mode === 'none') { expandedGroups = new Set(); expandedFiles = new Set(); }
+        if ([...h.nodes].some(id => all.get(id) && all.get(id).kind === 'symbol')) {
+          expandedGroups = new Set(); expandedFiles = new Set();
+        }
+        for (const id of h.nodes) {
+          const n = all.get(id);
+          if (n && n.kind === 'symbol') { expandedFiles.add(n.path); expandedGroups.add(all.get(n.path).layer); }
+          else if (n && n.kind === 'file') expandedGroups.add(n.layer);
+        }
+        render(currentMap);
+      }
       container.dataset.highlight = h.mode;
       for (const [id, g] of nodeEls) {
         const state = id === h.seed ? 'seed' : h.nodes.has(id) ? 'on' : h.dim ? 'dim' : '';

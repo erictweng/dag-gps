@@ -1,0 +1,7 @@
+[BUILD] DAG GPS — Hermes
+Milestone: Python function layer consultant fixes (t_4977fa02)
+Mini: 1/1 — fix four findings and rerun pinned Honcho proof
+Status: verified
+Output: Accepted all four findings. Wildcard scopes invalidate lookup; definition expressions collect in the enclosing scope. Lambda/generator and class-body calls remain unresolved, not invocation-flow edges. Oversized symbol packets return bounded unsupported under the unchanged 1 MiB limit. File/group questions retain eb72a73 behavior with/without symbol_graph. Updated FUNCTION_LAYER.md, STATUS.md and TASKS.md.
+Verification: RED regression log covers all four categories; focused GREEN passes. Full Python 418/418 and JS 178/178 pass. .verify.json build/smoke and all four evals exit 0 (lookup retains 39/40). Real Honcho import at 3922af856d78ec41133916deec4d821fa9c5a92e passes eight browser questions, packet validation and three CLI tools. 7,670 symbols; 7,836 resolved / 37,112 unresolved sites (63 resolved sites removed, none added); 6,506 edges. Eight statuses/selections/edges and seven audited source files unchanged. Import-to-ready 50.480s; warm JS-only p95 1.678ms/800 samples. Evidence: artifacts/function-layer/review-fixes/ and artifacts/function-layer/honcho/.
+Next: dag-consultant second opinion, then generalist approval. No push, merge, PR or next milestone. Separate release packaging/performance gates not rerun.

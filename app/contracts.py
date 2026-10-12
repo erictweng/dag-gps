@@ -19,7 +19,7 @@ MAX_SOURCE_REFS = 200
 MAX_WITNESSES = 200
 MAX_ALTERNATIVES = 20
 STATUSES = {'matched', 'needs-choice', 'no-match', 'no-path', 'unsupported', 'stale'}
-OPERATIONS = {'LOCATE', 'UPSTREAM', 'DOWNSTREAM', 'PATH', 'NOT_SURE', 'IMPACT'}
+OPERATIONS = {'LOCATE', 'UPSTREAM', 'DOWNSTREAM', 'PATH', 'NOT_SURE', 'IMPACT', 'CALLERS', 'CALLEES', 'FLOW', 'TRACE'}
 HIGHLIGHTS = {'relevant', 'potential-impact', 'changed', 'agent-inferred'}
 EVIDENCE_KINDS = {'observed-source', 'static-import', 'static-boundary', 'curated-source', 'agent-inferred'}
 _DIGEST = re.compile(r'[0-9a-f]{64}\Z')
@@ -147,6 +147,62 @@ def _edge(value):
     return tuple(_text(value.get(key), 'Edge ' + key) for key in ('from', 'to', 'type'))
 
 
+def _symbol_catalog(extension, files, ids, kinds, edges):
+    extension = _obj(extension, 'Symbol graph')
+    if extension.get('schema') != 'dag-gps-symbols/v1':
+        raise ContractError('Unsupported symbol graph schema')
+
+    def cite(value):
+        path = _path(value.get('path'))
+        start, end = value.get('start'), value.get('end')
+        count = files.get(path, {}).get('lineCount')
+        if (type(start) is not int or type(end) is not int or start < 1 or end < start
+                or count is None or end > count):
+            raise ContractError('Symbol/call range must fit inventoried source')
+
+    symbols = {}
+    for n in _array(extension.get('nodes'), 'Symbols', 100000):
+        _obj(n, 'Symbol')
+        ident = _text(n.get('id'), 'Symbol ID')
+        if ident in kinds or ident in symbols or n.get('kind') != 'symbol':
+            raise ContractError('Duplicate/invalid symbol node')
+        cite(n)
+        _text(n.get('qualname'), 'Qualified name')
+        symbols[ident] = n
+    for ident, n in symbols.items():
+        parent = n.get('parentId')
+        if parent is not None and (parent not in symbols or symbols[parent]['path'] != n['path']):
+            raise ContractError('Unknown symbol parent')
+        ids.append(ident)
+        kinds[ident] = 'symbol'
+    call_edges = {}
+    for e in _array(extension.get('edges'), 'Call edges', 1000000):
+        a, b, kind = _edge(e)
+        if a not in symbols or b not in symbols or kind != 'call' or e.get('confidence') != 'resolved':
+            raise ContractError('Call edge must connect resolved symbols')
+        if (a, b, kind) in edges:
+            raise ContractError('Duplicate call edge')
+        sites = _array(e.get('sites'), 'Call sites', 100000)
+        if not sites:
+            raise ContractError('Call edges require line evidence')
+        for site in sites:
+            cite(_obj(site, 'Call site'))
+            if site['path'] != symbols[a]['path']:
+                raise ContractError('Call site must belong to caller file')
+        edges.add((a, b, kind))
+        call_edges[(a, b, kind)] = e
+    for call in _array(extension.get('unresolved'), 'Unresolved calls', 1000000):
+        cite(_obj(call, 'Unresolved call'))
+        if call.get('confidence') != 'unresolved' or call.get('to') is not None or (call.get('from') is not None and call['from'] not in symbols):
+            raise ContractError('Unresolved call cannot guess a target')
+    counts = _obj(extension.get('counts'), 'Symbol counts')
+    expected = {'symbols': len(symbols), 'resolved': sum(len(e['sites']) for e in call_edges.values()),
+                'unresolved': len(extension['unresolved'])}
+    if counts != expected or any(type(n) is not int for n in counts.values()):
+        raise ContractError('Symbol counts must equal observed definitions and call sites')
+    return call_edges
+
+
 def validate_snapshot(snapshot):
     snapshot = _obj(snapshot, 'Snapshot')
     _finite_json(snapshot, 'Snapshot', MAX_SNAPSHOT_VALUES)
@@ -216,8 +272,9 @@ def validate_snapshot(snapshot):
             if (a, b, kind) in edges:
                 raise ContractError('Duplicate typed graph edge')
             edges.add((a, b, kind))
+    call_edges = _symbol_catalog(graph['symbol_graph'], files, ids, kinds, edges) if 'symbol_graph' in graph else {}
     # Legitimate directed cycles remain data, not silently deleted links.
-    return {'nodeIds': set(ids), 'nodeKinds': kinds, 'edges': edges, 'files': files}
+    return {'nodeIds': set(ids), 'nodeKinds': kinds, 'edges': edges, 'files': files, 'callEdges': call_edges}
 
 
 def validate_evidence_packet(packet, snapshot):
@@ -231,6 +288,9 @@ def validate_evidence_packet(packet, snapshot):
     if len(encoded) > MAX_PACKET_BYTES:
         raise ContractError('Packet exceeds byte limit')
     graph = validate_snapshot(snapshot)
+    def check_call(edge):
+        if edge.get('type') == 'call' and edge != graph['callEdges'].get(_edge(edge)):
+            raise ContractError('Call evidence differs from observed call sites')
     if packet.get('schema') != PACKET_SCHEMA:
         raise ContractError('Unsupported evidence schema')
     if packet.get('manifestSha256') != snapshot['source']['manifestSha256']:
@@ -242,6 +302,10 @@ def validate_evidence_packet(packet, snapshot):
     _enum(packet.get('status'), STATUSES, 'query status')
     _enum(packet.get('operation'), OPERATIONS, 'operation')
     selected = _unique_ids(packet.get('selectedNodeIds'), 'Selected nodes', MAX_SELECTED_NODES, graph['nodeIds'])
+    if 'unresolvedCalls' in packet or 'unresolvedCallCount' in packet:
+        expected = [c for c in snapshot['map'].get('symbol_graph', {}).get('unresolved', []) if c.get('from') in selected]
+        if packet.get('unresolvedCalls') != expected[:100] or type(packet.get('unresolvedCallCount')) is not int or packet['unresolvedCallCount'] != len(expected):
+            raise ContractError('Unresolved call evidence must match the selected symbols')
     selected_edges = _array(packet.get('selectedEdges'), 'Selected edges', MAX_SELECTED_EDGES)
     edge_keys = [_edge(edge) for edge in selected_edges]
     if len(set(edge_keys)) != len(edge_keys):
@@ -249,6 +313,8 @@ def validate_evidence_packet(packet, snapshot):
     for a, b, kind in edge_keys:
         if (a, b, kind) not in graph['edges'] or a not in selected or b not in selected or kind == 'realtime':
             raise ContractError('Selected edge must be an observed traversal edge between selected nodes')
+    for edge in selected_edges:
+        check_call(edge)
     witnesses = _array(packet.get('witnesses'), 'Witnesses', MAX_WITNESSES)
     for witness in witnesses:
         witness = _obj(witness, 'Witness')
@@ -257,6 +323,7 @@ def validate_evidence_packet(packet, snapshot):
         if not chain or len(links) != len(chain) - 1:
             raise ContractError('Witness must contain a contiguous directed chain')
         for i, link in enumerate(links):
+            check_call(link)
             a, b, kind = _edge(link)
             if (a, b) != (chain[i], chain[i + 1]) or (a, b, kind) not in graph['edges'] or kind == 'realtime':
                 raise ContractError('Witness contains an invented/reversed traversal edge')
@@ -272,7 +339,7 @@ def validate_evidence_packet(packet, snapshot):
         raise ContractError('Matched result needs a selected known node')
     if status in {'needs-choice', 'no-match', 'stale'} and (selected or selected_edges or witnesses):
         raise ContractError('Uncertain/stale result cannot highlight a guessed route')
-    if status == 'no-path' and (packet['operation'] != 'PATH' or selected_edges or witnesses):
+    if status == 'no-path' and (packet['operation'] not in {'PATH', 'FLOW'} or selected_edges or witnesses):
         raise ContractError('No-path cannot contain a claimed route')
     highlight = packet.get('highlightState')
     _enum(highlight, HIGHLIGHTS, 'highlight semantics')

@@ -60,6 +60,7 @@ _PRODUCER_FILES = (
     'app/repositories.py',
     'scripts/import_graph.py',
     'scripts/python_static.py',
+    'scripts/python_symbols.py',
     'scripts/build_map.py',
     'scripts/onboarding.py',
 )
@@ -508,6 +509,8 @@ def _preview(inventory: dict[str, Any], source_paths: list[str], graph: dict[str
                             'edges': len(layer_edges), 'file_edges': len(file_edges)}},
         'nodes': nodes, 'edges': layer_edges, 'file_edges': file_edges, 'layers': layers,
     }
+    if 'symbol_graph' in graph:
+        map_data['symbol_graph'] = graph['symbol_graph']
     preview = {
         'schema': PREVIEW_SCHEMA, 'snapshotId': snapshot_id,
         'state': 'partial' if partial else 'ready',
@@ -595,7 +598,7 @@ def _valid_producer(value: Any) -> bool:
             and set(value) == {'schema', 'files'}
             and value.get('schema') == 'dag-gps-preview-producer/v1'
             and type(value.get('files')) is dict
-            and set(value['files']) == set(_PRODUCER_FILES)
+            and set(value['files']) in (set(_PRODUCER_FILES), set(_PRODUCER_FILES) - {'scripts/python_symbols.py'})
             and all(type(digest) is str and _SHA256.fullmatch(digest)
                     for digest in value['files'].values()))
 
