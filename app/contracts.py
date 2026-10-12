@@ -219,6 +219,26 @@ def _symbol_catalog(extension, files, ids, kinds, edges):
             _enum(site.get('confidence', 'resolved'), CALL_TIERS, 'call confidence')
             if site['path'] != symbols[a]['path']:
                 raise ContractError('Call site must belong to caller file')
+            if 'reexports' in site:
+                hops = _array(site['reexports'], 'Re-export hops', 64)
+                if not hops:
+                    raise ContractError('Re-export evidence must contain hops')
+                previous = None
+                seen = set()
+                for hop in hops:
+                    cite(_obj(hop, 'Re-export hop'))
+                    target_path = _path(hop.get('targetPath'))
+                    name = _text(hop.get('name'), 'Re-export name')
+                    target_name = _text(hop.get('targetName'), 'Re-export target name')
+                    key = (hop['path'], name)
+                    if (not hop['path'].endswith('/__init__.py') or key in seen
+                            or (previous is not None and previous != key)
+                            or (hop['path'], target_path, 'import') not in edges):
+                        raise ContractError('Re-export chain must follow observed package imports')
+                    seen.add(key)
+                    previous = (target_path, target_name)
+                if previous != (symbols[b]['path'], symbols[b]['name']):
+                    raise ContractError('Re-export chain must end at the call target')
         if e['confidence'] != max((s.get('confidence', 'resolved') for s in sites), key=CALL_TIERS.index):
             raise ContractError('Edge confidence must be its weakest site')
         if e['confidence'] == 'through-decorator' and e.get('decorators') != symbols[b].get('decorators'):

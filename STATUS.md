@@ -1,5 +1,26 @@
 # Status — DAG GPS
 
+## Honcho LLM re-exports — verified locally, second opinion pending
+
+Kanban `t_d663095e`, branch `function-layer`. All three prior consultant points
+accepted: definition-time annotation namespaces, private-name abstention and explicit
+alias-escape limitations. Static package re-export witnesses and overload-implementation
+selection now let question 10 reach `src/llm/api.py#honcho_llm_call@147` in the real app.
+
+**447 Python / 182 JS pass**; build/smoke/four evals pass. Same Honcho pin:
+**8,705 resolved / 465 instance-local / 388 typed / 1,591 through-decorator /
+33,799 unresolved sites**. All 734 added edges / 885 sites source-corroborated;
+no wrong new link identified under the stated static evidence semantics.
+13 questions, 44 screenshots, both modes and three CLI tools verified. Certain-only
+keeps the new static links; 13 complete packets match a v3 lexical-only reference
+through the legacy query engine, while unchanged synthetic/file/group parity remains.
+No packet/sidecar bounds raised. Dynamic callback/provider dispatch still requires
+source continuation; no runtime or broad accuracy claim. Report: `docs/FUNCTION_LAYER.md`;
+local evidence: `artifacts/function-layer/honcho-v3/`. Required origin/main prerequisite
+merge: `06f7ca6`. No push/PR/main integration; consultant and parent review remain pending.
+
+The remaining sections are historical.
+
 ## Honcho call-confidence tiers — verified locally, consultant pending
 
 Kanban `t_39e90fae`, branch `function-layer`, local-only. Added explicit

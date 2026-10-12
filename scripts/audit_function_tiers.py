@@ -10,6 +10,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from unittest.mock import patch
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / 'scripts')]
@@ -26,6 +27,8 @@ def main():
     sources, trees = {}, {}
     inventory = {f['path']: f for f in snapshot['inventory']}
     nodes = {n['id']: n for n in graph['nodes']}
+    v3 = out.name == 'honcho-v3'
+    overloads = {(n['path'], n['qualname']) for n in graph['nodes'] if n.get('overloadDeclaration')}
     def source(path):
         if path not in sources:
             raw = subprocess.check_output(['git', '--git-dir=' + str(git_dir), 'show', pin + ':' + path])
@@ -45,7 +48,8 @@ def main():
         validate_evidence_packet(json.loads((out / ('certain-%d.json' % index)).read_text()), snapshot)
     rows = []
     for edge in graph['edges']:
-        inferred = [s for s in edge['sites'] if s.get('confidence', 'resolved') != 'resolved']
+        inferred = [s for s in edge['sites'] if s.get('confidence', 'resolved') != 'resolved'
+                    or (v3 and (s.get('reexports') or (nodes[edge['to']]['path'], nodes[edge['to']]['qualname']) in overloads))]
         if not inferred:
             continue
         target = nodes[edge['to']]
@@ -60,6 +64,12 @@ def main():
             source(site['path'])
             calls = [n for n in ast.walk(trees[site['path']]) if isinstance(n, ast.Call) and n.lineno == site['start'] and n.end_lineno == site['end'] and ast.unparse(n.func)[:256] == site['expression']]
             assert calls, site
+            for hop in site.get('reexports', []):
+                source(hop['path'])
+                stmt = next(n for n in trees[hop['path']].body if isinstance(n, ast.ImportFrom) and n.lineno == hop['start'])
+                assert stmt.end_lineno == hop['end']
+                assert any((a.asname or a.name) == hop['name'] and a.name == hop['targetName'] for a in stmt.names)
+                assert (hop['path'], hop['targetPath']) in [(e['from'], e['to']) for e in snapshot['map']['file_edges'] if e['type'] == 'import']
             caller = nodes[edge['from']]
             assert caller['path'] == site['path'] and caller['start'] <= site['start'] <= caller['end']
             sites.append(dict(site, excerpt=excerpt(site['path'], site['start'], site['end'])))
@@ -83,6 +93,14 @@ def main():
     namespace = {}
     exec(compile(subprocess.check_output(['git', 'show', '62010f6:scripts/python_symbols.py'], cwd=ROOT, text=True), '<baseline>', 'exec'), namespace)
     baseline = dict(snapshot, map=dict(snapshot['map'], symbol_graph=namespace['extract_symbols'](all_sources, imports)))
+    if v3:
+        # Static re-exports/overload implementations intentionally expand resolved.
+        # Prove certain-only parity against an independently extracted graph with
+        # inference disabled, through the unchanged legacy query implementation.
+        from python_symbols import extract_symbols
+        from python_call_tiers import CallTiers
+        with patch.object(CallTiers, 'infer', return_value=None):
+            baseline['map']['symbol_graph'] = extract_symbols(all_sources, imports)
     assert baseline['map']['symbol_graph']['counts']['resolved'] == graph['counts']['resolved']
     (out / 'baseline-snapshot.json').write_text(json.dumps(baseline))
     code = r"""

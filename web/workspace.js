@@ -181,8 +181,10 @@
     for (const l of packet.limitations) li('limitations', l);
     for (const call of packet.unresolvedCalls || []) li('limitations', 'UNRESOLVED: ' + call.expression + ' — ' + call.path + ':' + call.start,
       () => openSource(call.path, call.start, call.end));
-    for (const edge of packet.selectedEdges.filter(e => e.type === 'call')) for (const site of edge.sites)
+    for (const edge of packet.selectedEdges.filter(e => e.type === 'call')) for (const site of edge.sites) {
       li('results', 'Call site [' + (site.confidence || 'resolved') + ']: ' + site.path + ':' + site.start + ' → ' + edge.to + (edge.decorators ? ' via ' + edge.decorators.join(', ') : ''), () => openSource(site.path, site.start, site.end));
+      for (const hop of site.reexports || []) li('results', 'Re-export: ' + hop.path + ':' + hop.start + ' (' + hop.name + ' → ' + hop.targetPath + ':' + hop.targetName + ')', () => openSource(hop.path, hop.start, hop.end));
+    }
     for (const entry of packet.entryPoints || []) li('results', 'Entry point: ' + entry.nodeId + ' — ' + entry.decorators.join(', '));
     $('limitations-box').hidden = !packet.limitations.length;
     if (packet.unresolvedCallCount) $('limitations-box').open = true;

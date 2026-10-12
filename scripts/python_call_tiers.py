@@ -95,7 +95,9 @@ class CallTiers:
             return name not in captured and not scope['wildcard'] and len(scope['names'].get(name, [])) == 1
         for arg in tree.args.posonlyargs + tree.args.args + tree.args.kwonlyargs:
             if arg.annotation is not None and unique(arg.arg):
-                cls = self.class_target(arg.annotation, scope, path)
+                # Annotations belong to the definition's enclosing namespace,
+                # including an immediate class namespace, not function locals.
+                cls = self.class_target(arg.annotation, scope['parent'], path)
                 if cls:
                     found[arg.arg] = (cls, 'typed', tree.lineno)
         for stmt in tree.body:
@@ -168,6 +170,10 @@ class CallTiers:
         return result
 
     def method(self, cls, name):
+        # Raw AST private names do not describe the runtime mangled attribute.
+        # Keep protocol dunders, but abstain until caller-class mangling is modeled.
+        if name.startswith('__') and not name.endswith('__'):
+            return None
         # Own methods are knowable even with an external base. Inherited lookup
         # requires a complete C3 MRO; unknown/ambiguous bases never get skipped.
         own = self.scopes[id(self.syntax[cls])]['names'].get(name)

@@ -1,5 +1,18 @@
 # Tasks — DAG GPS
 
+## Call-tier fixes and Honcho LLM re-exports — `t_d663095e`
+
+Status: verified locally; dag-consultant second opinion pending. Accepted both
+false-target findings with RED-first regressions and documented alias escape limits.
+Static initializer re-exports, hop provenance/source links and overload implementation
+selection reach Honcho's LLM façade in Q10. 447 Python / 182 JS, build/smoke/four
+evals pass; 13 real-app questions, both modes, 734 added links / 885 sites corroborated.
+No wrong new link identified in the audited evidence. Certain-only includes the new
+static links; inference-disabled reference parity and legacy unchanged-input parity pass.
+See [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md). No next milestone, push, PR or main integration.
+
+The earlier function-layer sections below preserve their historical build results.
+
 ## More complete Honcho answers — `t_39e90fae`
 
 Status: verified locally; dag-consultant second opinion pending. One authorized

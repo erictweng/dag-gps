@@ -1,6 +1,6 @@
 """Conservative Python AST definitions and call sites. Never imports target code.
 
-A resolved edge is legacy lexical evidence, not runtime dispatch. Additional
+A resolved edge is static lexical/import evidence, not runtime dispatch. Additional
 receiver/decorator evidence has explicit weaker tiers; unknown bindings remain unknown.
 """
 import ast
@@ -14,6 +14,7 @@ def extract_symbols(sources, import_edges):
     observed = set(tuple(e) for e in import_edges)
     nodes, calls, diagnostics = [], [], []
     trees, scopes, definitions, mutated_attributes = {}, {}, {}, {}
+    import_sites, top_level, export_dynamic, static_imports = {}, {}, set(), set()
     modules = defaultdict(list)
     for path in sorted(sources):
         module = path[:-3].replace('/', '.')
@@ -22,6 +23,23 @@ def extract_symbols(sources, import_edges):
         modules[module].append(path)
         try:
             trees[path] = ast.parse(sources[path], filename=path)
+            top_level[path] = {id(n) for n in trees[path].body}
+            def collect_static(body):
+                for stmt in body:
+                    if isinstance(stmt, (ast.Import, ast.ImportFrom)):
+                        static_imports.add(id(stmt))
+                    elif isinstance(stmt, DEFS):
+                        collect_static(stmt.body)
+            collect_static(trees[path].body)
+            # A literal __all__ declaration does not change explicit named imports.
+            # Do not interpret dynamic construction/mutation or star exports.
+            literal_all = {id(n.targets[0]) for n in trees[path].body
+                           if isinstance(n, ast.Assign) and len(n.targets) == 1
+                           and isinstance(n.targets[0], ast.Name) and n.targets[0].id == '__all__'
+                           and isinstance(n.value, (ast.List, ast.Tuple))
+                           and all(isinstance(v, ast.Constant) and isinstance(v.value, str) for v in n.value.elts)}
+            if any(isinstance(n, ast.Name) and n.id == '__all__' and id(n) not in literal_all for n in ast.walk(trees[path])):
+                export_dynamic.add(path)
             mutated_attributes[path] = {ast.unparse(n) for n in ast.walk(trees[path])
                                         if isinstance(n, ast.Attribute) and isinstance(n.ctx, (ast.Store, ast.Del))}
         except (SyntaxError, ValueError) as error:
@@ -107,6 +125,14 @@ def extract_symbols(sources, import_edges):
                     value = ('import', candidates[0], attr, isinstance(child, ast.ImportFrom)) if candidates else None
                     if submodule:
                         value = ('import', submodule, '', False)
+                    if module == 'typing' and not modules.get('typing') and not value and id(child) in static_imports:
+                        if isinstance(child, ast.ImportFrom) and attr == 'overload':
+                            value = ('typing-overload',)
+                        elif isinstance(child, ast.Import):
+                            value = ('typing-module',)
+                    if value and value[0] == 'import':
+                        # Tuple identity distinguishes identical imports at different sites.
+                        import_sites[id(value)] = (path, child, local)
                     bind(scope, local, value)
             else:
                 if isinstance(child, ast.Name) and isinstance(child.ctx, (ast.Store, ast.Del)):
@@ -137,7 +163,47 @@ def extract_symbols(sources, import_edges):
             scope = parent
         return None
 
-    def target(scope, fn, path, decorated=False):
+    # typing.overload is a declaration, not a runtime call target. Recognize
+    # only uniquely bound typing imports; a user decorator named overload is not it.
+    for path, tree in trees.items():
+        for item in ast.walk(tree):
+            if not isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            outer = scopes[id(item)]['parent']
+            for decorator in item.decorator_list:
+                value = lookup(outer, decorator.id) if isinstance(decorator, ast.Name) else None
+                module = lookup(outer, decorator.value.id) if isinstance(decorator, ast.Attribute) and isinstance(decorator.value, ast.Name) else None
+                if value == ('typing-overload',) or (module == ('typing-module',) and isinstance(decorator, ast.Attribute) and decorator.attr == 'overload'):
+                    node = definitions[id(item)]
+                    node['overloadDeclaration'] = True
+                    outer['names'][item.name].remove(('def', node))
+                    break
+
+    def exported(path, name, active=()):
+        """Return a concrete definition and static initializer-import witnesses."""
+        if path not in trees or (path, name) in active or len(active) >= 64:
+            return None, []
+        scope = scopes[id(trees[path])]
+        value = lookup(scope, name)
+        if value and value[0] == 'import':
+            witness = import_sites[id(value)]
+            _, stmt, local = witness
+            if (not path.endswith('/__init__.py') or path in export_dynamic
+                    or id(stmt) not in top_level[path] or not isinstance(stmt, ast.ImportFrom)
+                    or not value[3] or not value[2]):
+                return None, []
+            result, hops = exported(value[1], value[2], active + ((path, name),))
+            if result:
+                return result, [{'path': path, 'start': stmt.lineno, 'end': stmt.end_lineno,
+                                 'name': local, 'targetPath': value[1], 'targetName': value[2]}] + hops
+            return None, []
+        if active and value and value[0] == 'def':
+            # Re-export endpoints must also be unconditional top-level definitions.
+            if not any(id(n) in top_level[path] and definitions.get(id(n)) is value[1] for n in trees[path].body):
+                return None, []
+        return value, []
+
+    def target(scope, fn, path, decorated=False, reexports=None):
         # File-wide invalidation is intentionally conservative: do not pretend an
         # assigned callback is still the class/module definition of that name.
         if ast.unparse(fn) in mutated_attributes[path]:
@@ -156,6 +222,7 @@ def extract_symbols(sources, import_edges):
             value = entries[0] if len(entries) == 1 else None
             attrs = []
         elif value[0] == 'import':
+            import_stmt = import_sites[id(value)][1]
             _, path, attr, from_import = value
             if from_import:
                 names = [attr] + attrs
@@ -166,7 +233,11 @@ def extract_symbols(sources, import_edges):
                 names = attrs[len(prefix):]
             if len(names) != 1 or path not in trees:
                 return None
-            value = lookup(scopes[id(trees[path])], names[0])
+            value, hops = exported(path, names[0])
+            if hops and id(import_stmt) not in static_imports:
+                return None
+            if reexports is not None:
+                reexports.extend(hops)
             attrs = []
         if value and value[0] == 'def' and not attrs and (decorated or not value[1]['decorated']):
             return value[1]['id']
@@ -198,7 +269,8 @@ def extract_symbols(sources, import_edges):
                             walk(item, path, scope)
             return
         if isinstance(tree, ast.Call):
-            destination = target(scope, tree.func, path) if scope['owner'] and scope['invocable'] else None
+            hops = []
+            destination = target(scope, tree.func, path, reexports=hops) if scope['owner'] and scope['invocable'] else None
             confidence = 'resolved' if destination else 'unresolved'
             if destination is None and scope['owner'] and scope['invocable']:
                 inferred = tiers.infer(tree, scope, path)
@@ -209,6 +281,8 @@ def extract_symbols(sources, import_edges):
                           'path': path, 'start': tree.lineno, 'end': tree.end_lineno,
                           'expression': ast.unparse(tree.func)[:256],
                           'reason': 'Lexically bound definition' if destination else 'No unique supported lexical target; runtime dispatch not inferred'})
+            if destination and hops:
+                calls[-1]['reexports'] = hops
         for child in ast.iter_child_nodes(tree):
             walk(child, path, scope)
 
@@ -228,6 +302,8 @@ def extract_symbols(sources, import_edges):
             edge = edges.setdefault(key, {'from': key[0], 'to': key[1], 'type': 'call',
                                          'confidence': 'resolved', 'sites': []})
             site = {k: call[k] for k in ('path', 'start', 'end', 'expression')}
+            if call.get('reexports'):
+                site['reexports'] = call['reexports']
             if call['confidence'] != 'resolved':
                 site['confidence'] = call['confidence']
             edge['sites'].append(site)

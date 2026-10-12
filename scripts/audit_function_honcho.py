@@ -35,7 +35,7 @@ for tool, symbol, packet_index in [('find_symbols', 'create_messages_for_session
     assert response['result']['selectedNodeIds'] == packets[packet_index]['selectedNodeIds']
     validate_evidence_packet(response['result'], snapshot)
     bridge.append({'tool': tool, 'ok': True, 'selectedNodeIds': response['result']['selectedNodeIds']})
-    if OUT.name == 'honcho-v2':
+    if OUT.name in ('honcho-v2', 'honcho-v3'):
         request['args']['certainOnly'] = True
         certain = subprocess.run([sys.executable, str(ROOT / 'scripts/workspace_cli.py'), '--workspace', str(OUT / 'workspace')],
                                  input=json.dumps(request), text=True, capture_output=True, timeout=60, check=True)
@@ -48,7 +48,7 @@ for tool, symbol, packet_index in [('find_symbols', 'create_messages_for_session
         bridge[-1]['certainOnlyVerified'] = True
 paths = {'src/routers/messages.py', 'src/crud/message.py', 'src/deriver/consumer.py',
          'src/deriver/deriver.py', 'src/routers/peers.py', 'src/dialectic/chat.py', 'src/dialectic/core.py'}
-if OUT.name == 'honcho-v2':
+if OUT.name in ('honcho-v2', 'honcho-v3'):
     paths.update({'src/llm/__init__.py', 'src/llm/api.py', 'src/llm/executor.py', 'src/llm/backends/openai.py', 'src/llm/registry.py', 'src/llm/request_builder.py', 'src/llm/tool_loop.py',
                   'src/telemetry/logging.py', 'src/utils/representation.py', 'tests/bench/runner_common.py',
                   'src/telemetry/metrics_collector.py'})

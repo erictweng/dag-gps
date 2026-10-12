@@ -1,6 +1,187 @@
-# Python function layer — confidence tiers, consultant review pending
+# Python function layer — static re-exports, consultant review pending
 
-## Current build: `t_39e90fae` (Honcho v2)
+## Current build: `t_d663095e` (Honcho v3)
+
+Local `function-layer` build. Required `origin/main` prerequisite merged as `06f7ca6`;
+no push, PR or integration into main. This section supersedes the historical v2/v1
+numbers and limitations below. No Honcho code, model or provider was executed.
+
+### Supported evidence and consultant dispositions
+
+| Tier | Evidence | Drawing |
+|---|---|---|
+| `resolved` | Unique lexical definition, including static package re-export chains and the implementation following `typing.overload` declarations | Solid |
+| `instance-local` | Unique direct `x = RepoClass(...)`, or stable `self.attr` initialization, with supported method lookup | Long dash |
+| `typed` | Repo-class parameter annotation resolved in its **definition-time namespace**, including immediate class scope; direct local annotations retain body scope | Dots |
+| `through-decorator` | Identified decorated definition, not the behavior of its wrapper | Dash-dot |
+| `unresolved` | No supported unique target; no guessed edge | Listed site only |
+
+All three consultant points on `t_39e90fae` are **accepted**:
+
+1. Both truthful-annotation namespace counterexamples reproduced RED, then resolve
+   the outer `A.work` and class-local `Owner.A.work`, respectively. Ordinary typed
+   controls and all prior scope/ownership regressions pass.
+2. Private instance/typed names (`__work`, unlike protocol `__len__`) abstain rather
+   than incorrectly searching the raw name through an MRO. Outside-class and
+   subclass-context cases reproduced RED; ordinary inherited methods remain supported.
+3. Closure captures are invalidated, **not every receiver escape**. Storing a receiver
+   in a container, returning/passing it, or mutating it through an alias is not fully
+   tracked. Such an alias can change runtime behavior without invalidating an inferred
+   edge. Annotations may be false; subclass overrides, monkeypatches, DI, descriptors
+   and wrapper behavior remain outside the static guarantee.
+
+Named imports (`from pkg import name`, aliases, `pkg.name`) follow unique in-repo
+`__init__.py` `from .module import name [as alias]` bindings. Every hop must have an
+observed file-import pair and a direct unconditional import; endpoints must be
+unconditional definitions. Cycles, shadowing, wildcard exports, conditional/try imports,
+dynamic `__all__` construction/mutation and runtime `getattr` abstain. Chains are bounded
+to 64 initializer hops. A literal list/tuple `__all__` declaration is not interpreted
+and does not block an explicit named import (Honcho has one at `src/llm/__init__.py:39–68`).
+There is no star-import resolution or arbitrary module forwarding.
+
+Recognized `typing.overload` imports (including aliases) mark 19 Honcho declarations;
+the declarations remain locatable but are never call targets. A unique implementation
+is used; declaration-only names and non-typing/shadowed `overload` names abstain.
+Actual decorated implementations retain the weaker decorator tier.
+
+Each affected edge's site records ordered `reexports` with path, inclusive import
+range, local name, target path and imported name. Contract guards check bounded ranges,
+observed imports, chain continuity and the final target. Packets preserve these witnesses;
+the sidebar opens each re-export's hash-verified source.
+
+“Certain links only” still removes all three inferred tiers and reconstructs unresolved
+site ordering. **It now includes the new static resolved links**: it is not a frozen v1
+extractor. Six unchanged synthetic packets still equal `62010f6` exactly; all 13 current
+Honcho packets equal the unchanged legacy query engine run over a separately extracted
+v3 graph with inference disabled (except the explicit mode marker). This distinguishes
+query/mode parity from intentional extractor growth. File/group dispatch is unchanged.
+
+### Pinned real-app proof and count changes
+
+Honcho: `3922af856d78ec41133916deec4d821fa9c5a92e`. Real Chromium import form,
+WorkspaceServer, publication/query worker, exact highlighted IDs and source navigation.
+Snapshot: `deb90d7558be781324a7b24aa6a405ac8fbdfaf82072a0d2c8e3659be09b2d3a`.
+
+| Measurement | v2 | v3 | Change |
+|---|---:|---:|---:|
+| Resolved sites | 7,836 | 8,705 | +869 |
+| Instance-local sites | 461 | 465 | +4 |
+| Typed sites | 388 | 388 | 0 |
+| Through-decorator sites | 1,579 | 1,591 | +12 |
+| Unresolved sites | 34,684 | 33,799 | −885 |
+| Resolved edges | 6,506 | 7,227 | +721 |
+| Instance-local / typed / through-decorator edges | 396 / 227 / 1,316 | 398 / 227 / 1,327 | +2 / 0 / +11 |
+
+Inventory / mapped files / definitions remain **1,162 / 663 / 7,670**; entry points
+remain **116**, parse diagnostics **2**. No previous Honcho link/site was removed.
+The annotation/private fixes change the synthetic counterexamples, not Honcho's old links.
+
+All **734 added edges / 885 added sites** were checked against the pinned source:
+caller import bindings, every re-export alias/relative target, actual call syntax,
+overload implementation vs declaration, and the three newly inferable receiver edges.
+The differential audit reloads `b97d6d6`'s extractor on the same 562 hash-verified source
+files; it checks 152 distinct static re-export bindings. Counts use multisets, retaining
+two identical expression/range occurrences where present.
+
+All **80 post-v1 added links / 91 sites displayed** in the 13 answers were read against
+the source review sheet. Of those, **19 links / 21 sites are new since v2**; many others
+already existed in v2 but are now reachable. The full post-v1 structural audit covers
+2,673 links / 3,313 sites in 313 source files. Wrong new links identified: **`[]`**.
+No tier disabled. This is source corroboration under the stated evidence semantics,
+not execution, unaided user acceptance or a repository-wide runtime-accuracy claim.
+The new `SurprisalTree.surprisal` link identifies an abstract declaration, not an override.
+
+### Thirteen questions (same questions as v2)
+
+| # | Question | v3 result and pinned source |
+|---|---|---|
+| 1 | Where is `create_messages_for_session`? | **Right**: `src/routers/messages.py:113–184`; entry metadata retained. |
+| 2 | What does CRUD `create_messages` call? | **Partial**: six edges; now includes `schemas.SessionPeerConfig` at `src/crud/message.py:419` and `SessionCreate` at 422, through `src/schemas/__init__.py`; runtime DB/embedding calls remain unknown. |
+| 3 | What calls `process_representation_tasks_batch`? | **Right for observed callers**: same production caller (`src/deriver/consumer.py:236–247`) and eleven test callers; no scheduler caller invented. |
+| 4 | How does peer chat reach `DialecticAgent`? | **Right**: route at `src/routers/peers.py:404–417` → construction at `src/dialectic/chat.py:116–128`. |
+| 5 | How does peer chat reach `DialecticAgent.answer`? | **Right**: same three symbols; `agent.answer` at `src/dialectic/chat.py:130` remains `instance-local`. |
+| 6 | Trace from `agentic_chat` | **Partial, expanded**: 181 symbols / 180 witness edges, now including the LLM façade and tool loop; source-dependent callback/provider dispatch still not complete. |
+| 7 | Where is `chat`? | **Right ambiguity**: peer/workspace routes and SDK/examples remain choices; no arbitrary selection. |
+| 8 | What does deriver `process_item` call? | **Partial**: 15 direct edges; `tracked_db` at consumer.py:111 retained; `process_dream` at 152 remains unresolved (non-initializer forwarding is outside this support). |
+| 9 | Trace from peer chat | **Partial, expanded**: first page has 200 symbols / 199 witness edges and a continuation, not the whole graph; static branches include both streaming and nonstreaming alternatives. |
+| 10 | How does peer chat reach `honcho_llm_call@147`? | **Right for this endpoint**: four symbols / three edges: route → `agentic_chat` → `DialecticAgent.answer` → `src/llm/api.py#honcho_llm_call@147`. Final site is core.py:589–606 through `src/llm/__init__.py:10`; total path's weakest tier remains `instance-local`. |
+| 11 | What does `DialecticAgent.answer` call? | **Partial, improved**: nine helper edges; now includes the LLM implementation, not any of its three overload declarations. Runtime methods remain unresolved. |
+| 12 | What does `format_reasoning_inputs_as_markdown` call? | **Right for typed evidence**: annotation at `src/telemetry/logging.py:60`, call at 85 → `src/utils/representation.py:540`. |
+| 13 | What does `BaseRunner.run_and_summarize` call? | **Partial**: same seven edges, three stored MetricsCollector methods and abstract declaration evidence; not concrete override inference. |
+
+Disposition: **7 narrow right / 6 partial / 0 wrong**, versus v2's 6 / 7 / 0.
+The original eight remain 5 right / 3 partial. The set is worker-selected, not an
+accuracy benchmark. Large traces still scroll and retain normal whole-chain pagination.
+
+### How Honcho is built — chat request through response, with explicit boundaries
+
+1. **HTTP entry and preflight.** Peer chat is registered at `src/routers/peers.py:243–257`.
+   Authorization/scope handling precedes `agentic_chat` at 404–417 (streaming alternative:
+   388–398). `src/dialectic/chat.py:79–113` reads peers/session/configuration in a short DB
+   context; 116–128 constructs `DialecticAgent`, then line 130 calls `answer`. The last
+   hop is drawn as instance-local, not proven runtime dispatch or automatic `__init__` traversal.
+2. **Prepare query/tools.** `src/dialectic/core.py:567–575` prepares context and selects
+   tools. `answer` passes messages, tool executor, input/output budgets, response model
+   and telemetry to `honcho_llm_call` at 589–606.
+3. **The previous missing hop is now drawn.** The import at core.py:26–30 goes through
+   `src/llm/__init__.py:10` to api.py:147. The api.py declarations at 52,84,116 are not
+   targets. The UI source buttons were exercised at both initializer line 10 and
+   implementation line 147 (`q10-reexport-source.png`, `q10-implementation-source.png`).
+4. **Orchestrate attempts/tool use.** `src/llm/api.py:461–485` calls decorated
+   `execute_tool_loop` (`src/llm/tool_loop.py:292–293`), so this edge is weaker
+   `through-decorator`. The per-iteration `_call_with_messages` invokes the implementation
+   `honcho_llm_call_inner` at tool_loop.py:401–423 → executor.py:333; that direct edge is
+   now resolved. However, assigning/retry-wrapping that callback at 424–438 and invoking
+   `call_func()` at 440 is **source continuation**, not an invented callback edge.
+   Supplied tool dispatch at 582 remains a dynamic boundary. The toolless path similarly
+   invokes a dynamically wrapped callable at api.py:425/427.
+5. **One provider attempt.** `src/llm/executor.py:365–372` selects client/backend and
+   474–484 calls `execute_completion`. Its builder delegates to `backend.complete`
+   at `src/llm/request_builder.py:172`. **Provider choice remains source-dependent**:
+   registry.py:234–237 constructs `OpenAIBackend` for the OpenAI branch; other branches
+   exist. The backend reaches external SDK `chat.completions.create` at
+   `src/llm/backends/openai.py:188,203,273`, or `parse` at 214. These external calls are
+   not resolved in-repo targets; no provider was called during this proof.
+6. **Return and record.** executor.py:485 converts the completion result. The tool loop
+   accumulates usage at tool_loop.py:442–445 and checks for another tool step at 452.
+   The agent reads/serializes content, records evidence and metrics, and returns it at
+   `src/dialectic/core.py:613–639`; the route builds `schemas.DialecticResponse` at
+   `src/routers/peers.py:426–429`. The graph supports static alternatives, not a claim
+   that all of these branches execute on one request.
+
+### Verification and reproduction
+
+- **447 Python / 182 JS tests pass**, including the unchanged 1 MiB whole-packet
+  fallback, prior consultant regressions, legacy file/group parity and new provenance
+  tampering tests. Initial RED: 9 methods / 11 failing subcases; final new suites:
+  14 extractor methods and 3 contract/query methods. A separate RED-first self-review
+  regression prevents an in-repo `typing.py` from masquerading as stdlib overload.
+  No existing tests removed/weakened.
+- `.verify.json` build, smoke and all four eval recipes exit 0. Lookup remains **39/40**;
+  bearer-auth abstention is unchanged. Separate release/performance packaging was not requested.
+- **13 real-app questions**, both modes, three CLI tools in both modes, zero page errors
+  or external browser requests; **44 screenshots**. Q10 endpoint, full path, hop provenance
+  and clicked source starts asserted. Q10/Q12 screenshots visually inspected; long names
+  truncate in graph boxes while the sidebar retains full IDs, and large traces still scroll.
+- Final import-form run: **66.500 seconds**, including extraction/publication; no query-
+  latency comparison. The unchanged 16 MiB sidecar and 1 MiB packet limits both hold.
+- Evidence is local/ignored: `artifacts/function-layer/honcho-v3/`. Key files:
+  `browser-report.json`, `snapshot.json`, `packet-*.json`, `certain-*.json`, `audit.json`,
+  `tier-audit.json`, `certain-parity.log`, `reexport-delta.json`, `reexport-source-checks.json`,
+  `new-receiver-review.txt`, `displayed-new-links.txt`, `regressions-red.log`,
+  `reexports-green.log`, `python-final.log`, `js-final.log`, `gate-results.json`.
+- Consultant second opinion and parent integration remain pending. No next milestone launched.
+
+```sh
+env -u PYTHONPATH /usr/bin/python3 scripts/verify_function_honcho.py artifacts/function-layer/honcho-v3
+env -u PYTHONPATH /usr/bin/python3 scripts/audit_function_honcho.py artifacts/function-layer/honcho-v3
+env -u PYTHONPATH /usr/bin/python3 scripts/audit_function_tiers.py artifacts/function-layer/honcho-v3
+env -u PYTHONPATH /usr/bin/python3 scripts/audit_function_reexports.py artifacts/function-layer/honcho-v3
+```
+
+---
+
+## Historical build: `t_39e90fae` (Honcho v2)
 
 Local-only on `function-layer`, on top of `62010f6`. No push, merge, source execution,
 model call or change to scorer/import evidence. The historical report below records
