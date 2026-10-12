@@ -89,7 +89,9 @@
       (counts.files || 0) + ' mapped, ' + (counts.file_edges || 0) + ' links' +
       (snap.extractionState === 'partial' ? ' · partial extraction (some imports could not be resolved)' : '') +
       '. Groups are proposed from folders, not reviewed.' + (symbolCounts ? ' Python: ' + symbolCounts.symbols +
-      ' symbols; ' + symbolCounts.resolved + ' resolved / ' + symbolCounts.unresolved + ' unresolved call sites.' : ''));
+      ' symbols; ' + symbolCounts.resolved + ' resolved / ' + (symbolCounts['instance-local'] || 0) + ' instance-local / ' +
+      (symbolCounts.typed || 0) + ' typed / ' + (symbolCounts['through-decorator'] || 0) + ' through-decorator / ' +
+      symbolCounts.unresolved + ' unresolved call sites; ' + (symbolCounts.entryPoints || 0) + ' entry points.' : ''));
     graph.render(snap.map);
     if (sameProject) { graphBox.scrollLeft = scroll[0]; graphBox.scrollTop = scroll[1]; }
     renderFileList();
@@ -143,7 +145,7 @@
     resetAgent();
     state.sourceVersion++; $('source-viewer').hidden = true;
     const request = Object.assign({snapshotId: snapshot.snapshotId, requestId: 'ui-' + crypto.randomUUID(),
-      query: $('question').value.trim()}, extra || {});
+      query: $('question').value.trim(), certainOnly: $('certain-only').checked}, extra || {});
     if (!request.query) return;
     try {
       const packet = await api('POST', '/api/projects/' + project.projectId + '/query', request);
@@ -168,7 +170,8 @@
     for (const id of packet.selectedNodeIds) {
       const w = witness.get(id);
       const label = id + (id === packet.seedNodeId ? ' (asked about)' : '') +
-        (w && w.nodeIds.length > 2 ? '  via ' + w.nodeIds.join(' → ') : '');
+        (w && w.nodeIds.length > 2 ? '  via ' + w.nodeIds.join(' → ') : '') +
+        (w ? ' [weakest: ' + (w.confidence || 'resolved') + ']' : '');
       li('results', label, () => selectFile(id, {keepAnswer: true}));
     }
     $('results-heading').hidden = !$('results').children.length;
@@ -179,7 +182,8 @@
     for (const call of packet.unresolvedCalls || []) li('limitations', 'UNRESOLVED: ' + call.expression + ' — ' + call.path + ':' + call.start,
       () => openSource(call.path, call.start, call.end));
     for (const edge of packet.selectedEdges.filter(e => e.type === 'call')) for (const site of edge.sites)
-      li('results', 'Call site: ' + site.path + ':' + site.start + ' → ' + edge.to, () => openSource(site.path, site.start, site.end));
+      li('results', 'Call site [' + (site.confidence || 'resolved') + ']: ' + site.path + ':' + site.start + ' → ' + edge.to + (edge.decorators ? ' via ' + edge.decorators.join(', ') : ''), () => openSource(site.path, site.start, site.end));
+    for (const entry of packet.entryPoints || []) li('results', 'Entry point: ' + entry.nodeId + ' — ' + entry.decorators.join(', '));
     $('limitations-box').hidden = !packet.limitations.length;
     if (packet.unresolvedCallCount) $('limitations-box').open = true;
     graph.apply(GV.highlightFor(packet));

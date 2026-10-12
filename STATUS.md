@@ -1,5 +1,24 @@
 # Status — DAG GPS
 
+## Honcho call-confidence tiers — verified locally, consultant pending
+
+Kanban `t_39e90fae`, branch `function-layer`, local-only. Added explicit
+`instance-local`, `typed`, and `through-decorator` evidence, C3 method lookup,
+entry-point metadata, tiered drawing/packets and the `certainOnly` UI/API/agent flag.
+The peer chat trace now reaches `DialecticAgent.answer`; reexports/overloads still
+block an automatic LLM-client route, with a cited source continuation in the report.
+
+Final verification: **430 Python / 182 JS pass**, build/smoke/four evals pass.
+Honcho pin unchanged: **7,836 resolved / 461 instance-local / 388 typed /
+1,579 through-decorator / 34,684 unresolved sites; 116 entry points**.
+Thirteen real-app questions: 6 narrow right / 7 partial / 0 wrong; original eight
+improve from 3 right / 5 partial to 5 right / 3 partial. All 37 new displayed links
+(44 sites) source-checked; full-repo structural checks are not a semantic accuracy claim.
+All 13 certain-only packets match the lexical baseline except their mode marker.
+Unchanged 1 MiB packet and 16 MiB sidecar limits. No push/merge/next milestone.
+Report: `docs/FUNCTION_LAYER.md`; local evidence: `artifacts/function-layer/honcho-v2/`.
+Consultant second opinion and parent integration pending. Sections below are historical.
+
 ## Python function layer — consultant fixes verified, re-review pending
 
 Kanban `t_58cccce0`, isolated `function-layer`. Prerequisite main fixes merged as

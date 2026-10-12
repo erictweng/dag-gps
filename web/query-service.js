@@ -17,6 +17,12 @@
   const STATIC_LIMITATION = 'Static extracted relationships only; dynamic imports, runtime calls and unsupported files may be missing.';
   const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
   const edgeKey = e => JSON.stringify([e.from, e.to, e.type]);
+  const TIERS = ['resolved', 'instance-local', 'typed', 'through-decorator'];
+  const weakest = edges => TIERS[Math.max(0, ...edges.map(e => TIERS.indexOf(e.confidence)))];
+  function certainEdge(e) {
+    const sites = e.sites.filter(s => !s.confidence || s.confidence === 'resolved');
+    return sites.length ? {from: e.from, to: e.to, type: 'call', confidence: 'resolved', sites} : null;
+  }
 
   // Python's contract serializes UTF-8 JSON with a space after each structural
   // comma/colon. Count those outside strings, not punctuation in source evidence.
@@ -196,6 +202,9 @@
     function symbolQuery(packet, request, parsed, offset) {
       packet.operation = parsed.op;
       packet.limitations = ['Python lexical calls only, not runtime execution. Decorators, DI, dynamic dispatch, inherited methods and external calls are unresolved.'];
+      const certain = request.certainOnly === true;
+      if (certain) packet.certainOnly = true;
+      else packet.limitations = ['Static evidence, not runtime execution. Confidence tiers: resolved → instance-local → typed → through-decorator (weakest). Decorator links identify the underlying definition, not wrapper behavior. External/dynamic calls remain unknown.'];
       if (!symbols) {
         packet.status = 'unsupported'; packet.reason = 'This snapshot has no Python symbol extension.';
         return packet;
@@ -228,9 +237,10 @@
       const seed = candidates[0][0], end = candidates[1] && candidates[1][0];
       packet.seedNodeId = seed;
       const reverse = parsed.op === 'CALLERS', adj = reverse ? callBackward : callForward;
+      const linksFrom = id => certain ? adj.get(id).map(certainEdge).filter(Boolean) : adj.get(id);
       const prev = new Map([[seed, null]]), via = new Map(), order = [], queue = [seed];
       if (parsed.op !== 'LOCATE') for (let i = 0; i < queue.length; i++) {
-        for (const edge of adj.get(queue[i])) {
+        for (const edge of linksFrom(queue[i])) {
           const next = reverse ? edge.from : edge.to;
           if (!prev.has(next)) { prev.set(next, queue[i]); via.set(next, edge); order.push(next); queue.push(next); }
         }
@@ -239,17 +249,19 @@
       function witness(id) {
         const chain = [], links = [];
         for (let n = id; n !== null; n = prev.get(n)) { chain.push(n); if (via.has(n)) links.push(via.get(n)); }
-        return {nodeIds: reverse ? chain : chain.reverse(), edges: reverse ? links : links.reverse()};
+        const result = {nodeIds: reverse ? chain : chain.reverse(), edges: reverse ? links : links.reverse()};
+        if (!certain) result.confidence = weakest(links);
+        return result;
       }
       const selected = new Set([seed]), selectedEdges = new Map(), witnesses = [];
-      if (['CALLERS', 'CALLEES', 'TRACE'].includes(parsed.op)) for (const e of adj.get(seed)) if (e.from === e.to) {
+      if (['CALLERS', 'CALLEES', 'TRACE'].includes(parsed.op)) for (const e of linksFrom(seed)) if (e.from === e.to) {
         selectedEdges.set(edgeKey(e), e);
         packet.limitations.push('A recursive self-call is retained as an edge, not an invented acyclic witness chain.');
       }
       packet.status = 'matched';
       if (parsed.op === 'FLOW' && !prev.has(end)) {
         selected.add(end); packet.status = 'no-path';
-        packet.reason = 'No resolved static call path. Missing runtime links are unknown, not proof of no flow.';
+        packet.reason = 'No ' + (certain ? 'resolved ' : '') + 'static call path. Missing runtime links are unknown, not proof of no flow.';
       } else {
         const targets = parsed.op === 'FLOW' ? [end] : order;
         if (offset > targets.length) throw new Error('Continuation is past the result');
@@ -266,7 +278,7 @@
           if (next === offset) { packet.status = 'unsupported'; packet.reason = 'A complete call chain exceeds the 200-node packet bound.'; return packet; }
           packet.truncated = true; packet.continuation = 'offset:' + next;
         }
-        packet.reason = parsed.op + ': ' + selected.size + ' symbol(s), ' + selectedEdges.size + ' resolved call edge(s).';
+        packet.reason = parsed.op + ': ' + selected.size + ' symbol(s), ' + selectedEdges.size + (certain ? ' resolved' : ' static') + ' call edge(s).';
       }
       packet.selectedNodeIds = [...selected]; packet.selectedEdges = [...selectedEdges.values()]; packet.witnesses = witnesses;
       packet.sourceRefs = [...selected].map(id => {
@@ -274,7 +286,23 @@
         return {path: n.path, start: n.start, end: n.end, sha256: f.sha256,
           snapshotId: snapshot.snapshotId, evidenceKind: 'observed-source'};
       });
-      const unknown = symbols.unresolved.filter(c => selected.has(c.from));
+      let allUnknown = symbols.unresolved;
+      if (certain) {
+        allUnknown = []; let j = 0;
+        const additions = symbols.certainAdditions || [];
+        for (let i = 0; i <= symbols.unresolved.length; i++) {
+          while (j < additions.length && additions[j][0] === i) {
+            const [, ei, si] = additions[j++], edge = symbols.edges[ei], site = edge.sites[si];
+            allUnknown.push({from: edge.from, to: null, confidence: 'unresolved', path: site.path,
+              start: site.start, end: site.end, expression: site.expression,
+              reason: 'No unique supported lexical target; runtime dispatch not inferred'});
+          }
+          if (i < symbols.unresolved.length) allUnknown.push(symbols.unresolved[i]);
+        }
+      }
+      const unknown = allUnknown.filter(c => selected.has(c.from));
+      if (!certain) packet.entryPoints = [...selected].filter(id => symbolNodes.get(id).entryPoint)
+        .map(id => ({nodeId: id, decorators: symbolNodes.get(id).entryPoint}));
       packet.unresolvedCalls = unknown.slice(0, 100);
       packet.unresolvedCallCount = unknown.length;
       packet.reason += ' ' + unknown.length + ' unresolved call site(s) in selected symbols (not edges).';
@@ -289,6 +317,7 @@
         throw new Error('requestId is required');
       if (typeof request.query !== 'string' || request.query.length > LIMITS.queryChars)
         throw new Error('query must be a bounded string');
+      if (request.certainOnly !== undefined && typeof request.certainOnly !== 'boolean') throw new Error('certainOnly must be boolean');
       const packet = base(request);
       if (request.snapshotId !== undefined && request.snapshotId !== snapshot.snapshotId) {
         packet.status = 'stale';

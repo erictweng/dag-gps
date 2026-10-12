@@ -49,7 +49,7 @@ PROJECT_ID = re.compile(r'p-[0-9a-f]{20}\Z')
 SNAPSHOT_ID = re.compile(r'[0-9a-f]{64}\Z')
 JOB_ID = re.compile(r'j-[0-9a-f]{24}\Z')
 COMMIT = re.compile(r'[0-9a-f]{40}\Z')
-QUERY_FIELDS = {'snapshotId', 'requestId', 'query', 'continuation', 'chosenNodeId'}
+QUERY_FIELDS = {'snapshotId', 'requestId', 'query', 'continuation', 'chosenNodeId', 'certainOnly'}
 STATIC = {
     '/': ('web/workspace.html', 'text/html; charset=utf-8'),
     '/workspace.js': ('web/workspace.js', 'text/javascript; charset=utf-8'),
@@ -355,6 +355,8 @@ class _Handler(BaseHTTPRequestHandler):
             if type(body.get(field)) is not str or not body[field] or len(body[field]) > 2048:
                 raise ApiError(400, field + ' must be a nonempty bounded string')
         continuation = body.get('continuation')
+        if 'certainOnly' in body and type(body['certainOnly']) is not bool:
+            raise ApiError(400, 'certainOnly must be boolean')
         if continuation is not None and (type(continuation) is not str or not re.fullmatch(r'offset:\d{1,9}', continuation)):
             raise ApiError(400, 'Invalid continuation')
         chosen = body.get('chosenNodeId')

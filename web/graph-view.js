@@ -91,7 +91,7 @@
       y += h + G.laneGap;
     }
     nodes.sort((a, b) => compare(a.id, b.id));
-    const drawn = edges.map(e => ({from: e.from, to: e.to, type: e.type, weight: e.weight === undefined ? null : e.weight,
+    const drawn = edges.map(e => ({from: e.from, to: e.to, type: e.type, confidence: e.confidence, weight: e.weight === undefined ? null : e.weight,
       back: col.get(e.to) <= col.get(e.from)})).sort((a, b) => compare(edgeKey(a), edgeKey(b)));
     return {nodes, edges: drawn, lanes, width: G.margin * 2 + (maxCol + 1) * G.colW, height: y + G.margin};
   }
@@ -107,7 +107,7 @@
         const items = map.symbol_graph.nodes.filter(n => expansion.focusedSymbols.has(n.id))
           .map(n => ({...n, label: n.qualname + ':' + n.start}));
         const ids = new Set(items.map(n => n.id));
-        const links = map.symbol_graph.edges.filter(e => ids.has(e.from) && ids.has(e.to));
+        const links = (expansion.focusedEdges || map.symbol_graph.edges).filter(e => ids.has(e.from) && ids.has(e.to));
         const placed = place(items, links, n => n.path, p => p);
         return Object.assign({mode: 'symbols', notice: 'Focused call evidence: only selected symbols in their source files. Unresolved calls are listed, not drawn. Clear restores the group overview.'}, placed);
       }
@@ -148,7 +148,7 @@
     }
     if (packet.status !== 'matched' || !packet.selectedNodeIds.length) return EMPTY();
     return {mode: 'highlight', dim: true, nodes: new Set(packet.selectedNodeIds),
-      edges: new Set(packet.selectedEdges.map(edgeKey)), seed: packet.seedNodeId || null, kind: packet.highlightState};
+      edges: new Set(packet.selectedEdges.map(edgeKey)), callEdges: packet.selectedEdges.filter(e => e.type === 'call'), seed: packet.seedNodeId || null, kind: packet.highlightState};
   }
   // Observed direct links of one file, used when the user selects a file.
   function neighborhood(map, id) {
@@ -170,11 +170,12 @@
   function createGraphView(container, options = {}) {
     let layout = null, nodeEls = new Map(), edgeEls = new Map(), byId = new Map();
     let currentMap = null, expandedGroups = new Set(), expandedFiles = new Set(), focusedSymbols = new Set();
+    let focusedEdges = null;
     const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
     function render(map) {
       if (map !== currentMap) { expandedGroups = new Set(); expandedFiles = new Set(); focusedSymbols = new Set(); }
       currentMap = map;
-      layout = layoutMap(map, {expandedGroups, expandedFiles, focusedSymbols});
+      layout = layoutMap(map, {expandedGroups, expandedFiles, focusedSymbols, focusedEdges});
       byId = new Map(layout.nodes.map(n => [n.id, n]));
       nodeEls = new Map(); edgeEls = new Map();
       container.replaceChildren();
@@ -200,8 +201,8 @@
         const d = e.back
           ? 'M' + (a.x + a.w / 2) + ',' + a.y + ' C' + (a.x + a.w / 2) + ',' + (a.y - 26) + ' ' + (b.x + b.w / 2) + ',' + (b.y - 26) + ' ' + (b.x + b.w / 2) + ',' + b.y
           : 'M' + x1 + ',' + y1 + ' C' + (x1 + 40) + ',' + y1 + ' ' + (x2 - 40) + ',' + y2 + ' ' + x2 + ',' + y2;
-        const path = el('path', {d, class: 'edge' + (e.back ? ' back' : ''), 'marker-end': 'url(#dg-arrow)'}, edgeLayer);
-        el('title', {}, path).textContent = e.from + ' → ' + e.to + ' (' + e.type + (e.weight ? ', ' + e.weight : '') + ')';
+        const path = el('path', {d, class: 'edge' + (e.back ? ' back' : '') + (e.confidence ? ' confidence-' + e.confidence : ''), 'data-confidence': e.confidence || '', 'marker-end': 'url(#dg-arrow)'}, edgeLayer);
+        el('title', {}, path).textContent = e.from + ' → ' + e.to + ' (' + e.type + (e.confidence ? ', ' + e.confidence : '') + (e.weight ? ', ' + e.weight : '') + ')';
         edgeEls.set(edgeKey(e), path);
       }
       for (const n of layout.nodes) {
@@ -233,6 +234,7 @@
     }
     function apply(h) {
       h = h || EMPTY();
+      focusedEdges = h.callEdges || [];
       if (currentMap && currentMap.symbol_graph && currentMap.symbol_graph.nodes.length) {
         const all = new Map([...currentMap.nodes, ...currentMap.symbol_graph.nodes].map(n => [n.id, n]));
         focusedSymbols = new Set([...h.nodes].filter(id => all.get(id) && all.get(id).kind === 'symbol'));

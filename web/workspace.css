@@ -57,6 +57,10 @@ button:disabled { cursor: not-allowed; color: #4b5563; background: #f3f4f6; }
 .graph .lane-label { fill: #374151; font-size: 12px; font-weight: 700; }
 .graph .edge { fill: none; stroke: #9ca3af; stroke-width: 1.2; }
 .graph .edge.back { stroke-dasharray: 3 3; }
+.graph .edge.confidence-resolved { stroke-dasharray: none; }
+.graph .edge.confidence-instance-local { stroke-dasharray: 10 4; }
+.graph .edge.confidence-typed { stroke-dasharray: 2 4; }
+.graph .edge.confidence-through-decorator { stroke-dasharray: 10 3 2 3; }
 .graph .arrow { fill: #9ca3af; }
 .graph .node { cursor: pointer; }
 .graph .node rect { fill: #fff; stroke: #6b7280; stroke-width: 1; }

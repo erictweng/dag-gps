@@ -1,5 +1,16 @@
 # Tasks — DAG GPS
 
+## More complete Honcho answers — `t_39e90fae`
+
+Status: verified locally; dag-consultant second opinion pending. One authorized
+long-build scope on `function-layer`: single-assignment instance-held/typed calls,
+decorated-target evidence, entry markers, weakest-tier witnesses and certain-only parity.
+430 Python / 182 JS pass; build/smoke/four evals pass. Same Honcho pin, 13 browser
+questions and complete certain-only packet parity. 37 added displayed links source-checked;
+no wrong new link found in that sample. Chat reaches `DialecticAgent.answer`;
+LLM reexports/overloads and runtime calls remain explicit gaps. Full report and
+walkthrough: [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md). No push/merge or next card launched.
+
 ## Python function layer — `t_58cccce0`
 
 Status: verified locally; consultant fixes `t_4977fa02` verified, re-review and integration pending.

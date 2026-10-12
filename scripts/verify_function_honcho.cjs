@@ -32,6 +32,11 @@ const [url, out] = process.argv.slice(2);
     await page.click('#clear');
     assert.equal(await page.locator('#graph').getByRole('button', {name: 'src/dialectic', exact: true}).count(), 1);
     const questions = JSON.parse(fs.readFileSync(path.join(__dirname, '../eval/function-honcho.json')));
+    if (out.endsWith('honcho-v2')) questions.push('trace from src/routers/peers.py:chat',
+      'how does src/routers/peers.py:chat reach src/llm/api.py#honcho_llm_call@147',
+      'what does DialecticAgent.answer call',
+      'what does src/telemetry/logging.py:format_reasoning_inputs_as_markdown call',
+      'what does tests/bench/runner_common.py:BaseRunner.run_and_summarize call');
     fs.writeFileSync(path.join(out, 'questions.json'), JSON.stringify(questions, null, 2));
     const results = [];
     for (let i = 0; i < questions.length; i++) {
@@ -54,6 +59,22 @@ const [url, out] = process.argv.slice(2);
         await page.screenshot({path: path.join(out, 'question-bottom-' + (i + 1) + '.png')});
       }
       results.push({query, status: packet.status, operation: packet.operation, elapsedMs, highlights});
+      if (out.endsWith('honcho-v2')) {
+        const drawn = await page.locator('#graph .edge').evaluateAll(es => es.map(e => ({tier: e.dataset.confidence, dash: getComputedStyle(e).strokeDasharray})));
+        fs.writeFileSync(path.join(out, 'drawing-' + (i + 1) + '.json'), JSON.stringify(drawn));
+        for (const e of drawn) if (e.tier && e.tier !== 'resolved') assert.notEqual(e.dash, 'none');
+        await page.check('#certain-only');
+        const legacyResponse = page.waitForResponse(r => r.url().endsWith('/query') && r.request().method() === 'POST');
+        await page.press('#question', 'Enter');
+        const certain = await (await legacyResponse).json();
+        assert.ok(certain.selectedNodeIds, JSON.stringify(certain));
+        assert.ok(certain.selectedEdges.every(e => e.confidence === 'resolved'));
+        fs.writeFileSync(path.join(out, 'certain-' + (i + 1) + '.json'), JSON.stringify(certain, null, 2));
+        await page.uncheck('#certain-only');
+        const again = page.waitForResponse(r => r.url().endsWith('/query') && r.request().method() === 'POST');
+        await page.press('#question', 'Enter'); await again;
+        await page.waitForFunction(reason => document.querySelector('#answer-reason').textContent === reason, packet.reason);
+      }
       if (packet.selectedNodeIds.length && packet.status === 'matched') {
         await page.locator('#results button').first().click();
         await page.waitForFunction(() => document.querySelector('#source-lines').children.length > 0);

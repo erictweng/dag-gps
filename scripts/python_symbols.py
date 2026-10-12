@@ -1,10 +1,11 @@
 """Conservative Python AST definitions and call sites. Never imports target code.
 
-A resolved edge is lexical evidence, not runtime dispatch. Unknown/rebound names,
-decorated targets, inherited methods and calls at module scope stay unresolved.
+A resolved edge is legacy lexical evidence, not runtime dispatch. Additional
+receiver/decorator evidence has explicit weaker tiers; unknown bindings remain unknown.
 """
 import ast
 from collections import defaultdict
+from python_call_tiers import CallTiers, TIERS, decorator_metadata, weakest
 
 DEFS = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
 
@@ -45,6 +46,11 @@ def extract_symbols(sources, import_edges):
                         'path': path, 'start': child.lineno, 'end': child.end_lineno,
                         'parentId': scope['owner'], 'decorated': bool(child.decorator_list)}
                 nodes.append(node)
+                decorators, entry = decorator_metadata(child)
+                if decorators:
+                    node['decorators'] = decorators
+                if entry:
+                    node['entryPoint'] = entry
                 definitions[id(child)] = node
                 bind(scope, child.name, ('def', node))
                 is_class = isinstance(child, ast.ClassDef)
@@ -131,7 +137,7 @@ def extract_symbols(sources, import_edges):
             scope = parent
         return None
 
-    def target(scope, fn, path):
+    def target(scope, fn, path, decorated=False):
         # File-wide invalidation is intentionally conservative: do not pretend an
         # assigned callback is still the class/module definition of that name.
         if ast.unparse(fn) in mutated_attributes[path]:
@@ -162,9 +168,11 @@ def extract_symbols(sources, import_edges):
                 return None
             value = lookup(scopes[id(trees[path])], names[0])
             attrs = []
-        if value and value[0] == 'def' and not attrs and not value[1]['decorated']:
+        if value and value[0] == 'def' and not attrs and (decorated or not value[1]['decorated']):
             return value[1]['id']
         return None
+
+    tiers = CallTiers(trees, scopes, definitions, target, lookup, mutated_attributes)
 
     def walk(tree, path, scope):
         if isinstance(tree, (ast.Lambda, ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
@@ -191,8 +199,13 @@ def extract_symbols(sources, import_edges):
             return
         if isinstance(tree, ast.Call):
             destination = target(scope, tree.func, path) if scope['owner'] and scope['invocable'] else None
+            confidence = 'resolved' if destination else 'unresolved'
+            if destination is None and scope['owner'] and scope['invocable']:
+                inferred = tiers.infer(tree, scope, path)
+                if inferred:
+                    destination, confidence = inferred
             calls.append({'from': scope['owner'], 'to': destination,
-                          'confidence': 'resolved' if destination else 'unresolved',
+                          'confidence': confidence,
                           'path': path, 'start': tree.lineno, 'end': tree.end_lineno,
                           'expression': ast.unparse(tree.func)[:256],
                           'reason': 'Lexically bound definition' if destination else 'No unique supported lexical target; runtime dispatch not inferred'})
@@ -202,15 +215,42 @@ def extract_symbols(sources, import_edges):
     for path, tree in trees.items():
         walk(tree, path, scopes[id(tree)])
     edges = {}
+    legacy_unknown = 0
+    additions = []
     for call in calls:
+        if call['confidence'] != 'resolved':
+            if call['to']:
+                additions.append((legacy_unknown, call))
+            else:
+                legacy_unknown += 1
         if call['to']:
             key = (call['from'], call['to'])
             edge = edges.setdefault(key, {'from': key[0], 'to': key[1], 'type': 'call',
                                          'confidence': 'resolved', 'sites': []})
-            edge['sites'].append({k: call[k] for k in ('path', 'start', 'end', 'expression')})
+            site = {k: call[k] for k in ('path', 'start', 'end', 'expression')}
+            if call['confidence'] != 'resolved':
+                site['confidence'] = call['confidence']
+            edge['sites'].append(site)
+            edge['confidence'] = weakest([edge['confidence'], call['confidence']])
+            if tiers.by_id[call['to']].get('decorators'):
+                edge['decorators'] = tiers.by_id[call['to']]['decorators']
     unresolved = [c for c in calls if not c['to']]
+    ordered_edges = [edges[key] for key in sorted(edges)]
+    edge_indices = {key: index for index, key in enumerate(sorted(edges))}
+    site_indices = defaultdict(int)
+    compact_additions = []
+    # Reference existing site evidence instead of copying large unresolved records.
+    for before, call in additions:
+        key = (call['from'], call['to'])
+        sites = edges[key]['sites']
+        index = site_indices[key]
+        while sites[index].get('confidence', 'resolved') == 'resolved':
+            index += 1
+        compact_additions.append([before, edge_indices[key], index])
+        site_indices[key] = index + 1
     return {'schema': 'dag-gps-symbols/v1', 'nodes': nodes,
-            'edges': [edges[key] for key in sorted(edges)], 'unresolved': unresolved,
-            'diagnostics': diagnostics,
-            'counts': {'symbols': len(nodes), 'resolved': len(calls) - len(unresolved),
-                       'unresolved': len(unresolved)}}
+            'edges': ordered_edges, 'unresolved': unresolved,
+            'diagnostics': diagnostics, 'certainAdditions': compact_additions,
+            'counts': dict({'symbols': len(nodes), 'unresolved': len(unresolved),
+                            'entryPoints': sum(bool(n.get('entryPoint')) for n in nodes)},
+                           **{tier: sum(c['confidence'] == tier for c in calls) for tier in TIERS})}

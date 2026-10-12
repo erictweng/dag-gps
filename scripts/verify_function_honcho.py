@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from app.server import WorkspaceServer
 
-OUT = ROOT / 'artifacts/function-layer/honcho'
+OUT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / 'artifacts/function-layer/honcho'
 
 
 def main():
