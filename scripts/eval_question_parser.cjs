@@ -3,8 +3,8 @@
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const {performance} = require('node:perf_hooks');
-const {createQueryService} = require('../web/query-service.js');
-const datasetBytes = fs.readFileSync('eval/question_parser.json');
+const {createQueryService} = require(process.argv[6] ? require('node:path').resolve(process.argv[6]) : '../web/query-service.js');
+const datasetBytes = fs.readFileSync(process.argv[5] || 'eval/question_parser.json');
 const dataset = JSON.parse(datasetBytes);
 const snapshot = JSON.parse(fs.readFileSync(process.argv[2] || 'artifacts/question-parser/baseline-snapshot.json'));
 const out = process.argv[3] || 'artifacts/question-parser/baseline.json';
