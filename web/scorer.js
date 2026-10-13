@@ -93,6 +93,8 @@
         /^from\s+/i.test(q) || /^how\b.*\b(?:reach|connect|get to)\b/i.test(q))
       return {op: 'PATH', malformed: true};
     if ((m = q.match(/^(?:what|which|who)\s+(?:\w+\s+)?(?:depends? on|uses?|imports?)\s+(.+)$/i)) ||
+        (m = q.match(/^who\s+invokes\s+(.+)$/i)) ||
+        (m = q.match(/^where\s+is\s+(.+?)\s+called\s+from$/i)) ||
         (m = q.match(/\b(?:dependents|downstream)(?:\s+(?:of|from))?\s+(.+)$/i)) ||
         (m = q.match(/^what would break if\s+(.+?)\s+changed$/i)))
       return {op: 'DOWNSTREAM', target: m[1]};
@@ -332,7 +334,13 @@
         }
         return h;
       }
-      if (file) return rankFile(file);
+      if (file) {
+        const h = rankFile(file);
+        // A kind hint is a preference, not a hard filter. Literal paths and
+        // explicit absent filenames still retain their strict missing-name guard.
+        if (h.match.label !== 'No match' || /[/.]/.test(file.query) || !index.some(n => n.kind === 'layer' &&
+            [n.identity, n.label, ...n.aliases].includes(normalized(file.query)))) return h;
+      }
       const q = terms(text); const phrase = q.join(' '); const raw = normalized(text);
       const originalPhrase = normalized(text.replace(/^(?:where is|find|locate)\s+(?:the\s+)?/i, ''));
       const hinted = kindHint(text), name = filenameText(text);
@@ -398,6 +406,11 @@
       const targets = parsed.op === 'PATH' ? {
         from_target: rank(parsed.from || ''), to_target: rank(parsed.to || '')
       } : {locate_target: rank(parsed.target || '')};
+      // Preserve original evidence display text; retrieval uses only the normalized input.
+      const display = intent(query);
+      if (display.op === parsed.op) for (const [key, h] of Object.entries(targets))
+        if (h.match.mode === 'architecture') h.match.query =
+          (key === 'from_target' ? display.from : key === 'to_target' ? display.to : display.target) || '';
       const yes = !parsed.malformed && Object.values(targets).every(h => h.yes);
       const chosen = yes ? parsed.op : 'NOT_SURE';
       const result = {scoreKind: SCORE_KIND, evidenceVersion: 1, requestedOperation: parsed.op,

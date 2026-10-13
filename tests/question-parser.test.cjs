@@ -28,6 +28,8 @@ test('kind words and filler do not dilute coverage', () => {
     assert.equal(h.yes, true, word); assert.equal(h.match.coverage, 1);
   }
   assert.equal(s.score('where is the database layer').yes, true);
+  assert.equal(s.score('where is the database file').targets.locate_target.choice, 'database');
+  assert.equal(s.score('where is the database file').yes, true);
   assert.equal(s.score('db extraterrestrial nonsense').yes, false);
 });
 test('case-folded file collisions require choice; paths are not repaired', () => {
@@ -44,6 +46,8 @@ test('normalization composes with explicitly supplied alias overlays', () => {
 test('operation patterns retain dependency direction', () => {
   assert.equal(S.createScorer(map).score('what does src/db.py depend on').requestedOperation, 'UPSTREAM');
   assert.equal(S.createScorer(map).score('what uses src/db.py').requestedOperation, 'DOWNSTREAM');
+  assert.equal(S.createScorer(map).score('who invokes src/db.py').requestedOperation, 'DOWNSTREAM');
+  assert.equal(S.createScorer(map).score('where is src/db.py called from').requestedOperation, 'DOWNSTREAM');
 });
 test('versioned synonyms are bidirectional, lower scoring and literal-last-resort', () => {
   for (const group of S.SYNONYMS) for (const a of group) for (const b of group) if (a !== b) {
@@ -56,4 +60,16 @@ test('versioned synonyms are bidirectional, lower scoring and literal-last-resor
   assert.equal(S.createScorer(map).score('database').targets.locate_target.choice, 'database');
   assert.deepEqual(S.synonymQueries('llm'), []);
   assert.equal(S.createScorer(map).score('database unknown nonsense').yes, false);
+});
+test('symbol kind hints break cross-kind ties, never exclude the only available kind', () => {
+  const s = structuredClone(snapshot);
+  s.inventory = [{path: 'src/db.py', sha256: 'd'}];
+  s.map.symbol_graph = {nodes: [{id: 'src/db.py#db@1', name: 'db', qualname: 'db', kind: 'symbol',
+    path: 'src/db.py', start: 1, end: 2}], edges: [], unresolved: []};
+  const q = Q.createQueryService(s);
+  assert.deepEqual(q.query({requestId: 'r', query: 'find function db'}).selectedNodeIds, ['src/db.py#db@1']);
+  assert.deepEqual(q.query({requestId: 'r', query: 'find file db'}).selectedNodeIds, ['db']);
+  assert.deepEqual(q.query({requestId: 'r', query: 'where is the function db defined'}).selectedNodeIds, ['src/db.py#db@1']);
+  s.map.symbol_graph.nodes = [];
+  assert.deepEqual(Q.createQueryService(s).query({requestId: 'r', query: 'find function db'}).selectedNodeIds, ['db']);
 });

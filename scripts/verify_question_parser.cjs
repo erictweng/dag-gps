@@ -20,18 +20,23 @@ const [url, out, repo, pin] = process.argv.slice(2);
     const status = await page.textContent('#import-status');
     fs.writeFileSync(path.join(out, 'import.json'), JSON.stringify({status, errors}));
     assert.ok(status.startsWith('Imported'), status);
+    await page.waitForFunction(() => !document.querySelector('#import-form button').disabled);
     await page.waitForSelector('#graph .node');
     await page.screenshot({path: path.join(out, 'import.png')});
     const questions = repo.includes('salesroom') ? ['youtube', 'where is the youtube', 'where is the src', "where's the db", 'where is the src folder', 'where is the YOUTUBE file', 'where do we play videos'] :
       ['where is the db', 'where is the DB', "where's the db", 'wheres the db', 'where is the src folder', 'where is the database layer', 'where do we store messages'];
     const results = [];
     for (const [i, query] of questions.entries()) {
+      await page.click('#clear'); // each parser case starts from the group overview
       await page.fill('#question', query);
       const response = page.waitForResponse(r => r.url().endsWith('/query') && r.request().method() === 'POST');
       await page.press('#question', 'Enter');
       const packet = await (await response).json();
       assert.ok(packet.selectedNodeIds, JSON.stringify(packet));
       await page.waitForFunction(reason => document.querySelector('#answer-reason').textContent === reason, packet.reason);
+      const selected = page.locator('#graph .node[data-state=on], #graph .node[data-state=seed]');
+      assert.deepEqual(new Set(await selected.evaluateAll(ns => ns.map(n => n.dataset.id))), new Set(packet.selectedNodeIds));
+      if (packet.selectedNodeIds.length) await selected.first().scrollIntoViewIfNeeded();
       await page.screenshot({path: path.join(out, 'question-' + (i + 1) + '.png')});
       results.push({query, packet});
     }

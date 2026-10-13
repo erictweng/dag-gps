@@ -2,18 +2,16 @@
 
 ## Current card
 
-`t_0751cc8d` — implementation and local verification done; consultant second opinion
-pending before parent acceptance. Fix commit `0641dd6`: future class annotation
-bindings abstain; only supported following overload implementations coalesce;
-mutated/rebound markers invalidate; Honcho coverage uses an explicit suite option.
-STATUS and FUNCTION_LAYER now describe only the current build.
+`t_3b508d4b` — the only active feature: natural-language question parser.
+Rules, synonyms and bounded BM25 choices implemented on `question-parser`, with
+frozen Honcho (107) and late-added Salesroom (43) cases, seeded holdouts and
+per-stage reports. Zero new wrong answers; baseline mistakes and concept misses
+remain documented. See [QUESTION_PARSER.md](docs/QUESTION_PARSER.md).
+Real-app evidence and project gates: `artifacts/question-parser/`.
+Consultant second opinion required before parent approval. No push/merge/PR.
+The prior function-layer card is on main through PR #8.
 
-455 Python / 182 JS tests, `.verify.json` build/smoke and four evals pass. Fresh
-13-question Honcho proof and source/parity audits pass; zero symbol-graph or count
-changes from v3. See [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md) and local evidence
-`artifacts/function-layer/binding-fixes/`. No push/merge/PR in this card.
-
-## Next items, in order
+## Parked items — do not start while parser work is active
 
 1. **Queued — `t_21987d99`: unresolved-call split.** Separate `unresolved-split`
    worktree after this card's acceptance: classify builtins/external libraries,
