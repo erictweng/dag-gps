@@ -21,12 +21,15 @@ matrix, measured limits and remaining failures. Consultant second opinion pendin
 
 ## Verification
 
-Eight project/release gates passed on the implementation; final post-commit rerun
-is recorded in the card handoff. Scorer 47/47, alias 15/15, lookup 39/40.
+458 Python / 192 JS tests pass. All eight project/release gates passed against
+implementation commit `a54fbca`; final scorer scale p95 was 8.847 ms (<10 ms).
+Scorer 47/47, alias 15/15, lookup 39/40. Full receipt:
+`artifacts/question-parser/final-gates-complete/verification.json`.
 Real Chromium imports/questions/screenshots on both pinned repos; 13-question
 Honcho function proof and source audit pass. Existing legacy parity tests retained.
 BM25 Honcho p95 1.218 ms / index build 59.724 ms; Salesroom 0.015 / 0.379 ms.
-Evidence: `artifacts/question-parser/`. Final counts and gates are in the handoff.
+Evidence: `artifacts/question-parser/`. An oversized-request test socket reset and
+one 11.852 ms performance failure are retained; unchanged complete rerun passed.
 
 ## Existing shipped foundation
 

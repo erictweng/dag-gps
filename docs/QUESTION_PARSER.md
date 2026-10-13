@@ -206,6 +206,11 @@ env -u PYTHONPATH /usr/bin/python3 scripts/release_check.py \
   --quest-repo /Users/aibert/projects/quest-coder --output artifacts/question-parser/final-gates
 ```
 
+458 Python / 192 JS tests pass. All eight project/release gates pass on `a54fbca`;
+receipt: `artifacts/question-parser/final-gates-complete/verification.json`.
+Final release p95 is 8.847 ms. A socket-reset test failure and a prior 11.852 ms
+performance failure are retained; unchanged standalone performance repeats passed
+at 8.760 and 6.674 ms before the complete passing rerun. No threshold/sample edits.
 Scorer 47/47; alias 15/15; lookup retains 39/40. The initial full run identified
 legacy parity differences (display casing and an added legacy limitation); these
 were fixed rather than weakening the parity tests. Existing test datasets and
