@@ -61,13 +61,13 @@ class CallTiers:
                     if cls:
                         self.method_writes[cls].add(item.attr)
 
-    def class_target(self, expr, scope, path):
+    def class_target(self, expr, scope, path, before=None):
         if isinstance(expr, ast.Constant) and isinstance(expr.value, str):
             try:
                 expr = ast.parse(expr.value, mode='eval').body
             except (SyntaxError, ValueError):
                 return None
-        ident = self.resolve(scope, expr, path)
+        ident = self.resolve(scope, expr, path, before=before)
         node = self.by_id.get(ident)
         return ident if node and node['symbolKind'] == 'class' else None
 
@@ -97,7 +97,12 @@ class CallTiers:
             if arg.annotation is not None and unique(arg.arg):
                 # Annotations belong to the definition's enclosing namespace,
                 # including an immediate class namespace, not function locals.
-                cls = self.class_target(arg.annotation, scope['parent'], path)
+                outer = scope['parent']
+                # A class body is sequential: a later binding is not available to
+                # this method's annotation. Strings/postponed annotations use the
+                # same conservative guard; we do not emulate their evaluation.
+                before = tree.lineno if outer['class'] == outer['owner'] and outer['owner'] else None
+                cls = self.class_target(arg.annotation, outer, path, before=before)
                 if cls:
                     found[arg.arg] = (cls, 'typed', tree.lineno)
         for stmt in tree.body:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Real app import and browser proof against the explicitly pinned public Honcho."""
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -10,16 +11,18 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from app.server import WorkspaceServer
 
-OUT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / 'artifacts/function-layer/honcho'
-
-
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('out', nargs='?', type=Path, default=ROOT / 'artifacts/function-layer/honcho')
+    parser.add_argument('--suite', choices=('v1', 'v2', 'v3'), default='v3')
+    args = parser.parse_args()
+    OUT = args.out.resolve()
     OUT.mkdir(parents=True, exist_ok=True)
     server = WorkspaceServer(OUT / 'workspace', port=0)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     try:
-        result = subprocess.run(['node', str(ROOT / 'scripts/verify_function_honcho.cjs'), server.url, str(OUT)],
+        result = subprocess.run(['node', str(ROOT / 'scripts/verify_function_honcho.cjs'), server.url, str(OUT), '--suite', args.suite],
                                 cwd=ROOT, timeout=400)
         if result.returncode:
             return result.returncode

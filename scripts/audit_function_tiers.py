@@ -5,6 +5,7 @@ Produces a source excerpt for EVERY new call link, plus a focused review sheet f
 all new links displayed in the eleven questions. Structural corroboration is not
 runtime semantic proof: decorator wrappers/mocks and annotation truth remain unknown.
 """
+import argparse
 import ast
 import hashlib
 import json
@@ -19,7 +20,11 @@ from app.contracts import validate_evidence_packet
 
 
 def main():
-    out = Path(sys.argv[1]).resolve()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('out', type=Path)
+    parser.add_argument('--suite', choices=('v2', 'v3'), default='v3')
+    args = parser.parse_args()
+    out = args.out.resolve()
     snapshot = json.loads((out / 'snapshot.json').read_text())
     graph = snapshot['map']['symbol_graph']
     git_dir = git_dir_for(out / 'workspace/git-cache', snapshot)
@@ -27,7 +32,7 @@ def main():
     sources, trees = {}, {}
     inventory = {f['path']: f for f in snapshot['inventory']}
     nodes = {n['id']: n for n in graph['nodes']}
-    v3 = out.name == 'honcho-v3'
+    v3 = args.suite == 'v3'
     overloads = {(n['path'], n['qualname']) for n in graph['nodes'] if n.get('overloadDeclaration')}
     def source(path):
         if path not in sources:

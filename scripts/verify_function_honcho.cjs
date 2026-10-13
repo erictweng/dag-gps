@@ -1,10 +1,14 @@
 'use strict';
 const fs = require('fs'), path = require('path'), assert = require('node:assert/strict');
+const [url, out, ...options] = process.argv.slice(2);
+assert.ok(options.length === 0 || (options.length === 2 && options[0] === '--suite'), 'Usage: URL OUT [--suite v1|v2|v3]');
+const suite = options[1] || 'v3';
+assert.ok(['v1', 'v2', 'v3'].includes(suite), 'Unknown Honcho suite');
 let chromium;
 try { ({chromium} = require('playwright')); } catch (_) {
   ({chromium} = require('/Users/aibert/projects/quest-coder-assist/node_modules/playwright'));
 }
-const [url, out] = process.argv.slice(2);
+
 (async () => {
   const browser = await chromium.launch();
   try {
@@ -32,11 +36,12 @@ const [url, out] = process.argv.slice(2);
     await page.click('#clear');
     assert.equal(await page.locator('#graph').getByRole('button', {name: 'src/dialectic', exact: true}).count(), 1);
     const questions = JSON.parse(fs.readFileSync(path.join(__dirname, '../eval/function-honcho.json')));
-    if (/honcho-v[23]$/.test(out)) questions.push('trace from src/routers/peers.py:chat',
+    if (suite !== 'v1') questions.push('trace from src/routers/peers.py:chat',
       'how does src/routers/peers.py:chat reach src/llm/api.py#honcho_llm_call@147',
       'what does DialecticAgent.answer call',
       'what does src/telemetry/logging.py:format_reasoning_inputs_as_markdown call',
       'what does tests/bench/runner_common.py:BaseRunner.run_and_summarize call');
+    assert.equal(questions.length, suite === 'v1' ? 8 : 13);
     fs.writeFileSync(path.join(out, 'questions.json'), JSON.stringify(questions, null, 2));
     const results = [];
     for (let i = 0; i < questions.length; i++) {
@@ -50,7 +55,7 @@ const [url, out] = process.argv.slice(2);
       await page.waitForFunction(reason => document.querySelector('#answer-reason').textContent === reason, packet.reason);
       const elapsedMs = performance.now() - start;
       fs.writeFileSync(path.join(out, 'packet-' + (i + 1) + '.json'), JSON.stringify(packet, null, 2));
-      if (out.endsWith('honcho-v3') && i === 9) {
+      if (suite === 'v3' && i === 9) {
         assert.equal(packet.status, 'matched');
         assert.deepEqual(packet.selectedNodeIds, ['src/routers/peers.py#chat@257',
           'src/dialectic/chat.py#agentic_chat@50', 'src/dialectic/core.py#DialecticAgent.answer@548',
@@ -68,7 +73,7 @@ const [url, out] = process.argv.slice(2);
         await page.screenshot({path: path.join(out, 'question-bottom-' + (i + 1) + '.png')});
       }
       results.push({query, status: packet.status, operation: packet.operation, elapsedMs, highlights});
-      if (/honcho-v[23]$/.test(out)) {
+      if (suite !== 'v1') {
         const drawn = await page.locator('#graph .edge').evaluateAll(es => es.map(e => ({tier: e.dataset.confidence, dash: getComputedStyle(e).strokeDasharray})));
         fs.writeFileSync(path.join(out, 'drawing-' + (i + 1) + '.json'), JSON.stringify(drawn));
         for (const e of drawn) if (e.tier && e.tier !== 'resolved') assert.notEqual(e.dash, 'none');
@@ -91,7 +96,7 @@ const [url, out] = process.argv.slice(2);
         assert.equal(await page.locator('#source-lines').getAttribute('start'), String(ref.start));
         await page.screenshot({path: path.join(out, 'source-' + (i + 1) + '.png')});
       }
-      if (out.endsWith('honcho-v3') && i === 9) {
+      if (suite === 'v3' && i === 9) {
         await page.getByRole('button', {name: /^Re-export: src\/llm\/__init__.py:10/}).click();
         await page.waitForFunction(() => document.querySelector('#source-lines').start === 10);
         await page.locator('#source-lines').scrollIntoViewIfNeeded();
@@ -103,7 +108,7 @@ const [url, out] = process.argv.slice(2);
       }
     }
     assert.deepEqual(errors, []); assert.deepEqual(external, []);
-    fs.writeFileSync(path.join(out, 'browser-report.json'), JSON.stringify({importStatus, importMs, manualDrilldown: true, results, errors, external}, null, 2));
+    fs.writeFileSync(path.join(out, 'browser-report.json'), JSON.stringify({suite, importStatus, importMs, manualDrilldown: true, results, errors, external}, null, 2));
     console.log(JSON.stringify({ok: true, importMs, questions: results.length}));
   } finally { await browser.close(); }
 })().catch(e => { console.error(e); process.exit(1); });

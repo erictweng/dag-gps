@@ -15,6 +15,7 @@ def extract_symbols(sources, import_edges):
     nodes, calls, diagnostics = [], [], []
     trees, scopes, definitions, mutated_attributes = {}, {}, {}, {}
     import_sites, top_level, export_dynamic, static_imports = {}, {}, set(), set()
+    static_definitions = set()
     modules = defaultdict(list)
     for path in sorted(sources):
         module = path[:-3].replace('/', '.')
@@ -29,6 +30,7 @@ def extract_symbols(sources, import_edges):
                     if isinstance(stmt, (ast.Import, ast.ImportFrom)):
                         static_imports.add(id(stmt))
                     elif isinstance(stmt, DEFS):
+                        static_definitions.add(id(stmt))
                         collect_static(stmt.body)
             collect_static(trees[path].body)
             # A literal __all__ declaration does not change explicit named imports.
@@ -48,10 +50,11 @@ def extract_symbols(sources, import_edges):
 
     def new_scope(parent, owner=None, cls=None):
         return {'parent': parent, 'owner': owner, 'class': cls, 'names': defaultdict(list),
-                'wildcard': False, 'invocable': True}
+                'wildcard': False, 'invocable': True, 'binding_ends': defaultdict(list)}
 
-    def bind(scope, name, value):
+    def bind(scope, name, value, end=0):
         scope['names'][name].append(value)
+        scope['binding_ends'][name].append(end)
 
     def collect(tree, path, scope, prefix=''):
         for child in tree if isinstance(tree, list) else ast.iter_child_nodes(tree):
@@ -70,7 +73,7 @@ def extract_symbols(sources, import_edges):
                 if entry:
                     node['entryPoint'] = entry
                 definitions[id(child)] = node
-                bind(scope, child.name, ('def', node))
+                bind(scope, child.name, ('def', node), child.end_lineno)
                 is_class = isinstance(child, ast.ClassDef)
                 nested = new_scope(scope, ident, ident if is_class else scope['class'])
                 nested['invocable'] = not is_class
@@ -133,7 +136,7 @@ def extract_symbols(sources, import_edges):
                     if value and value[0] == 'import':
                         # Tuple identity distinguishes identical imports at different sites.
                         import_sites[id(value)] = (path, child, local)
-                    bind(scope, local, value)
+                    bind(scope, local, value, child.end_lineno)
             else:
                 if isinstance(child, ast.Name) and isinstance(child.ctx, (ast.Store, ast.Del)):
                     bind(scope, child.id, None)
@@ -149,11 +152,15 @@ def extract_symbols(sources, import_edges):
         scopes[id(tree)] = scope
         collect(tree, path, scope)
 
-    def lookup(scope, name):
+    def lookup(scope, name, before=None):
         while scope is not None:
             if scope['wildcard']:
                 return None
             if name in scope['names']:
+                # Abstain rather than reconstruct a partially executed namespace.
+                # This also protects imported names bound after an annotation.
+                if before is not None and any(end >= before for end in scope['binding_ends'][name]):
+                    return None
                 values = scope['names'][name]
                 return values[0] if len(values) == 1 else None
             parent = scope['parent']
@@ -163,21 +170,41 @@ def extract_symbols(sources, import_edges):
             scope = parent
         return None
 
-    # typing.overload is a declaration, not a runtime call target. Recognize
-    # only uniquely bound typing imports; a user decorator named overload is not it.
+    # A known write through ANY imported typing module alias invalidates markers
+    # in that file, including from-import aliases. Do not execute target code.
     for path, tree in trees.items():
+        typing_aliases = {a.asname or a.name for item in ast.walk(tree)
+                          if isinstance(item, ast.Import) for a in item.names if a.name == 'typing'}
+        mutated_marker = any(alias + '.overload' in mutated_attributes[path] for alias in typing_aliases)
+        groups = defaultdict(list)
         for item in ast.walk(tree):
             if not isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
             outer = scopes[id(item)]['parent']
+            groups[(id(outer), item.name)].append(item)
             for decorator in item.decorator_list:
-                value = lookup(outer, decorator.id) if isinstance(decorator, ast.Name) else None
-                module = lookup(outer, decorator.value.id) if isinstance(decorator, ast.Attribute) and isinstance(decorator.value, ast.Name) else None
-                if value == ('typing-overload',) or (module == ('typing-module',) and isinstance(decorator, ast.Attribute) and decorator.attr == 'overload'):
-                    node = definitions[id(item)]
-                    node['overloadDeclaration'] = True
-                    outer['names'][item.name].remove(('def', node))
+                value = lookup(outer, decorator.id, decorator.lineno) if isinstance(decorator, ast.Name) else None
+                module = lookup(outer, decorator.value.id, decorator.lineno) if isinstance(decorator, ast.Attribute) and isinstance(decorator.value, ast.Name) else None
+                if not mutated_marker and (value == ('typing-overload',) or (module == ('typing-module',) and isinstance(decorator, ast.Attribute) and decorator.attr == 'overload')):
+                    definitions[id(item)]['overloadDeclaration'] = True
                     break
+        for items in groups.values():
+            declarations = [item for item in items if definitions[id(item)].get('overloadDeclaration')]
+            if not declarations:
+                continue
+            implementations = [item for item in items if item not in declarations]
+            outer = scopes[id(items[0])]['parent']
+            values = outer['names'][items[0].name]
+            supported = (len(implementations) == 1 and len(values) == len(items)
+                         and all(id(item) in static_definitions for item in items)
+                         and all(item.end_lineno < implementations[0].lineno for item in declarations))
+            # Only coalesce an unconditional group with one FOLLOWING implementation.
+            # Invalid groups retain an unknown binding; declaration-only names must
+            # not accidentally become through-decorator call targets either.
+            for item in declarations:
+                values.remove(('def', definitions[id(item)]))
+            if not supported:
+                values.append(None)
 
     def exported(path, name, active=()):
         """Return a concrete definition and static initializer-import witnesses."""
@@ -203,7 +230,7 @@ def extract_symbols(sources, import_edges):
                 return None, []
         return value, []
 
-    def target(scope, fn, path, decorated=False, reexports=None):
+    def target(scope, fn, path, decorated=False, reexports=None, before=None):
         # File-wide invalidation is intentionally conservative: do not pretend an
         # assigned callback is still the class/module definition of that name.
         if ast.unparse(fn) in mutated_attributes[path]:
@@ -214,7 +241,7 @@ def extract_symbols(sources, import_edges):
             fn = fn.value
         if not isinstance(fn, ast.Name):
             return None
-        value = lookup(scope, fn.id)
+        value = lookup(scope, fn.id, before)
         if value is None:
             return None
         if value[0] == 'self' and len(attrs) == 1:
