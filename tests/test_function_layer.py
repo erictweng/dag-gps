@@ -31,7 +31,8 @@ class FunctionLayerTests(unittest.TestCase):
         source = 'def leaf(): pass\n@decorate\ndef wrapped(): pass\ndef run(leaf):\n    leaf()\n    obj.work()\n    wrapped()\nwrapped()\n'
         g = self.graph({'a.py': source})
         self.assertEqual(g['counts']['resolved'], 0)
-        self.assertEqual(g['counts']['unresolved'], 4)
+        self.assertEqual(g['counts']['unresolved'], 3)
+        self.assertEqual(g['counts']['through-decorator'], 1)
         self.assertTrue(all(c['to'] is None and c['confidence'] == 'unresolved' for c in g['unresolved']))
 
     def test_syntax_diagnostic_does_not_drop_other_files(self):

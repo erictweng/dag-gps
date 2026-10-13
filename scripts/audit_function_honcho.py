@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT))
 from app.contracts import validate_evidence_packet
 from app.context import build_context, git_dir_for, read_source
 
-OUT = ROOT / 'artifacts/function-layer/honcho'
+OUT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / 'artifacts/function-layer/honcho'
 snapshot = json.loads((OUT / 'snapshot.json').read_text())
 queries = json.loads((OUT / 'questions.json').read_text())
 git_dir = git_dir_for(OUT / 'workspace/git-cache', snapshot)
@@ -35,8 +35,23 @@ for tool, symbol, packet_index in [('find_symbols', 'create_messages_for_session
     assert response['result']['selectedNodeIds'] == packets[packet_index]['selectedNodeIds']
     validate_evidence_packet(response['result'], snapshot)
     bridge.append({'tool': tool, 'ok': True, 'selectedNodeIds': response['result']['selectedNodeIds']})
+    if OUT.name in ('honcho-v2', 'honcho-v3'):
+        request['args']['certainOnly'] = True
+        certain = subprocess.run([sys.executable, str(ROOT / 'scripts/workspace_cli.py'), '--workspace', str(OUT / 'workspace')],
+                                 input=json.dumps(request), text=True, capture_output=True, timeout=60, check=True)
+        result = json.loads(certain.stdout)
+        assert result['ok'], result
+        expected = json.loads((OUT / ('certain-%d.json' % (packet_index + 1))).read_text())
+        assert result['result']['selectedNodeIds'] == expected['selectedNodeIds']
+        assert result['result']['selectedEdges'] == expected['selectedEdges']
+        validate_evidence_packet(result['result'], snapshot)
+        bridge[-1]['certainOnlyVerified'] = True
 paths = {'src/routers/messages.py', 'src/crud/message.py', 'src/deriver/consumer.py',
          'src/deriver/deriver.py', 'src/routers/peers.py', 'src/dialectic/chat.py', 'src/dialectic/core.py'}
+if OUT.name in ('honcho-v2', 'honcho-v3'):
+    paths.update({'src/llm/__init__.py', 'src/llm/api.py', 'src/llm/executor.py', 'src/llm/backends/openai.py', 'src/llm/registry.py', 'src/llm/request_builder.py', 'src/llm/tool_loop.py',
+                  'src/telemetry/logging.py', 'src/utils/representation.py', 'tests/bench/runner_common.py',
+                  'src/telemetry/metrics_collector.py'})
 source_dir = OUT / 'source'
 source_dir.mkdir(exist_ok=True)
 for path in sorted(paths):

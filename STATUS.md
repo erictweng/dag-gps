@@ -1,455 +1,54 @@
 # Status — DAG GPS
 
-## Python function layer — consultant fixes verified, re-review pending
-
-Kanban `t_58cccce0`, isolated `function-layer`. Prerequisite main fixes merged as
-`eb72a73`; no push or integration into main. Added Python AST symbols/call sites,
-versioned optional map extension, deterministic LOCATE/CALLERS/CALLEES/FLOW/TRACE,
-focused function drawing, exact source ranges and agent bridge parity.
-
-Follow-up `t_4977fa02` accepts all four consultant findings: conservative wildcard /
-definition-time binding scopes, non-traversable deferred/class-body sites, bounded
-oversized symbol packets, and legacy file/group dispatch parity. Six new regression
-methods reproduced RED failures before fixes; no push or main integration.
-
-Acceptance run: **418 Python / 178 JS pass**, including unchanged existing browser
-and accessibility tests. Real app import of Honcho at
-`3922af856d78ec41133916deec4d821fa9c5a92e`: **1,162 inventory files, 7,670 symbols,
-7,836 resolved / 37,112 unresolved call sites** (63 sites moved to unresolved);
-real import-to-ready 50.480s, warm JS-only query p95 1.678ms (800 samples). Eight real questions with
-saved packets/screenshots, source checks, manual drill-down and three CLI tools.
-All eight statuses/selections/edges and seven audited source files unchanged.
-Three narrow spot-checks right / five partial, not general accuracy evidence.
-`.verify.json` build/smoke and four eval recipes pass; lookup retains 39/40.
-
-Initial 16 MiB sidecar limit failure fixed by removing JSON whitespace only;
-no bounds raised. Dynamic/instance/decorator/framework calls remain unresolved,
-Honcho remains a partial proposed-group preview, and large drawings still scroll.
-Review/parent acceptance pending. Report: `docs/FUNCTION_LAYER.md`; local evidence:
-`artifacts/function-layer/`, especially `honcho/browser-report.json` and `audit.json`.
-
-The dated sections below are historical milestone records.
-
-Last updated: 2026-10-08 PDT
-
-## Current focus — V1.5 release candidate worker audit / parent and Eric pending
-
-Worker branch `v1-release` from clean main `99652d1` (V1.4 integrated). Eric
-explicitly authorized all V1.5a/b/c together. No worker push or merge. Current
-release guide: [V1_RELEASE.md](docs/V1_RELEASE.md); automated evidence is local/ignored.
-
-- Full real-browser sessions on approved quest and legacy self, then **actual downloaded
-  corrected grouping JSON** rebuilds at the separate onboarding pins. Find/inspect,
-  tours or unavailable, impact witness/recovery, explicit alias review/export/import,
-  generated feedback consent/label/export and reload OFF: 2 demos / 22 step groups.
-- Narrow fixes: low-contrast dim text and faded SVG labels, keyboard-accessible graph /
-  sidebar links, Readable zoom vs Fit overview, phone document scrolling, 80-file canvas
-  and 150-row list paging with visible counts/omission and full-corpus Ask target paging.
-  A screenshot-discovered readable-zoom overlay issue is fixed by separate toolbar/legend
-  rows outside the clipped SVG; actual1280/390 geometry assertions and legacy interactions pass.
-- Scale API benchmark retains every node/edge and cycles: real quest 290 nodes, legacy
-  self 30, newer self 51; exact synthetic 1000/5000 nodes. Before optimization an
-  exploratory 5001-node fixture exceeded target badly; indexed stable sorting, bounded
-  spelling DP/prefix-suffix removal, lazy zero-score metadata and validation lookup
-  preserve full baseline distributions/evidence. No matching-rule/user tuning.
-- Latest extended scorer measurement: <10ms per-query p95 at 1000 samples/query/mode;
-  exact final-run numbers are in release-performance.json. Earlier candidate attempt
-  **10.457ms** miss at 100 samples is retained, not erased. Shared system load affects
-  wall latency; raw layout, synchronous Ask/render and two paint opportunities separate.
-- Axe WCAG2 A/AA + WCAG2.1 AA: 23 recorded states, zero violations; incomplete color
-  checks remain explicitly listed, including off-screen text. Computed SVG contrast for
-  194 displayed text instances in active states had minimum 5.932:1. Real keyboard /
-  modal focus/Escape and reduced-motion scope checked; no screen-reader certification.
-- Full candidate-2 build/test/smoke plus all release/milestone gates passed with
-  **180 Python + 152 JS tests**, 32 primary screenshots, 70 recorded click/key events.
-  Candidate-2 worst warm scorer p95 was8.322ms (50,000 samples), no end-to-end claim.
-  The later narrow SVG-control overlap fix passed legacy interaction/scale/Axe and focused
-  regression checks. Source-integrity/manifest packaging is rerun after local commit;
-  `artifacts/release-check/verification.json` is the final authoritative report.
-- Versioned local-only candidate `dist/release/v1.0.0-rc.1/`; hashes/sizes/source pins /
-  exact build commit and pending human gates. Private tour excerpts require sharing
-  review; bounded credential-pattern scan is not comprehensive secret certification.
-- Eric's **unaided real session and semantic grouping review remain pending**. Parent
-  independently reviews/reruns/integrates. No blanket no-P0/P1, final release or real-user
-  accuracy claim. V1.4 real-user improvement remains deferred (zero confirmed labels).
-
-## Integrated V1.4 — main `99652d1`, historical worker evidence
-
-V1.4 opt-in capture/evaluation infrastructure is integrated. Its report retains the
-original worker context: [USER_EVAL_REPORT](docs/USER_EVAL_REPORT.md). OFF each load,
-explicit consent, separate alias confirmation, bounded inert imports/local export,
-source/map/scorer/overlay provenance, frozen pre-label holdout, and original/off/on
-metrics remain. Historic feature gates: 176 Python + 150 JS, feedback18 / 6 screenshots.
-All exports in worker smoke are generated fixtures; actual runner.py intent remains
-unconfirmed, ≥20 Eric cases soft collection goal. No real-user tuning/accuracy claim.
-
-## Integrated V1.3 — historical worker evidence (main `c6543f6`)
-
-Worker `v1-onboarding` starts from clean main `a5b0255` (integrated V1.2).
-No worker push/merge. Full draft → offline review → actual download → validated build
-implemented; parent independent acceptance and Eric semantic review remain pending.
-
-- Deterministic pinned folder proposals use the same archive/discovery/exclusion and
-  extraction pipeline; explicit flat-root/helper reasoning, exact ownership and stable IDs.
-- Dependency-free offline editor: real path search, rename/move/split/merge/delete,
-  coverage/empty/cycle evidence, undo/reset, bounded inert imports, visible manual
-  alias/tour migration warnings and explicit confirmation before reviewed download.
-- Drafts reject publication. Reviewed exact-file specs validate repo/full pin/inventory/
-  scope/coverage/dependencies before promotion; legacy glob specs remain compatible.
-- Actual browser downloads built BOTH real demos with real-path Ask: new self `a5b0255`
-  **48 files / 3 layers / 38 file links**; quest `749d8b5` **272 / 38 / 415**. Existing
-  approved quest map/layers/tours and old self `f92d0cf` matrix preserved.
-- Both initial folder drafts are acyclic. Real quest runner-client split reveals grouping
-  cycle with source pairs; UI merge repairs it without deleting any file links.
-- New self full discovery correctly blocks on generated untracked refresh-fixture.json.
-  Explicit supported scope scans **47/48**, keeps **all 48 assignments**; blocked draft
-  retained. No source mutation/fixture injection or full-coverage claim. Details:
-  [ONBOARDING_REPORT](docs/ONBOARDING_REPORT.md).
-- `.verify.json` build/test/smoke **exit 0**, **176 Python + 130 JS**; every legacy gate
-  retained, full strict pinned parity/10 checks. Onboarding **14 browser checks / 10
-  inspected 1280/1920 screenshots**, zero errors/external requests. Invalid downloaded
-  candidates preserve all four output bytes; reviewed reimports clear confirmation.
-- Evidence: `artifacts/onboarding-verification.json`, `onboarding-{build,test,smoke}.log`,
-  `onboarding-browser.json`, `onboarding-*.png`. Editors `dist/onboarding-{dag-gps,quest}.html`;
-  built demos `dist/onboarding-{dag-gps,quest}/index.html`. Existing user artifact
-  `dist/quest-refresh/index.html` still carries approved map/tours. Outputs local/ignored.
-- **Automated worker review samples are not Eric-approved semantics**. Eric still reviews
-  proposed responsibilities/reference meaning; no V1.4 query capture or v1 release claim.
-
-## Integrated V1.2 — historical worker evidence (main `a5b0255`)
-
-Worker `v1-trust` starts from clean, verified main `7bc6769` (integrated V1.1).
-No worker push/merge. All approved trust, narrow extraction and stale-tour minis built.
-
-- Version-2 map/report provenance: five categories, concrete paths/reasons, exact
-  scope/inventory denominator, file cycles and separate lexical/loader/curated/inferred
-  evidence. Offline findings navigation plus file/Ask/impact contextual warnings;
-  otherwise explicitly repository-level uncertainty, never runtime-completeness percent.
-- Fixture-first package-relative Python, namespace/init and concrete submodules;
-  narrow explicit file-relative paths/loaders preserve real dependencies without
-  suffix guessing. Whitespace CommonJS/TS + indented imports; unsupported constructs
-  stay visible. File/self cycles retained; layer cycles still block for grouping review.
-- Mutually-exclusive `--without-tours` / `--tours`; exact stale validation stays fail
-  closed. No silent omission, including legacy HTML/comparison overrides. Omitted
-  evidence cannot resolve a natural tour query; reason/current/unavailable status visible.
-- `.verify.json` build/test/smoke **exit 0**, **161 Python + 109 JS**; strict full pinned
-  parity/10 checks and every legacy eval/browser gate retained. Trust browser **10
-  checks / 13 inspected screenshots** at 1920/1280, zero errors/external requests.
-- Same source pins: quest `749d8b5` / self `f92d0cf`. Deliberate extractor migration
-  quest **413 → 415**, self **19 → 20** file pairs; no removals, node/membership/source
-  edits. Exact pairs/weight changes, fixture rationale and impact audit in
-  [TRUST_REPORT](docs/TRUST_REPORT.md). Runner engine: 16 direct / 12 linked tests;
-  runner-client unchanged 3 direct / 1 farther / no observed linked tests. Coverage unknown.
-- Quest scanned **182 / 272**, 90 unscanned; 14 non-source, **0 unresolved imports**,
-  1 literal HTTP miss, 8 unsupported, 280 external findings. Self **27 / 27**, 11
-  non-source, 0 unresolved, 4 unsupported, 94 external findings. Not runtime coverage.
-- Evidence: `artifacts/trust-verification.json`, `trust-{build,test,smoke}.log`,
-  `trust-migration.json`, `trust-browser.json`, `trust-*.png`. Open
-  `dist/quest-refresh/index.html`, `dist/quest-coder.html`, `dist/dag-gps/index.html`,
-  or explicit opt-out `dist/quest-no-tours/index.html`. Outputs remain local/ignored.
-
-## Integrated V1.1 — historical worker evidence (main `7bc6769`)
-
-V1.0 parent acceptance is integrated on main `6bfc5ee`. Eric authorized full V1.1,
-not only the pure engine. `v1-impact` starts from that clean main; no worker push/merge.
-
-- Dependency-free `analyzeImpact(map,tours,fileId)` with deterministic shortest
-  import-only reverse BFS witnesses, distinct direct/transitive results, real tests,
-  exact raw/compiled tour citations and separate transitive HTTP/RPC boundaries.
-- File-detail **Inspect potential impact** and explicit natural Ask; ambiguity/missing
-  suggestions require choice, unknowns clear stale state, existing DOWNSTREAM unchanged.
-  Recoverable summary, typed witness graph, real-file inspection and offline tour evidence.
-- `.verify.json` build/test/smoke **exit 0**: **138 Python + 103 JS** (10 impact tests),
-  pinned map 10/10 + full parity; all legacy eval/canvas/scorer/M3/lookup/alias/refresh/tours
-  gates retained. New browser: **14 checks / 9 screenshots**, zero page/console errors
-  and external requests, both real files plus self no-tour map; 1280/1920 visual inspection.
-- Audited `lib/runner-client.ts`: 3 direct imports + 1 farther consumer, **no observed
-  linked tests / coverage unknown**; 6 separate boundary witnesses and 4 exact tour
-  citations (steps and links). `runner/quest_runner.py`: 14 direct imports, 11 real
-  linked tests visible despite hidden canvas test layer; coverage still unknown.
-- Quest map/layers/source/tours/evals/scorer/router/extractor unchanged from `6bfc5ee`.
-  Pins retained: quest `749d8b5de490cc2e6a0c98c713fab3ab856da799`, old self
-  `f92d0cf9ad2fe6ef332dc5922e32c1e22dc96f93` (not today's source graph).
-- Report: [IMPACT_REPORT](docs/IMPACT_REPORT.md). Evidence: `artifacts/impact-verification.json`,
-  `impact-{build,test,smoke}.log`, `impact-browser.json`, `impact-*.png`.
-  Open `dist/quest-refresh/index.html`, `dist/quest-coder.html`, `dist/dag-gps/index.html`.
-
-## Active worker / next action
-
-V1.3 and V1.4 are integrated at c6543f6 / 99652d1. V1.5 worker supplies a locally
-committed release candidate after verified gates; parent independently reviews/reruns,
-then integrates/pushes only under [WORKFLOW](docs/WORKFLOW.md). Eric performs semantic
-review and the unaided acceptance script in V1_RELEASE.md. Neither automation nor a
-worker sample review marker satisfies either human gate.
-
-## Blockers and release boundary
-
-Unrestricted newer self extraction still correctly fails on generated untracked
-JSON; the declared 47/48 scan is retained, not a universal extraction success.
-V1.5 automated gates and candidate packaging are distinct from final acceptance.
-Entire v1 is **not** complete: Eric semantic review / unaided session and parent
-release review remain pending; earlier performance failures are recorded explicitly.
-Impact is static potential reachability, not execution/coverage or guaranteed breakage.
-Known prior limitations retained: mixed layer/file routes, bearer-auth abstention,
-dynamic Python/conditional paths and lexical JS gaps, omitted CSS/JSON nodes, old self snapshot,
-best-effort file storage/export fallback, per-file publication not power-loss transaction,
-source walkthroughs not observed runtime. See [acceptance](docs/V1_ACCEPTANCE.md),
-[supported sources](docs/SUPPORTED_SOURCES.md), [baseline](docs/V1_BASELINE_REPORT.md).
-
-## Integrated milestone history (not current pending work)
-
-The following preserves earlier counts and observations as historical results;
-new V1.0 logs above govern current metrics. Prior reports retain original worker context.
-
-### Architecture tours — historical worker evidence
-
-Architecture-guided tours locally verified on `architecture-tours` from main `3e811d9`.
-Integrated on main at 4898578; the following are historical worker results, not current pending integration.
-
-- quest-coder audited archive SHA `749d8b5de490cc2e6a0c98c713fab3ab856da799`: Run basic
-  5 steps, Submit 8, Sign in 5; 20 source files, source excerpts and exact line evidence.
-- Offline menu/natural Ask resolver, typed directed runtime links kept separate from
-  imports, layer overview, step controls and scoped keyboard navigation, evidence modal
-  with real node inspection and optional pinned permalink. Normal Ask/aliases unchanged.
-- Reusable optional `--tours`; exact repo/commit/source bounds validation before publish;
-  stale/invalid artifacts preserved. Self demo honestly has no tours.
-- 138 Python + 93 JS; all prior gates plus 29 tour browser checks, 18 ordered steps and
-  every citation exercised, zero page/console errors or external requests; 11 screenshots.
-- Source walkthroughs, not observed production execution; Google-only shipped auth UI
-  vs email API alternative, Supabase/SQLite, Run/Submit and party reward branches disclosed.
-- Open `dist/quest-refresh/index.html` or `dist/quest-coder.html`. Report:
-  `docs/TOURS_REPORT.md`; logs `artifacts/tour-{build,test,smoke}.log`.
-
-### Reusable refresh — historical worker evidence
-
-Reusable maps and safe refresh locally verified on `reusable-refresh` from `f92d0cf`.
-Integrated on main before 4898578; historical local-worker evidence follows. Open `dist/dag-gps/index.html` or
-`dist/quest-refresh/index.html`; report `docs/REFRESH_REPORT.md`.
-
-- One-command pinned Git archive → validated map/offline HTML/deterministic diff/report;
-  generic discovery or explicit scope, origin identity/canonical local fallback.
-- Staging before publish; rejected assignments/imports/cycles/render leave prior bytes;
-  caught promotion error rollback tested (not a cross-file crash transaction).
-- HTML source commit/ref vs build-time local HEAD, no offline live-freshness claim;
-  same-repo exact aliases retained, deleted IDs ORPHAN, export/import fallback visible.
-- 123 Python + 88 JS tests; unchanged existing eval/browser/parity gates plus 7 new
-  refresh browser checks, zero errors/external requests. Five refresh screenshots inspected.
-- Self snapshot f92d0cf: 3 layers/27 files/3 layer/19 file connections, 0 unresolved,
-  4 unsupported dynamic requires. Quest frozen map/layers remain unchanged, 0 unresolved.
-- CommonJS/UMD literal requires, .cjs/.jsx source discovery, multiline local Python imports;
-  unsupported/ambiguous constructs explicit. No large extractor redesign or source guessing.
-- Real synthetic committed snapshots prove added/deleted/typed edge/reassignment diff and
-  browser alias migration; clearly labeled as synthetic, not user accuracy evidence.
-- Exact gates/logs: artifacts/refresh-final-verification.json and refresh-{build,test,smoke}.log.
-
-### Earlier integrated milestones — historical evidence
-
-Alias learning, branch `alias-learning` (historical worker run; now integrated on main):
-
-- `.verify.json` build/test/smoke exit 0: **106 Python + 87 JS tests**, including
-  14 pure alias tests and safe trusted-source inlining; all 272 exact file paths
-  protected against learned alias hijacking, including dynamic-route brackets.
-- Explicit override → typed exact alias → review real target → confirm. No implicit
-  learning. PATH learning disabled with single-endpoint-query guidance.
-- Repo/version-scoped best-effort localStorage, immutable overlays, visible conflicts
-  and orphan quarantine, inspect/remove/confirmed clear, browser JSON download,
-  atomic validated previewed merge (default)/replace import. Denial/quota says Unsaved.
-- Alias **19 UI checks**, 15/15 synthetic eval cases, 5 overlay parity cases;
-  existing lookup **19**, M3 **5 canonical + 11 extra**, 47 original + 40 lookup
-  source parity, canvas/interaction gates and pinned map checks remain passing.
-  Browser reports contain zero page/console errors and zero external requests.
-- `Python judge` baseline was already runner-service, reported honestly. Synthetic
-  `Python judge station` demonstrates a real abstention → correction → repeat match.
-  Existing bearer-auth challenge miss retained; no user queries fabricated.
-- Map, layer membership, router, and both existing eval datasets byte-identical to
-  `ba72d1b`. No quest-coder changes, remote writes, backend or automatic training.
-- Report `docs/ALIAS_LEARNING_REPORT.md`; exact gates/logs in
-  `artifacts/alias-final-verification.json`, `alias-{build,test,smoke}.log`;
-  nine inspected screenshots `artifacts/alias-*.png`; best-effort storage limits documented.
-
-### Filename lookup evidence
-
-Filename lookup, branch `lookup-evidence` (historical worker run; now integrated on main):
-
-- `.verify.json` build/test/smoke exit 0: **104 Python + 73 JS tests**, pinned map
-  10/10 + full snapshot parity. Map, layers, router and original eval unchanged.
-- File-first path/basename/stem/partial/spelling tiers; missing runner.py and typos
-  require explicit override. Every duplicate basename path is offered; no-evidence
-  unknowns have no arbitrary buttons and clear prior highlights. No persistence.
-- Exact / Likely / Needs your choice / No match labels from evidence and margin,
-  not percentages. Paths/reasons/aliases visible; raw uncalibrated Details accessible.
-- Existing canvas interactions; M3 **5 canonical + 11 extra checks**; lookup **19 UI
-  checks**, 47 original + 40 lookup shipped-source parity; zero errors/requests.
-- Original generated regression: op 47/47, raw top-1/top-3 44/44, PATH 14/14, false
-  accepted negatives 0/10. Separate worker-draft lookup challenge: op/labels 39/40,
-  top-1 16/17, top-3 17/17, suggestion recall 15/15, false accepted negatives 0/24,
-  wrong accepted requests 0/15. Bearer-auth responsibility abstention retained.
-- Final p95: Node original 1.3480 ms (940), lookup 0.9129 ms (800); original
-  Chromium 1.1000 ms (940). Draft fixtures, not held-out/user accuracy.
-- Report: `docs/LOOKUP_REPORT.md`; logs: `artifacts/lookup-final-verification.json`;
-  screenshots: `artifacts/lookup-{exact,missing,override,unknown,ambiguous,typo,stem,details,1280}.png`
-  (nine inspected states; final Details/smaller viewport reinspected).
-
-### M3 evidence
-
-2026-10-07, branch `m3-routing` (historical worker run; now integrated on main):
-
-- `.verify.json` build/test/smoke exit 0: **104 Python + 46 JS tests**, map 10/10
-  at pinned `749d8b5de490cc2e6a0c98c713fab3ab856da799`; committed map untouched.
-- Ask enabled, validated scorer boundary, Dependencies/Dependents/directed PATH,
-  heuristic bars/top-three clickable overrides, honest abstention/no-path.
-- 5/5 canonical real-typing/Enter/button browser states plus 11 additional UI checks;
-  zero errors/external requests. Real-ID cross-layer file view; mixed endpoints
-  explicitly unsupported. Existing canvas and real-click interactions pass.
-- Scorer parity 47/47, Node p95 1.7014 ms / Chromium 1.0000 ms (940 samples each).
-  Generated benchmark unchanged: op 46/47, target 42/44 top-1, 43/44 top-3;
-  grading/authentication shortcomings retained honestly.
-- Report: `docs/M3_REPORT.md`; logs: `artifacts/m3-final-verification.json`;
-  screenshots: `artifacts/m3-{locate,dependencies,dependents,path,file}.png`
-  plus no-path, file-path, 1280 states (inspected for clipping/collisions).
-
-### M2 evidence
-
-2026-10-07, branch `m2-scorer` (historical parent verification before M3):
-
-- `.verify.json` build/test/smoke all exit 0: 99 Python tests, 40 JS tests,
-  map 10/10 checks; existing canvas screenshots and real-click smoke pass.
-- 47 generated eval cases, not user-ground-truth: operation 46/47 (97.87%),
-  raw target top-1 42/44 (95.45%), top-3 43/44 (97.73%), PATH endpoints 14/14.
-- Abstention 11/47; negatives 10/10 abstained, false accepts 0/10.
-- p95 warm: Node 0.7754 ms, Chromium 0.7000 ms, 940 samples each (<10 ms).
-- Chromium parity across 47 outputs (numeric tolerance 1e-12), zero errors/external
-  requests; Ask still disabled. M1 template, renderer, node IDs and edges unchanged.
-- Remaining scorer errors: grading → run-gateway (expected runner-service),
-  authentication → NOT_SURE. Generated expectations need Eric review.
-- Full report: `docs/M2_REPORT.md`; actual logs: `artifacts/m2-final-verification.json`.
-
-### Previous milestone evidence
-
-2026-10-07, branch `m1-file-edges`:
-
-- `python3 -m unittest discover -s tests -q` — 78 tests, OK.
-- `.verify.json` smoke (`build_map.py … --ref origin/main`) — 10/10 checks passed, exit 0,
-  at quest-coder `749d8b5`. 18 layers + 272 files = 290 nodes, 52 layer edges
-  (import 43, http 6, build 1, data 1, realtime 1), **413 file edges** (import 389,
-  http 14, rpc 10; 324 cross-layer, 89 same-layer), 305 KB.
-- `maps/quest-coder/map.json` is committed at this ref. `nodes`, `edges` and `layers` are
-  byte-identical to the M0 map; the only additions are the top-level `file_edges` array
-  and `meta.counts.file_edges`.
-
-
-## Rule
-
-Complete and verify one mini-milestone before launching the next worker.
-Update this file whenever a worker starts, finishes, or gets blocked.
-
-## M0 — Hermes-verified 2026-10-07
-- 63 unit tests OK; build_map vs quest-coder origin/main 749d8b5: 8/8 checks, exit 0 (18 layers, 272 files, 52 layer edges).
-- layers.json: mapped 4 files added upstream mid-run (party-lock -> social-domain, party-lock-server -> social-services, story-beats -> game-domain, story-scenes -> solve-ui).
-- Open for M1: map.json has layer->layer edges only; file-level edges needed for expand-to-files.
-
-## M1.1 — verified 2026-10-07
-- `map.json` now carries `file_edges`: `{from, to, type, cross_layer}` with file-path
-  endpoints, typed `import | http | rpc`. Same-layer edges are kept (`cross_layer: false`),
-  unlike the layer rollup, which drops them — that is what expand-to-files needs.
-- Deduped on `(from, to, type)`, sorted by the same triple. 409 raw import pairs →
-  389 edges after dedupe and dropping 15 non-source targets.
-- New check: every `file_edges` endpoint must be a **file** node id (a layer id FAILs too).
-- `edges` is unchanged in shape and content, so nothing that reads the M0 map breaks.
-
-## M1.2 — verified 2026-10-07
-Recovered Claude partial implementation after session quota exhaustion. Offline HTML canvas, renderer, unit tests, browser smoke, real-click interaction check complete. 97 unit tests pass; map checks 10/10; four screenshot states with zero page errors and zero external requests. Real clicks, expand, file details, Escape, test toggle, double-click, back, zoom and fit pass. Artifact: dist/quest-coder.html. Scorer remains M2 (Ask disabled deliberately).
-
-## V1.5 independent-review fixes — local worker, parent/human pending
-
-Independent review of `757df72` blocked integration on IR-01 (P1 unbound generated
-payloads), IR-02 (P2 incomplete gate inputs/provenance) and IR-03 (P2 keyboard focus).
-The isolated `v1-release-fixes` follow-up adds regression-backed v2 byte/inventory
-binding, producer-boundary freezing, staged rejection preserving the previous bundle,
-complete recursive test/data/doc inventory and HEAD/worktree provenance, plus real
-keyboard paging/expansion focus assertions. Old receipts require a full rerun.
-Exact outcomes/evidence and residual risks: [RELEASE_REVIEW_FIXES.md](docs/RELEASE_REVIEW_FIXES.md).
-Two actual precommit complete runs and packaging passed; the later run had
-192 Python / 152 JS, all eight gates, 32 screenshots, 23 Axe states and 50,000
-scorer samples. Real receipt mirror accepted clean packaging and rejected 15/15
-negative probes with previous bundle bytes preserved. **Renewed Phase 0 precommit verification passed** all eight unchanged recipes and
-packaging (192 Python / 152 JS; worst scorer p95 4.557041 ms). Independent source
-review passed IR-01/IR-02/IR-03; fresh real-receipt probes accepted 1/1 clean package
-and rejected 17/17 negatives, preserving all previous bundle bytes, including
-injected promotion/readback faults. Earlier performance failures remain retained.
-Local fix commit and exact-postcommit rerun follow; only the final clean-provenance
-receipt certifies the exact committed bytes. No main integration or human acceptance
-is implied. Evidence: `artifacts/phase0-precommit/`, `artifacts/phase0-independent-review/`;
-final handoff: `artifacts/phase0-completion.json`.
-Do not treat worker verification as final acceptance.
-Parent independent re-review, Eric semantic grouping and unaided real session remain
-pending. No push/merge/public artifact upload or later milestone in this follow-up.
-
-## Phase 0 — repository-evidence workspace foundation (local only)
-
-Eric authorized Phase 0 on 2026-10-08. The separate roadmap commit is aa6a1e8;
-release-fix commit 9a5a327 passed exact-postcommit all eight unchanged gates and
-packaging with clean provenance. Independent IR source review passed; parent fresh
-17/17 negatives (including promotion/readback rollback) preserve all prior bundle bytes.
-Earlier load-sensitive performance failures remain retained; no gate or scorer tuning.
-
-The new foundation defines pure pinned snapshot/evidence guards and false-by-default
-query/agent controls, documented in docs/WORKSPACE_CONTRACT.md and
-WORKSPACE_ACCEPTANCE.md. Focused contract tests initially passed 38/38, but independent review found three
-medium-severity gaps. Stricter fixes now pass 47/47 focused and all Python 239 /
-JS 152; initial review and 47-test/16-failure RED remain retained.
-New-contract independent review and exact final-commit full verification are required
-before handoff; artifacts/phase0-completion.json and artifacts/phase0-final/ are the
-final authority, not a claim that future features are implemented.
-
-No GitHub-link importer, workspace service/UI, agent invocation, live updates or
-third-party graph mapping was started. Local-versus-hosted and agent-provider choices
-remain pending before Phase 1. Human unaided workflow and semantic review are pending;
-no push/merge, deployment, private-source upload or final v1 acceptance.
-
-## Phase 1 acquisition — worker availability blocked (2026-10-08)
-
-Eric approved local-first/existing-agent defaults. Isolated workspace-repo-import
-starts from verified e94cfba; current work is URL validation and immutable public
-GitHub acquisition, not a server/UI or agent runtime. Declared public fixture:
-pallets/itsdangerous at 672971d66a2ef9f85151e53283113f33d642dabd.
-
-Claude Code hsub run 20261008-150944-05823f exited 1 at its weekly usage limit
-before implementing source. Its reported reset is 6pm America/Los_Angeles.
-app/repositories.py and tests/test_repository_import.py are absent; no Phase 1
-success or commit is claimed. Handoff/build note and exact logs/report are retained.
-Await Eric's permission to switch to the configured OpenAI coding worker, or wait
-for reset. No raw Anthropic fallback, source execution, push/merge or future phase.
-
-### Worker fallback authorized and running
-
-Eric explicitly selected OpenAI GPT-5.6 Sol. Run 20261008-151949-a33182 is active
-on the acquisition mini, pinned to gpt-5.6-sol / openai-codex by per-invocation
-flags, with no global model/config change or silent alternate-model delegation.
-Prior Claude quota block is historical; fallback availability is resolved, not
-feature acceptance. Runtime metadata and initial RED-test creation were verified;
-implementation/full tests and actual public import remain pending parent checks.
-
-### Phase 1 receipt-bound fix + first full gate attempt (2026-10-08)
-
-IRP-01 residual fixed directly by the parent (Eric's instruction, no worker):
-`receipt.json` capped at MAX_RECEIPT_BYTES (64 KiB), rejected from lstat size
-before open; in-limit receipts read once via a no-follow fd whose dev/inode must
-match. RED retained (65,537-byte receipt fully decoded before rejection); GREEN
-snapshot 17/17, preview 9/9, acquisition 25/25. Reviewer's own follow-up probe
-now shows readAttempted=false on its 5.2 MB receipt; all 28 other independent
-properties still hold. Fresh pinned itsdangerous import and file:// browser
-click/Enter regression pass on the new bytes. Evidence: artifacts/phase1-receipt-bound-fix/.
-
-Full precommit `artifacts/phase1-precommit/`: build, test (290 Python / 152 JS),
-smoke, release_session, accessibility passed; performance FAILED, worst scorer p95
-12.4565 ms vs unchanged 10 ms target at load ~10-11 on 12 CPUs, host saturated by
-desktop Google Chrome. web/, bench scripts and maps are byte-identical to e94cfba
-(passed at 4.557 ms). UI performance, milestone acceptance and packaging not
-reached. No gate/sampling change, no commit; retry unchanged on a quieter host.
-
-Retry after Eric closed desktop Chrome: `artifacts/phase1-precommit-2/` passed all
-eight unchanged gates plus packaging; worst scorer p95 3.7377 ms (target 10 ms),
-290 Python / 152 JS. Confirms the earlier 12.46 ms failure was host contention;
-the failed receipt is retained. Exact-commit verification follows the local commit.
-Human unaided-workflow and semantic grouping acceptance remain pending; no push/merge.
+## On main
+
+Through PR #7 (`2bd93b1`): local-first repository workspace with pinned public-GitHub
+import, dependency preview, file/group questions, revision-bound source, agent bridge
+and validated explanations; Python function definitions, lexical call evidence,
+function queries/drill-down and bounded packets. Existing offline maps, tours,
+impact, trust diagnostics, grouping editor and opt-in feedback remain available.
+See [workspace UI](docs/WORKSPACE_UI.md), [agent bridge](docs/WORKSPACE_AGENT_BRIDGE.md)
+and [function layer](docs/FUNCTION_LAYER.md).
+
+## Current branch — `function-layer`, local only
+
+- `b97d6d6`: instance-local, typed and through-decorator evidence; weakest-tier
+  witnesses, entry metadata and “Certain links only.”
+- `915265e`: static package re-exports with source witnesses and overload
+  implementations; prior annotation namespace/private-name fixes.
+- `0641dd6` / card `t_0751cc8d`: reject future class annotation bindings and unsafe
+  overload groups; invalidate visibly mutated/rebound overload markers. Explicit
+  Honcho `--suite` replaces output-name-selected coverage. All three consultant
+  recommendations accepted; second opinion requested at handoff.
+- Documentation now describes the current build only. Earlier history remains in
+  git and the existing milestone reports. No push, PR or main integration here.
+
+## Verified evidence
+
+455 Python / 182 JS tests pass. `.verify.json` build/smoke and four eval recipes
+pass; lookup retains 39/40. Initial full-suite run lacked browser QA dependencies;
+installed the documented versions locally and reran unchanged tests successfully.
+
+Honcho pin: `3922af856d78ec41133916deec4d821fa9c5a92e`.
+1,162 inventory files / 663 mapped files / 7,670 Python definitions; 116 entry points.
+Call sites: 8,705 resolved / 465 instance-local / 388 typed / 1,591 through-decorator /
+33,799 unresolved; two parser diagnostics. Fresh 13-question real-app proof, both
+modes, three CLI tools and 13 complete certain-only parity packets pass.
+The entire symbol graph equals the prior v3 graph: zero changed links or counts.
+These are static evidence categories, not runtime completeness or accuracy rates.
+Local evidence: `artifacts/function-layer/binding-fixes/`; detailed questions,
+source-grounded walkthrough and reproduction: [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md).
+
+## Next, in order
+
+1. After second opinion: split unresolved sites into builtins/external libraries
+   versus actual in-repo gaps (`t_21987d99`, separate worktree/card).
+2. Eric decision: whether/how to expose the existing explanation bridge as in-app Explain.
+3. Workspace M4: live refresh/revision-diff work, not the old optional hosted-Jev M4.
+4. TypeScript/JavaScript function symbols.
+
+The playground exists locally and is not shipped; this task did not touch it.
+Unaided real-user acceptance, semantic grouping review and label-based scorer tuning
+remain separate from automated verification. No provider or Honcho code executed.
+See [TASKS.md](TASKS.md), [workspace contract](docs/WORKSPACE_CONTRACT.md),
+[architecture](docs/ARCHITECTURE.md), [release boundary](docs/V1_RELEASE.md).

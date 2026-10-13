@@ -48,6 +48,7 @@
         <button type="button" id="clear">Clear</button>
       </div>
       <p class="muted">Press Escape to clear the highlight.</p>
+      <label><input id="certain-only" type="checkbox"> Certain links only (static lexical evidence)</label>
     </form>
     <p id="project-info" class="muted"></p>
     <ul class="legend" aria-label="Legend">
@@ -57,6 +58,7 @@
       <li><span class="swatch dim"></span>Not part of the answer</li>
     </ul>
     <div id="graph" class="graph" role="region" aria-label="Dependency graph" tabindex="0"></div>
+    <p class="muted">Call confidence: solid = resolved; long dash = instance-local; dots = typed; dash-dot = through-decorator. Entry points are registration metadata, not invented callers.</p>
   </main>
 
   <aside class="panel evidence-panel" aria-labelledby="evidence-heading">

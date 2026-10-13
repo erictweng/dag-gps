@@ -24,6 +24,29 @@ HIGHLIGHTS = {'relevant', 'potential-impact', 'changed', 'agent-inferred'}
 EVIDENCE_KINDS = {'observed-source', 'static-import', 'static-boundary', 'curated-source', 'agent-inferred'}
 _DIGEST = re.compile(r'[0-9a-f]{64}\Z')
 _COMMIT = re.compile(r'[0-9a-f]{40}\Z')
+CALL_TIERS = ('resolved', 'instance-local', 'typed', 'through-decorator')
+
+
+def certain_edge(edge):
+    sites = [s for s in edge['sites'] if s.get('confidence', 'resolved') == 'resolved']
+    return {'from': edge['from'], 'to': edge['to'], 'type': 'call',
+            'confidence': 'resolved', 'sites': sites} if sites else None
+
+
+def certain_unresolved(extension):
+    result, additions = [], iter(extension.get('certainAdditions', []))
+    item = next(additions, None)
+    for index in range(len(extension['unresolved']) + 1):
+        while item is not None and item[0] == index:
+            edge = extension['edges'][item[1]]
+            site = edge['sites'][item[2]]
+            result.append(dict({k: site[k] for k in ('path', 'start', 'end', 'expression')},
+                               **{'from': edge['from'], 'to': None, 'confidence': 'unresolved',
+                                  'reason': 'No unique supported lexical target; runtime dispatch not inferred'}))
+            item = next(additions, None)
+        if index < len(extension['unresolved']):
+            result.append(extension['unresolved'][index])
+    return result
 
 
 class ContractError(ValueError):
@@ -168,6 +191,12 @@ def _symbol_catalog(extension, files, ids, kinds, edges):
             raise ContractError('Duplicate/invalid symbol node')
         cite(n)
         _text(n.get('qualname'), 'Qualified name')
+        for field in ('decorators', 'entryPoint'):
+            if field in n:
+                for text in _array(n[field], field, 1000):
+                    _text(text, field, 512)
+        if n.get('entryPoint') and not set(n['entryPoint']).issubset(n.get('decorators', [])):
+            raise ContractError('Entry point metadata must reference definition decorators')
         symbols[ident] = n
     for ident, n in symbols.items():
         parent = n.get('parentId')
@@ -178,7 +207,7 @@ def _symbol_catalog(extension, files, ids, kinds, edges):
     call_edges = {}
     for e in _array(extension.get('edges'), 'Call edges', 1000000):
         a, b, kind = _edge(e)
-        if a not in symbols or b not in symbols or kind != 'call' or e.get('confidence') != 'resolved':
+        if a not in symbols or b not in symbols or kind != 'call' or e.get('confidence') not in CALL_TIERS:
             raise ContractError('Call edge must connect resolved symbols')
         if (a, b, kind) in edges:
             raise ContractError('Duplicate call edge')
@@ -187,8 +216,33 @@ def _symbol_catalog(extension, files, ids, kinds, edges):
             raise ContractError('Call edges require line evidence')
         for site in sites:
             cite(_obj(site, 'Call site'))
+            _enum(site.get('confidence', 'resolved'), CALL_TIERS, 'call confidence')
             if site['path'] != symbols[a]['path']:
                 raise ContractError('Call site must belong to caller file')
+            if 'reexports' in site:
+                hops = _array(site['reexports'], 'Re-export hops', 64)
+                if not hops:
+                    raise ContractError('Re-export evidence must contain hops')
+                previous = None
+                seen = set()
+                for hop in hops:
+                    cite(_obj(hop, 'Re-export hop'))
+                    target_path = _path(hop.get('targetPath'))
+                    name = _text(hop.get('name'), 'Re-export name')
+                    target_name = _text(hop.get('targetName'), 'Re-export target name')
+                    key = (hop['path'], name)
+                    if (not hop['path'].endswith('/__init__.py') or key in seen
+                            or (previous is not None and previous != key)
+                            or (hop['path'], target_path, 'import') not in edges):
+                        raise ContractError('Re-export chain must follow observed package imports')
+                    seen.add(key)
+                    previous = (target_path, target_name)
+                if previous != (symbols[b]['path'], symbols[b]['name']):
+                    raise ContractError('Re-export chain must end at the call target')
+        if e['confidence'] != max((s.get('confidence', 'resolved') for s in sites), key=CALL_TIERS.index):
+            raise ContractError('Edge confidence must be its weakest site')
+        if e['confidence'] == 'through-decorator' and e.get('decorators') != symbols[b].get('decorators'):
+            raise ContractError('Decorator evidence must match the target')
         edges.add((a, b, kind))
         call_edges[(a, b, kind)] = e
     for call in _array(extension.get('unresolved'), 'Unresolved calls', 1000000):
@@ -196,8 +250,34 @@ def _symbol_catalog(extension, files, ids, kinds, edges):
         if call.get('confidence') != 'unresolved' or call.get('to') is not None or (call.get('from') is not None and call['from'] not in symbols):
             raise ContractError('Unresolved call cannot guess a target')
     counts = _obj(extension.get('counts'), 'Symbol counts')
-    expected = {'symbols': len(symbols), 'resolved': sum(len(e['sites']) for e in call_edges.values()),
+    if any(e['confidence'] != 'resolved' for e in call_edges.values()) and 'certainAdditions' not in extension:
+        raise ContractError('Tiered graphs require certain-only reconstruction evidence')
+    expected = {'symbols': len(symbols), 'resolved': sum(s.get('confidence', 'resolved') == 'resolved' for e in call_edges.values() for s in e['sites']),
                 'unresolved': len(extension['unresolved'])}
+    if 'certainAdditions' in extension:
+        expected.update({tier: sum(s.get('confidence', 'resolved') == tier for e in call_edges.values() for s in e['sites']) for tier in CALL_TIERS[1:]})
+        expected['entryPoints'] = sum(bool(n.get('entryPoint')) for n in symbols.values())
+        additions = _array(extension['certainAdditions'], 'Certain-only additions', 1000000)
+        last = 0
+        actual = []
+        for item in additions:
+            if type(item) is not list or len(item) != 3 or any(type(n) is not int or n < 0 for n in item):
+                raise ContractError('Invalid certain-only site reference')
+            position, edge_index, site_index = item
+            if not last <= position <= len(extension['unresolved']):
+                raise ContractError('Invalid certain-only insertion order')
+            last = position
+            try:
+                edge = extension['edges'][edge_index]
+                site = edge['sites'][site_index]
+            except IndexError as error:
+                raise ContractError('Unknown certain-only site reference') from error
+            if site.get('confidence', 'resolved') == 'resolved':
+                raise ContractError('Certain-only additions must reference inferred sites')
+            actual.append((edge['from'], site['path'], site['start'], site['end'], site['expression']))
+        inferred = [(e['from'], s['path'], s['start'], s['end'], s['expression']) for e in call_edges.values() for s in e['sites'] if s.get('confidence', 'resolved') != 'resolved']
+        if sorted(actual) != sorted(inferred):
+            raise ContractError('Certain-only additions must equal inferred call sites')
     if counts != expected or any(type(n) is not int for n in counts.values()):
         raise ContractError('Symbol counts must equal observed definitions and call sites')
     return call_edges
@@ -288,9 +368,16 @@ def validate_evidence_packet(packet, snapshot):
     if len(encoded) > MAX_PACKET_BYTES:
         raise ContractError('Packet exceeds byte limit')
     graph = validate_snapshot(snapshot)
+    certain = packet.get('certainOnly', False)
+    if type(certain) is not bool:
+        raise ContractError('certainOnly must be boolean')
     def check_call(edge):
-        if edge.get('type') == 'call' and edge != graph['callEdges'].get(_edge(edge)):
-            raise ContractError('Call evidence differs from observed call sites')
+        if edge.get('type') == 'call':
+            expected = graph['callEdges'].get(_edge(edge))
+            if certain and expected:
+                expected = certain_edge(expected)
+            if edge != expected:
+                raise ContractError('Call evidence differs from observed call sites')
     if packet.get('schema') != PACKET_SCHEMA:
         raise ContractError('Unsupported evidence schema')
     if packet.get('manifestSha256') != snapshot['source']['manifestSha256']:
@@ -302,8 +389,15 @@ def validate_evidence_packet(packet, snapshot):
     _enum(packet.get('status'), STATUSES, 'query status')
     _enum(packet.get('operation'), OPERATIONS, 'operation')
     selected = _unique_ids(packet.get('selectedNodeIds'), 'Selected nodes', MAX_SELECTED_NODES, graph['nodeIds'])
+    if 'entryPoints' in packet:
+        by_id = {n['id']: n for n in snapshot['map'].get('symbol_graph', {}).get('nodes', [])}
+        expected = [{'nodeId': ident, 'decorators': by_id[ident]['entryPoint']} for ident in selected if by_id.get(ident, {}).get('entryPoint')]
+        if packet['entryPoints'] != expected:
+            raise ContractError('Entry point evidence must match selected definitions')
     if 'unresolvedCalls' in packet or 'unresolvedCallCount' in packet:
-        expected = [c for c in snapshot['map'].get('symbol_graph', {}).get('unresolved', []) if c.get('from') in selected]
+        extension = snapshot['map'].get('symbol_graph', {})
+        unknown = certain_unresolved(extension) if certain else extension.get('unresolved', [])
+        expected = [c for c in unknown if c.get('from') in selected]
         if packet.get('unresolvedCalls') != expected[:100] or type(packet.get('unresolvedCallCount')) is not int or packet['unresolvedCallCount'] != len(expected):
             raise ContractError('Unresolved call evidence must match the selected symbols')
     selected_edges = _array(packet.get('selectedEdges'), 'Selected edges', MAX_SELECTED_EDGES)
@@ -320,6 +414,9 @@ def validate_evidence_packet(packet, snapshot):
         witness = _obj(witness, 'Witness')
         chain = _unique_ids(witness.get('nodeIds'), 'Witness nodes', MAX_SELECTED_NODES, graph['nodeIds'])
         links = _array(witness.get('edges'), 'Witness edges', MAX_SELECTED_EDGES)
+        if any(e.get('type') == 'call' for e in links) and not certain and 'confidence' in witness:
+            if witness['confidence'] != max((e['confidence'] for e in links), key=CALL_TIERS.index):
+                raise ContractError('Witness confidence must be its weakest edge')
         if not chain or len(links) != len(chain) - 1:
             raise ContractError('Witness must contain a contiguous directed chain')
         for i, link in enumerate(links):

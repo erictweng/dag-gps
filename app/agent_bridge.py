@@ -47,9 +47,13 @@ def _text(value, name, limit):
 
 def _query_request(args, snapshot_id, require_id=False):
     required = {'query', 'requestId'} if require_id else {'query'}
-    _fields(args, required, {'continuation', 'chosenNodeId'})
+    _fields(args, required, {'continuation', 'chosenNodeId', 'certainOnly'})
     query = _text(args['query'], 'query', 4096)
     request = {'query': query, 'snapshotId': snapshot_id}
+    if 'certainOnly' in args:
+        if type(args['certainOnly']) is not bool:
+            raise BridgeError('certainOnly must be boolean')
+        request['certainOnly'] = args['certainOnly']
     if 'continuation' in args:
         continuation = args['continuation']
         if type(continuation) is not str or not _CONTINUATION.fullmatch(continuation):
@@ -117,10 +121,10 @@ class AgentBridge:
             return read_source(git_dir_for(self.root / 'git-cache', snapshot), snapshot, **args)
         paths = {}
         if tool in ('find_symbols', 'get_callers', 'get_callees'):
-            _fields(args, {'symbol'}, {'continuation', 'chosenNodeId'})
+            _fields(args, {'symbol'}, {'continuation', 'chosenNodeId', 'certainOnly'})
             name = _text(args['symbol'], 'symbol', 512)
             query = {'find_symbols': 'locate symbol ', 'get_callers': 'callers of ', 'get_callees': 'callees of '}[tool] + name
-            query_request = _query_request(dict({'query': query}, **{k: args[k] for k in ('continuation', 'chosenNodeId') if k in args}), snapshot['snapshotId'])
+            query_request = _query_request(dict({'query': query}, **{k: args[k] for k in ('continuation', 'chosenNodeId', 'certainOnly') if k in args}), snapshot['snapshotId'])
         elif tool in ('get_dependencies', 'get_dependents', 'find_path'):
             keys = {'from', 'to'} if tool == 'find_path' else {'path'}
             _fields(args, keys)
