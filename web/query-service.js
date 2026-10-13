@@ -65,8 +65,9 @@
     const symbolNodes = new Map((symbols ? symbols.nodes : []).map(n => [n.id, n]));
     const symbolNames = new Map();
     for (const n of symbolNodes.values()) for (const name of new Set([n.id, n.name, n.qualname, n.path + ':' + n.qualname])) {
-      if (!symbolNames.has(name)) symbolNames.set(name, []);
-      symbolNames.get(name).push(n.id);
+      const key = Scorer.normalizeQuestion(name);
+      if (!symbolNames.has(key)) symbolNames.set(key, []);
+      if (!symbolNames.get(key).includes(n.id)) symbolNames.get(key).push(n.id);
     }
     for (const ids of symbolNames.values()) ids.sort(compare);
     const callForward = new Map([...symbolNodes.keys()].map(id => [id, []]));
@@ -186,16 +187,21 @@
     }
 
     function symbolRequest(text) {
-      const q = text.trim().replace(/[?]+$/, '').replace(/`/g, '');
+      const q = Scorer.normalizeQuestion(text);
       let m;
       if ((m = /^where is (.+?) defined$/i.exec(q))) return {op: 'LOCATE', names: [m[1]]};
       if ((m = /^(?:locate|find) (?:function|class|method|symbol) (.+)$/i.exec(q))) return {op: 'LOCATE', names: [m[1]]};
-      if ((m = /^(?:what calls|callers of) (.+)$/i.exec(q))) return {op: 'CALLERS', names: [m[1]]};
+      if ((m = /^(?:what calls|who invokes|who calls|callers of) (.+)$/i.exec(q)) ||
+          (m = /^where is (.+?) called from$/i.exec(q))) return {op: 'CALLERS', names: [m[1]]};
       if ((m = /^what does (.+) call$/i.exec(q))) return {op: 'CALLEES', names: [m[1]]};
       if ((m = /^callees of (.+)$/i.exec(q))) return {op: 'CALLEES', names: [m[1]]};
       if ((m = /^how does (.+?) reach (.+)$/i.exec(q))) return {op: 'FLOW', names: [m[1], m[2]]};
       if ((m = /^trace from (.+)$/i.exec(q))) return {op: 'TRACE', names: [m[1]]};
       if (symbolNames.has(q) && !nodes.has(q)) return {op: 'LOCATE', names: [q]};
+      const name = Scorer.filenameText(q);
+      if (symbolNames.has(name) && (Scorer.kindHint(q) === 'symbol' ||
+          Object.values(scorer.score(q).targets).every(h => h.match.label === 'No match' || h.match.tier === 'fuzzy')))
+        return {op: 'LOCATE', names: [name]};
       return null;
     }
 

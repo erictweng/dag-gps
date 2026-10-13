@@ -6,10 +6,22 @@
   'use strict';
   const OPERATIONS = ['LOCATE', 'UPSTREAM', 'DOWNSTREAM', 'PATH', 'NOT_SURE'];
   const SCORE_KIND = 'heuristic model score (not measured accuracy)';
+  const KIND_WORDS = Object.freeze({folder: 'layer', directory: 'layer', dir: 'layer', package: 'layer',
+    file: 'file', module: 'file', script: 'file', function: 'symbol', method: 'symbol', class: 'symbol', def: 'symbol'});
+  const FILLER = ['layer', 'logic', 'code', 'stuff', 'part', 'thing', 'located', 'defined', 'live', 'lives'];
+  function normalizeQuestion(text) {
+    return String(text).toLowerCase().replace(/[’]/g, "'")
+      .replace(/\b(where|what|who|how)'?s\b/g, '$1 is')
+      .replace(/[`"'?!,;()]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function kindHint(text) {
+    return tokens(text).map(t => KIND_WORDS[t]).find(Boolean) || null;
+  }
   const STOP = new Set(('a an the this that these those where which what who does do is are can could would please ' +
     'me tell show find locate live lives located code implementation implement handles handle about for of in on to from ' +
     'get goes reach how through between and with it its into trace route path dependencies depend depends dependents ' +
     'upstream downstream uses use imports import built changed change break if').split(' '));
+  for (const word of [...Object.keys(KIND_WORDS), ...FILLER]) STOP.add(word);
   function tokens(text) {
     return String(text || '').replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase().match(/[a-z0-9]+/g) || [];
   }
@@ -49,9 +61,10 @@
   }
   function filenameText(text) {
     return text.trim().replace(/[?!]+$/, '').replace(/[`"']/g, '')
-      .replace(/^(?:please\s+)?(?:where\s+(?:is|are|does)|find|locate|show(?:\s+me)?)\s+(?:the\s+)?/i, '')
+      .replace(/^(?:please\s+)?(?:(?:where|what|who|how)\s+(?:is|are|does)|find|locate|show(?:\s+me)?)\s+(?:the\s+)?/i, '')
       .replace(/\s+(?:live|lives|located)$/i, '')
-      .replace(/^(?:file(?:name)?|named)\s+/i, '').replace(/\s+file$/i, '').trim();
+      .replace(/^(?:file(?:name)?|named)\s+/i, '')
+      .split(/\s+/).filter(t => !KIND_WORDS[t] && !FILLER.includes(t)).join(' ').trim();
   }
   function intent(query) {
     const q = query.trim().replace(/[?!]+$/, '');
@@ -174,8 +187,8 @@
       if (e.type !== 'realtime') incoming[e.to]++;
     }
     const index = map.nodes.map(n => ({
-      node: n, kind: n.kind, literalPath: n.path || '', basename: (n.path || '').split('/').at(-1),
-      stem: (n.path || '').split('/').at(-1).replace(/\.[^.]+$/, ''),
+      node: n, kind: n.kind, literalPath: (n.path || '').toLowerCase(), basename: (n.path || '').toLowerCase().split('/').at(-1),
+      stem: (n.path || '').toLowerCase().split('/').at(-1).replace(/\.[^.]+$/, ''),
       stemTokens: tokens((n.path || '').split('/').at(-1).replace(/\.[^.]+$/, '')),
       identityTerms: new Set(tokens(n.id)),
       id: n.id, label: normalized(n.label), aliases: (n.aliases || []).map(normalized),
@@ -194,7 +207,9 @@
       const known = index.some(n => n.kind === 'file' && (n.basename === query || n.stem === query));
       const normalizedQuery = normalized(query);
       const layer = index.some(n => n.kind === 'layer' &&
-        [n.identity, n.label, ...n.aliases].includes(normalizedQuery));
+        ([n.identity, n.label, ...n.aliases].includes(normalizedQuery) ||
+         n.aliases.includes(normalized(text.replace(/^(?:where is|find|locate)\s+(?:the\s+)?/i, ''))) ||
+         (kindHint(text) === 'layer' && n.node.label?.toLowerCase().split('/').at(-1) === query)));
       // Bare architectural aliases remain layers unless syntax explicitly asks for a file.
       const shaped = literal && (/_|[a-z][A-Z]/.test(query) || (query.includes('-') && !layer));
       const nearStem = !explicit && !known && !shaped && !layer && literal && query.length >= 5 && index.some(n => {
@@ -304,9 +319,12 @@
       }
       if (file) return rankFile(file);
       const q = terms(text); const phrase = q.join(' '); const raw = normalized(text);
+      const originalPhrase = normalized(text.replace(/^(?:where is|find|locate)\s+(?:the\s+)?/i, ''));
+      const hinted = kindHint(text), name = filenameText(text);
+      const fullLayer = index.some(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name);
       const overlap = set => q.length ? q.filter(t => set.has(t)).length / q.length : 0;
       function architectureScore(n) {
-        const exact = field => Boolean(field && (field === raw || field === phrase));
+        const exact = field => Boolean(field && (field === raw || field === phrase || field === originalPhrase));
         // Preserve literal IDs/paths even when their segments are also intent words (route.ts).
         const literal = field => Boolean(field && (` ${raw} `).includes(` ${field} `));
         const c = {
@@ -317,6 +335,8 @@
           identity: (exact(n.identity) || (n.path && literal(n.identity))) ? 11 : 0,
           structural: 0
         };
+        if (hinted === 'layer' && !fullLayer && n.kind === 'layer' &&
+            n.node.label?.toLowerCase().split('/').at(-1) === name) c.label = 12;
         // Architecture retrieval uses layer responsibility metadata, not filename fragments.
         if (n.kind === 'file') Object.keys(c).forEach(k => { c[k] = 0; });
         const evidence = c.label + c.alias + c.description + c.path + c.identity;
@@ -341,7 +361,7 @@
     }
     function score(query) {
       if (typeof query !== 'string') throw new TypeError('Query must be a string');
-      const parsed = intent(query);
+      const parsed = intent(normalizeQuestion(query));
       const targets = parsed.op === 'PATH' ? {
         from_target: rank(parsed.from || ''), to_target: rank(parsed.to || '')
       } : {locate_target: rank(parsed.target || '')};
@@ -357,5 +377,6 @@
     }
     return {score};
   }
-  return {createScorer, validateHead, validateResult, tokens, OPERATIONS, SCORE_KIND};
+  return {createScorer, validateHead, validateResult, tokens, normalizeQuestion, kindHint, filenameText, terms, intent,
+    KIND_WORDS, FILLER, OPERATIONS, SCORE_KIND};
 });
