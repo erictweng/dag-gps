@@ -45,3 +45,15 @@ test('operation patterns retain dependency direction', () => {
   assert.equal(S.createScorer(map).score('what does src/db.py depend on').requestedOperation, 'UPSTREAM');
   assert.equal(S.createScorer(map).score('what uses src/db.py').requestedOperation, 'DOWNSTREAM');
 });
+test('versioned synonyms are bidirectional, lower scoring and literal-last-resort', () => {
+  for (const group of S.SYNONYMS) for (const a of group) for (const b of group) if (a !== b) {
+    const s = S.createScorer({nodes: [{id: 'target', kind: 'file', path: 'src/' + b + '.py'}]});
+    const literal = s.score(b).targets.locate_target, synonym = s.score(a).targets.locate_target;
+    assert.equal(synonym.yes, true, a + '→' + b);
+    assert.ok(synonym.top3[0].score < literal.top3[0].score);
+    assert.match(synonym.reason, /matched via synonym/);
+  }
+  assert.equal(S.createScorer(map).score('database').targets.locate_target.choice, 'database');
+  assert.deepEqual(S.synonymQueries('llm'), []);
+  assert.equal(S.createScorer(map).score('database unknown nonsense').yes, false);
+});

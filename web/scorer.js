@@ -9,6 +9,21 @@
   const KIND_WORDS = Object.freeze({folder: 'layer', directory: 'layer', dir: 'layer', package: 'layer',
     file: 'file', module: 'file', script: 'file', function: 'symbol', method: 'symbol', class: 'symbol', def: 'symbol'});
   const FILLER = ['layer', 'logic', 'code', 'stuff', 'part', 'thing', 'located', 'defined', 'live', 'lives'];
+  // v1: only equivalences exercised by the frozen benchmark. LLM != model:
+  // model can mean database/schema models, so that tempting expansion is unsafe.
+  const SYNONYMS = Object.freeze([['db', 'database'], ['config', 'configuration', 'settings'],
+    ['msg', 'message'], ['auth', 'authentication'], ['repo', 'repository'], ['env', 'environment']].map(Object.freeze));
+  function synonymQueries(text) {
+    const words = text.split(/\s+/), out = [];
+    words.forEach((word, i) => {
+      const group = SYNONYMS.find(g => g.includes(word));
+      if (group) for (const replacement of group) if (replacement !== word) {
+        const copy = words.slice(); copy[i] = replacement;
+        out.push({query: copy.join(' '), reason: 'matched via synonym ' + word + '→' + replacement});
+      }
+    });
+    return out.slice(0, 16);
+  }
   function normalizeQuestion(text) {
     return String(text).toLowerCase().replace(/[’]/g, "'")
       .replace(/\b(where|what|who|how)'?s\b/g, '$1 is')
@@ -297,7 +312,7 @@
         ['path', 'basename'].includes(s.tier) || (!extension && s.tier === 'stem')));
       return finish(scored, 'filename', query, missingExact);
     }
-    function rank(text) {
+    function rankLiteral(text) {
       const file = fileRequest(text);
       // Real literal filenames/paths (including ambiguous basenames) always win.
       const realFile = file && index.some(n => n.kind === 'file' &&
@@ -359,6 +374,24 @@
         materialize:()=>architectureScore(n)} : architectureScore(n));
       return finish(scored, 'architecture', text, false);
     }
+    function rank(text) {
+      const literal = rankLiteral(text);
+      if (literal.match.label !== 'No match') return literal;
+      const found = new Map();
+      for (const variant of synonymQueries(text)) {
+        const h = rankLiteral(variant.query);
+        for (const a of h.suggestions) {
+          const score = a.score * 0.75;
+          if (!found.has(a.id) || found.get(a.id).score < score)
+            found.set(a.id, {id: a.id, score, evidence: score, coverage: h.match.coverage,
+              tier: h.match.missingExact ? 'fuzzy' : h.match.tier,
+              components: {synonym: score}, matchReason: variant.reason + '. ' + a.reason});
+        }
+      }
+      if (!found.size) return literal;
+      return finish(index.map(n => found.get(n.id) || {id: n.id, score: 0, evidence: 0,
+        coverage: 0, components: {synonym: 0}}), 'architecture', text, false);
+    }
     function score(query) {
       if (typeof query !== 'string') throw new TypeError('Query must be a string');
       const parsed = intent(normalizeQuestion(query));
@@ -378,5 +411,5 @@
     return {score};
   }
   return {createScorer, validateHead, validateResult, tokens, normalizeQuestion, kindHint, filenameText, terms, intent,
-    KIND_WORDS, FILLER, OPERATIONS, SCORE_KIND};
+    KIND_WORDS, FILLER, SYNONYMS, synonymQueries, OPERATIONS, SCORE_KIND};
 });

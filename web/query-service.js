@@ -70,6 +70,10 @@
       if (!symbolNames.get(key).includes(n.id)) symbolNames.get(key).push(n.id);
     }
     for (const ids of symbolNames.values()) ids.sort(compare);
+    function lookupSymbol(name) {
+      if (symbolNames.has(name)) return symbolNames.get(name);
+      return [...new Set(Scorer.synonymQueries(name).flatMap(v => symbolNames.get(v.query) || []))].sort(compare);
+    }
     const callForward = new Map([...symbolNodes.keys()].map(id => [id, []]));
     const callBackward = new Map([...symbolNodes.keys()].map(id => [id, []]));
     for (const e of symbols ? symbols.edges : []) {
@@ -199,7 +203,7 @@
       if ((m = /^trace from (.+)$/i.exec(q))) return {op: 'TRACE', names: [m[1]]};
       if (symbolNames.has(q) && !nodes.has(q)) return {op: 'LOCATE', names: [q]};
       const name = Scorer.filenameText(q);
-      if (symbolNames.has(name) && (Scorer.kindHint(q) === 'symbol' ||
+      if (lookupSymbol(name).length && (Scorer.kindHint(q) === 'symbol' ||
           Object.values(scorer.score(q).targets).every(h => h.match.label === 'No match' || h.match.tier === 'fuzzy')))
         return {op: 'LOCATE', names: [name]};
       return null;
@@ -215,7 +219,7 @@
         packet.status = 'unsupported'; packet.reason = 'This snapshot has no Python symbol extension.';
         return packet;
       }
-      const candidates = parsed.names.map(name => symbolNames.get(name) || []);
+      const candidates = parsed.names.map(lookupSymbol);
       if (request.chosenNodeId !== undefined) {
         const index = candidates.findIndex(ids => ids.includes(request.chosenNodeId));
         if (index < 0) throw new Error('Chosen symbol is not an alternative for this question');
@@ -312,6 +316,10 @@
       packet.unresolvedCalls = unknown.slice(0, 100);
       packet.unresolvedCallCount = unknown.length;
       packet.reason += ' ' + unknown.length + ' unresolved call site(s) in selected symbols (not edges).';
+      for (const name of parsed.names) if (!symbolNames.has(name)) {
+        const matches = Scorer.synonymQueries(name).filter(v => symbolNames.has(v.query));
+        packet.reason += ' ' + matches.map(v => v.reason).join('; ') + '.';
+      }
       if (parsed.op === 'CALLERS' && !packet.selectedEdges.length)
         packet.reason += ' No resolved callers observed; this does not mean no callers exist.';
       packet.limitations.push(unknown.length + ' unresolved call site(s) in selected symbols; ' + packet.unresolvedCalls.length + ' listed. They are not edges.');
