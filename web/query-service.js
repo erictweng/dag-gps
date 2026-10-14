@@ -231,6 +231,7 @@
     // Pages grow whole chains: every selected non-seed node carries its own witness.
     function reach(packet, op, seed, offset) {
       const downstream = op === 'DOWNSTREAM';
+      if (router.isFolder(seed)) return folderReach(packet, op, seed, offset);
       const {prev, order} = tree(seed, downstream);
       if (offset > order.length) throw new Error('Continuation is past the end of the result');
       const selected = [seed], set = new Set(selected), witnesses = [];
@@ -421,11 +422,13 @@
       const op = symbolOp?.op || intent.op;
       const names = symbolOp?.names || (intent.op === 'PATH' ? [intent.from, intent.to] : [intent.target]);
       const targets = names.map(text => {
+        if (map.meta?.folderTree === 1) text = text.replace(/^the\s+/i, '');
         const name = Scorer.filenameText(text), hint = Scorer.kindHint(text) ||
           (op === 'LOCATE' ? Scorer.kindHint(request.query) : null);
         const alias = (options.learnedAliases || []).some(a => Scorer.normalizeQuestion(a.alias) === name);
         const literal = !alias && /^[\w-]+$/.test(name) ? literalNames.get(name) || [] : [];
-        const collision = new Set(literal.map(n => n.kind)).size > 1;
+        const collision = new Set(literal.map(n => n.kind)).size > 1 ||
+          (map.meta?.folderTree === 1 && literal.filter(n => n.kind === 'layer').length > 1);
         if (collision) {
           const preferred = hint ? literal.filter(n => n.kind === hint) : [];
           return {collision, ids: (preferred.length ? preferred : literal).map(n => n.id)};
@@ -476,7 +479,9 @@
         });
         if (offset >= ordered.length) throw new Error('Continuation is past the alternatives');
         packet.status = 'needs-choice';
-        packet.reason = 'Literal name matches different kinds; choose a file, folder or symbol explicitly.';
+        packet.reason = map.meta?.folderTree === 1 ?
+          'Literal name matches multiple targets; choose a file, folder or symbol explicitly.' :
+          'Literal name matches different kinds; choose a file, folder or symbol explicitly.';
         packet.alternatives = ordered.slice(offset, offset + LIMITS.alternatives).map(id => {
           const n = nodes.get(id) || symbolNodes.get(id);
           const selected = names.map((text, i) => i === ambiguous ? canonical(id) :
@@ -504,6 +509,44 @@
         'Explicit literal target. ' + targets.map(t => t.reason || '').filter(Boolean).join(' '));
     }
 
+    function folderReach(packet, op, seed, offset) {
+      const downstream = op === 'DOWNSTREAM';
+      const {prev, order} = router.traversal(seed, downstream);
+      if (offset > order.length) throw new Error('Continuation is past the end of the result');
+      const selected = [seed], witnesses = [];
+      let bytes = packetBytes(packet);
+      let next = offset;
+      for (; next < order.length && selected.length < LIMITS.selectedNodes; next++) {
+        const chain = chainTo(prev, order[next]);
+        if (chain.length > LIMITS.selectedNodes) {
+          if (next > offset) break;
+          packet.status = 'unsupported';
+          packet.reason = 'Complete folder witness exceeds the 200-node budget; choose a narrower file question.';
+          return packet;
+        }
+        const witness = witnessFromChain(downstream ? chain.reverse() : chain);
+        selected.push(order[next]); witnesses.push(witness);
+        // Byte-bounded pages retain complete evidence, never silently cut a chain.
+        bytes += packetBytes(witness) + packetBytes(order[next]);
+        if (bytes > LIMITS.packetBytes / 2) {
+          selected.pop(); witnesses.pop();
+          if (next === offset) {
+            packet.status = 'unsupported'; packet.reason = 'Complete folder witness exceeds the packet byte budget.';
+            return packet;
+          }
+          break;
+        }
+      }
+      packet.operation = op; packet.status = 'matched'; packet.seedNodeId = seed;
+      packet.highlightState = downstream && witnesses.length ? 'potential-impact' : 'relevant';
+      packet.reason = (downstream ? 'Dependents' : 'Dependencies') + ' outside ' + seed + ': ' + order.length + '.';
+      packet.limitations.push('Folder results exclude internal files; witnesses start/end at real descendant files, not synthetic folder edges.');
+      if (downstream) packet.limitations.push('Dependents are potentially affected via static imports, not guaranteed to break.');
+      if (next < order.length) { packet.truncated = true; packet.continuation = 'offset:' + next; }
+      const links = new Map(witnesses.flatMap(w => w.edges).map(e => [edgeKey(e), e]));
+      return finishSelection(packet, selected, [...links.values()], witnesses);
+    }
+
     function fileOperation(packet, requested, ids, offset, evidence) {
       packet.operation = requested;
       if (requested === 'PATH') {
@@ -522,11 +565,23 @@
         }
         packet.status = 'matched';
         packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).' + evidence;
+        if (path.length > LIMITS.selectedNodes) {
+          packet.status = 'unsupported';
+          packet.reason = 'Complete path exceeds the 200-node budget; choose closer endpoints.';
+          return packet;
+        }
         const w = witnessFromChain(path);
-        return finishSelection(packet, path, w.edges, path.length > 1 ? [w] : []);
+        return finishSelection(packet, path, w.edges, path.length > 1 || router.isFolder(from) ? [w] : []);
       }
       if (requested === 'LOCATE') {
         packet.status = 'matched'; packet.reason = evidence;
+        if (router.isFolder(ids[0])) {
+          const all = router.folderNodes(ids[0]);
+          if (offset > all.length) throw new Error('Continuation is past the end of the result');
+          const end = offset + LIMITS.selectedNodes - 1;
+          if (end < all.length) { packet.truncated = true; packet.continuation = 'offset:' + end; }
+          return finishSelection(packet, [ids[0], ...all.slice(offset, end)], [], []);
+        }
         return finishSelection(packet, ids, [], []);
       }
       const reached = reach(packet, requested, ids[0], offset);
@@ -571,7 +626,7 @@
         if (!nodes.has(request.chosenNodeId)) throw new Error('Unknown chosen node ID');
         packet.operation = 'LOCATE'; packet.status = 'matched';
         packet.reason = 'Explicitly chosen by the user.';
-        return finishSelection(packet, [request.chosenNodeId], [], []);
+        return fileOperation(packet, 'LOCATE', [request.chosenNodeId], offset, packet.reason);
       }
       const fileOp = symbolOp && legacyTarget && symbolOp.op !== 'LOCATE' ?
         ({CALLERS: 'DOWNSTREAM', CALLEES: 'UPSTREAM', TRACE: 'UPSTREAM', FLOW: 'PATH'})[symbolOp.op] : null;

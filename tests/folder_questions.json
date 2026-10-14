@@ -1,0 +1,5 @@
+{
+  "provenance": "Worker-authored folder supplement, not user accuracy. Paths checked against pinned Git inventory. Relationship expectations are independently recomputed from each snapshot's own file edges, not frozen sparse Salesroom counts.",
+  "honcho": ["examples", "examples/crewai", "examples/crewai/python", "examples/crewai/python/src", "sdks", "sdks/python", "src/llm"],
+  "salesroom": ["src", "src/components", "app/api", "app/api/auth", "app/room", "src/components/ui", "src/lib"]
+}

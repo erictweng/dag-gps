@@ -229,7 +229,7 @@
       const candidates = bareNames.get(name) || [], hint = kindHint(text);
       const preferred = candidates.filter(n => n.kind === hint);
       const fullLayer = preferred.filter(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name);
-      if (fullLayer.length) return fullLayer;
+      if (fullLayer.length && map.meta?.folderTree !== 1) return fullLayer;
       return preferred.length ? preferred : candidates;
     }
     function nameHead(candidates, text, reason, score = 40) {
@@ -340,6 +340,7 @@
       return finish(scored, 'filename', query, missingExact);
     }
     function rankLiteral(text) {
+      if (map.meta?.folderTree === 1) text = text.replace(/^the\s+/i, '');
       const file = fileRequest(text);
       const name = filenameText(text);
       const fullLayers = name.includes('/') ? index.filter(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name) : [];
@@ -365,6 +366,7 @@
       }
       const bare = bareCandidates(text);
       if (new Set(bare.map(n => n.kind)).size > 1 ||
+          (map.meta?.folderTree === 1 && bare.some(n => n.kind === 'layer')) ||
           (kindHint(text) === 'layer' && bare.some(n => n.kind === 'layer')))
         return nameHead(bare, text, 'Literal name');
       if (file) {

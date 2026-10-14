@@ -456,6 +456,8 @@ def _preview(inventory: dict[str, Any], source_paths: list[str], graph: dict[str
     build_map, onboarding = _modules()
     groups = onboarding.group_files(source_paths)
     layer_of, unmapped, duplicate = build_map.assign_layers(source_paths, groups)
+    groups += onboarding.folder_tree(groups)
+    groups.sort(key=lambda group: group['label'])
     import_pairs = [tuple(value) for value in graph.get('edges', [])] + [tuple(value) for value in graph.get('pyedges', [])]
     routes = [path for path in source_paths if path.startswith('app/api/') and path.endswith('/route.ts')]
     file_edges, drops = build_map.file_level_edges(import_pairs, graph.get('api_calls', {}), routes,
@@ -473,7 +475,8 @@ def _preview(inventory: dict[str, Any], source_paths: list[str], graph: dict[str
     layer_cycle = build_map.find_cycle(build_map.adjacency(layer_edges, layer_ids))
     by_path = {item['path']: item for item in inventory['files']}
     nodes = [{'id': group['id'], 'kind': 'layer', 'label': group['label'],
-              'desc': group['desc']} for group in groups]
+              'desc': group['desc'], 'parent': group['parent'], 'depth': group['depth'],
+              'compactLabel': group['compactLabel']} for group in groups]
     nodes += [{'id': path, 'kind': 'file', 'path': path, 'label': os.path.basename(path),
                'layer': layer_of[path], 'lines': by_path[path]['lineCount']}
               for path in source_paths]
@@ -505,7 +508,7 @@ def _preview(inventory: dict[str, Any], source_paths: list[str], graph: dict[str
                    or layer_cycle or inventory['counts']['extractionUnsupported'])
     map_data = {
         'meta': {'repo': inventory['source']['repo'], 'snapshot_commit': inventory['source']['commit'],
-                 'extractor': EXTRACTOR_VERSION,
+                 'extractor': EXTRACTOR_VERSION, 'folderTree': 1,
                  'counts': {'layers': len(groups), 'files': len(source_paths),
                             'edges': len(layer_edges), 'file_edges': len(file_edges)}},
         'nodes': nodes, 'edges': layer_edges, 'file_edges': file_edges, 'layers': layers,

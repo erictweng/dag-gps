@@ -87,3 +87,37 @@ def group_files(files):
         out.append({'id': 'folder-' + hashlib.sha256(folder.encode()).hexdigest()[:16],
                     'label': folder, 'desc': reason, 'files': paths, 'reason': reason})
     return out
+
+
+def folder_tree(groups):
+    """Annotate direct groups; return missing ancestors without moving files.
+
+    Compact labels are presentation hints only. A directory with direct files
+    ends a compact chain, even if it also has one child directory.
+    """
+    import hashlib
+    by_path = {group['label']: group for group in groups}
+    missing = set()
+    for path in by_path:
+        parts = path.split('/')
+        missing.update('/'.join(parts[:i]) for i in range(1, len(parts)))
+    ancestors = []
+    for path in sorted(missing - by_path.keys()):
+        group = {'id': 'folder-' + hashlib.sha256(path.encode()).hexdigest()[:16],
+                 'label': path, 'files': [],
+                 'desc': 'Ancestor folder; descendants retain their direct folder ownership.'}
+        ancestors.append(group)
+        by_path[path] = group
+    children = {path: [] for path in by_path}
+    for path, group in by_path.items():
+        parent = path.rsplit('/', 1)[0] if '/' in path else None
+        group['parent'] = by_path[parent]['id'] if parent else None
+        group['depth'] = path.count('/')
+        if parent:
+            children[parent].append(path)
+    for path, group in by_path.items():
+        end = path
+        while not by_path[end]['files'] and len(children[end]) == 1:
+            end = children[end][0]
+        group['compactLabel'] = end
+    return ancestors
