@@ -1,6 +1,6 @@
 # Status — DAG GPS
 
-## Server speed — implemented, final verification in progress
+## Server speed — verified, consultant second opinion requested
 
 `t_20ef91ae`, isolated `server-speed` branch, implementation `8277e35`.
 Full snapshot validation is cached with a four-entry, file-generation-aware LRU;
@@ -8,9 +8,12 @@ query/source/context/explanation routes reuse the validated index. Warm HTTP
 p95: Honcho 487.774→6.993 ms; Salesroom 3.078→1.075 ms, 480 requests/repo/version.
 All 960 paired response hashes match. Cold starts remain expensive and measured
 combined Honcho RSS rises; see `docs/SERVER_PERFORMANCE.md` for limits and evidence.
-473 Python tests and 212 JS tests passed with browser dependencies supplied;
-final differential replay and eight release gates are in progress. No push/merge/PR.
-Next: finish verification, then request the required consultant second opinion.
+473 Python / 212 JS pass, zero skips. Independent frozen-validator replay:
+180 packet checks (71 rejections), 176 indexed checks, 54 real packets; no differences.
+All eight unchanged gates and packaging pass on `8bfc232`; scorer worst p95
+3.547 ms (<10 ms). Receipt: `artifacts/server-performance/gates/verification.json`.
+Later changes are docs only. No push/merge/PR. Consultant second opinion requested;
+final approval remains with the generalist. No next feature launched.
 
 ## Prior benchmark fixes — verified, consultant feedback received
 

@@ -75,6 +75,8 @@ they already acquired. Separate four-entry Python and Node LRUs can retain up to
 eight different parsed generations, plus references held by active requests.
 The cache bounds entries, not total bytes. Huge snapshot GET responses and Git
 source reads still cost work proportional to output/source size.
+Cold snapshot loads are serialized by the store lock and can temporarily delay
+warm lookups; the warm-only latency target is not a concurrent-import guarantee.
 
 ## Measurement
 
@@ -152,7 +154,15 @@ checks (109 accepted, 71 rejected), 176 index checks, and 54 real packets**, wit
 zero differences. Four checks use invalid snapshots and therefore cannot produce
 an index; the full-wrapper errors still match. Receipt:
 `artifacts/server-performance/equivalence.json`. JS: **212/212, zero skips**.
-Release-gate receipts are recorded below after execution.
+All **eight unchanged release gates and packaging pass** on clean checkpoint
+`8bfc232eca41d8af732bbd86e78f4eaf32169852`: build, test, smoke, release session,
+accessibility, performance, UI performance and milestone acceptance. The gated
+suites are **473 Python / 212 JS, zero skips**. Release scorer worst p95 is
+**3.547 ms**, below the unchanged **10 ms** threshold. No performance retry or
+threshold change. Receipts: `artifacts/server-performance/gates/verification.json`
+and `package-result.json`. Subsequent changes are documentation/build-update
+only; the receipt names the gated checkpoint, not a later documentation commit.
+Consultant second opinion is requested; this is not final generalist approval.
 
 ```sh
 # From this worktree; these paths point to existing local pinned fixtures.

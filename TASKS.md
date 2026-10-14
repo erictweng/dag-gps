@@ -1,12 +1,15 @@
 # Tasks — DAG GPS
 
-## Current server-speed card — implementation complete, verifying
+## Current server-speed card — verified, consultant second opinion requested
 
 `t_20ef91ae`, `server-speed` at `8277e35`: cached strict snapshot indexes across
 all workspace routes; generation-bound workers and concurrency/tamper tests.
 Warm Honcho HTTP p95 6.993 ms (<20 ms target), down from 487.774 ms; all 960
-before/after paired response hashes match. Final gates/differential replay pending;
-then dag-consultant second opinion. Details: `docs/SERVER_PERFORMANCE.md`.
+before/after paired response hashes match. 473 Python / 212 JS, zero skips;
+all eight unchanged gates and packaging pass on `8bfc232` (release p95 3.547 ms).
+Frozen-validator replay: 180 packet checks, 71 rejections, 54 real packets, no
+differences. Dag-consultant second opinion requested; approval stays with the
+generalist. Details: `docs/SERVER_PERFORMANCE.md`.
 No parser changes, push, merge or PR. No next feature launched.
 
 ## Prior parser follow-up — implemented and verified, consultant feedback received
