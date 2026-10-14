@@ -210,9 +210,17 @@ database traversal visibly retains `matched via synonym database→db`.
 
 Reproduce the supplement with `node scripts/eval_question_parser_review.cjs`;
 browser scripts accept `--review-regressions --out <evidence-directory>`.
-Unchanged eight-gate release verification is pending on the committed fixes.
+All eight unchanged release gates and packaging passed on `0059009`; receipt:
+`artifacts/question-parser/review-fixes/gates/verification.json`. Python 458/458
+and JS 199/199, zero skips. Scorer 47/47, alias 15/15, lookup 39/40 (unchanged).
+Release maximum p95 9.399 ms, below the unchanged 10 ms threshold. No performance
+retry or sample/threshold changes on this follow-up. Both fresh imported snapshots
+and all 16 browser packets also pass Python contracts. Consultant second opinion
+is requested before parent approval; no push, merge or PR.
 Initial standalone tests: 199 JS passed; Python ran 458 with two browser checks
 skipped before configuring NODE_PATH (not counted as full gate evidence).
+A post-gate browser rerun initially lacked NODE_PATH; restoring the existing local
+Playwright package path resolved it, and both reruns passed without product changes.
 
 Real production WorkspaceServer imports on this card's workspace copy, actual
 Chromium input/Enter, packet-vs-highlight assertions and screenshots for seven

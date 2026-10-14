@@ -9,7 +9,10 @@ See [QUESTION_PARSER.md](docs/QUESTION_PARSER.md) for the pipeline, frozen eval
 matrix, measured limits and remaining failures. Follow-up `t_e1cca752` accepts and
 fixes all three consultant findings: lexical dispatch, file hints and traversal
 synonym reasons. Seven service tests and 16 real-app review cases pass; frozen
-split results are unchanged. Committed-fix release gates and second opinion pending.
+split results are unchanged. All eight unchanged gates and packaging pass on
+`0059009`: Python 458/458, JS 199/199, zero skips; release p95 9.399 ms, no retry.
+Receipt: `artifacts/question-parser/review-fixes/gates/verification.json`.
+Both fresh snapshots and 16 real-app packets pass contracts. Second opinion pending.
 
 - Frozen Honcho: 107 questions / 27 holdout; late-added Salesroom: 43 / 11 holdout.
 - Every stage has a committed per-case report. Zero new wrong/overconfident answers
@@ -22,7 +25,7 @@ split results are unchanged. Committed-fix release gates and second opinion pend
   BM25 never auto-selects. Honcho's sidecar budget omits 5,465 text records, with
   name/path-only fallback and explicit disclosure.
 
-## Verification
+## Prior parser verification (before review fixes)
 
 458 Python / 192 JS tests pass. All eight project/release gates passed against
 implementation commit `a54fbca`; final scorer scale p95 was 8.847 ms (<10 ms).

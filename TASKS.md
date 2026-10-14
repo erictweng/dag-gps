@@ -11,7 +11,8 @@ Real-app evidence and project gates: `artifacts/question-parser/`.
 Consultant second opinion required before parent approval. No push/merge/PR.
 Follow-up `t_e1cca752`: all three findings implemented with RED-first service
 regressions, a separate 16-question real-repo supplement and browser screenshots.
-Frozen sets/splits unchanged; final gate verification and second opinion pending.
+Frozen sets/splits unchanged; eight unchanged gates and packaging pass on `0059009`
+(458 Python / 199 JS, zero skips; p95 9.399 ms). Second opinion pending.
 The prior function-layer card is on main through PR #8.
 
 ## Parked items — do not start while parser work is active
