@@ -215,7 +215,13 @@ with the documented Playwright environment. Six actual Chromium questions pass
 through WorkspaceServer and contract validation; screenshots and packet summaries
 are under `artifacts/question-parser/benchmark-fixes/browser/`. These checks reuse
 the pinned snapshots with honest current query-code hashes; no fresh import or
-server optimization is claimed. Full gate receipt and final counts are in STATUS.
+server optimization is claimed. All eight unchanged gates and packaging passed
+on `cc69b4a`: Python 458/458, JS 212/212, zero skips; release worst p95 3.523 ms.
+Receipt: `artifacts/question-parser/benchmark-fixes/gates/verification.json`.
+The initial background gate lacked browser environment (two skips and smoke
+failure); its receipt is retained under `gates-env-failure/`. Explicit Playwright,
+axe-core and Node paths fixed setup; no performance-driven retry occurred.
+Final receipt documentation is a docs-only commit after the gated commit.
 
 ### Review fixes (`t_e1cca752`)
 

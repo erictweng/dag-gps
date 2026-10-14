@@ -1,6 +1,6 @@
 # Status — DAG GPS
 
-## Benchmark fixes — final gates running
+## Benchmark fixes — verified, consultant second opinion pending
 
 `t_b8a8498e`, query code `2b80e8d` on `question-parser`. All three prior benchmark
 review points accepted; harness corrected first at `103b6e5`. Same expanded grid
@@ -12,12 +12,18 @@ target. New wrong vs main: 149→61 / 542→535. Seven newly wrong Salesroom per
 cases expose the existing parenthesized-path bug; their `?` counterparts were
 already wrong. No new frozen wrong, all holdout matches retained (18 / 7).
 Direct p95: Honcho 1.080 ms, Salesroom 0.232 ms; zero matched negatives.
-JS 212/212 and real-app 6/6 pass; full eight-gate/packaging run pending.
+Python 458/458, JS 212/212, zero skips; real-app 6/6 pass. All eight unchanged
+gates and packaging pass on `cc69b4a`; release worst p95 3.523 ms (<10 ms).
+Receipt: `artifacts/question-parser/benchmark-fixes/gates/verification.json`.
+First gate attempt lacked browser environment in its background process (two
+Python skips, smoke failure); explicit dependency paths fixed setup and the full
+unchanged rerun passed. No performance retries or threshold changes.
 Reports: `docs/QUESTION_PARSER_BENCHMARK_FIXES.md`, `docs/VARIATION_BENCHMARK.md`.
 Screenshots and retained attempts: `artifacts/question-parser/benchmark-fixes/`.
-No server changes, push, merge or PR. Consultant second opinion follows gates.
+No server changes, push, merge or PR. Consultant second opinion requested;
+approval remains with the generalist. Changes after the gated commit are docs only.
 
-## Question-variation measurement — ready for consultant review
+## Prior question-variation measurement — reviewed; corrections above
 
 Card `t_984c3139`, same `question-parser` branch; no parser behavior changed.
 114,726 constructed cases across pinned Honcho/Salesroom, identical main/parser
