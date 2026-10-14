@@ -62,6 +62,14 @@ function generate(config, repo, snapshot) {
     add({negative: true, targets: [], operation: 'LOCATE', phrase: 'where is {x}', kind: 'negative', form: category,
       axis: 'negative', value: category, question: 'where is ' + name});
   }
+  const labels = new Map();
+  for (const r of rows.filter(r => !r.negative)) {
+    if (!labels.has(r.question)) labels.set(r.question, new Set());
+    labels.get(r.question).add(JSON.stringify([r.operation, r.targets]));
+  }
+  for (const r of rows) r.constructionStratum = r.negative ? 'negative' :
+    r.kindAgreement === 'mismatching' ? 'mismatching-kind' :
+      labels.get(r.question).size > 1 ? 'ambiguous' : 'unambiguous';
   return rows;
 }
 function classify(row, packet, choiceOperation) {
@@ -133,6 +141,8 @@ function runVersion(config, repo, version, codeRoot, rows) {
     cold, repeatTimes, latency: timing(raw.flatMap(r => r.ms)),
     tier: grouped(raw, r => r.tier, rs => timing(rs.flatMap(r => r.ms))),
     operationLatency: grouped(positive, r => r.operation, rs => timing(rs.flatMap(r => r.ms))),
+    correctOperationLatency: grouped(positive.filter(r => r.outcome === 'correct'), r => r.operation, rs => timing(rs.flatMap(r => r.ms))),
+    constructionStratum: grouped(positive, r => r.constructionStratum, counts),
     axis: grouped(positive, r => r.axis + ':' + r.value, counts), operation: grouped(positive, r => r.operation, counts),
     kindAgreement: grouped(positive.filter(r => r.kindAgreement), r => r.kindAgreement, counts),
     matrix: grouped(positive.filter(r => r.axis === 'target-form'), r => r.phrase + ' × ' + r.form, counts),

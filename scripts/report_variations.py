@@ -69,6 +69,7 @@ def render():
             v = versions[version]
             scopes = {'all': v['latency'], **{'tier:' + k: v['tier'].get(k, {'n': 0}) for k in ['literal', 'synonym', 'BM25 fallback', 'no-match']},
                       **{'op:' + k: t for k, t in v['operationLatency'].items()},
+                      **{'correct-op:' + k: t for k, t in v['correctOperationLatency'].items()},
                       **{f'repeat:{i+1}': t for i, t in enumerate(v['repeatTimes'])}}
             for name, t in scopes.items():
                 if not t['n']:
@@ -100,7 +101,7 @@ def render():
     for repo, versions in r['repos'].items():
         lines += ['', f'## {repo}: outcome tables', '',
                   'Each cell: correct count; correct-or-choose count/denominator (%); wrong count. Δ is percentage-point gain in correct-or-choose.', '']
-        for group in ['operation', 'axis', 'kindAgreement', 'matrix']:
+        for group in ['operation', 'axis', 'kindAgreement', 'constructionStratum', 'matrix']:
             lines += [f'### {group}', '', '| Axis / operation / phrase × form | Main | Parser | Δ pp |', '|---|---|---|---:|']
             for key, p in versions['parser'][group].items():
                 m = versions['main'][group][key]
