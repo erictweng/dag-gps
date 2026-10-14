@@ -1,6 +1,17 @@
 # Tasks — DAG GPS
 
-## Measurement follow-up — awaiting review
+## Current parser follow-up — implemented and verified, awaiting second opinion
+
+`t_b8a8498e`: terminal punctuation, bare-name choices and comparable synonym
+targets implemented, with RED-first service regressions on both pinned repos.
+Harness review points accepted and corrected separately before measuring fixes.
+Frozen sets have zero new wrong and no held-back match loss. Corrected-grid wrong
+falls 800→380 (Honcho) and 777→712 (Salesroom); six real-app checks pass.
+Python 458/458 and JS 212/212 (zero skips), all eight unchanged gates and packaging
+pass on `cc69b4a`; release p95 3.523 ms. Consultant second opinion requested.
+No next feature launched; no push/merge/PR. Final approval remains with the generalist.
+
+## Prior measurement follow-up — reviewed; corrections above
 
 `t_984c3139`: deterministic question-variation benchmark implemented and run on
 main `7db31cd` and unchanged parser code `4ad61d9`, same source-checked targets.

@@ -125,6 +125,15 @@
       if (!symbolNames.get(key).includes(n.id)) symbolNames.get(key).push(n.id);
     }
     for (const ids of symbolNames.values()) ids.sort(compare);
+    const literalNames = new Map();
+    for (const n of [...nodes.values(), ...symbolNodes.values()]) {
+      const name = n.kind === 'symbol' ? n.name : n.kind === 'file' ?
+        n.path.split('/').at(-1).replace(/\.[^.]+$/, '') : n.label?.split('/').at(-1);
+      if (!name) continue;
+      const key = name.toLowerCase();
+      if (!literalNames.has(key)) literalNames.set(key, []);
+      literalNames.get(key).push(n);
+    }
     function lookupSymbol(name) {
       if (symbolNames.has(name)) return symbolNames.get(name);
       return [...new Set(Scorer.synonymQueries(name).flatMap(v => symbolNames.get(v.query) || []))].sort(compare);
@@ -395,6 +404,34 @@
         return packet;
       }
       const offset = parseContinuation(request.continuation);
+      const normalized = Scorer.normalizeQuestion(request.query), intent = Scorer.intent(normalized);
+      const bareName = Scorer.filenameText(intent.target || '');
+      const confirmedAlias = (options.learnedAliases || []).some(a => Scorer.normalizeQuestion(a.alias) === bareName);
+      const competing = intent.op === 'LOCATE' && !confirmedAlias && !Scorer.kindHint(normalized) && /^[\w-]+$/.test(bareName) ?
+        literalNames.get(bareName) || [] : [];
+      if (new Set(competing.map(n => n.kind)).size > 1) {
+        if (request.chosenNodeId !== undefined && !competing.some(n => n.id === request.chosenNodeId))
+          throw new Error('Chosen node is not an alternative for this question');
+        if (request.chosenNodeId === undefined) {
+          const ordered = competing.slice().sort((a, b) => compare(a.kind, b.kind) || compare(a.id, b.id));
+          if (offset >= ordered.length) throw new Error('Continuation is past the alternatives');
+          packet.operation = 'LOCATE'; packet.status = 'needs-choice';
+          packet.reason = 'Literal name matches different kinds; choose a file, folder or symbol explicitly.';
+          packet.alternatives = ordered.slice(offset, offset + LIMITS.alternatives).map(n => ({nodeId: n.id,
+            path: n.kind === 'symbol' ? n.id : n.path || null,
+            query: n.kind === 'symbol' ? 'locate symbol ' + n.id : 'where is ' + (n.path || n.label),
+            reason: (n.kind === 'layer' ? 'folder' : n.symbolKind || n.kind) + ': ' + (n.path || n.label)}));
+          if (offset + LIMITS.alternatives < ordered.length) {
+            packet.truncated = true; packet.continuation = 'offset:' + (offset + LIMITS.alternatives);
+          }
+          return packet;
+        }
+        if (symbolNodes.has(request.chosenNodeId))
+          return symbolQuery(packet, request, {op: 'LOCATE', names: [Scorer.normalizeQuestion(request.chosenNodeId)]}, 0);
+        packet.operation = 'LOCATE'; packet.status = 'matched';
+        packet.reason = 'Explicitly chosen by the user.';
+        return finishSelection(packet, [request.chosenNodeId], [], []);
+      }
       const symbolOp = symbolRequest(request.query);
       if (symbolOp) symbolOp.names = symbolOp.names.map(name => lookupSymbol(name).length ? name :
         Scorer.filenameText(name.replace(/^the\s+/, '')));

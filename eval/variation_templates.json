@@ -1,17 +1,105 @@
 {
   "seed": "dag-variation-v1-20261013",
   "phrases": {
-    "LOCATE": ["{x}", "where is {x}", "where are {x}", "what is {x}", "find {x}", "locate {x}", "show {x}", "show me {x}", "please find {x}", "where's {x}", "where’s {x}", "wheres {x}", "where is {x} defined", "where is {x} located"],
-    "DOWNSTREAM": ["what depends on {x}", "which files depend on {x}", "who uses {x}", "what imports {x}", "who invokes {x}", "where is {x} called from", "dependents of {x}", "downstream from {x}", "what would break if {x} changed"],
-    "UPSTREAM": ["what does {x} depend on", "what does {x} import", "which does {x} use", "dependencies of {x}", "upstream from {x}", "what is {x} built on"],
-    "CALLERS": ["what calls {x}", "who calls {x}", "who invokes {x}", "callers of {x}", "where is {x} called from"],
-    "CALLEES": ["what does {x} call", "callees of {x}"],
-    "TRACE": ["trace from {x}"],
-    "PATH": ["from {x} to {y}", "path from {x} to {y}", "route between {x} and {y}", "path between {x} and {y}", "how does {x} reach {y}", "how {x} connect to {y}", "how does {x} get to {y}"],
-    "FLOW": ["how does {x} reach {y}"]
+    "LOCATE": [
+      "{x}",
+      "where is {x}",
+      "where are {x}",
+      "what is {x}",
+      "find {x}",
+      "locate {x}",
+      "show {x}",
+      "show me {x}",
+      "please find {x}",
+      "where's {x}",
+      "where\u2019s {x}",
+      "wheres {x}",
+      "where is {x} defined",
+      "where is {x} located"
+    ],
+    "DOWNSTREAM": [
+      "what depends on {x}",
+      "which files depend on {x}",
+      "who uses {x}",
+      "what imports {x}",
+      "who invokes {x}",
+      "where is {x} called from",
+      "dependents of {x}",
+      "downstream from {x}",
+      "what would break if {x} changed",
+      "what uses {x}",
+      "downstream of {x}",
+      "downstream {x}"
+    ],
+    "UPSTREAM": [
+      "what does {x} depend on",
+      "what does {x} import",
+      "which does {x} use",
+      "dependencies of {x}",
+      "upstream from {x}",
+      "what is {x} built on",
+      "what does {x} use",
+      "upstream of {x}",
+      "upstream {x}",
+      "which do {x} import"
+    ],
+    "CALLERS": [
+      "what calls {x}",
+      "who calls {x}",
+      "who invokes {x}",
+      "callers of {x}",
+      "where is {x} called from"
+    ],
+    "CALLEES": [
+      "what does {x} call",
+      "callees of {x}"
+    ],
+    "TRACE": [
+      "trace from {x}",
+      "trace {x}"
+    ],
+    "PATH": [
+      "from {x} to {y}",
+      "path from {x} to {y}",
+      "route between {x} and {y}",
+      "path between {x} and {y}",
+      "how does {x} reach {y}",
+      "how {x} connect to {y}",
+      "how does {x} get to {y}",
+      "route from {x} to {y}",
+      "how {x} reach {y}",
+      "how does {x} connect to {y}"
+    ],
+    "FLOW": [
+      "how does {x} reach {y}"
+    ]
   },
-  "fillers": ["the", "layer", "logic", "code", "stuff", "located", "defined", "part", "thing", "live", "lives"],
-  "kinds": ["file", "module", "script", "folder", "directory", "dir", "package", "function", "class", "method", "def"],
+  "fillers": [
+    "the",
+    "layer",
+    "logic",
+    "code",
+    "stuff",
+    "located",
+    "defined",
+    "part",
+    "thing",
+    "live",
+    "lives"
+  ],
+  "kinds": [
+    "file",
+    "module",
+    "script",
+    "folder",
+    "directory",
+    "dir",
+    "package",
+    "function",
+    "class",
+    "method",
+    "def"
+  ],
   "design": "phrase x target-form baseline plus one-axis-at-a-time canonical-target perturbations",
   "synonyms": [
     [
@@ -950,6 +1038,86 @@
           "evidence": "observed directed graph edge"
         },
         {
+          "from": "src/routers/webhooks.py",
+          "to": "src/crud/__init__.py",
+          "a": "src/routers/webhooks.py",
+          "b": "src/crud/__init__.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/deriver/test_queue_processing.py",
+          "to": "src/utils/queue_payload.py",
+          "a": "tests/deriver/test_queue_processing.py",
+          "b": "src/utils/queue_payload.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "sdks/python/src/honcho/peer.py",
+          "to": "sdks/python/src/honcho/conclusions.py",
+          "a": "sdks/python/src/honcho/peer.py",
+          "b": "sdks/python/src/honcho/conclusions.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/utils/agent_tools.py",
+          "to": "src/exceptions.py",
+          "a": "src/utils/agent_tools.py",
+          "b": "src/exceptions.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/deriver/consumer.py",
+          "to": "src/webhooks/webhook_delivery.py",
+          "a": "src/deriver/consumer.py",
+          "b": "src/webhooks/webhook_delivery.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/crud/test_workspace.py",
+          "to": "src/crud/__init__.py",
+          "a": "tests/crud/test_workspace.py",
+          "b": "src/crud/__init__.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/telemetry/events/__init__.py",
+          "to": "src/telemetry/events/api.py",
+          "a": "src/telemetry/events/__init__.py",
+          "b": "src/telemetry/events/api.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/deriver/scope_backfill.py",
+          "to": "src/utils/scopes.py",
+          "a": "src/deriver/scope_backfill.py",
+          "b": "src/utils/scopes.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/live_llm/test_live_gemini.py",
+          "to": "tests/live_llm/model_matrix.py",
+          "a": "tests/live_llm/test_live_gemini.py",
+          "b": "tests/live_llm/model_matrix.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/live_llm/test_live_gemini.py",
+          "to": "src/llm/request_builder.py",
+          "a": "tests/live_llm/test_live_gemini.py",
+          "b": "src/llm/request_builder.py",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
           "from": "tests/test_session_allowlist.py#TestExtractSessionAllowlist.test_wildcard_rejected@73",
           "to": "src/utils/filter.py#extract_session_allowlist@236",
           "a": "tests/test_session_allowlist.py#TestExtractSessionAllowlist.test_wildcard_rejected@73",
@@ -1412,6 +1580,86 @@
           "to": "folder-0f7e2674af50ca0e",
           "a": "src/lib",
           "b": "app/api/auth/me",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/components/buyer/BuyerRoom.tsx",
+          "to": "src/components/buyer/HaveAQuestion.tsx",
+          "a": "src/components/buyer/BuyerRoom.tsx",
+          "b": "src/components/buyer/HaveAQuestion.tsx",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/robustness.test.ts",
+          "to": "src/lib/deals.ts",
+          "a": "src/lib/__tests__/robustness.test.ts",
+          "b": "src/lib/deals.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/robustness.test.ts",
+          "to": "src/lib/progress.ts",
+          "a": "src/lib/__tests__/robustness.test.ts",
+          "b": "src/lib/progress.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/youtube.test.ts",
+          "to": "src/lib/youtube.ts",
+          "a": "src/lib/__tests__/youtube.test.ts",
+          "b": "src/lib/youtube.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/robustness.test.ts",
+          "to": "src/lib/types.ts",
+          "a": "src/lib/__tests__/robustness.test.ts",
+          "b": "src/lib/types.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/components/modules/__tests__/StakeholderMap.test.tsx",
+          "to": "src/components/modules/StakeholderMap.tsx",
+          "a": "src/components/modules/__tests__/StakeholderMap.test.tsx",
+          "b": "src/components/modules/StakeholderMap.tsx",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/categories.test.ts",
+          "to": "src/lib/categories.ts",
+          "a": "src/lib/__tests__/categories.test.ts",
+          "b": "src/lib/categories.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/crm.ts",
+          "to": "app/api/auth/me/route.ts",
+          "a": "src/lib/crm.ts",
+          "b": "app/api/auth/me/route.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/notes.test.ts",
+          "to": "src/lib/notes.ts",
+          "a": "src/lib/__tests__/notes.test.ts",
+          "b": "src/lib/notes.ts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/lib/__tests__/progress.test.ts",
+          "to": "src/lib/progress.ts",
+          "a": "src/lib/__tests__/progress.test.ts",
+          "b": "src/lib/progress.ts",
           "operation": "PATH",
           "evidence": "observed directed graph edge"
         }

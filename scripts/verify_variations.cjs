@@ -22,6 +22,10 @@ for (const repo of ['honcho', 'salesroom']) {
     assert.deepEqual(counts(rows.filter(r => !r.negative)), summary.positive);
     assert.deepEqual(counts(rows.filter(r => r.negative)), summary.negative);
     assert.deepEqual(timing(rows.flatMap(r => r.ms)), summary.latency);
+    for (const [name, count] of Object.entries(summary.constructionStratum))
+      assert.deepEqual(counts(rows.filter(r => !r.negative && r.constructionStratum === name)), count);
+    for (const [op, times] of Object.entries(summary.correctOperationLatency))
+      assert.deepEqual(timing(rows.filter(r => r.outcome === 'correct' && r.operation === op).flatMap(r => r.ms)), times);
     const http = JSON.parse(fs.readFileSync('artifacts/variation-benchmark/' + repo + '-' + version + '-http-raw.json'));
     assert.ok(http.length >= 200);
     assert.equal(http.length, summary.http.latency.n);

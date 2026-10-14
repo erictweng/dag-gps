@@ -59,7 +59,9 @@ def freeze():
             targets.append(t)
         known = {n['id']: n for n in nodes + symbols}
         pairs = []
-        for graph, op in [(snapshot['map'], 'PATH'), (snapshot['map'].get('symbol_graph', {}), 'FLOW')]:
+        for graph, op in [(snapshot['map'], 'PATH'),
+                          ({'edges': snapshot['map'].get('file_edges', [])}, 'PATH'),
+                          (snapshot['map'].get('symbol_graph', {}), 'FLOW')]:
             edges = [e for e in graph.get('edges', []) if e['from'] != e['to'] and
                      known[e['from']]['kind'] == known[e['to']]['kind'] and e.get('type') != 'realtime']
             edges.sort(key=lambda e: rank({'id': e['from'] + '->' + e['to']}))
@@ -78,6 +80,18 @@ def freeze():
 
 if __name__ == '__main__':
     out = ROOT / 'eval/variation_templates.json'
+    if sys.argv[1:] == ['--extend-file-pairs']:
+        stored = json.loads(out.read_text())
+        actual = freeze()
+        for repo, spec in stored['repos'].items():
+            fresh = actual['repos'][repo]
+            assert spec['targets'] == fresh['targets']
+            assert spec['pin'] == fresh['pin'] and spec['snapshotSha256'] == fresh['snapshotSha256']
+            assert all(pair in fresh['pairs'] for pair in spec['pairs'])
+            spec['pairs'] = fresh['pairs']
+        out.write_text(json.dumps(stored, indent=2) + '\n')
+        print('Extended only source-checked file PATH pairs; targets, seed and pins unchanged')
+        raise SystemExit(0)
     if sys.argv[1:] == ['--check']:
         actual = freeze()
         stored = json.loads(out.read_text())

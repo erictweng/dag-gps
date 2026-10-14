@@ -36,6 +36,16 @@ legacy parity remain unchanged rather than adding a limitation to every packet.
   exclamation marks, commas, semicolons and parentheses are separators. Existing
   path punctuation such as `/`, `_`, `.`, brackets, `#`, `@` remains available.
   This is not a general filename grammar; parenthesized route paths remain a limit.
+- Strip terminal `.`, `!`, `?` runs and trailing whitespace before every tier and
+  operation parser. Interior dots in `src/db.py`, `Class.method`, `json.dumps`
+  and qualified symbol IDs remain intact. This is sentence punctuation, not path repair.
+- Bare literal stems/folder names with comparable evidence across kinds now ask
+  for a choice. LOCATE combines file/folder/symbol candidates (including `events`
+  and `backfill`); dependency scoring compares files and groups, while explicit
+  call operations retain their symbol meaning. Alternatives name their kind and
+  preserve real IDs; symbol/file choices are both actionable. Kind words and
+  qualified paths resolve the ambiguity. Exact full folder paths are recognized
+  before the absent-file guard. File/folder learned-alias scoring retains precedence.
 - Kind hints: folder/directory/dir/package → layer; file/module/script → file;
   function/method/class/def → symbol. Prefer a matching hinted kind; fall back to
   the only available kind. Full folder labels outrank suffixes. A folder suffix
@@ -66,6 +76,12 @@ rewritten. At most 16 single-word expansions are attempted, without a combinator
 cross-product. Supported literal results (including ambiguity) win before synonyms.
 Synonym-only scorer evidence is multiplied by 0.75 and carries
 `matched via synonym A→B`. Fuzzy/missing-name restrictions survive expansion.
+Comparable literal synonym targets now receive the same evidence score regardless
+of whether they are files or folders; an unrelated per-kind scoring scale can no
+longer manufacture a confident winner. Tied candidates are retained, with the
+existing packet cap. The frozen synonym table is unchanged. Literal matches still
+win, so `db` need not choose a folder called `database` merely because a synthetic
+construction intended that synonym; this trade-off remains explicit in the report.
 Existing auth/grader morphology remains for legacy architecture-map compatibility.
 `llm ↔ model` is intentionally **not** an equivalence: ORM/data models are different.
 
@@ -152,10 +168,12 @@ reports: `eval/question_parser_{baseline,rules,synonyms,bm25}.json` and
 
 ### Remaining failures — input to a later decision, not silently solved
 
-- Honcho retains two baseline wrong decisions under the frozen expectations:
+- Before the benchmark fixes, Honcho retained two baseline wrong decisions under the frozen expectations:
   `where is the configuration file` selects `src/schemas/configuration.py` rather
   than offering config files; bare `llm` selects `src/telemetry/events/llm.py` rather
   than asking between LLM folders. Literal-name priority is preserved.
+  The new bare-name guard changes `llm` to a choice; the kind-worded configuration
+  file remains the one known wrong under the frozen intended labels.
 - Honcho message-storage and embedding-creation phrasing misses the expected
   targets in the top eight. `where do we store messages` now produces explicit
   choices, but the top symbol is message **search**, not persistence. Word overlap
@@ -172,6 +190,38 @@ reports: `eval/question_parser_{baseline,rules,synonyms,bm25}.json` and
 - No TS/JS symbols, semantic embeddings, LLM fallback, new alias UI or side features.
 
 ## Verification and reproduction
+
+### Benchmark fixes (`t_b8a8498e`)
+
+Harness review points were accepted first: expanded supported-pattern/file-PATH
+coverage, strict ambiguity strata, and successful-operation timing. The corrected
+grid was rerun before parser changes, then frozen unchanged for the comparison.
+See [QUESTION_PARSER_BENCHMARK_FIXES.md](QUESTION_PARSER_BENCHMARK_FIXES.md) for
+the before/after table and [VARIATION_BENCHMARK.md](VARIATION_BENCHMARK.md) for
+complete main/fixed-parser axes and timings. No server implementation changed.
+
+Six new service tests start RED across both repository snapshots and cover terminal
+punctuation on all grid phrasings, collision choices and kind/path disambiguation,
+literal precedence and synonym competition. Artificial competing synonym nodes
+are explicitly test fixtures; they are not claimed to exist in the pinned sources.
+An added RED assertion caught and fixed choosing the file from a file/class choice.
+Frozen questions and splits are unchanged: all expected match counts, including
+held-back matches, are retained; Honcho dev wrong decreases 2→1 and expected-choice
+success increases 12→13. All other split counts are unchanged, with zero new wrong
+or overconfident cases. Per-case results: `eval/question_parser{,_salesroom}_benchmark_fixes.json`.
+
+Real-app spot checks: `env -u PYTHONPATH /usr/bin/python3 scripts/smoke_parser_fixes.py`
+with the documented Playwright environment. Six actual Chromium questions pass
+through WorkspaceServer and contract validation; screenshots and packet summaries
+are under `artifacts/question-parser/benchmark-fixes/browser/`. These checks reuse
+the pinned snapshots with honest current query-code hashes; no fresh import or
+server optimization is claimed. All eight unchanged gates and packaging passed
+on `cc69b4a`: Python 458/458, JS 212/212, zero skips; release worst p95 3.523 ms.
+Receipt: `artifacts/question-parser/benchmark-fixes/gates/verification.json`.
+The initial background gate lacked browser environment (two skips and smoke
+failure); its receipt is retained under `gates-env-failure/`. Explicit Playwright,
+axe-core and Node paths fixed setup; no performance-driven retry occurred.
+Final receipt documentation is a docs-only commit after the gated commit.
 
 ### Review fixes (`t_e1cca752`)
 

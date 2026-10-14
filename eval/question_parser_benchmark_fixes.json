@@ -1,0 +1,1795 @@
+{
+  "datasetSha256": "f32070e5763f71ca4280553424144b5628b10525e95220459f52b3c32a3eeb7e",
+  "pin": "3922af856d78ec41133916deec4d821fa9c5a92e",
+  "buildMs": 100.43229199999999,
+  "splits": {
+    "dev": {
+      "matchCorrect": 46,
+      "chooseCorrect": 13,
+      "noMatchCorrect": 16,
+      "wrong": 1,
+      "overconfident": 0,
+      "cases": 80,
+      "matchTotal": 46,
+      "chooseTotal": 18,
+      "noMatchTotal": 16
+    },
+    "holdout": {
+      "matchCorrect": 18,
+      "chooseCorrect": 5,
+      "noMatchCorrect": 4,
+      "wrong": 0,
+      "overconfident": 0,
+      "cases": 27,
+      "matchTotal": 18,
+      "chooseTotal": 5,
+      "noMatchTotal": 4
+    }
+  },
+  "results": [
+    {
+      "id": "qp-001",
+      "split": "dev",
+      "question": "where is the db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-002",
+      "split": "dev",
+      "question": "where is the DB",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-003",
+      "split": "holdout",
+      "question": "where's the db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-004",
+      "split": "holdout",
+      "question": "wheres the db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-005",
+      "split": "dev",
+      "question": "WHERE IS THE DB?!",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-006",
+      "split": "holdout",
+      "question": "where is db located",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-007",
+      "split": "dev",
+      "question": "where is the db file",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-008",
+      "split": "holdout",
+      "question": "find the db module",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-009",
+      "split": "holdout",
+      "question": "where is db logic",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-010",
+      "split": "dev",
+      "question": "where is db code",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-011",
+      "split": "holdout",
+      "question": "where is db stuff",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-012",
+      "split": "dev",
+      "question": "where is the db part",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-013",
+      "split": "dev",
+      "question": "what is db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-014",
+      "split": "holdout",
+      "question": "what's db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-015",
+      "split": "holdout",
+      "question": "whats db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-016",
+      "split": "dev",
+      "question": "where is src/db.py",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-017",
+      "split": "dev",
+      "question": "where is SRC/DB.PY",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-018",
+      "split": "dev",
+      "question": "locate src/db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-019",
+      "split": "dev",
+      "question": "where is the db script",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-020",
+      "split": "dev",
+      "question": "where is the src",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-021",
+      "split": "dev",
+      "question": "where is the src folder",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-022",
+      "split": "dev",
+      "question": "where is the src directory",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-023",
+      "split": "dev",
+      "question": "locate src dir",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-024",
+      "split": "dev",
+      "question": "find src package",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-025",
+      "split": "dev",
+      "question": "where's the src folder",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-026",
+      "split": "dev",
+      "question": "where is the database layer",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-3549b0028b75d981"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-027",
+      "split": "holdout",
+      "question": "where is database",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-3549b0028b75d981"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-028",
+      "split": "dev",
+      "question": "where is the database folder",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "folder-3549b0028b75d981"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-029",
+      "split": "dev",
+      "question": "where is config",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "harness-plugin-core/src/config.ts",
+        "honcho-cli/src/honcho_cli/config.py",
+        "mcp/src/config.ts",
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/commands/config_cmd.py#config@22"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-030",
+      "split": "dev",
+      "question": "where is CONFIG",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "harness-plugin-core/src/config.ts",
+        "honcho-cli/src/honcho_cli/config.py",
+        "mcp/src/config.ts",
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/commands/config_cmd.py#config@22"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-031",
+      "split": "dev",
+      "question": "where's config",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "harness-plugin-core/src/config.ts",
+        "honcho-cli/src/honcho_cli/config.py",
+        "mcp/src/config.ts",
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/commands/config_cmd.py#config@22"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-032",
+      "split": "dev",
+      "question": "where is the config file",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "harness-plugin-core/src/config.ts",
+        "honcho-cli/src/honcho_cli/config.py",
+        "mcp/src/config.ts",
+        "src/config.py"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-033",
+      "split": "dev",
+      "question": "where is the configuration file",
+      "expected": "choose",
+      "status": "matched",
+      "targets": [
+        "src/schemas/configuration.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": true,
+      "overconfident": false
+    },
+    {
+      "id": "qp-034",
+      "split": "dev",
+      "question": "where is the settings file",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "harness-plugin-core/src/config.ts",
+        "honcho-cli/src/honcho_cli/config.py",
+        "mcp/src/config.ts",
+        "src/config.py",
+        "src/schemas/configuration.py"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-035",
+      "split": "holdout",
+      "question": "where is src/config.py",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/config.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-036",
+      "split": "dev",
+      "question": "where is src/config",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/config.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-037",
+      "split": "dev",
+      "question": "where is src/config.py located",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/config.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-038",
+      "split": "holdout",
+      "question": "where is msg",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "honcho-cli/src/honcho_cli/commands/message.py",
+        "sdks/python/src/honcho/message.py",
+        "sdks/typescript/src/message.ts",
+        "src/crud/message.py"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-039",
+      "split": "dev",
+      "question": "where is message",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "honcho-cli/src/honcho_cli/commands/message.py",
+        "sdks/python/src/honcho/message.py",
+        "sdks/typescript/src/message.ts",
+        "src/crud/message.py",
+        "examples/crewai/python/tests/test_storage.py#FakePeer.message@34",
+        "sdks/python/src/honcho/http/routes.py#message@149",
+        "sdks/python/src/honcho/message.py#Message@11",
+        "sdks/python/src/honcho/peer.py#Peer.message@593",
+        "src/models.py#Message@213",
+        "src/schemas/api.py#Message@363"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-040",
+      "split": "dev",
+      "question": "where is the msg file",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "honcho-cli/src/honcho_cli/commands/message.py",
+        "sdks/python/src/honcho/message.py",
+        "sdks/typescript/src/message.ts",
+        "src/crud/message.py"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-041",
+      "split": "dev",
+      "question": "where is llm",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/telemetry/events/llm.py",
+        "folder-2204ae27992d53cf",
+        "folder-d164207056a18ac3"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-042",
+      "split": "holdout",
+      "question": "where is the llm folder",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-2204ae27992d53cf",
+        "folder-d164207056a18ac3"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-043",
+      "split": "holdout",
+      "question": "where is the LLM directory",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-2204ae27992d53cf",
+        "folder-d164207056a18ac3"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-044",
+      "split": "dev",
+      "question": "where is get_pool_stats defined",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-045",
+      "split": "dev",
+      "question": "find function get_pool_stats",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-046",
+      "split": "dev",
+      "question": "where is the function get_pool_stats",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-047",
+      "split": "dev",
+      "question": "WHERE IS GET_POOL_STATS DEFINED",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-048",
+      "split": "dev",
+      "question": "where's get_pool_stats",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-049",
+      "split": "dev",
+      "question": "where is EmbeddingClient defined",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-050",
+      "split": "dev",
+      "question": "find class EmbeddingClient",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-051",
+      "split": "dev",
+      "question": "where is the class EmbeddingClient",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-052",
+      "split": "dev",
+      "question": "WHERE IS EMBEDDINGCLIENT DEFINED",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-053",
+      "split": "holdout",
+      "question": "where's EmbeddingClient",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-054",
+      "split": "holdout",
+      "question": "where is QueueManager defined",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-055",
+      "split": "holdout",
+      "question": "find class QueueManager",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-056",
+      "split": "dev",
+      "question": "where is the class QueueManager",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-057",
+      "split": "dev",
+      "question": "WHERE IS QUEUEMANAGER DEFINED",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-058",
+      "split": "dev",
+      "question": "where's QueueManager",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-059",
+      "split": "holdout",
+      "question": "where is deliver_webhook defined",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-060",
+      "split": "dev",
+      "question": "find function deliver_webhook",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-061",
+      "split": "dev",
+      "question": "where is the function deliver_webhook",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-062",
+      "split": "dev",
+      "question": "WHERE IS DELIVER_WEBHOOK DEFINED",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-063",
+      "split": "holdout",
+      "question": "where's deliver_webhook",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-064",
+      "split": "dev",
+      "question": "where is EmbeddingClient.embed defined",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-065",
+      "split": "dev",
+      "question": "find method EmbeddingClient.embed",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-066",
+      "split": "dev",
+      "question": "where is the method EmbeddingClient.embed",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-067",
+      "split": "holdout",
+      "question": "WHERE IS EMBEDDINGCLIENT.EMBED DEFINED",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-068",
+      "split": "dev",
+      "question": "where's EmbeddingClient.embed",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-069",
+      "split": "holdout",
+      "question": "where is auth",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/security.py#auth@197"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-070",
+      "split": "dev",
+      "question": "where is the auth function",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/security.py#auth@197"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-071",
+      "split": "dev",
+      "question": "where is authentication",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/security.py#auth@197"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-072",
+      "split": "dev",
+      "question": "where do we store messages",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/crud/message.py#_search_messages_external@735",
+        "tests/crud/test_representation_manager.py#TestVectorQueryTopKFloor.test_query_external_vector_message_ids_skips_store_on_zero_limit@1104",
+        "tests/vector_store/test_chroma.py#store@47",
+        "tests/vector_store/test_lancedb.py#store@36",
+        "tests/vector_store/test_qdrant.py#store@20",
+        "tests/vector_store/test_turbopuffer.py#store@26",
+        "src/vector_store/__init__.py#VectorStore@53",
+        "folder-8c3ed6731c12bc88"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-073",
+      "split": "dev",
+      "question": "where are messages stored",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "tests/routes/test_session_context_summary.py#_stored_summary@54",
+        "tests/routes/test_files.py#test_file_metadata_stored_in_internal_metadata@245",
+        "tests/routes/test_session_context_summary.py#test_a_stored_summary_is_served@116",
+        "tests/dreamer/test_dream_due.py#TestCountDueDreams.test_documents_since_last_dream_uses_stored_count@201",
+        "hermes-plugin-honcho/oauth.py#_num@147",
+        "hermes-plugin-honcho/session.py#HonchoSessionManager._get_or_create_honcho_session@245",
+        "examples/zo/tools/query_memory.py#query_memory@8",
+        "hermes-plugin-honcho/oauth_flow.py#_detect_connection@387"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-074",
+      "split": "dev",
+      "question": "where are embeddings created",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "tests/integration/test_message_embeddings.py#test_message_embedding_created_when_setting_enabled@66",
+        "tests/integration/test_message_embeddings.py#test_message_embedding_not_created_when_setting_disabled@188",
+        "tests/integration/test_message_embeddings.py#test_multiple_message_embeddings_created_when_setting_enabled@238",
+        "src/mock_provider/chat.py#_created@123",
+        "src/telemetry/events/api.py#MessageCreatedEvent@14",
+        "src/telemetry/prometheus/metrics.py#PrometheusMetrics.record_messages_created@362",
+        "src/utils/agent_tools.py#ObservationsCreatedResult@236",
+        "tests/telemetry/conftest.py#sample_conclusions_created_event@302"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-075",
+      "split": "dev",
+      "question": "where do we embed text",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/crud/representation.py#_normalized_observation@49",
+        "src/utils/evidence.py#_observation_text@55",
+        "src/utils/files.py#FileProcessor.extract_text@24",
+        "src/utils/files.py#JSONProcessor.extract_text@62",
+        "src/utils/files.py#PDFProcessor.extract_text@32",
+        "src/utils/files.py#TextProcessor.extract_text@48",
+        "src/utils/files.py#TextProcessor@44",
+        "tests/test_workspace_chat.py#_tool_text@38"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-076",
+      "split": "dev",
+      "question": "what handles webhooks",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-4710e5ed8b11c0a2",
+        "folder-083d26deb04d283a"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-077",
+      "split": "dev",
+      "question": "where do we deliver webhook events",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+        "tests/webhooks/test_webhook_delivery.py#test_deliver_webhook_catches_request_errors@219",
+        "tests/webhooks/test_webhook_delivery.py#test_deliver_webhook_handles_signature_generation_failure@188",
+        "tests/webhooks/test_webhook_delivery.py#test_deliver_webhook_skips_when_no_urls@107",
+        "tests/webhooks/test_webhook_delivery.py#test_deliver_webhook_posts_signed_payload_to_each_endpoint@130",
+        "src/webhooks/events.py#BaseWebhookEvent@20",
+        "src/webhooks/events.py#WebhookEventType@15",
+        "src/webhooks/events.py#publish_webhook_event@46"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-078",
+      "split": "holdout",
+      "question": "where is the deriver queue",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/telemetry/prometheus/metrics.py#PrometheusMetrics.record_deriver_queue_item@407",
+        "tests/routes/test_queue_status.py#TestDeriverStatusEndpoint.test_get_deriver_status_with_queue_items@121",
+        "src/crud/deriver.py#get_deriver_status@233",
+        "src/deriver/queue_manager.py#QueueManager@140",
+        "tests/test_schema_validations.py#TestResolvedConfigurationMigration.test_old_queue_item_with_deriver_field@174",
+        "src/deriver/enqueue.py#enqueue@27",
+        "src/deriver/queue_manager.py",
+        "src/deriver/queue_manager.py#QueueManager.__init__@141"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-079",
+      "split": "dev",
+      "question": "where do we verify JWT tokens",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/security.py#verify_jwt@105",
+        "hermes-plugin-honcho/cli.py#_setup_local_auth@626"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-080",
+      "split": "dev",
+      "question": "where do we split text into chunks",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/utils/files.py#split_text_into_chunks@113",
+        "src/embedding_client.py#_chunk_text_with_tokens@675",
+        "hermes-plugin-honcho/__init__.py#HonchoMemoryProvider._chunk_message@734"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-081",
+      "split": "holdout",
+      "question": "where do we load TOML configuration",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/config.py#load_toml_config@48",
+        "honcho-cli/src/honcho_cli/local/setup.py#load_toml_setup_defaults@61"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-082",
+      "split": "dev",
+      "question": "where is semantic message search",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "src/crud/message.py#_semantic_search_messages@873",
+        "src/crud/message.py#search_messages@953",
+        "src/crud/message.py#_search_messages_pgvector@820",
+        "src/crud/message.py#search_messages_temporal@1169",
+        "examples/crewai/python/src/honcho_crewai/storage.py#HonchoStorage.search@460",
+        "src/utils/search.py#_semantic_search_pgvector@141",
+        "examples/crewai/python/src/honcho_crewai/tools.py#HonchoSearchTool@260",
+        "tests/integration/test_message_embeddings.py#test_semantic_search_when_embeddings_enabled@297"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-083",
+      "split": "holdout",
+      "question": "who invokes get_pool_stats",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-084",
+      "split": "dev",
+      "question": "where is get_pool_stats called from",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-085",
+      "split": "dev",
+      "question": "what calls get_pool_stats",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-086",
+      "split": "dev",
+      "question": "what does src/db.py depend on",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-087",
+      "split": "dev",
+      "question": "dependencies of src/db.py",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/db.py"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-088",
+      "split": "dev",
+      "question": "quantum banana teleporter",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-089",
+      "split": "dev",
+      "question": "where is the lunar payroll processor",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-090",
+      "split": "dev",
+      "question": "where is the unicorn stables",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-091",
+      "split": "holdout",
+      "question": "where is nonexistent_zyx_987",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-092",
+      "split": "dev",
+      "question": "find nonexistent_zyx_987.py",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-093",
+      "split": "dev",
+      "question": "where is nonexistent/phantom.py",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-094",
+      "split": "dev",
+      "question": "where is the cryptocurrency mining rig",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-095",
+      "split": "dev",
+      "question": "where is the pizza oven controller",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-096",
+      "split": "dev",
+      "question": "where is the submarine sonar driver",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-097",
+      "split": "holdout",
+      "question": "where is the dinosaur genome assembler",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-098",
+      "split": "dev",
+      "question": "where is the interstellar autopilot",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-099",
+      "split": "dev",
+      "question": "where is the chess grandmaster engine",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-100",
+      "split": "dev",
+      "question": "where is the volcano eruption predictor",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-101",
+      "split": "dev",
+      "question": "where is the watercolor rasterizer",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-102",
+      "split": "holdout",
+      "question": "where is the dental xray classifier",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-103",
+      "split": "dev",
+      "question": "where is the fax modem firmware",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-104",
+      "split": "dev",
+      "question": "where is the penguin migration simulator",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-105",
+      "split": "dev",
+      "question": "where is the orbital rocket thruster",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-106",
+      "split": "holdout",
+      "question": "where is the waffle batter dispenser",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "qp-107",
+      "split": "dev",
+      "question": "where is the holographic dragon renderer",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    }
+  ]
+}
