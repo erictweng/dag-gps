@@ -126,6 +126,12 @@
     }
     for (const ids of symbolNames.values()) ids.sort(compare);
     const literalNames = new Map();
+    const exactNames = new Map();
+    for (const n of nodes.values()) for (const value of new Set([n.id, n.path, n.kind === 'layer' ? n.label : null].filter(Boolean))) {
+      const key = value.toLowerCase();
+      if (!exactNames.has(key)) exactNames.set(key, []);
+      exactNames.get(key).push(n.id);
+    }
     for (const n of [...nodes.values(), ...symbolNodes.values()]) {
       const name = n.kind === 'symbol' ? n.name : n.kind === 'file' ?
         n.path.split('/').at(-1).replace(/\.[^.]+$/, '') : n.label?.split('/').at(-1);
@@ -311,7 +317,7 @@
       }
       const seed = candidates[0][0], end = candidates[1] && candidates[1][0];
       packet.seedNodeId = seed;
-      const reverse = parsed.op === 'CALLERS', adj = reverse ? callBackward : callForward;
+      const reverse = ['CALLERS', 'DOWNSTREAM'].includes(parsed.op), adj = reverse ? callBackward : callForward;
       const linksFrom = id => certain ? adj.get(id).map(certainEdge).filter(Boolean) : adj.get(id);
       const prev = new Map([[seed, null]]), via = new Map(), order = [], queue = [seed];
       if (parsed.op !== 'LOCATE') for (let i = 0; i < queue.length; i++) {
@@ -329,16 +335,16 @@
         return result;
       }
       const selected = new Set([seed]), selectedEdges = new Map(), witnesses = [];
-      if (['CALLERS', 'CALLEES', 'TRACE'].includes(parsed.op)) for (const e of linksFrom(seed)) if (e.from === e.to) {
+      if (['CALLERS', 'CALLEES', 'TRACE', 'UPSTREAM', 'DOWNSTREAM'].includes(parsed.op)) for (const e of linksFrom(seed)) if (e.from === e.to) {
         selectedEdges.set(edgeKey(e), e);
         packet.limitations.push('A recursive self-call is retained as an edge, not an invented acyclic witness chain.');
       }
       packet.status = 'matched';
-      if (parsed.op === 'FLOW' && !prev.has(end)) {
+      if (['FLOW', 'PATH'].includes(parsed.op) && !prev.has(end)) {
         selected.add(end); packet.status = 'no-path';
         packet.reason = 'No ' + (certain ? 'resolved ' : '') + 'static call path. Missing runtime links are unknown, not proof of no flow.';
       } else {
-        const targets = parsed.op === 'FLOW' ? [end] : order;
+        const targets = ['FLOW', 'PATH'].includes(parsed.op) ? [end] : order;
         if (offset > targets.length) throw new Error('Continuation is past the result');
         let next = offset;
         for (; next < targets.length; next++) {
@@ -391,6 +397,142 @@
       return packet;
     }
 
+    function operationQuery(op, names) {
+      if (op === 'PATH') return 'path from ' + names[0] + ' to ' + names[1];
+      if (op === 'FLOW') return 'how does ' + names[0] + ' reach ' + names[1];
+      return ({LOCATE: 'where is ', UPSTREAM: 'upstream of ', DOWNSTREAM: 'downstream of ',
+        CALLERS: 'callers of ', CALLEES: 'callees of ', TRACE: 'trace from '})[op] + names[0];
+    }
+
+    function boundedSymbolQuery(packet, request, parsed, offset) {
+      const result = symbolQuery(packet, request, parsed, offset);
+      if (packetBytes(result) <= LIMITS.packetBytes) return result;
+      const bounded = base(request);
+      bounded.operation = parsed.op; bounded.status = 'unsupported';
+      bounded.reason = 'Complete call evidence exceeds the 1 MiB packet budget; use a narrower symbol question.';
+      return bounded;
+    }
+
+    // Resolve endpoints independently, before choosing the import or call graph.
+    // Only literal cross-kind names enter this guard; aliases and fuzzy/concept
+    // suggestions keep their existing evidence policy.
+    function resolveOperation(packet, request, intent, symbolOp, offset) {
+      if (intent.malformed) return null;
+      const op = symbolOp?.op || intent.op;
+      const names = symbolOp?.names || (intent.op === 'PATH' ? [intent.from, intent.to] : [intent.target]);
+      const targets = names.map(text => {
+        const name = Scorer.filenameText(text), hint = Scorer.kindHint(text) ||
+          (op === 'LOCATE' ? Scorer.kindHint(request.query) : null);
+        const alias = (options.learnedAliases || []).some(a => Scorer.normalizeQuestion(a.alias) === name);
+        const literal = !alias && /^[\w-]+$/.test(name) ? literalNames.get(name) || [] : [];
+        const collision = new Set(literal.map(n => n.kind)).size > 1;
+        if (collision) {
+          const preferred = hint ? literal.filter(n => n.kind === hint) : [];
+          return {collision, ids: (preferred.length ? preferred : literal).map(n => n.id)};
+        }
+        const exactSymbol = symbolNames.get(Scorer.normalizeQuestion(text)) ||
+          (hint === 'symbol' ? lookupSymbol(name) : []);
+        if (exactSymbol.length) return {collision, ids: exactSymbol};
+        return {collision, ids: exactNames.get(name) || []};
+      });
+      const collision = targets.some(t => t.collision);
+      const fileOp = {CALLERS: 'DOWNSTREAM', CALLEES: 'UPSTREAM', TRACE: 'UPSTREAM', FLOW: 'PATH'}[op] || op;
+      const canonicalFolder = names.some(text => Scorer.kindHint(text) === 'layer' && nodes.has(Scorer.filenameText(text)));
+      // Explicit graph-qualified syntax also needs graph-appropriate dispatch:
+      // callers of a file means static import dependents, never LOCATE.
+      const explicit = targets.every(t => t.ids.length === 1) &&
+        (canonicalFolder || symbolOp && symbolOp.op !== 'LOCATE' && intent.op !== fileOp || intent.op !== 'LOCATE' &&
+          targets.some(t => symbolNodes.has(t.ids[0])));
+      if (!collision && !explicit && !(request.chosenNodeId !== undefined && op !== 'LOCATE')) return null;
+      for (let i = 0; i < targets.length; i++) if (!targets[i].ids.length) {
+        const h = scorer.score('where is ' + names[i]).targets.locate_target;
+        targets[i].ids = h.yes ? [h.choice] : (h.suggestions || []).filter(s => s.score > 0).map(s => s.id);
+        targets[i].needsChoice = !h.yes && targets[i].ids.length > 0;
+        targets[i].reason = h.reason;
+      }
+      if (request.chosenNodeId !== undefined) {
+        const first = targets.findIndex(t => t.ids.length > 1 || t.needsChoice);
+        // The UI sends both alternative.query and its ID. A kind-qualified
+        // endpoint in that query already records the choice; do not apply the
+        // same ID again to a second endpoint with the same ambiguous name.
+        const confirmed = targets.findIndex((t, i) => t.ids.length === 1 && !t.needsChoice &&
+          t.ids[0] === request.chosenNodeId && Scorer.kindHint(names[i]));
+        const i = confirmed >= 0 ? confirmed : first >= 0 && targets[first].ids.includes(request.chosenNodeId) ? first :
+          targets.findIndex(t => t.ids.length === 1 && t.ids.includes(request.chosenNodeId));
+        if (i < 0 || !targets[i].ids.includes(request.chosenNodeId)) throw new Error('Chosen node is not an alternative for this question');
+        targets[i].ids = [request.chosenNodeId];
+        targets[i].needsChoice = false;
+      }
+      packet.operation = op;
+      const ambiguous = targets.findIndex(t => t.ids.length > 1 || t.needsChoice);
+      const canonical = id => {
+        const n = nodes.get(id);
+        return n ? (n.kind === 'layer' ? 'folder ' : 'file ') + (n.path || n.id) : 'function ' + id;
+      };
+      if (ambiguous >= 0) {
+        const ordered = targets[ambiguous].ids.slice().sort((a, b) => {
+          const x = nodes.get(a) || symbolNodes.get(a), y = nodes.get(b) || symbolNodes.get(b);
+          return compare(x.kind, y.kind) || compare(a, b);
+        });
+        if (offset >= ordered.length) throw new Error('Continuation is past the alternatives');
+        packet.status = 'needs-choice';
+        packet.reason = 'Literal name matches different kinds; choose a file, folder or symbol explicitly.';
+        packet.alternatives = ordered.slice(offset, offset + LIMITS.alternatives).map(id => {
+          const n = nodes.get(id) || symbolNodes.get(id);
+          const selected = names.map((text, i) => i === ambiguous ? canonical(id) :
+            targets[i].ids.length === 1 && !targets[i].needsChoice ? canonical(targets[i].ids[0]) : text);
+          return {nodeId: id, path: n.kind === 'symbol' ? id : n.path || null,
+            query: operationQuery(op, selected), reason: (n.symbolKind || n.kind) + ': ' + (n.path || n.label)};
+        });
+        if (offset + LIMITS.alternatives < ordered.length) {
+          packet.truncated = true; packet.continuation = 'offset:' + (offset + LIMITS.alternatives);
+        }
+        return packet;
+      }
+      if (targets.some(t => !t.ids.length)) { packet.reason = 'No exact endpoint matches this operation.'; return packet; }
+      const ids = targets.map(t => t.ids[0]);
+      if (ids.some(id => symbolNodes.has(id))) {
+        if (!ids.every(id => symbolNodes.has(id))) {
+          packet.status = 'unsupported'; packet.reason = 'Mixed symbol and file/folder endpoints are not converted.';
+          return packet;
+        }
+        return boundedSymbolQuery(packet, {...request, chosenNodeId: undefined},
+          {op, names: ids.map(Scorer.normalizeQuestion)}, request.chosenNodeId === undefined ? offset : 0);
+      }
+      return fileOperation(packet, fileOp, ids, request.chosenNodeId === undefined ? offset : 0,
+        'Explicit literal target. ' + targets.map(t => t.reason || '').filter(Boolean).join(' '));
+    }
+
+    function fileOperation(packet, requested, ids, offset, evidence) {
+      packet.operation = requested;
+      if (requested === 'PATH') {
+        const [from, to] = ids;
+        if (nodes.get(from).kind !== nodes.get(to).kind) {
+          packet.status = 'unsupported';
+          packet.limitations.push('Paths between a group and a file are not converted; choose two files or two groups.');
+          packet.reason = 'Mixed group/file endpoints.';
+          return packet;
+        }
+        const path = router.shortestPath(from, to);
+        if (!path) {
+          packet.status = 'no-path';
+          packet.reason = 'No directed static route from ' + from + ' to ' + to + '.' + evidence;
+          return finishSelection(packet, [...new Set([from, to])], [], []);
+        }
+        packet.status = 'matched';
+        packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).' + evidence;
+        const w = witnessFromChain(path);
+        return finishSelection(packet, path, w.edges, path.length > 1 ? [w] : []);
+      }
+      if (requested === 'LOCATE') {
+        packet.status = 'matched'; packet.reason = evidence;
+        return finishSelection(packet, ids, [], []);
+      }
+      const reached = reach(packet, requested, ids[0], offset);
+      reached.reason += ' ' + evidence;
+      return reached;
+    }
+
     function query(request) {
       if (!request || typeof request.requestId !== 'string' || !request.requestId || request.requestId.length > 512)
         throw new Error('requestId is required');
@@ -405,34 +547,9 @@
       }
       const offset = parseContinuation(request.continuation);
       const normalized = Scorer.normalizeQuestion(request.query), intent = Scorer.intent(normalized);
-      const bareName = Scorer.filenameText(intent.target || '');
-      const confirmedAlias = (options.learnedAliases || []).some(a => Scorer.normalizeQuestion(a.alias) === bareName);
-      const competing = intent.op === 'LOCATE' && !confirmedAlias && !Scorer.kindHint(normalized) && /^[\w-]+$/.test(bareName) ?
-        literalNames.get(bareName) || [] : [];
-      if (new Set(competing.map(n => n.kind)).size > 1) {
-        if (request.chosenNodeId !== undefined && !competing.some(n => n.id === request.chosenNodeId))
-          throw new Error('Chosen node is not an alternative for this question');
-        if (request.chosenNodeId === undefined) {
-          const ordered = competing.slice().sort((a, b) => compare(a.kind, b.kind) || compare(a.id, b.id));
-          if (offset >= ordered.length) throw new Error('Continuation is past the alternatives');
-          packet.operation = 'LOCATE'; packet.status = 'needs-choice';
-          packet.reason = 'Literal name matches different kinds; choose a file, folder or symbol explicitly.';
-          packet.alternatives = ordered.slice(offset, offset + LIMITS.alternatives).map(n => ({nodeId: n.id,
-            path: n.kind === 'symbol' ? n.id : n.path || null,
-            query: n.kind === 'symbol' ? 'locate symbol ' + n.id : 'where is ' + (n.path || n.label),
-            reason: (n.kind === 'layer' ? 'folder' : n.symbolKind || n.kind) + ': ' + (n.path || n.label)}));
-          if (offset + LIMITS.alternatives < ordered.length) {
-            packet.truncated = true; packet.continuation = 'offset:' + (offset + LIMITS.alternatives);
-          }
-          return packet;
-        }
-        if (symbolNodes.has(request.chosenNodeId))
-          return symbolQuery(packet, request, {op: 'LOCATE', names: [Scorer.normalizeQuestion(request.chosenNodeId)]}, 0);
-        packet.operation = 'LOCATE'; packet.status = 'matched';
-        packet.reason = 'Explicitly chosen by the user.';
-        return finishSelection(packet, [request.chosenNodeId], [], []);
-      }
       const symbolOp = symbolRequest(request.query);
+      const resolved = resolveOperation(packet, request, intent, symbolOp, offset);
+      if (resolved) return resolved;
       if (symbolOp) symbolOp.names = symbolOp.names.map(name => lookupSymbol(name).length ? name :
         Scorer.filenameText(name.replace(/^the\s+/, '')));
       // Resolve lexical file/group evidence before dispatch, including ambiguous
@@ -446,14 +563,7 @@
           h.match.label !== 'No match' && h.match.tier !== 'fuzzy' && !h.match.missingExact)));
       if (symbolOp && symbols && !legacyTarget &&
           (symbolOp.op !== 'LOCATE' || symbolOp.names.some(name => lookupSymbol(name).length))) {
-        const result = symbolQuery(packet, request, symbolOp, offset);
-        if (packetBytes(result) <= LIMITS.packetBytes) return result;
-        // Never cut call sites or whole-chain witnesses into misleading evidence.
-        // Oversized results explicitly abstain, with no selections to highlight.
-        const bounded = base(request);
-        bounded.operation = symbolOp.op; bounded.status = 'unsupported';
-        bounded.reason = 'Complete call evidence exceeds the 1 MiB packet budget; use a narrower symbol question.';
-        return bounded;
+        return boundedSymbolQuery(packet, request, symbolOp, offset);
       }
       // Explicit human choice from a previous needs-choice packet: only known IDs, never fuzzy.
       if (request.chosenNodeId !== undefined) {
@@ -462,7 +572,9 @@
         packet.reason = 'Explicitly chosen by the user.';
         return finishSelection(packet, [request.chosenNodeId], [], []);
       }
-      const result = scorer.score(request.query); // score() validates its own result contract
+      const fileOp = symbolOp && legacyTarget && symbolOp.op !== 'LOCATE' ?
+        ({CALLERS: 'DOWNSTREAM', CALLEES: 'UPSTREAM', TRACE: 'UPSTREAM', FLOW: 'PATH'})[symbolOp.op] : null;
+      const result = scorer.score(fileOp ? operationQuery(fileOp, symbolOp.names) : request.query); // validates its own result contract
       const requested = result.requestedOperation;
       if (!result.yes) {
         packet.alternatives = alternativesFrom(result);
@@ -482,33 +594,10 @@
       if (requested === 'PATH') {
         const from = result.targets.from_target.choice, to = result.targets.to_target.choice;
         const evidence = ' From: ' + result.targets.from_target.reason + ' To: ' + result.targets.to_target.reason;
-        packet.operation = 'PATH';
-        if (nodes.get(from).kind !== nodes.get(to).kind) {
-          packet.status = 'unsupported';
-          packet.limitations.push('Paths between a group and a file are not converted; choose two files or two groups.');
-          packet.reason = 'Mixed group/file endpoints.';
-          return packet;
-        }
-        const path = router.shortestPath(from, to);
-        if (!path) {
-          packet.status = 'no-path';
-          packet.reason = 'No directed static route from ' + from + ' to ' + to + '.' + evidence;
-          return finishSelection(packet, [...new Set([from, to])], [], []);
-        }
-        packet.status = 'matched';
-        packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).' + evidence;
-        const w = witnessFromChain(path);
-        return finishSelection(packet, path, w.edges, path.length > 1 ? [w] : []);
+        return fileOperation(packet, requested, [from, to], offset, evidence);
       }
       const seed = result.targets.locate_target.choice;
-      if (requested === 'LOCATE') {
-        packet.operation = 'LOCATE'; packet.status = 'matched';
-        packet.reason = result.targets.locate_target.reason;
-        return finishSelection(packet, [seed], [], []);
-      }
-      const reached = reach(packet, requested, seed, offset);
-      reached.reason += ' ' + result.targets.locate_target.reason;
-      return reached;
+      return fileOperation(packet, requested, [seed], offset, result.targets.locate_target.reason);
     }
     return {query, limits: LIMITS, conceptStats: concepts.stats};
   }

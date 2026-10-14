@@ -1,5 +1,17 @@
 # Status — DAG GPS
 
+## Parser collision resolution — verification in progress
+
+`t_29b602b9`, isolated `parser-collisions` branch from `08f1b4d`.
+Cross-kind target choices now precede every operation and resolve PATH endpoints
+independently. Candidate/kind/path choices retain traversal; optional pinned-data
+tests skip clearly in clean checkouts, with committed mechanics regressions.
+Corrected-grid checkpoint: Honcho wrong 380→288, Salesroom 712→682, zero newly
+wrong cases; frozen hand-written sets unchanged. Final suites, detached-checkout
+verification and eight gates are in progress. No push, merge or PR.
+Parenthesized paths and the parent card's AgentBridge duplicate validation are
+not part of this card. No next feature launched.
+
 ## Server speed — verified, consultant second opinion requested
 
 `t_20ef91ae`, isolated `server-speed` branch, implementation `8277e35`.

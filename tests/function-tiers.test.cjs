@@ -16,13 +16,13 @@ function fixture() {
       symbol_graph: {nodes, edges, unresolved: [], certainAdditions: [[0, 1, 0], [0, 2, 0], [0, 3, 0]]}}};
 }
 test('all call tiers traverse by default and each witness exposes its weakest link', () => {
-  const p = Q.querySnapshot(fixture(), {requestId: 'r', query: 'trace from a'});
+  const p = Q.querySnapshot(fixture(), {requestId: 'r', query: 'trace from function a'});
   assert.deepEqual(p.selectedNodeIds, ['a', 'b', 'c', 'd', 'e']);
   assert.deepEqual(p.witnesses.map(w => w.confidence), ['resolved', 'instance-local', 'typed', 'through-decorator']);
   assert.deepEqual(p.entryPoints, [{nodeId: 'e', decorators: ['app.task']}]);
 });
 test('certain-only excludes weaker edges and reconstructs original unknown sites', () => {
-  const p = Q.querySnapshot(fixture(), {requestId: 'r', query: 'trace from a', certainOnly: true});
+  const p = Q.querySnapshot(fixture(), {requestId: 'r', query: 'trace from function a', certainOnly: true});
   assert.deepEqual(p.selectedNodeIds, ['a', 'b']);
   assert.equal(p.unresolvedCallCount, 1);
   assert.equal(p.unresolvedCalls[0].expression, 'c');
@@ -36,10 +36,10 @@ test('CALLERS traverses decorated targets without synthesizing registration call
   assert.deepEqual(p.selectedEdges[0].decorators, ['app.task']);
 });
 test('focused drawing retains tier metadata and uses exactly packet call edges', () => {
-  const s = fixture(), p = Q.querySnapshot(s, {requestId: 'r', query: 'trace from a'});
+  const s = fixture(), p = Q.querySnapshot(s, {requestId: 'r', query: 'trace from function a'});
   const layout = G.layoutMap(s.map, {focusedSymbols: new Set(p.selectedNodeIds), focusedEdges: p.selectedEdges});
   assert.deepEqual(layout.edges.map(e => e.confidence), ['resolved', 'instance-local', 'typed', 'through-decorator']);
-  const certain = Q.querySnapshot(s, {requestId: 'r', query: 'trace from a', certainOnly: true});
+  const certain = Q.querySnapshot(s, {requestId: 'r', query: 'trace from function a', certainOnly: true});
   const filtered = G.layoutMap(s.map, {focusedSymbols: new Set(p.selectedNodeIds), focusedEdges: certain.selectedEdges});
   assert.equal(filtered.edges.length, 1);
 });

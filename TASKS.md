@@ -1,5 +1,13 @@
 # Tasks — DAG GPS
 
+## Current parser-collision card — verification in progress
+
+`t_29b602b9`: resolve literal cross-kind targets before every operation, preserve
+explicit-choice traversal, and make pinned-snapshot tests clean-checkout safe.
+Implementation and RED-first regressions are in isolated `parser-collisions`.
+Final full suites, clean detached checkout, eight gates and dag-consultant second
+opinion remain before approval. Parenthesized paths remain a separate limitation.
+
 ## Current server-speed card — verified, consultant second opinion requested
 
 `t_20ef91ae`, `server-speed` at `8277e35`: cached strict snapshot indexes across
