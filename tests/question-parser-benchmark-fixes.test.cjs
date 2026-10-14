@@ -50,6 +50,10 @@ test('honcho: bare backfill includes file and class, kind and qualified path res
     const p = ask('honcho', query);
     assert.equal(p.status, 'needs-choice', query);
     for (const id of [file, symbol]) assert.ok(p.alternatives.some(a => a.nodeId === id), query + ': ' + id);
+    for (const id of [file, symbol]) {
+      const chosen = services.honcho.query({requestId: 'chosen', query, chosenNodeId: id});
+      assert.equal(chosen.status, 'matched'); assert.equal(chosen.selectedNodeIds[0], id);
+    }
   }
   for (const [query, id] of [['where is file backfill', file], ['where is class backfill', symbol], ['where is src/reconciler/backfill.py', file], ['locate symbol ' + symbol, symbol]]) {
     const p = ask('honcho', query);

@@ -428,6 +428,9 @@
         }
         if (symbolNodes.has(request.chosenNodeId))
           return symbolQuery(packet, request, {op: 'LOCATE', names: [Scorer.normalizeQuestion(request.chosenNodeId)]}, 0);
+        packet.operation = 'LOCATE'; packet.status = 'matched';
+        packet.reason = 'Explicitly chosen by the user.';
+        return finishSelection(packet, [request.chosenNodeId], [], []);
       }
       const symbolOp = symbolRequest(request.query);
       if (symbolOp) symbolOp.names = symbolOp.names.map(name => lookupSymbol(name).length ? name :
