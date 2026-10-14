@@ -66,7 +66,21 @@
     <div id="answer" aria-live="polite">
       <p id="answer-status" class="answer-status">Ask a question or pick a file.</p>
       <p id="answer-reason"></p>
+      <div id="label-box" hidden>
+        <p>Logged as <strong id="label-auto"></strong><span id="label-verdict"></span>. Your verdict:</p>
+        <div class="label-buttons">
+          <button type="button" data-label="match">Match</button>
+          <button type="button" data-label="no match">No match</button>
+          <button type="button" data-label="unsure">Unsure</button>
+        </div>
+      </div>
     </div>
+    <details id="history-box">
+      <summary>My questions (<span id="history-count">0</span>)</summary>
+      <p class="muted">Questions are saved locally, including their text. Do not paste secrets. Old entries expire when the log rotates.</p>
+      <p id="history-summary" role="status"></p>
+      <ol id="history"></ol>
+    </details>
     <h3 id="choices-heading" hidden>Choose one</h3>
     <ul id="choices"></ul>
     <h3 id="results-heading" hidden>Files in this answer</h3>

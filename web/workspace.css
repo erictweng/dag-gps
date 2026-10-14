@@ -38,6 +38,10 @@ button:disabled { cursor: not-allowed; color: #4b5563; background: #f3f4f6; }
 #file-list button:hover, #results button:hover, #choices button:hover { border-color: var(--line); background: #f9fafb; }
 #file-list button[aria-current] { background: #dbeafe; border-color: var(--accent); }
 .answer-status { font-weight: 700; }
+.label-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.label-buttons [aria-pressed="true"] { outline: 2px solid currentColor; font-weight: 700; }
+#history { padding-left: 1.4rem; max-height: 22rem; overflow: auto; overflow-wrap: anywhere; }
+#history li { margin-bottom: 0.8rem; }
 #detail dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.6rem; margin: 0.3rem 0; font-size: 0.88rem; }
 #detail dt { font-weight: 600; }
 #detail dd { margin: 0; word-break: break-all; }

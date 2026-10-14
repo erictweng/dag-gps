@@ -1,5 +1,14 @@
 # Tasks — DAG GPS
 
+## Current question-log card — verified, consultant second opinion requested
+
+`t_44e9d449`: port playground journal/labels/history and persistent session safely
+onto cached server; export review drafts without modifying frozen sets. 492 Python /
+266 JS pass; Honcho browser five-question and restart proof passes. Eight unchanged
+gates/packaging pass on `365197b`, HTTP p95 6.070 ms vs server-speed 6.246 ms.
+Dag-consultant second opinion requested. Local `question-log` only;
+no push/main merge/PR. Parent pagination finding accepted via merged `1adb892`.
+
 ## Current parser-collision card — verified, consultant second opinion requested
 
 `t_29b602b9`: resolve literal cross-kind targets before every operation, preserve

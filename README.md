@@ -8,6 +8,41 @@ The indexed-table, operation-head and per-target-head pattern is borrowed from
 [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast). Validated
 normalized distributions remain available, but are not correctness probabilities.
 
+## Run the repository workspace (laptop or private Tailscale access)
+
+Requires Python 3 and Node.js. From this checkout:
+
+```sh
+python3 -m app.server --root "$HOME/.dag-gps/workspace" --port 8765 \
+  --session-file "$HOME/.dag-gps/session"
+```
+
+Open the private link printed by the server. Keep the same port and session file
+to reuse that link after a restart. The file is created with mode `0600`; existing
+unsafe permissions, symlinks or malformed keys are refused, not silently replaced.
+Without `--session-file`, each run creates a new key. Never share the private link
+or commit the key. Delete the key only when intentionally revoking old links.
+
+For private tailnet access, keep the server bound to loopback and use an HTTPS proxy:
+
+```sh
+python3 -m app.server --root "$HOME/.dag-gps/workspace" --port 8765 \
+  --session-file "$HOME/.dag-gps/session" --allow-host laptop.example-tailnet.ts.net
+tailscale serve --bg http://127.0.0.1:8765
+```
+
+Replace the example with your exact Tailscale DNS name. Open
+`https://YOUR-TAILNET-NAME/#session=YOUR-KEY` using the same key from the local
+private link. `--allow-host` is repeatable, never a wildcard, and permits HTTPS
+origins only for proxy names. It does not expose a public listener; do not use
+Tailscale Funnel. Tailnet policy and the session key both remain important.
+
+Workspace questions are automatically recorded in `<root>/query-log.jsonl`.
+My questions shows automatic labels and editable verdicts, surviving restarts.
+Question text may be private: do not paste secrets. Rotation retains two generations
+of at most 10 MiB each. This is separate from the offline navigator's opt-in feedback.
+See [question log and export](docs/QUESTION_LOG.md) for exact scope and retention.
+
 ## Quickstart — offline navigator / release candidate
 
 **v1.0.0-rc.1 is a local release candidate, not v1 complete.** V1.4 is integrated
