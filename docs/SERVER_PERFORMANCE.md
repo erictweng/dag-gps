@@ -118,6 +118,27 @@ scheduling, socket I/O and response read explain the remaining latency. Packet
 cost still varies with packet size; indexing does not make large packets free.
 The unchanged release scorer p95 <10 ms gate is separate from real HTTP p95.
 
+## Agent bridge (review fix)
+
+Review found that `app/agent_bridge.py` took the snapshot from the store without its index, then let `QueryWorker`,
+`read_source`, `build_context` and `store_explanation` validate the full snapshot again (two full validations per agent
+call, Honcho `find_nodes` 694 → 1252 ms). The bridge now requests `with_index=True` and passes that index to every
+consumer. `tests/test_workspace_cli.py::test_bridge_validates_snapshot_once_per_call` counts full validations for
+find_nodes, get_source, get_context, get_dependencies, find_path and submit_explanation (with context) and requires exactly
+one per call. It was RED (2) before the fix and is GREEN after.
+
+Parent timing on the Honcho workspace (median of 3 cold in-process bridge calls; machine load ≈ 4):
+
+| Tool | main (`5a4e566`) | server-speed before fix (`08f1b4d`) | after fix |
+|---|---:|---:|---:|
+| find_symbols | 738 ms | 1315 ms | 931 ms |
+| get_callers | 739 ms | 1303 ms | 880 ms |
+| get_dependencies | 755 ms | 1373 ms | 855 ms |
+
+Each agent bridge call is a fresh process with a fresh store, so it always pays one cold load plus validation. The remaining
+~100–190 ms over main is building the reusable index (and the content hash) during that one validation. It pays off in the
+long-running server, not in a one-shot CLI call. Making the CLI keep a warm index between calls would be a separate change.
+
 ## Memory
 
 Current RSS measured using `ps` immediately after 480 warm requests, MiB:
