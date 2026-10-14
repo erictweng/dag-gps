@@ -512,6 +512,8 @@ def _preview(inventory: dict[str, Any], source_paths: list[str], graph: dict[str
     }
     if 'symbol_graph' in graph:
         map_data['symbol_graph'] = graph['symbol_graph']
+    if 'search_text' in graph:
+        map_data['search_text'] = graph['search_text']
     preview = {
         'schema': PREVIEW_SCHEMA, 'snapshotId': snapshot_id,
         'state': 'partial' if partial else 'ready',

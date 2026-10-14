@@ -8,7 +8,7 @@ Output: nodes{path:{lines,client}}, edges, pyedges, ext, api_calls, rpcs, sqlfns
 import os, re, sys, json, glob, collections, ast
 from build_map import included
 from python_static import static_paths
-from python_symbols import extract_symbols
+from python_symbols import extract_symbols, extract_search_text
 
 src, out = sys.argv[1], os.path.abspath(sys.argv[2])
 tops = sys.argv[3:] or ["app", "components", "lib", "src", "pages", "proxy.ts", "middleware.ts", "scripts", "browser-runtime"]
@@ -204,7 +204,13 @@ result = {"nodes": nodes, "edges": edges, "pyedges": sorted(pyedges), "static_lo
           "unresolved": sorted([e for e in edges if e[1].startswith("UNRESOLVED")] + pyunresolved),
           "unsupported": sorted(unsupported),
           "fan_in": indeg.most_common(15), "fan_out": sorted(((len(v), k) for k, v in adj.items()), reverse=True)[:10]}
-result['symbol_graph'] = extract_symbols({p: open(p, encoding='utf-8', errors='replace').read() for p in py}, pyedges)
+python_sources = {p: open(p, encoding='utf-8', errors='replace').read() for p in py}
+result['symbol_graph'] = extract_symbols(python_sources, pyedges)
+# Leave the existing 16 MiB sidecar bound intact, including all JSON overhead.
+remaining = 16 * 1024 * 1024 - len(json.dumps(result, separators=(',', ':')).encode('utf-8')) - 256
+if remaining >= 128:
+    result['search_text'] = extract_search_text(nodes, python_sources, result['symbol_graph']['nodes'],
+                                               budget=min(1024 * 1024, remaining))
 # The bounded extractor sidecar is machine-read; whitespace need not consume its budget.
 json.dump(result, open(out, "w"), separators=(',', ':'))
 print(f"{len(nodes)} nodes, {len(edges)} js edges, {len(pyedges)} py edges, {len(cycles)} cycles, {len(result['unresolved'])} unresolved")

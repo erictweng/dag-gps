@@ -54,9 +54,64 @@
     return Number(m[1]);
   }
 
+  function createConceptIndex(map) {
+    const started = performance.now();
+    const text = map.search_text;
+    const available = text?.schema === 'dag-gps-search-text/v1';
+    const postings = new Map(), docs = [];
+    const extraStop = new Set(['we', 'our', 'i', 'my', 'please']);
+    const stem = t => t.length > 4 && t.endsWith('s') && !t.endsWith('ss') ? t.slice(0, -1) : t;
+    const terms = value => Scorer.terms(value).filter(t => !extraStop.has(t)).map(stem);
+    if (available) for (const node of [...map.nodes, ...(map.symbol_graph?.nodes || [])]) {
+      const stored = text.nodes[node.id];
+      const fields = stored || {name: (node.name || node.label || '').slice(0, 80),
+        path: (node.path || node.label || '').slice(0, 120), docstring: ''};
+      const counts = new Map();
+      for (const [field, weight] of [['name', 2], ['path', 0.5], ['docstring', 1.5]]) {
+        for (const term of terms(fields[field])) {
+          if (!counts.has(term)) counts.set(term, {tf: 0, fields: new Set()});
+          counts.get(term).tf += weight; counts.get(term).fields.add(field);
+        }
+      }
+      const index = docs.length, length = [...counts.values()].reduce((n, c) => n + c.tf, 0);
+      docs.push({node, length});
+      for (const [term, c] of counts) {
+        if (!postings.has(term)) postings.set(term, []);
+        postings.get(term).push({index, tf: c.tf, fields: [...c.fields]});
+      }
+    }
+    const average = docs.reduce((n, d) => n + d.length, 0) / (docs.length || 1) || 1;
+    function search(query) {
+      const q = [...new Set(terms(Scorer.normalizeQuestion(query)))];
+      if (!available || !q.length || q.some(term => !postings.has(term))) return [];
+      const scores = new Map();
+      for (const term of q) {
+        const hits = postings.get(term) || [];
+        const idf = Math.log(1 + (docs.length - hits.length + 0.5) / (hits.length + 0.5));
+        for (const hit of hits) {
+          if (!scores.has(hit.index)) scores.set(hit.index, {score: 0, evidence: []});
+          const result = scores.get(hit.index);
+          result.score += idf * hit.tf * 2.2 / (hit.tf + 1.2 * (0.25 + 0.75 * docs[hit.index].length / average));
+          result.evidence.push(term + ' [' + hit.fields.join(', ') + ']');
+        }
+      }
+      const hint = Scorer.kindHint(query);
+      return [...scores].filter(([, r]) => r.score >= 4 && r.evidence.length / q.length >= 0.5)
+        .sort(([a, x], [b, y]) => y.score - x.score ||
+          Number(docs[b].node.kind === hint) - Number(docs[a].node.kind === hint) || compare(docs[a].node.id, docs[b].node.id))
+        .slice(0, 8).map(([i, r]) => ({nodeId: docs[i].node.id,
+          path: docs[i].node.kind === 'symbol' ? docs[i].node.id : docs[i].node.path || null,
+          query: docs[i].node.kind === 'symbol' ? 'locate symbol ' + docs[i].node.id : undefined,
+          reason: 'BM25 candidate only: ' + r.evidence.join('; ') + '; score ' + r.score.toFixed(3)}));
+    }
+    return {search, stats: {available, documents: docs.length, buildMs: performance.now() - started,
+      omittedDocstrings: text?.omitted || 0, scoreFloor: 4}};
+  }
+
   function createQueryService(snapshot, options = {}) {
     requireSnapshot(snapshot);
     const map = snapshot.map;
+    const concepts = createConceptIndex(map);
     const scorer = Scorer.createScorer(map, options.learnedAliases || []);
     const router = Router.createRouter(map);
     const nodes = new Map(map.nodes.map(n => [n.id, n]));
@@ -65,10 +120,15 @@
     const symbolNodes = new Map((symbols ? symbols.nodes : []).map(n => [n.id, n]));
     const symbolNames = new Map();
     for (const n of symbolNodes.values()) for (const name of new Set([n.id, n.name, n.qualname, n.path + ':' + n.qualname])) {
-      if (!symbolNames.has(name)) symbolNames.set(name, []);
-      symbolNames.get(name).push(n.id);
+      const key = Scorer.normalizeQuestion(name);
+      if (!symbolNames.has(key)) symbolNames.set(key, []);
+      if (!symbolNames.get(key).includes(n.id)) symbolNames.get(key).push(n.id);
     }
     for (const ids of symbolNames.values()) ids.sort(compare);
+    function lookupSymbol(name) {
+      if (symbolNames.has(name)) return symbolNames.get(name);
+      return [...new Set(Scorer.synonymQueries(name).flatMap(v => symbolNames.get(v.query) || []))].sort(compare);
+    }
     const callForward = new Map([...symbolNodes.keys()].map(id => [id, []]));
     const callBackward = new Map([...symbolNodes.keys()].map(id => [id, []]));
     for (const e of symbols ? symbols.edges : []) {
@@ -91,6 +151,7 @@
     for (const e of edges) { forward.get(e.from).push(e.to); backward.get(e.to).push(e.from); }
     for (const adj of [forward, backward]) for (const [id, list] of adj) adj.set(id, [...new Set(list)].sort(compare));
     const baseLimitations = [STATIC_LIMITATION];
+    if (concepts.stats.omittedDocstrings) baseLimitations.push('Search-text budget omitted ' + concepts.stats.omittedDocstrings + ' node records; those nodes use bounded names/paths only.');
     if (snapshot.state !== 'validated-map') baseLimitations.push('Grouping is a proposal, not a reviewed architecture.');
     for (const l of snapshot.limitations || []) if (typeof l === 'string' && l && baseLimitations.length < 100) baseLimitations.push(l.slice(0, 2048));
 
@@ -186,16 +247,21 @@
     }
 
     function symbolRequest(text) {
-      const q = text.trim().replace(/[?]+$/, '').replace(/`/g, '');
+      const q = Scorer.normalizeQuestion(text);
       let m;
       if ((m = /^where is (.+?) defined$/i.exec(q))) return {op: 'LOCATE', names: [m[1]]};
       if ((m = /^(?:locate|find) (?:function|class|method|symbol) (.+)$/i.exec(q))) return {op: 'LOCATE', names: [m[1]]};
-      if ((m = /^(?:what calls|callers of) (.+)$/i.exec(q))) return {op: 'CALLERS', names: [m[1]]};
+      if ((m = /^(?:what calls|who invokes|who calls|callers of) (.+)$/i.exec(q)) ||
+          (m = /^where is (.+?) called from$/i.exec(q))) return {op: 'CALLERS', names: [m[1]]};
       if ((m = /^what does (.+) call$/i.exec(q))) return {op: 'CALLEES', names: [m[1]]};
       if ((m = /^callees of (.+)$/i.exec(q))) return {op: 'CALLEES', names: [m[1]]};
       if ((m = /^how does (.+?) reach (.+)$/i.exec(q))) return {op: 'FLOW', names: [m[1], m[2]]};
       if ((m = /^trace from (.+)$/i.exec(q))) return {op: 'TRACE', names: [m[1]]};
       if (symbolNames.has(q) && !nodes.has(q)) return {op: 'LOCATE', names: [q]};
+      const name = Scorer.filenameText(q);
+      if (lookupSymbol(name).length && (Scorer.kindHint(q) === 'symbol' ||
+          Object.values(scorer.score(q).targets).every(h => h.match.label === 'No match' || h.match.tier === 'fuzzy')))
+        return {op: 'LOCATE', names: [name]};
       return null;
     }
 
@@ -209,7 +275,7 @@
         packet.status = 'unsupported'; packet.reason = 'This snapshot has no Python symbol extension.';
         return packet;
       }
-      const candidates = parsed.names.map(name => symbolNames.get(name) || []);
+      const candidates = parsed.names.map(lookupSymbol);
       if (request.chosenNodeId !== undefined) {
         const index = candidates.findIndex(ids => ids.includes(request.chosenNodeId));
         if (index < 0) throw new Error('Chosen symbol is not an alternative for this question');
@@ -306,6 +372,10 @@
       packet.unresolvedCalls = unknown.slice(0, 100);
       packet.unresolvedCallCount = unknown.length;
       packet.reason += ' ' + unknown.length + ' unresolved call site(s) in selected symbols (not edges).';
+      for (const name of parsed.names) if (!symbolNames.has(name)) {
+        const matches = Scorer.synonymQueries(name).filter(v => symbolNames.has(v.query));
+        packet.reason += ' ' + matches.map(v => v.reason).join('; ') + '.';
+      }
       if (parsed.op === 'CALLERS' && !packet.selectedEdges.length)
         packet.reason += ' No resolved callers observed; this does not mean no callers exist.';
       packet.limitations.push(unknown.length + ' unresolved call site(s) in selected symbols; ' + packet.unresolvedCalls.length + ' listed. They are not edges.');
@@ -326,10 +396,19 @@
       }
       const offset = parseContinuation(request.continuation);
       const symbolOp = symbolRequest(request.query);
-      // Existing file/group questions keep the unchanged scorer/router path.
-      const legacyTarget = symbolOp && symbolOp.names.some(name => nodes.has(name) ||
-        [...nodes.values()].some(n => n.path === name || n.label === name));
-      if (symbolOp && symbols && !legacyTarget) {
+      if (symbolOp) symbolOp.names = symbolOp.names.map(name => lookupSymbol(name).length ? name :
+        Scorer.filenameText(name.replace(/^the\s+/, '')));
+      // Resolve lexical file/group evidence before dispatch, including ambiguous
+      // stems. Explicit missing call symbols must not silently become files.
+      const preferSymbol = Scorer.kindHint(request.query) === 'symbol' &&
+        (symbolOp?.op !== 'LOCATE' || symbolOp?.names.every(name => lookupSymbol(name).length));
+      const legacyTarget = !preferSymbol && symbolOp && symbolOp.names.some(name => nodes.has(name) ||
+        [...nodes.values()].some(n => n.path === name || n.label === name) ||
+        ((!lookupSymbol(name).length || ['file', 'layer'].includes(Scorer.kindHint(request.query))) &&
+          Object.values(scorer.score(name).targets).some(h =>
+          h.match.label !== 'No match' && h.match.tier !== 'fuzzy' && !h.match.missingExact)));
+      if (symbolOp && symbols && !legacyTarget &&
+          (symbolOp.op !== 'LOCATE' || symbolOp.names.some(name => lookupSymbol(name).length))) {
         const result = symbolQuery(packet, request, symbolOp, offset);
         if (packetBytes(result) <= LIMITS.packetBytes) return result;
         // Never cut call sites or whole-chain witnesses into misleading evidence.
@@ -350,12 +429,22 @@
       const requested = result.requestedOperation;
       if (!result.yes) {
         packet.alternatives = alternativesFrom(result);
+        if (!packet.alternatives.length && requested === 'LOCATE' &&
+            Object.values(result.targets).every(h => !h.match.missingExact)) {
+          packet.alternatives = concepts.search(request.query);
+          if (packet.alternatives.length) {
+            packet.status = 'needs-choice';
+            packet.reason = 'Concept search found possible locations, not an exact answer. Choose a candidate explicitly.';
+            return packet;
+          }
+        }
         packet.status = packet.alternatives.length ? 'needs-choice' : 'no-match';
         packet.reason = result.reason;
         return packet;
       }
       if (requested === 'PATH') {
         const from = result.targets.from_target.choice, to = result.targets.to_target.choice;
+        const evidence = ' From: ' + result.targets.from_target.reason + ' To: ' + result.targets.to_target.reason;
         packet.operation = 'PATH';
         if (nodes.get(from).kind !== nodes.get(to).kind) {
           packet.status = 'unsupported';
@@ -366,11 +455,11 @@
         const path = router.shortestPath(from, to);
         if (!path) {
           packet.status = 'no-path';
-          packet.reason = 'No directed static route from ' + from + ' to ' + to + '.';
+          packet.reason = 'No directed static route from ' + from + ' to ' + to + '.' + evidence;
           return finishSelection(packet, [...new Set([from, to])], [], []);
         }
         packet.status = 'matched';
-        packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).';
+        packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).' + evidence;
         const w = witnessFromChain(path);
         return finishSelection(packet, path, w.edges, path.length > 1 ? [w] : []);
       }
@@ -380,13 +469,15 @@
         packet.reason = result.targets.locate_target.reason;
         return finishSelection(packet, [seed], [], []);
       }
-      return reach(packet, requested, seed, offset);
+      const reached = reach(packet, requested, seed, offset);
+      reached.reason += ' ' + result.targets.locate_target.reason;
+      return reached;
     }
-    return {query, limits: LIMITS};
+    return {query, limits: LIMITS, conceptStats: concepts.stats};
   }
 
   function querySnapshot(snapshot, request, options) {
     return createQueryService(snapshot, options).query(request);
   }
-  return {createQueryService, querySnapshot, PACKET_SCHEMA, LIMITS};
+  return {createQueryService, querySnapshot, createConceptIndex, PACKET_SCHEMA, LIMITS};
 });

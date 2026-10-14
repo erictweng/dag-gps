@@ -353,6 +353,23 @@ def validate_snapshot(snapshot):
                 raise ContractError('Duplicate typed graph edge')
             edges.add((a, b, kind))
     call_edges = _symbol_catalog(graph['symbol_graph'], files, ids, kinds, edges) if 'symbol_graph' in graph else {}
+    if 'search_text' in graph:
+        import json
+        text = _obj(graph['search_text'], 'Search text')
+        if text.get('schema') != 'dag-gps-search-text/v1':
+            raise ContractError('Unsupported search text schema')
+        omitted = text.get('omitted')
+        if type(omitted) is not int or omitted < 0:
+            raise ContractError('Invalid search text omission count')
+        if len(json.dumps(text, separators=(',', ':')).encode('utf-8')) > 1024 * 1024:
+            raise ContractError('Search text exceeds byte budget')
+        for ident, fields in _obj(text.get('nodes'), 'Search text nodes').items():
+            if ident not in kinds or type(fields) is not dict or set(fields) != {'name', 'path', 'docstring'}:
+                raise ContractError('Unknown search text node/fields')
+            for field, cap in [('name', 80), ('path', 120), ('docstring', 300)]:
+                value = fields[field]
+                if type(value) is not str or len(value) > cap or any(ord(c) < 32 for c in value):
+                    raise ContractError('Invalid bounded search text')
     # Legitimate directed cycles remain data, not silently deleted links.
     return {'nodeIds': set(ids), 'nodeKinds': kinds, 'edges': edges, 'files': files, 'callEdges': call_edges}
 

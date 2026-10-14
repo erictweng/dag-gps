@@ -1,0 +1,2162 @@
+{
+  "schema": "dag-gps-question-parser-eval/v1",
+  "seed": 3922,
+  "pin": "3922af856d78ec41133916deec4d821fa9c5a92e",
+  "provenance": "source-checked worker draft; not user accuracy; freeze before implementation",
+  "rows": [
+    {
+      "id": "qp-001",
+      "question": "where is the db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-002",
+      "question": "where is the DB",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-003",
+      "question": "where's the db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-004",
+      "question": "wheres the db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-005",
+      "question": "WHERE IS THE DB?!",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-006",
+      "question": "where is db located",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-007",
+      "question": "where is the db file",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-008",
+      "question": "find the db module",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-009",
+      "question": "where is db logic",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-010",
+      "question": "where is db code",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-011",
+      "question": "where is db stuff",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-012",
+      "question": "where is the db part",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-013",
+      "question": "what is db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-014",
+      "question": "what's db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-015",
+      "question": "whats db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-016",
+      "question": "where is src/db.py",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-017",
+      "question": "where is SRC/DB.PY",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-018",
+      "question": "locate src/db",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-019",
+      "question": "where is the db script",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-020",
+      "question": "where is the src",
+      "expected": "match",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-25a6634263c1b1f6",
+          "path": "src/__init__.py",
+          "start": 1,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-021",
+      "question": "where is the src folder",
+      "expected": "match",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-25a6634263c1b1f6",
+          "path": "src/__init__.py",
+          "start": 1,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-022",
+      "question": "where is the src directory",
+      "expected": "match",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-25a6634263c1b1f6",
+          "path": "src/__init__.py",
+          "start": 1,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-023",
+      "question": "locate src dir",
+      "expected": "match",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-25a6634263c1b1f6",
+          "path": "src/__init__.py",
+          "start": 1,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-024",
+      "question": "find src package",
+      "expected": "match",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-25a6634263c1b1f6",
+          "path": "src/__init__.py",
+          "start": 1,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-025",
+      "question": "where's the src folder",
+      "expected": "match",
+      "targets": [
+        "folder-25a6634263c1b1f6"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-25a6634263c1b1f6",
+          "path": "src/__init__.py",
+          "start": 1,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-026",
+      "question": "where is the database layer",
+      "expected": "match",
+      "targets": [
+        "folder-3549b0028b75d981"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-3549b0028b75d981",
+          "path": "database/init.sql",
+          "start": 1,
+          "sha256": "6cb3656e7311f172af0c97058fe939b5c52f3b470c71567b361d8f35e3e45424"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-027",
+      "question": "where is database",
+      "expected": "match",
+      "targets": [
+        "folder-3549b0028b75d981"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-3549b0028b75d981",
+          "path": "database/init.sql",
+          "start": 1,
+          "sha256": "6cb3656e7311f172af0c97058fe939b5c52f3b470c71567b361d8f35e3e45424"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-028",
+      "question": "where is the database folder",
+      "expected": "match",
+      "targets": [
+        "folder-3549b0028b75d981"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-3549b0028b75d981",
+          "path": "database/init.sql",
+          "start": 1,
+          "sha256": "6cb3656e7311f172af0c97058fe939b5c52f3b470c71567b361d8f35e3e45424"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-029",
+      "question": "where is config",
+      "expected": "choose",
+      "targets": [
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/config.py",
+        "harness-plugin-core/src/config.ts",
+        "mcp/src/config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "start": 1,
+          "sha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb"
+        },
+        {
+          "nodeId": "harness-plugin-core/src/config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "start": 1,
+          "sha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8"
+        },
+        {
+          "nodeId": "mcp/src/config.ts",
+          "path": "mcp/src/config.ts",
+          "start": 1,
+          "sha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-030",
+      "question": "where is CONFIG",
+      "expected": "choose",
+      "targets": [
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/config.py",
+        "harness-plugin-core/src/config.ts",
+        "mcp/src/config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "start": 1,
+          "sha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb"
+        },
+        {
+          "nodeId": "harness-plugin-core/src/config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "start": 1,
+          "sha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8"
+        },
+        {
+          "nodeId": "mcp/src/config.ts",
+          "path": "mcp/src/config.ts",
+          "start": 1,
+          "sha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-031",
+      "question": "where's config",
+      "expected": "choose",
+      "targets": [
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/config.py",
+        "harness-plugin-core/src/config.ts",
+        "mcp/src/config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "start": 1,
+          "sha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb"
+        },
+        {
+          "nodeId": "harness-plugin-core/src/config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "start": 1,
+          "sha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8"
+        },
+        {
+          "nodeId": "mcp/src/config.ts",
+          "path": "mcp/src/config.ts",
+          "start": 1,
+          "sha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-032",
+      "question": "where is the config file",
+      "expected": "choose",
+      "targets": [
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/config.py",
+        "harness-plugin-core/src/config.ts",
+        "mcp/src/config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "start": 1,
+          "sha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb"
+        },
+        {
+          "nodeId": "harness-plugin-core/src/config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "start": 1,
+          "sha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8"
+        },
+        {
+          "nodeId": "mcp/src/config.ts",
+          "path": "mcp/src/config.ts",
+          "start": 1,
+          "sha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-033",
+      "question": "where is the configuration file",
+      "expected": "choose",
+      "targets": [
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/config.py",
+        "harness-plugin-core/src/config.ts",
+        "mcp/src/config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "start": 1,
+          "sha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb"
+        },
+        {
+          "nodeId": "harness-plugin-core/src/config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "start": 1,
+          "sha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8"
+        },
+        {
+          "nodeId": "mcp/src/config.ts",
+          "path": "mcp/src/config.ts",
+          "start": 1,
+          "sha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-034",
+      "question": "where is the settings file",
+      "expected": "choose",
+      "targets": [
+        "src/config.py",
+        "honcho-cli/src/honcho_cli/config.py",
+        "harness-plugin-core/src/config.ts",
+        "mcp/src/config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "start": 1,
+          "sha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb"
+        },
+        {
+          "nodeId": "harness-plugin-core/src/config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "start": 1,
+          "sha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8"
+        },
+        {
+          "nodeId": "mcp/src/config.ts",
+          "path": "mcp/src/config.ts",
+          "start": 1,
+          "sha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-035",
+      "question": "where is src/config.py",
+      "expected": "match",
+      "targets": [
+        "src/config.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-036",
+      "question": "where is src/config",
+      "expected": "match",
+      "targets": [
+        "src/config.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-037",
+      "question": "where is src/config.py located",
+      "expected": "match",
+      "targets": [
+        "src/config.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-038",
+      "question": "where is msg",
+      "expected": "choose",
+      "targets": [
+        "src/crud/message.py",
+        "sdks/python/src/honcho/message.py",
+        "honcho-cli/src/honcho_cli/commands/message.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/crud/message.py",
+          "path": "src/crud/message.py",
+          "start": 1,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "sdks/python/src/honcho/message.py",
+          "path": "sdks/python/src/honcho/message.py",
+          "start": 1,
+          "sha256": "27e690c30f585f9cd5c7f11901b26e0c57719394ab02bbf43419f070cf8e24e4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/commands/message.py",
+          "path": "honcho-cli/src/honcho_cli/commands/message.py",
+          "start": 1,
+          "sha256": "43e5f10a84847386edb4716f95171cf3aa9030280b222ae2999766651204f25a"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-039",
+      "question": "where is message",
+      "expected": "choose",
+      "targets": [
+        "src/crud/message.py",
+        "sdks/python/src/honcho/message.py",
+        "honcho-cli/src/honcho_cli/commands/message.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/crud/message.py",
+          "path": "src/crud/message.py",
+          "start": 1,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "sdks/python/src/honcho/message.py",
+          "path": "sdks/python/src/honcho/message.py",
+          "start": 1,
+          "sha256": "27e690c30f585f9cd5c7f11901b26e0c57719394ab02bbf43419f070cf8e24e4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/commands/message.py",
+          "path": "honcho-cli/src/honcho_cli/commands/message.py",
+          "start": 1,
+          "sha256": "43e5f10a84847386edb4716f95171cf3aa9030280b222ae2999766651204f25a"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-040",
+      "question": "where is the msg file",
+      "expected": "choose",
+      "targets": [
+        "src/crud/message.py",
+        "sdks/python/src/honcho/message.py",
+        "honcho-cli/src/honcho_cli/commands/message.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/crud/message.py",
+          "path": "src/crud/message.py",
+          "start": 1,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "sdks/python/src/honcho/message.py",
+          "path": "sdks/python/src/honcho/message.py",
+          "start": 1,
+          "sha256": "27e690c30f585f9cd5c7f11901b26e0c57719394ab02bbf43419f070cf8e24e4"
+        },
+        {
+          "nodeId": "honcho-cli/src/honcho_cli/commands/message.py",
+          "path": "honcho-cli/src/honcho_cli/commands/message.py",
+          "start": 1,
+          "sha256": "43e5f10a84847386edb4716f95171cf3aa9030280b222ae2999766651204f25a"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-041",
+      "question": "where is llm",
+      "expected": "choose",
+      "targets": [
+        "folder-2204ae27992d53cf",
+        "folder-d164207056a18ac3"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-2204ae27992d53cf",
+          "path": "src/llm/__init__.py",
+          "start": 1,
+          "sha256": "1425640914683e2bf80729bab8d6ca1f142d5023a3ee92efab309e12b7dc98e4"
+        },
+        {
+          "nodeId": "folder-d164207056a18ac3",
+          "path": "tests/llm/conftest.py",
+          "start": 1,
+          "sha256": "b9854d3ddb40eaed92df11d16f4c7ca07f335b20f4949b81513282bf184a7a7a"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-042",
+      "question": "where is the llm folder",
+      "expected": "choose",
+      "targets": [
+        "folder-2204ae27992d53cf",
+        "folder-d164207056a18ac3"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-2204ae27992d53cf",
+          "path": "src/llm/__init__.py",
+          "start": 1,
+          "sha256": "1425640914683e2bf80729bab8d6ca1f142d5023a3ee92efab309e12b7dc98e4"
+        },
+        {
+          "nodeId": "folder-d164207056a18ac3",
+          "path": "tests/llm/conftest.py",
+          "start": 1,
+          "sha256": "b9854d3ddb40eaed92df11d16f4c7ca07f335b20f4949b81513282bf184a7a7a"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-043",
+      "question": "where is the LLM directory",
+      "expected": "choose",
+      "targets": [
+        "folder-2204ae27992d53cf",
+        "folder-d164207056a18ac3"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-2204ae27992d53cf",
+          "path": "src/llm/__init__.py",
+          "start": 1,
+          "sha256": "1425640914683e2bf80729bab8d6ca1f142d5023a3ee92efab309e12b7dc98e4"
+        },
+        {
+          "nodeId": "folder-d164207056a18ac3",
+          "path": "tests/llm/conftest.py",
+          "start": 1,
+          "sha256": "b9854d3ddb40eaed92df11d16f4c7ca07f335b20f4949b81513282bf184a7a7a"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-044",
+      "question": "where is get_pool_stats defined",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-045",
+      "question": "find function get_pool_stats",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-046",
+      "question": "where is the function get_pool_stats",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-047",
+      "question": "WHERE IS GET_POOL_STATS DEFINED",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-048",
+      "question": "where's get_pool_stats",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-049",
+      "question": "where is EmbeddingClient defined",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient@710",
+          "path": "src/embedding_client.py",
+          "start": 710,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-050",
+      "question": "find class EmbeddingClient",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient@710",
+          "path": "src/embedding_client.py",
+          "start": 710,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-051",
+      "question": "where is the class EmbeddingClient",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient@710",
+          "path": "src/embedding_client.py",
+          "start": 710,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-052",
+      "question": "WHERE IS EMBEDDINGCLIENT DEFINED",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient@710",
+          "path": "src/embedding_client.py",
+          "start": 710,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-053",
+      "question": "where's EmbeddingClient",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient@710"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient@710",
+          "path": "src/embedding_client.py",
+          "start": 710,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-054",
+      "question": "where is QueueManager defined",
+      "expected": "match",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/deriver/queue_manager.py#QueueManager@140",
+          "path": "src/deriver/queue_manager.py",
+          "start": 140,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-055",
+      "question": "find class QueueManager",
+      "expected": "match",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/deriver/queue_manager.py#QueueManager@140",
+          "path": "src/deriver/queue_manager.py",
+          "start": 140,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-056",
+      "question": "where is the class QueueManager",
+      "expected": "match",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/deriver/queue_manager.py#QueueManager@140",
+          "path": "src/deriver/queue_manager.py",
+          "start": 140,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-057",
+      "question": "WHERE IS QUEUEMANAGER DEFINED",
+      "expected": "match",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/deriver/queue_manager.py#QueueManager@140",
+          "path": "src/deriver/queue_manager.py",
+          "start": 140,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-058",
+      "question": "where's QueueManager",
+      "expected": "match",
+      "targets": [
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/deriver/queue_manager.py#QueueManager@140",
+          "path": "src/deriver/queue_manager.py",
+          "start": 140,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-059",
+      "question": "where is deliver_webhook defined",
+      "expected": "match",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-060",
+      "question": "find function deliver_webhook",
+      "expected": "match",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-061",
+      "question": "where is the function deliver_webhook",
+      "expected": "match",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-062",
+      "question": "WHERE IS DELIVER_WEBHOOK DEFINED",
+      "expected": "match",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-063",
+      "question": "where's deliver_webhook",
+      "expected": "match",
+      "targets": [
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-064",
+      "question": "where is EmbeddingClient.embed defined",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-065",
+      "question": "find method EmbeddingClient.embed",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-066",
+      "question": "where is the method EmbeddingClient.embed",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-067",
+      "question": "WHERE IS EMBEDDINGCLIENT.EMBED DEFINED",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-068",
+      "question": "where's EmbeddingClient.embed",
+      "expected": "match",
+      "targets": [
+        "src/embedding_client.py#EmbeddingClient.embed@776"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-069",
+      "question": "where is auth",
+      "expected": "match",
+      "targets": [
+        "src/security.py#auth@197"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/security.py#auth@197",
+          "path": "src/security.py",
+          "start": 197,
+          "sha256": "fa9b86a589cb247da86a7bc23bff71c03a1ed953e5039ae3c67f83a2f2414d7d"
+        }
+      ],
+      "rationale": "src/security.py auth authenticates JWT; require_auth wraps it as a dependency.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-070",
+      "question": "where is the auth function",
+      "expected": "match",
+      "targets": [
+        "src/security.py#auth@197"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/security.py#auth@197",
+          "path": "src/security.py",
+          "start": 197,
+          "sha256": "fa9b86a589cb247da86a7bc23bff71c03a1ed953e5039ae3c67f83a2f2414d7d"
+        }
+      ],
+      "rationale": "src/security.py auth authenticates JWT; require_auth wraps it as a dependency.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-071",
+      "question": "where is authentication",
+      "expected": "match",
+      "targets": [
+        "src/security.py#auth@197"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/security.py#auth@197",
+          "path": "src/security.py",
+          "start": 197,
+          "sha256": "fa9b86a589cb247da86a7bc23bff71c03a1ed953e5039ae3c67f83a2f2414d7d"
+        }
+      ],
+      "rationale": "src/security.py auth authenticates JWT; require_auth wraps it as a dependency.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-072",
+      "question": "where do we store messages",
+      "expected": "choose",
+      "targets": [
+        "src/crud/message.py",
+        "src/crud/message.py#create_messages@385"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/crud/message.py",
+          "path": "src/crud/message.py",
+          "start": 1,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "src/crud/message.py#create_messages@385",
+          "path": "src/crud/message.py",
+          "start": 385,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        }
+      ],
+      "rationale": "create_messages persists session messages in the database at lines 385 onward.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-073",
+      "question": "where are messages stored",
+      "expected": "choose",
+      "targets": [
+        "src/crud/message.py",
+        "src/crud/message.py#create_messages@385"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/crud/message.py",
+          "path": "src/crud/message.py",
+          "start": 1,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "src/crud/message.py#create_messages@385",
+          "path": "src/crud/message.py",
+          "start": 385,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        }
+      ],
+      "rationale": "create_messages persists session messages in the database at lines 385 onward.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-074",
+      "question": "where are embeddings created",
+      "expected": "choose",
+      "targets": [
+        "src/embedding_client.py",
+        "src/embedding_client.py#EmbeddingClient.embed@776",
+        "src/embedding_client.py#_EmbeddingClient.embed@308"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py",
+          "path": "src/embedding_client.py",
+          "start": 1,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        },
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        },
+        {
+          "nodeId": "src/embedding_client.py#_EmbeddingClient.embed@308",
+          "path": "src/embedding_client.py",
+          "start": 308,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Embedding client owns provider embedding calls.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-075",
+      "question": "where do we embed text",
+      "expected": "choose",
+      "targets": [
+        "src/embedding_client.py",
+        "src/embedding_client.py#EmbeddingClient.embed@776",
+        "src/embedding_client.py#_EmbeddingClient.embed@308"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py",
+          "path": "src/embedding_client.py",
+          "start": 1,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        },
+        {
+          "nodeId": "src/embedding_client.py#EmbeddingClient.embed@776",
+          "path": "src/embedding_client.py",
+          "start": 776,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        },
+        {
+          "nodeId": "src/embedding_client.py#_EmbeddingClient.embed@308",
+          "path": "src/embedding_client.py",
+          "start": 308,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Embedding client owns provider embedding calls.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-076",
+      "question": "what handles webhooks",
+      "expected": "choose",
+      "targets": [
+        "src/webhooks/webhook_delivery.py",
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+        "folder-4710e5ed8b11c0a2"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 1,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        },
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        },
+        {
+          "nodeId": "folder-4710e5ed8b11c0a2",
+          "path": "src/webhooks/events.py",
+          "start": 1,
+          "sha256": "d0a8adfdbe75892bff5ec0642a7a4260f5029f8179191ea5df8f18810b705fda"
+        }
+      ],
+      "rationale": "deliver_webhook delivers an event to configured endpoints.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-077",
+      "question": "where do we deliver webhook events",
+      "expected": "choose",
+      "targets": [
+        "src/webhooks/webhook_delivery.py",
+        "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+        "folder-4710e5ed8b11c0a2"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 1,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        },
+        {
+          "nodeId": "src/webhooks/webhook_delivery.py#deliver_webhook@19",
+          "path": "src/webhooks/webhook_delivery.py",
+          "start": 19,
+          "sha256": "bdb76a8e09456550e2233c433eb88be293d4d13bfe3aeb64b8cbfa3bf4cd757d"
+        },
+        {
+          "nodeId": "folder-4710e5ed8b11c0a2",
+          "path": "src/webhooks/events.py",
+          "start": 1,
+          "sha256": "d0a8adfdbe75892bff5ec0642a7a4260f5029f8179191ea5df8f18810b705fda"
+        }
+      ],
+      "rationale": "deliver_webhook delivers an event to configured endpoints.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-078",
+      "question": "where is the deriver queue",
+      "expected": "choose",
+      "targets": [
+        "src/deriver/queue_manager.py",
+        "src/deriver/queue_manager.py#QueueManager@140"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/deriver/queue_manager.py",
+          "path": "src/deriver/queue_manager.py",
+          "start": 1,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        },
+        {
+          "nodeId": "src/deriver/queue_manager.py#QueueManager@140",
+          "path": "src/deriver/queue_manager.py",
+          "start": 140,
+          "sha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813"
+        }
+      ],
+      "rationale": "QueueManager claims/processes deriver queue items.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-079",
+      "question": "where do we verify JWT tokens",
+      "expected": "choose",
+      "targets": [
+        "src/security.py",
+        "src/security.py#verify_jwt@105"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/security.py",
+          "path": "src/security.py",
+          "start": 1,
+          "sha256": "fa9b86a589cb247da86a7bc23bff71c03a1ed953e5039ae3c67f83a2f2414d7d"
+        },
+        {
+          "nodeId": "src/security.py#verify_jwt@105",
+          "path": "src/security.py",
+          "start": 105,
+          "sha256": "fa9b86a589cb247da86a7bc23bff71c03a1ed953e5039ae3c67f83a2f2414d7d"
+        }
+      ],
+      "rationale": "verify_jwt verifies and decodes JWT parameters.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-080",
+      "question": "where do we split text into chunks",
+      "expected": "choose",
+      "targets": [
+        "src/embedding_client.py#_chunk_text_with_tokens@675",
+        "src/embedding_client.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/embedding_client.py#_chunk_text_with_tokens@675",
+          "path": "src/embedding_client.py",
+          "start": 675,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        },
+        {
+          "nodeId": "src/embedding_client.py",
+          "path": "src/embedding_client.py",
+          "start": 1,
+          "sha256": "1b9b92cf4b5d6a698e20045233dded28990c3be71d75daffd90157875d2ac8c9"
+        }
+      ],
+      "rationale": "Docstring explicitly says split text into chunks within token limits.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-081",
+      "question": "where do we load TOML configuration",
+      "expected": "choose",
+      "targets": [
+        "src/config.py#load_toml_config@48",
+        "src/config.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/config.py#load_toml_config@48",
+          "path": "src/config.py",
+          "start": 48,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        },
+        {
+          "nodeId": "src/config.py",
+          "path": "src/config.py",
+          "start": 1,
+          "sha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4"
+        }
+      ],
+      "rationale": "Docstring: load configuration from TOML file if it exists.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-082",
+      "question": "where is semantic message search",
+      "expected": "choose",
+      "targets": [
+        "src/crud/message.py#_semantic_search_messages@873",
+        "src/crud/message.py#search_messages@953",
+        "src/crud/message.py"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/crud/message.py#_semantic_search_messages@873",
+          "path": "src/crud/message.py",
+          "start": 873,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "src/crud/message.py#search_messages@953",
+          "path": "src/crud/message.py",
+          "start": 953,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        },
+        {
+          "nodeId": "src/crud/message.py",
+          "path": "src/crud/message.py",
+          "start": 1,
+          "sha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f"
+        }
+      ],
+      "rationale": "Source implements semantic similarity search.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-083",
+      "question": "who invokes get_pool_stats",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "CALLERS",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-084",
+      "question": "where is get_pool_stats called from",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "CALLERS",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-085",
+      "question": "what calls get_pool_stats",
+      "expected": "match",
+      "targets": [
+        "src/db.py#get_pool_stats@133"
+      ],
+      "operation": "CALLERS",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py#get_pool_stats@133",
+          "path": "src/db.py",
+          "start": 133,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-086",
+      "question": "what does src/db.py depend on",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "UPSTREAM",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-087",
+      "question": "dependencies of src/db.py",
+      "expected": "match",
+      "targets": [
+        "src/db.py"
+      ],
+      "operation": "UPSTREAM",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/db.py",
+          "path": "src/db.py",
+          "start": 1,
+          "sha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414"
+        }
+      ],
+      "rationale": "Literal name/path in pinned inventory and source.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-088",
+      "question": "quantum banana teleporter",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-089",
+      "question": "where is the lunar payroll processor",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-090",
+      "question": "where is the unicorn stables",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-091",
+      "question": "where is nonexistent_zyx_987",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-092",
+      "question": "find nonexistent_zyx_987.py",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-093",
+      "question": "where is nonexistent/phantom.py",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-094",
+      "question": "where is the cryptocurrency mining rig",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-095",
+      "question": "where is the pizza oven controller",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-096",
+      "question": "where is the submarine sonar driver",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-097",
+      "question": "where is the dinosaur genome assembler",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-098",
+      "question": "where is the interstellar autopilot",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-099",
+      "question": "where is the chess grandmaster engine",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-100",
+      "question": "where is the volcano eruption predictor",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-101",
+      "question": "where is the watercolor rasterizer",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-102",
+      "question": "where is the dental xray classifier",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-103",
+      "question": "where is the fax modem firmware",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-104",
+      "question": "where is the penguin migration simulator",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-105",
+      "question": "where is the orbital rocket thruster",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    },
+    {
+      "id": "qp-106",
+      "question": "where is the waffle batter dispenser",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "holdout"
+    },
+    {
+      "id": "qp-107",
+      "question": "where is the holographic dragon renderer",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent requested responsibility: no corresponding path/definition in the pinned inventory; arbitrary shared words are not evidence of this concept.",
+      "split": "dev"
+    }
+  ]
+}

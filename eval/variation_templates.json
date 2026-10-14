@@ -1,0 +1,1421 @@
+{
+  "seed": "dag-variation-v1-20261013",
+  "phrases": {
+    "LOCATE": ["{x}", "where is {x}", "where are {x}", "what is {x}", "find {x}", "locate {x}", "show {x}", "show me {x}", "please find {x}", "where's {x}", "where’s {x}", "wheres {x}", "where is {x} defined", "where is {x} located"],
+    "DOWNSTREAM": ["what depends on {x}", "which files depend on {x}", "who uses {x}", "what imports {x}", "who invokes {x}", "where is {x} called from", "dependents of {x}", "downstream from {x}", "what would break if {x} changed"],
+    "UPSTREAM": ["what does {x} depend on", "what does {x} import", "which does {x} use", "dependencies of {x}", "upstream from {x}", "what is {x} built on"],
+    "CALLERS": ["what calls {x}", "who calls {x}", "who invokes {x}", "callers of {x}", "where is {x} called from"],
+    "CALLEES": ["what does {x} call", "callees of {x}"],
+    "TRACE": ["trace from {x}"],
+    "PATH": ["from {x} to {y}", "path from {x} to {y}", "route between {x} and {y}", "path between {x} and {y}", "how does {x} reach {y}", "how {x} connect to {y}", "how does {x} get to {y}"],
+    "FLOW": ["how does {x} reach {y}"]
+  },
+  "fillers": ["the", "layer", "logic", "code", "stuff", "located", "defined", "part", "thing", "live", "lives"],
+  "kinds": ["file", "module", "script", "folder", "directory", "dir", "package", "function", "class", "method", "def"],
+  "design": "phrase x target-form baseline plus one-axis-at-a-time canonical-target perturbations",
+  "synonyms": [
+    [
+      "db",
+      "database"
+    ],
+    [
+      "config",
+      "configuration",
+      "settings"
+    ],
+    [
+      "msg",
+      "message"
+    ],
+    [
+      "auth",
+      "authentication"
+    ],
+    [
+      "repo",
+      "repository"
+    ],
+    [
+      "env",
+      "environment"
+    ]
+  ],
+  "repos": {
+    "honcho": {
+      "pin": "3922af856d78ec41133916deec4d821fa9c5a92e",
+      "snapshotSha256": "33a8ffd955ecfdee06369e2d224d71c7214dc44fe04cfd46ebf347695f7d5171",
+      "targets": [
+        {
+          "id": "src/utils/search.py",
+          "kind": "file",
+          "label": "search.py",
+          "path": "src/utils/search.py",
+          "sourceSha256": "e36a03cc984709dd301d5a8ffb7924e1357e9afae7905f6555f9ab35dd42a60a",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "hermes-plugin-honcho/session.py",
+          "kind": "file",
+          "label": "session.py",
+          "path": "hermes-plugin-honcho/session.py",
+          "sourceSha256": "2df19a6caa7ebb324577deb9c935d507ccf19824bb928b31407e95f83b8fe60c",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/llm/api.py",
+          "kind": "file",
+          "label": "api.py",
+          "path": "src/llm/api.py",
+          "sourceSha256": "8bcc8cdba27f28ec7d77319d474191b429eac1913f11611472b42707ae1a8bb5",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/telemetry/prometheus/metrics.py",
+          "kind": "file",
+          "label": "metrics.py",
+          "path": "src/telemetry/prometheus/metrics.py",
+          "sourceSha256": "522538040facfcc1877a1eb5bb3d731917df85fad9b4f789e247da560560f0d5",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/telemetry/test_trace_events.py",
+          "kind": "file",
+          "label": "test_trace_events.py",
+          "path": "tests/telemetry/test_trace_events.py",
+          "sourceSha256": "18afa44d93231bb51f830207b86756b6ada093fd1462150ba036077d316473c4",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/reconciler/backfill.py",
+          "kind": "file",
+          "label": "backfill.py",
+          "path": "src/reconciler/backfill.py",
+          "sourceSha256": "6264bf50ea5ecf485cbb70dbc5d5a75dfa420db3a7937a2ddd1db92737bce238",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/vector_store/test_chroma_dependency.py",
+          "kind": "file",
+          "label": "test_chroma_dependency.py",
+          "path": "tests/vector_store/test_chroma_dependency.py",
+          "sourceSha256": "aeb7dfd5558f145e54c2178791c3f69645b5f39bb6fe8e21ff2d3ec305372baf",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "migrations/versions/f1a2b3c4d5e6_add_reasoning_tree_columns.py",
+          "kind": "file",
+          "label": "f1a2b3c4d5e6_add_reasoning_tree_columns.py",
+          "path": "migrations/versions/f1a2b3c4d5e6_add_reasoning_tree_columns.py",
+          "sourceSha256": "946544475617cca6899566e77e9a4094854493cf85dbe9b254ff8a8d077aa9cc",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/integration/test_enqueue.py",
+          "kind": "file",
+          "label": "test_enqueue.py",
+          "path": "tests/integration/test_enqueue.py",
+          "sourceSha256": "0f2a86df2d665ace30fa99b70298a680207458b0bba40e99dc4d204ad4e6db56",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "scripts/__init__.py",
+          "kind": "file",
+          "label": "__init__.py",
+          "path": "scripts/__init__.py",
+          "sourceSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/routers/peers.py",
+          "kind": "file",
+          "label": "peers.py",
+          "path": "src/routers/peers.py",
+          "sourceSha256": "7171080353fa303dcf5234ccabf7062306d4e945468ecfe8d5e300c8c404d766",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "examples/zo/tests/test_tools.py",
+          "kind": "file",
+          "label": "test_tools.py",
+          "path": "examples/zo/tests/test_tools.py",
+          "sourceSha256": "ca9d4f5c0e49a5e928499c06664a89abefa3c46c84ab5ec80bd87bf470b6c4f6",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "examples/crewai/python/src/honcho_crewai/exceptions.py",
+          "kind": "file",
+          "label": "exceptions.py",
+          "path": "examples/crewai/python/src/honcho_crewai/exceptions.py",
+          "sourceSha256": "c7e04c34388a315629651c0b6cfd059cdf3c3b79db295d758f4ef53b16e71b03",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/utils/filter.py",
+          "kind": "file",
+          "label": "filter.py",
+          "path": "src/utils/filter.py",
+          "sourceSha256": "042f0934dae1c53405b39d14c7d33509242e37e47b8c34a1718a446211400ad9",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/llm/executor.py",
+          "kind": "file",
+          "label": "executor.py",
+          "path": "src/llm/executor.py",
+          "sourceSha256": "bba2230cdcd0d3f8bceef33861a2498e4994bdcb65dc4d9dbbbe5f2feb3c09f7",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "honcho-cli/src/honcho_cli/local/profile.py",
+          "kind": "file",
+          "label": "profile.py",
+          "path": "honcho-cli/src/honcho_cli/local/profile.py",
+          "sourceSha256": "c7e84b4d05599b9d24094e37bc575b3abf19ed89d04d209d500b34f2d0bd5ba5",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/telemetry/test_langfuse_exporter_real_sdk.py",
+          "kind": "file",
+          "label": "test_langfuse_exporter_real_sdk.py",
+          "path": "tests/telemetry/test_langfuse_exporter_real_sdk.py",
+          "sourceSha256": "97207166e6465f3d82f947f1e877effb94257802774f31441ba3ded6095dcdbe",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/live_llm/model_matrix.py",
+          "kind": "file",
+          "label": "model_matrix.py",
+          "path": "tests/live_llm/model_matrix.py",
+          "sourceSha256": "7ecff4969e8d332f587e6d5b299079af349c9ef81e74303c77045bb811f7bbc1",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/crud/test_representation_manager.py",
+          "kind": "file",
+          "label": "test_representation_manager.py",
+          "path": "tests/crud/test_representation_manager.py",
+          "sourceSha256": "58e546112cdb9df580c9abe924e26541ed2b4ae2ba77b1d1d8f5a9d07c439252",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/llm/test_history_adapters.py",
+          "kind": "file",
+          "label": "test_history_adapters.py",
+          "path": "tests/llm/test_history_adapters.py",
+          "sourceSha256": "dd49c4dc7b8e6d3683cf597fe8c1918911b6def0de0beca5b4511947b8ef0502",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "sdks/python/examples/search.py",
+          "kind": "file",
+          "label": "search.py",
+          "path": "sdks/python/examples/search.py",
+          "sourceSha256": "386b42d3438cbd9507af64cbd870fb2afd9cb23b2ca5e50d95ee1d7e60beacb5",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "migrations/versions/ec8f94139b02_codify_workspace_name_and_message_id_in_.py",
+          "kind": "file",
+          "label": "ec8f94139b02_codify_workspace_name_and_message_id_in_.py",
+          "path": "migrations/versions/ec8f94139b02_codify_workspace_name_and_message_id_in_.py",
+          "sourceSha256": "e3351c3421681355e52ce44fe29eb84d206072baef4762289d223987f96dc6aa",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/telemetry/langfuse_exporter.py",
+          "kind": "file",
+          "label": "langfuse_exporter.py",
+          "path": "src/telemetry/langfuse_exporter.py",
+          "sourceSha256": "7b0d81e3e89a2870a0f57c62c560679e98e10e4575bd783dabc138a049be19db",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "kilo-honcho/src/tui/sidebar.tsx",
+          "kind": "file",
+          "label": "sidebar.tsx",
+          "path": "kilo-honcho/src/tui/sidebar.tsx",
+          "sourceSha256": "1d36e896c01d9bda5f65b84e93c08d0cab7c005c23265c526193e841272167f4",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/backlog.py",
+          "kind": "file",
+          "label": "backlog.py",
+          "path": "src/backlog.py",
+          "sourceSha256": "4a2ae89454bbaea6958d5f2f4ae47af489ad563eb7e599e911df18329ead41fb",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/cache/__init__.py",
+          "kind": "file",
+          "label": "__init__.py",
+          "path": "src/cache/__init__.py",
+          "sourceSha256": "0cf6db4349703e18190c91469a40e16b7de931807557b1034c44a86da53ec9ec",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/llm/backends/anthropic.py",
+          "kind": "file",
+          "label": "anthropic.py",
+          "path": "src/llm/backends/anthropic.py",
+          "sourceSha256": "ed7349e4209a0a6650caac9b6b3e8547b862553d2b734385d944649d32935c0d",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/bench/runner_common.py",
+          "kind": "file",
+          "label": "runner_common.py",
+          "path": "tests/bench/runner_common.py",
+          "sourceSha256": "195cdc2a3e0e15f6ad35463bc59d9e5adaf5924d5eadd377646610942e96277e",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/reconciler/test_sync_vectors_enqueue_gate.py",
+          "kind": "file",
+          "label": "test_sync_vectors_enqueue_gate.py",
+          "path": "tests/reconciler/test_sync_vectors_enqueue_gate.py",
+          "sourceSha256": "1e8cd253f2dcf0ecb58b49b80f3c187c663fc328c464068cc712a02b5077cde3",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tests/alembic/revisions/test_bb6fb3a7a643_add_message_seq_in_session_column.py",
+          "kind": "file",
+          "label": "test_bb6fb3a7a643_add_message_seq_in_session_column.py",
+          "path": "tests/alembic/revisions/test_bb6fb3a7a643_add_message_seq_in_session_column.py",
+          "sourceSha256": "ecb8b584f498c6b15cbc9cf7b89333c541c0270e9ef27dc18f41543814483609",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "folder-b40bc1374968e42b",
+          "kind": "layer",
+          "label": "tests/integration",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-a103f549c63bbe7d",
+          "kind": "layer",
+          "label": "mcp/src",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-54edc5d5012ab74b",
+          "kind": "layer",
+          "label": "harness-plugin-core/src",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-38dff18f33075f5d",
+          "kind": "layer",
+          "label": "src/telemetry/events",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-083d26deb04d283a",
+          "kind": "layer",
+          "label": "tests/webhooks",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-afb5e17a3305d42b",
+          "kind": "layer",
+          "label": "src/startup",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-8c3ed6731c12bc88",
+          "kind": "layer",
+          "label": "tests/vector_store",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-637c080133af9cb2",
+          "kind": "layer",
+          "label": "tests/telemetry",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-780348bddbf6d1f1",
+          "kind": "layer",
+          "label": "mcp/src/tools",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-d58efc4ec1ab2985",
+          "kind": "layer",
+          "label": "migrations",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-f1800d40eeae7788",
+          "kind": "layer",
+          "label": "src/schemas",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-160f03c8f2a66354",
+          "kind": "layer",
+          "label": "tests/crud",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-ec60e94b06e0f2a3",
+          "kind": "layer",
+          "label": "examples/crewai/python/examples",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-8c5967fd8486f344",
+          "kind": "layer",
+          "label": "scripts",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-da3ec1ad4b7e6b86",
+          "kind": "layer",
+          "label": "kilo-honcho/tests",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "src/utils/agent_tools.py#ObservationsCreatedResult@236",
+          "kind": "symbol",
+          "label": "ObservationsCreatedResult",
+          "path": "src/utils/agent_tools.py",
+          "name": "ObservationsCreatedResult",
+          "qualname": "ObservationsCreatedResult",
+          "symbolKind": "class",
+          "start": 236,
+          "end": 241,
+          "sourceSha256": "9fcab3a12ffd6d1fac52f3e5f467f70cca5c101769d1b6dd29ef56b495faf8f1",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/bench/longmem_common.py#load_test_file@126",
+          "kind": "symbol",
+          "label": "load_test_file",
+          "path": "tests/bench/longmem_common.py",
+          "name": "load_test_file",
+          "qualname": "load_test_file",
+          "symbolKind": "function",
+          "start": 126,
+          "end": 136,
+          "sourceSha256": "c8a9ae5b368d5ca01c87a1d80f777a9186b245a0d67ff50a5598b5ea21389359",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/llm/types.py#StreamingResponseWithMetadata.__aiter__@232",
+          "kind": "symbol",
+          "label": "StreamingResponseWithMetadata.__aiter__",
+          "path": "src/llm/types.py",
+          "name": "__aiter__",
+          "qualname": "StreamingResponseWithMetadata.__aiter__",
+          "symbolKind": "function",
+          "start": 232,
+          "end": 238,
+          "sourceSha256": "048d1fd9841bde5a26dd17aaa51813433db184dd19488cd2efde8040c36d6473",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/test_dependencies.py#FakeSession.close@32",
+          "kind": "symbol",
+          "label": "FakeSession.close",
+          "path": "tests/test_dependencies.py",
+          "name": "close",
+          "qualname": "FakeSession.close",
+          "symbolKind": "async-function",
+          "start": 32,
+          "end": 33,
+          "sourceSha256": "4c4aa1d2f89334f83d68d47779e267c9a800b805c5acb2163e65a18a5b89f73a",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/dreamer/trees/base.py#LeafNode@35",
+          "kind": "symbol",
+          "label": "LeafNode",
+          "path": "src/dreamer/trees/base.py",
+          "name": "LeafNode",
+          "qualname": "LeafNode",
+          "symbolKind": "class",
+          "start": 35,
+          "end": 42,
+          "sourceSha256": "27c29b9f584c2bf25ea1ff2a643dee810938e3da7db78cd8565e56e1593ab2aa",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "sdks/python/src/honcho/aio.py#ConclusionsViewAio.list@1947",
+          "kind": "symbol",
+          "label": "ConclusionsViewAio.list",
+          "path": "sdks/python/src/honcho/aio.py",
+          "name": "list",
+          "qualname": "ConclusionsViewAio.list",
+          "symbolKind": "async-function",
+          "start": 1947,
+          "end": 1976,
+          "sourceSha256": "91edd437cf589e9b74fb16bed9fe87cd121e5f6139ceb571b6b0b97b4106b785",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/deriver/scope_backfill.py#_copy_chunk@308",
+          "kind": "symbol",
+          "label": "_copy_chunk",
+          "path": "src/deriver/scope_backfill.py",
+          "name": "_copy_chunk",
+          "qualname": "_copy_chunk",
+          "symbolKind": "async-function",
+          "start": 308,
+          "end": 408,
+          "sourceSha256": "d6787b87a91cba5db969883f899ac5abb7acb8716895d689cf844fc7cd7e7459",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "migrations/versions/c3828084f472_add_indexes_for_messages_and_.py#downgrade@59",
+          "kind": "symbol",
+          "label": "downgrade",
+          "path": "migrations/versions/c3828084f472_add_indexes_for_messages_and_.py",
+          "name": "downgrade",
+          "qualname": "downgrade",
+          "symbolKind": "function",
+          "start": 59,
+          "end": 66,
+          "sourceSha256": "15751708deaaaf8ac8bcd23425704ae85c852f9f05d018be94f43469377c10f7",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "honcho-cli/tests/test_start.py#test_start_requires_llm_key@72",
+          "kind": "symbol",
+          "label": "test_start_requires_llm_key",
+          "path": "honcho-cli/tests/test_start.py",
+          "name": "test_start_requires_llm_key",
+          "qualname": "test_start_requires_llm_key",
+          "symbolKind": "function",
+          "start": 72,
+          "end": 76,
+          "sourceSha256": "dd92292929d49bc17c70ac65c05f8679c0c6ff9d9694077dcfc4189c0610cd4f",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/alembic/registry.py#register_before_upgrade.<locals>.decorator@33",
+          "kind": "symbol",
+          "label": "register_before_upgrade.<locals>.decorator",
+          "path": "tests/alembic/registry.py",
+          "name": "decorator",
+          "qualname": "register_before_upgrade.<locals>.decorator",
+          "symbolKind": "function",
+          "start": 33,
+          "end": 40,
+          "sourceSha256": "045bfdd0c777de5c48eabf26c1cdfc0c1b531e5ac1af91578880c0b288767125",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/llm/test_embedding_client.py#test_openai_embedding_client_rejects_dimension_mismatch@109",
+          "kind": "symbol",
+          "label": "test_openai_embedding_client_rejects_dimension_mismatch",
+          "path": "tests/llm/test_embedding_client.py",
+          "name": "test_openai_embedding_client_rejects_dimension_mismatch",
+          "qualname": "test_openai_embedding_client_rejects_dimension_mismatch",
+          "symbolKind": "async-function",
+          "start": 109,
+          "end": 139,
+          "sourceSha256": "a1ecbe56128c0c5b85add4b5f5f2347ce315dbfc3456c2a49c85b3f1c118c90e",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/conftest.py#_content_to_embedding@571",
+          "kind": "symbol",
+          "label": "_content_to_embedding",
+          "path": "tests/conftest.py",
+          "name": "_content_to_embedding",
+          "qualname": "_content_to_embedding",
+          "symbolKind": "function",
+          "start": 571,
+          "end": 589,
+          "sourceSha256": "fe0dd81bac84604bee24997b8f5452e61fce8368dcff717fecf68e68b4f41159",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "sdks/python/src/honcho/types.py#AsyncDialecticStreamResponse.get_final_response@166",
+          "kind": "symbol",
+          "label": "AsyncDialecticStreamResponse.get_final_response",
+          "path": "sdks/python/src/honcho/types.py",
+          "name": "get_final_response",
+          "qualname": "AsyncDialecticStreamResponse.get_final_response",
+          "symbolKind": "function",
+          "start": 166,
+          "end": 177,
+          "sourceSha256": "23e24ca656cc61422bd27bafb4e7f42ca321752afcb2ec62947d0e4d98efc276",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/schemas/api.py#ConclusionCreate@681",
+          "kind": "symbol",
+          "label": "ConclusionCreate",
+          "path": "src/schemas/api.py",
+          "name": "ConclusionCreate",
+          "qualname": "ConclusionCreate",
+          "symbolKind": "class",
+          "start": 681,
+          "end": 712,
+          "sourceSha256": "372e7ac545bbb382715fa63de2d17ca75a576b77f0c53530524875cb97a8fbf2",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/alembic/test_migration_lock.py#test_concurrent_migrators_serialize@51",
+          "kind": "symbol",
+          "label": "test_concurrent_migrators_serialize",
+          "path": "tests/alembic/test_migration_lock.py",
+          "name": "test_concurrent_migrators_serialize",
+          "qualname": "test_concurrent_migrators_serialize",
+          "symbolKind": "function",
+          "start": 51,
+          "end": 60,
+          "sourceSha256": "eb5ff2544c6d32fe0dafbbb8d718de993c1c8cc2d11a461c1ca6b60ad245c09a",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/test_advanced_filters.py#test_nonexistent_columns_ignored_gracefully@1438",
+          "kind": "symbol",
+          "label": "test_nonexistent_columns_ignored_gracefully",
+          "path": "tests/test_advanced_filters.py",
+          "name": "test_nonexistent_columns_ignored_gracefully",
+          "qualname": "test_nonexistent_columns_ignored_gracefully",
+          "symbolKind": "async-function",
+          "start": 1438,
+          "end": 1484,
+          "sourceSha256": "e925f9432d0d1b27900c26c4ee94c5b77741092ef934009c2915f1ea21816043",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/config.py#ModelConfig._normalize_legacy_model_format@361",
+          "kind": "symbol",
+          "label": "ModelConfig._normalize_legacy_model_format",
+          "path": "src/config.py",
+          "name": "_normalize_legacy_model_format",
+          "qualname": "ModelConfig._normalize_legacy_model_format",
+          "symbolKind": "function",
+          "start": 361,
+          "end": 362,
+          "sourceSha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/live_llm/test_live_anthropic.py#test_live_anthropic_structured_output_and_prefix_caching@29",
+          "kind": "symbol",
+          "label": "test_live_anthropic_structured_output_and_prefix_caching",
+          "path": "tests/live_llm/test_live_anthropic.py",
+          "name": "test_live_anthropic_structured_output_and_prefix_caching",
+          "qualname": "test_live_anthropic_structured_output_and_prefix_caching",
+          "symbolKind": "async-function",
+          "start": 29,
+          "end": 80,
+          "sourceSha256": "7f1351164168c93ee49acfe267bd36ffcdd8c2e96e7992dc84af9f744eb08e23",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "honcho-cli/tests/test_commands.py#TestJsonContract.test_workspace_chat_json_object_shape@203",
+          "kind": "symbol",
+          "label": "TestJsonContract.test_workspace_chat_json_object_shape",
+          "path": "honcho-cli/tests/test_commands.py",
+          "name": "test_workspace_chat_json_object_shape",
+          "qualname": "TestJsonContract.test_workspace_chat_json_object_shape",
+          "symbolKind": "function",
+          "start": 203,
+          "end": 223,
+          "sourceSha256": "ce96a4526f15b0642fae425fce222365c57a2c01a6586396eb66a1549ae9e38e",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/utils/test_clients.py#TestAnthropicClient.test_anthropic_streaming@199",
+          "kind": "symbol",
+          "label": "TestAnthropicClient.test_anthropic_streaming",
+          "path": "tests/utils/test_clients.py",
+          "name": "test_anthropic_streaming",
+          "qualname": "TestAnthropicClient.test_anthropic_streaming",
+          "symbolKind": "async-function",
+          "start": 199,
+          "end": 244,
+          "sourceSha256": "b8d1745116fcd4d50c355aa97e6260c50644228abd20c2a03b912aaae44691a7",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/mock_provider/test_mock_provider.py#test_fixed_tuple_schema_round_trips@283",
+          "kind": "symbol",
+          "label": "test_fixed_tuple_schema_round_trips",
+          "path": "tests/mock_provider/test_mock_provider.py",
+          "name": "test_fixed_tuple_schema_round_trips",
+          "qualname": "test_fixed_tuple_schema_round_trips",
+          "symbolKind": "function",
+          "start": 283,
+          "end": 298,
+          "sourceSha256": "87775ea1f1c1721fe9c3d61d2a7f8646d86c6a2b2a762f59b2989d0c7affa867",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/vector_store/turbopuffer.py#TurbopufferVectorStore.query@121",
+          "kind": "symbol",
+          "label": "TurbopufferVectorStore.query",
+          "path": "src/vector_store/turbopuffer.py",
+          "name": "query",
+          "qualname": "TurbopufferVectorStore.query",
+          "symbolKind": "async-function",
+          "start": 121,
+          "end": 226,
+          "sourceSha256": "68bdbda0b3529fe061b982f192755a670e13de092f22135253caf86607611929",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "scripts/update_version.py#VersionUpdater._update_sdk_changelog_section@526",
+          "kind": "symbol",
+          "label": "VersionUpdater._update_sdk_changelog_section",
+          "path": "scripts/update_version.py",
+          "name": "_update_sdk_changelog_section",
+          "qualname": "VersionUpdater._update_sdk_changelog_section",
+          "symbolKind": "function",
+          "start": 526,
+          "end": 566,
+          "sourceSha256": "2effb7a35a9ed8feb0851d693c342d0d8b4253fb9108d584f0f1ba0d36e71741",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/utils/test_filter.py#test_dict_on_jsonb_column_still_works@38",
+          "kind": "symbol",
+          "label": "test_dict_on_jsonb_column_still_works",
+          "path": "tests/utils/test_filter.py",
+          "name": "test_dict_on_jsonb_column_still_works",
+          "qualname": "test_dict_on_jsonb_column_still_works",
+          "symbolKind": "function",
+          "start": 38,
+          "end": 46,
+          "sourceSha256": "198061b89a0a824cbd62240b1e8b085a0f1079c063d88b1fc9556a48158e5436",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/utils/agent_tools.py#_handle_get_peer_card@2060",
+          "kind": "symbol",
+          "label": "_handle_get_peer_card",
+          "path": "src/utils/agent_tools.py",
+          "name": "_handle_get_peer_card",
+          "qualname": "_handle_get_peer_card",
+          "symbolKind": "async-function",
+          "start": 2060,
+          "end": 2084,
+          "sourceSha256": "9fcab3a12ffd6d1fac52f3e5f467f70cca5c101769d1b6dd29ef56b495faf8f1",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "examples/granola/honcho_granola.py#peer_id_from@434",
+          "kind": "symbol",
+          "label": "peer_id_from",
+          "path": "examples/granola/honcho_granola.py",
+          "name": "peer_id_from",
+          "qualname": "peer_id_from",
+          "symbolKind": "function",
+          "start": 434,
+          "end": 438,
+          "sourceSha256": "07248d7b4059cdaa9e9e80a72c5effe51468abcf5b207832b31920849498e054",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "src/deriver/queue_manager.py#QueueManager._advance_poll_interval@491",
+          "kind": "symbol",
+          "label": "QueueManager._advance_poll_interval",
+          "path": "src/deriver/queue_manager.py",
+          "name": "_advance_poll_interval",
+          "qualname": "QueueManager._advance_poll_interval",
+          "symbolKind": "function",
+          "start": 491,
+          "end": 500,
+          "sourceSha256": "ad255508045eeb17443270116189313fae3b3628e8784258ffc0f2535b486813",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/test_advanced_filters.py#test_case_sensitivity_edge_cases@1862",
+          "kind": "symbol",
+          "label": "test_case_sensitivity_edge_cases",
+          "path": "tests/test_advanced_filters.py",
+          "name": "test_case_sensitivity_edge_cases",
+          "qualname": "test_case_sensitivity_edge_cases",
+          "symbolKind": "async-function",
+          "start": 1862,
+          "end": 1906,
+          "sourceSha256": "e925f9432d0d1b27900c26c4ee94c5b77741092ef934009c2915f1ea21816043",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "tests/unified/runner.py#UnifiedTestRunner.__init__@985",
+          "kind": "symbol",
+          "label": "UnifiedTestRunner.__init__",
+          "path": "tests/unified/runner.py",
+          "name": "__init__",
+          "qualname": "UnifiedTestRunner.__init__",
+          "symbolKind": "function",
+          "start": 985,
+          "end": 1009,
+          "sourceSha256": "5c52494d64ddaf47cd48cc6c902032593c111c58e7ef6df5899fde2f9f2da9cc",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "sdks/python/src/honcho/scope.py#Scope.__repr__@229",
+          "kind": "symbol",
+          "label": "Scope.__repr__",
+          "path": "sdks/python/src/honcho/scope.py",
+          "name": "__repr__",
+          "qualname": "Scope.__repr__",
+          "symbolKind": "function",
+          "start": 229,
+          "end": 230,
+          "sourceSha256": "bb52b5afdf609e9eff6e3f6f904a0735df2371acaaa5f709f120aeca2b6bc953",
+          "sourceCheck": "AST definition name and start line at pinned commit"
+        },
+        {
+          "id": "folder-3549b0028b75d981",
+          "kind": "layer",
+          "label": "database",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "harness-plugin-core/src/config.ts",
+          "kind": "file",
+          "label": "config.ts",
+          "path": "harness-plugin-core/src/config.ts",
+          "sourceSha256": "d7544e9df5071cf8cd8d80f6c211419b5809e498e4aead4ad737c36fbba504b8",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "honcho-cli/src/honcho_cli/commands/message.py",
+          "kind": "file",
+          "label": "message.py",
+          "path": "honcho-cli/src/honcho_cli/commands/message.py",
+          "sourceSha256": "43e5f10a84847386edb4716f95171cf3aa9030280b222ae2999766651204f25a",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "honcho-cli/src/honcho_cli/config.py",
+          "kind": "file",
+          "label": "config.py",
+          "path": "honcho-cli/src/honcho_cli/config.py",
+          "sourceSha256": "780a6532179d86c8a9b60063d9657ff64c80b4c455c8af00be8a4af5304d9fcb",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "honcho-cli/src/honcho_cli/local/env.py",
+          "kind": "file",
+          "label": "env.py",
+          "path": "honcho-cli/src/honcho_cli/local/env.py",
+          "sourceSha256": "b2e729cf701b6b6f80a54c3310226d119ec28c138eeffd1f4fedb46cd7022746",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "mcp/src/config.ts",
+          "kind": "file",
+          "label": "config.ts",
+          "path": "mcp/src/config.ts",
+          "sourceSha256": "e2f1cb5ce978422b0011ebb22e8503166c09fc2e418a030d88f2bc9d4b3129c7",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "migrations/env.py",
+          "kind": "file",
+          "label": "env.py",
+          "path": "migrations/env.py",
+          "sourceSha256": "00893c1aa1bffe1f3a605e8d54a1ba0c03de76e07b3fc5ccf7e597e88f0c8e5e",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "sdks/python/src/honcho/message.py",
+          "kind": "file",
+          "label": "message.py",
+          "path": "sdks/python/src/honcho/message.py",
+          "sourceSha256": "27e690c30f585f9cd5c7f11901b26e0c57719394ab02bbf43419f070cf8e24e4",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "sdks/typescript/src/message.ts",
+          "kind": "file",
+          "label": "message.ts",
+          "path": "sdks/typescript/src/message.ts",
+          "sourceSha256": "d2a965d9576d4aef52e011c3b6d50d2ea68894b1887b484c8f9aa44a32e550fd",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/config.py",
+          "kind": "file",
+          "label": "config.py",
+          "path": "src/config.py",
+          "sourceSha256": "7135a145748e4bdc4512e0d22338bb29932f94835e9bfe18c6c6330c2322dfb4",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/crud/message.py",
+          "kind": "file",
+          "label": "message.py",
+          "path": "src/crud/message.py",
+          "sourceSha256": "47e64f5f48d06a9e94691aae9a6a2e369b796897fb8d660eed2bf7cf4a019e4f",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/db.py",
+          "kind": "file",
+          "label": "db.py",
+          "path": "src/db.py",
+          "sourceSha256": "e2c0adf91335d64cbec844fa4eed279c2b75d5af3acfa124549f460ec529d414",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/schemas/configuration.py",
+          "kind": "file",
+          "label": "configuration.py",
+          "path": "src/schemas/configuration.py",
+          "sourceSha256": "49f870b6ffda609a091a042e4bce126a7f4dc858c92fd34f83494914a55caa91",
+          "sourceCheck": "git blob at pinned commit"
+        }
+      ],
+      "pairs": [
+        {
+          "from": "folder-083d26deb04d283a",
+          "to": "folder-0f13bc3a2a5b512d",
+          "a": "tests/webhooks",
+          "b": "src/utils",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-37e0ae1271681153",
+          "to": "folder-25a6634263c1b1f6",
+          "a": "src/routers",
+          "b": "src",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-59830ebc3a418411",
+          "to": "folder-2204ae27992d53cf",
+          "a": "tests",
+          "b": "src/llm",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-b40bc1374968e42b",
+          "to": "folder-7ebfb9eefd0d351b",
+          "a": "tests/integration",
+          "b": "src/crud",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-37e0ae1271681153",
+          "to": "folder-784af5478434cb9a",
+          "a": "src/routers",
+          "b": "src/deriver",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-637c080133af9cb2",
+          "to": "folder-0f13bc3a2a5b512d",
+          "a": "tests/telemetry",
+          "b": "src/utils",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-c11a48a34015dca3",
+          "to": "folder-ad5bb551fb2546ff",
+          "a": "tests/deriver",
+          "b": "src/vector_store",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-7bdd5b8506b74222",
+          "to": "folder-6da004234f62982b",
+          "a": "tests/unified",
+          "b": "tests/bench",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-0f13bc3a2a5b512d",
+          "to": "folder-52e29b2e53835c5a",
+          "a": "src/utils",
+          "b": "src/cache",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-8330633dff223b4b",
+          "to": "folder-ce65246dcd807781",
+          "a": "tests/sdk",
+          "b": "sdks/python/src/honcho/http",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/test_session_allowlist.py#TestExtractSessionAllowlist.test_wildcard_rejected@73",
+          "to": "src/utils/filter.py#extract_session_allowlist@236",
+          "a": "tests/test_session_allowlist.py#TestExtractSessionAllowlist.test_wildcard_rejected@73",
+          "b": "src/utils/filter.py#extract_session_allowlist@236",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/test_security.py#TestAuthSessionScope.test_matches_own_session@94",
+          "to": "src/security.py#auth@197",
+          "a": "tests/test_security.py#TestAuthSessionScope.test_matches_own_session@94",
+          "b": "src/security.py#auth@197",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/sdk/sdk_integration_test.py#test_session_operations@55",
+          "to": "sdks/python/src/honcho/client.py#Honcho.sessions@483",
+          "a": "tests/sdk/sdk_integration_test.py#test_session_operations@55",
+          "b": "sdks/python/src/honcho/client.py#Honcho.sessions@483",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/integration/test_token_metrics.py#TestSummaryDegenerationGuard.test_degenerate_cap_hit_does_not_save_summary@400",
+          "to": "tests/integration/test_token_metrics.py#create_test_configuration@169",
+          "a": "tests/integration/test_token_metrics.py#TestSummaryDegenerationGuard.test_degenerate_cap_hit_does_not_save_summary@400",
+          "b": "tests/integration/test_token_metrics.py#create_test_configuration@169",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/utils/json_parser.py#try_line_reconstruction_repair@297",
+          "to": "src/utils/json_parser.py#try_contextual_closure_repair@131",
+          "a": "src/utils/json_parser.py#try_line_reconstruction_repair@297",
+          "b": "src/utils/json_parser.py#try_contextual_closure_repair@131",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/telemetry/prometheus/metrics.py#DBPoolCollector.collect@746",
+          "to": "src/db.py#get_pool_stats@133",
+          "a": "src/telemetry/prometheus/metrics.py#DBPoolCollector.collect@746",
+          "b": "src/db.py#get_pool_stats@133",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/dialectic/core.py#DialecticAgent.answer_stream@641",
+          "to": "src/dialectic/core.py#DialecticAgent._force_tools_until@177",
+          "a": "src/dialectic/core.py#DialecticAgent.answer_stream@641",
+          "b": "src/dialectic/core.py#DialecticAgent._force_tools_until@177",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "hermes-plugin-honcho/oauth_flow.py#start_loopback_flow_background.<locals>._run@425",
+          "to": "hermes-plugin-honcho/oauth_flow.py#_set_status@404",
+          "a": "hermes-plugin-honcho/oauth_flow.py#start_loopback_flow_background.<locals>._run@425",
+          "b": "hermes-plugin-honcho/oauth_flow.py#_set_status@404",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "src/dialectic/core.py#DialecticAgent.answer_stream@641",
+          "to": "src/dialectic/core.py#_get_dialectic_level_model_config@56",
+          "a": "src/dialectic/core.py#DialecticAgent.answer_stream@641",
+          "b": "src/dialectic/core.py#_get_dialectic_level_model_config@56",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "tests/test_security.py#TestVerifyJWTShape.test_workspace_peer_token_ok@47",
+          "to": "src/security.py#verify_jwt@105",
+          "a": "tests/test_security.py#TestVerifyJWTShape.test_workspace_peer_token_ok@47",
+          "b": "src/security.py#verify_jwt@105",
+          "operation": "FLOW",
+          "evidence": "observed directed graph edge"
+        }
+      ]
+    },
+    "salesroom": {
+      "pin": "5de5c0b4b64ca6579c5c5527fe09108fcf03a0ce",
+      "snapshotSha256": "e509ab58f45a1fb0aac0e4c088d43e979d706f9e2dc3f0af9674c896a615ba26",
+      "targets": [
+        {
+          "id": "vitest.config.ts",
+          "kind": "file",
+          "label": "vitest.config.ts",
+          "path": "vitest.config.ts",
+          "sourceSha256": "ec784881a18e7758f4bdba0c70d34d708ecd679de8e2d68b9d923395069000e5",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/buyer/RoomNotice.tsx",
+          "kind": "file",
+          "label": "RoomNotice.tsx",
+          "path": "src/components/buyer/RoomNotice.tsx",
+          "sourceSha256": "fb50da447f6b2cdb400fc75a14b2f00ea79242491358700f355c8e7e50fffe2c",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "app/api/auth/logout/route.ts",
+          "kind": "file",
+          "label": "route.ts",
+          "path": "app/api/auth/logout/route.ts",
+          "sourceSha256": "2bdb6f73a4a4f04549dd876ff5b088a1a9b817b5be48407d8c267ffb40f79e0b",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/__tests__/sections.test.ts",
+          "kind": "file",
+          "label": "sections.test.ts",
+          "path": "src/lib/__tests__/sections.test.ts",
+          "sourceSha256": "cc48b1e0e06a7890549c766c82d8ba7d2a9acb05b9b1060e1c7b626d7cffc719",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/repo.ts",
+          "kind": "file",
+          "label": "repo.ts",
+          "path": "src/lib/repo.ts",
+          "sourceSha256": "4c675376c4f6235397d6f2600f259739754e7753af99bc8ee698bc78afcddb13",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/__tests__/insights.test.ts",
+          "kind": "file",
+          "label": "insights.test.ts",
+          "path": "src/lib/__tests__/insights.test.ts",
+          "sourceSha256": "76f7332959f8aaa023672f141b551ead506dc6977f1e66f3e428fe369bde9ca2",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/env.ts",
+          "kind": "file",
+          "label": "env.ts",
+          "path": "src/lib/env.ts",
+          "sourceSha256": "97842cf557c9cdb87f99827ced07842f1c621d5babd224943684a810e37b9995",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/server/actions.ts",
+          "kind": "file",
+          "label": "actions.ts",
+          "path": "src/server/actions.ts",
+          "sourceSha256": "4f6fc6f36fa94d197ef0d57ad309bd447c25b4e0f19e6e161b25dc821fb01380",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/__tests__/robustness.test.ts",
+          "kind": "file",
+          "label": "robustness.test.ts",
+          "path": "src/lib/__tests__/robustness.test.ts",
+          "sourceSha256": "e55d54370e0b6bb2dc7bc643aec79e1faf4c7f82517ae37de703650009a97273",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/modules/InsightsPanel.tsx",
+          "kind": "file",
+          "label": "InsightsPanel.tsx",
+          "path": "src/components/modules/InsightsPanel.tsx",
+          "sourceSha256": "b15a385c55b671db052cfcda08b9d8a445ae635429336cfee8a581f0254a2b9c",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/modules/__tests__/StakeholderMap.test.tsx",
+          "kind": "file",
+          "label": "StakeholderMap.test.tsx",
+          "path": "src/components/modules/__tests__/StakeholderMap.test.tsx",
+          "sourceSha256": "f9c7f85aca9d1496a6b3d57b66bf70a4c3e8380da1c2da48f2d821b93e61d068",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/db.ts",
+          "kind": "file",
+          "label": "db.ts",
+          "path": "src/lib/db.ts",
+          "sourceSha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/http.ts",
+          "kind": "file",
+          "label": "http.ts",
+          "path": "src/lib/http.ts",
+          "sourceSha256": "f69bdd1b9a62ccd99bf5f20dc6cbbc29d1bea418637fa54da5dd645454b672c4",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/buyer/BuyerLoginPrompt.tsx",
+          "kind": "file",
+          "label": "BuyerLoginPrompt.tsx",
+          "path": "src/components/buyer/BuyerLoginPrompt.tsx",
+          "sourceSha256": "7372901127584fca37c7e4f2e45499bc20b942e2d5731c327e211131dd9b6b1f",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "app/(seller)/seller/page.tsx",
+          "kind": "file",
+          "label": "page.tsx",
+          "path": "app/(seller)/seller/page.tsx",
+          "sourceSha256": "4c775ff89b22fa1f6ac1cfe22f91b4e4b2d70acba12ca5e6dba8a2a9906338d7",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "app/api/rooms/[slug]/route.ts",
+          "kind": "file",
+          "label": "route.ts",
+          "path": "app/api/rooms/[slug]/route.ts",
+          "sourceSha256": "49ca0a3bc2919e6bed4f9d3fa2a2fee75c01026162c8b44845b5441f218b51f3",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "tailwind.config.ts",
+          "kind": "file",
+          "label": "tailwind.config.ts",
+          "path": "tailwind.config.ts",
+          "sourceSha256": "f95cd05a9a7b65f0e5ad94573db7f713491aa21c334c188ef6826f7487efc753",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/events.ts",
+          "kind": "file",
+          "label": "events.ts",
+          "path": "src/lib/events.ts",
+          "sourceSha256": "b832a7f5a0b1b22fdbee7ccae56a3795de1492870fc1d0d8a13c9fffb61bb905",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/insights.ts",
+          "kind": "file",
+          "label": "insights.ts",
+          "path": "src/lib/insights.ts",
+          "sourceSha256": "6f7084c83a930f6d789de6b60462db8156a2f4d4a7ce38c4a353c5fffb66b8fe",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/track.ts",
+          "kind": "file",
+          "label": "track.ts",
+          "path": "src/lib/track.ts",
+          "sourceSha256": "51d3bd55739d7da170121d81115eb7f4218f59c76e3bb3052bd42b5709fafc21",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/content/TrackedDocLink.tsx",
+          "kind": "file",
+          "label": "TrackedDocLink.tsx",
+          "path": "src/components/content/TrackedDocLink.tsx",
+          "sourceSha256": "68d7a7838067289614ba6113a989ec1e7e07ae2824cf86e2c9eddd94dc734466",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/ui/Card.tsx",
+          "kind": "file",
+          "label": "Card.tsx",
+          "path": "src/components/ui/Card.tsx",
+          "sourceSha256": "e9f4d33bfd09f3543343bf61a32c4cc1558a859429fa3ee9436bbceb9d927748",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/seller/RoomControls.tsx",
+          "kind": "file",
+          "label": "RoomControls.tsx",
+          "path": "src/components/seller/RoomControls.tsx",
+          "sourceSha256": "c8f9cdb5b6181b4c0428628f73f8ccab3423d6550b69249e63a2fb80906f3502",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/__tests__/progress.test.ts",
+          "kind": "file",
+          "label": "progress.test.ts",
+          "path": "src/lib/__tests__/progress.test.ts",
+          "sourceSha256": "726f0007e14c06b3b6cca98f5bcf8eb9c16f452800d33148d592e1fad0a49000",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/types.ts",
+          "kind": "file",
+          "label": "types.ts",
+          "path": "src/lib/types.ts",
+          "sourceSha256": "7c329ff2e23161473a599b1a04fe92ba4e9704adb607f0d1ac1b3f3c92f9e61e",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/buyer/BuyerRoom.tsx",
+          "kind": "file",
+          "label": "BuyerRoom.tsx",
+          "path": "src/components/buyer/BuyerRoom.tsx",
+          "sourceSha256": "be4a690e316134de7e24d14bf25a09a214e6aad936563ab1f5fe5b26b679da12",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/lib/progress.ts",
+          "kind": "file",
+          "label": "progress.ts",
+          "path": "src/lib/progress.ts",
+          "sourceSha256": "79c1bac987152112c29f99264b9cd444746890164d1b98034959a30b23417402",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "app/api/accounts/route.ts",
+          "kind": "file",
+          "label": "route.ts",
+          "path": "app/api/accounts/route.ts",
+          "sourceSha256": "2305f35dc244d411fc82e8071f86fcfff895769c79bb03cb806695af9d44de4e",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "src/components/ui/Avatar.tsx",
+          "kind": "file",
+          "label": "Avatar.tsx",
+          "path": "src/components/ui/Avatar.tsx",
+          "sourceSha256": "52c3f29e1bbf56370d81388d38d020ae15b54100ec2cceed8bdf22ed4c044ba4",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "app/login/page.tsx",
+          "kind": "file",
+          "label": "page.tsx",
+          "path": "app/login/page.tsx",
+          "sourceSha256": "9dbf390157dfcf4744e84a3e8a67add94d5ce6533c3bf5c09ad3828360421810",
+          "sourceCheck": "git blob at pinned commit"
+        },
+        {
+          "id": "folder-e94d202634a17cbe",
+          "kind": "layer",
+          "label": "app/room/[slug]",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-339c0fd4c4ebbcb5",
+          "kind": "layer",
+          "label": "app/api/events",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-a172cedcae47474b",
+          "kind": "layer",
+          "label": "app",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-4d153e21d4afdbb0",
+          "kind": "layer",
+          "label": "app/api/accounts",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-e19e62e010f8b565",
+          "kind": "layer",
+          "label": "src/server",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-66038c1e7aac5994",
+          "kind": "layer",
+          "label": "src/components/ui",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-8c5967fd8486f344",
+          "kind": "layer",
+          "label": "scripts",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-999d65323a17496f",
+          "kind": "layer",
+          "label": "app/(seller)/seller",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-eff587e03a770a46",
+          "kind": "layer",
+          "label": "app/forbidden",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-b3e6be15ab3c3bf7",
+          "kind": "layer",
+          "label": "app/api/auth/logout",
+          "sourceCheck": "git tree contains folder descendants"
+        },
+        {
+          "id": "folder-bb46aace1a1e5f9d",
+          "kind": "layer",
+          "label": "src/components/auth",
+          "sourceCheck": "git tree contains folder descendants"
+        }
+      ],
+      "pairs": [
+        {
+          "from": "folder-91be6cfb7c9129b9",
+          "to": "folder-339c0fd4c4ebbcb5",
+          "a": "src/lib",
+          "b": "app/api/events",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-91be6cfb7c9129b9",
+          "to": "folder-4d153e21d4afdbb0",
+          "a": "src/lib",
+          "b": "app/api/accounts",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-8f317c546f6c13dd",
+          "to": "folder-9769f1c3dee69801",
+          "a": "src/components/modules/__tests__",
+          "b": "src/components/modules",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-da2dcdcdbd74b608",
+          "to": "folder-8de019f9192caa03",
+          "a": "src/components/buyer/__tests__",
+          "b": "src/components/buyer",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-2f37cce781043dd9",
+          "to": "folder-91be6cfb7c9129b9",
+          "a": "src/lib/__tests__",
+          "b": "src/lib",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-bb46aace1a1e5f9d",
+          "to": "folder-846c115640044806",
+          "a": "src/components/auth",
+          "b": "app/api/auth/login",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-91be6cfb7c9129b9",
+          "to": "folder-846c115640044806",
+          "a": "src/lib",
+          "b": "app/api/auth/login",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-8de019f9192caa03",
+          "to": "folder-846c115640044806",
+          "a": "src/components/buyer",
+          "b": "app/api/auth/login",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        },
+        {
+          "from": "folder-91be6cfb7c9129b9",
+          "to": "folder-0f7e2674af50ca0e",
+          "a": "src/lib",
+          "b": "app/api/auth/me",
+          "operation": "PATH",
+          "evidence": "observed directed graph edge"
+        }
+      ]
+    }
+  }
+}

@@ -6,10 +6,37 @@
   'use strict';
   const OPERATIONS = ['LOCATE', 'UPSTREAM', 'DOWNSTREAM', 'PATH', 'NOT_SURE'];
   const SCORE_KIND = 'heuristic model score (not measured accuracy)';
+  const KIND_WORDS = Object.freeze({folder: 'layer', directory: 'layer', dir: 'layer', package: 'layer',
+    file: 'file', module: 'file', script: 'file', function: 'symbol', method: 'symbol', class: 'symbol', def: 'symbol'});
+  const FILLER = ['layer', 'logic', 'code', 'stuff', 'part', 'thing', 'located', 'defined', 'live', 'lives'];
+  // v1: only equivalences exercised by the frozen benchmark. LLM != model:
+  // model can mean database/schema models, so that tempting expansion is unsafe.
+  const SYNONYMS = Object.freeze([['db', 'database'], ['config', 'configuration', 'settings'],
+    ['msg', 'message'], ['auth', 'authentication'], ['repo', 'repository'], ['env', 'environment']].map(Object.freeze));
+  function synonymQueries(text) {
+    const words = text.split(/\s+/), out = [];
+    words.forEach((word, i) => {
+      const group = SYNONYMS.find(g => g.includes(word));
+      if (group) for (const replacement of group) if (replacement !== word) {
+        const copy = words.slice(); copy[i] = replacement;
+        out.push({query: copy.join(' '), reason: 'matched via synonym ' + word + '→' + replacement});
+      }
+    });
+    return out.slice(0, 16);
+  }
+  function normalizeQuestion(text) {
+    return String(text).toLowerCase().replace(/[’]/g, "'")
+      .replace(/\b(where|what|who|how)'?s\b/g, '$1 is')
+      .replace(/[`"'?!,;()]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function kindHint(text) {
+    return tokens(text).map(t => KIND_WORDS[t]).find(Boolean) || null;
+  }
   const STOP = new Set(('a an the this that these those where which what who does do is are can could would please ' +
     'me tell show find locate live lives located code implementation implement handles handle about for of in on to from ' +
     'get goes reach how through between and with it its into trace route path dependencies depend depends dependents ' +
     'upstream downstream uses use imports import built changed change break if').split(' '));
+  for (const word of [...Object.keys(KIND_WORDS), ...FILLER]) STOP.add(word);
   function tokens(text) {
     return String(text || '').replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase().match(/[a-z0-9]+/g) || [];
   }
@@ -49,9 +76,10 @@
   }
   function filenameText(text) {
     return text.trim().replace(/[?!]+$/, '').replace(/[`"']/g, '')
-      .replace(/^(?:please\s+)?(?:where\s+(?:is|are|does)|find|locate|show(?:\s+me)?)\s+(?:the\s+)?/i, '')
+      .replace(/^(?:please\s+)?(?:(?:where|what|who|how)\s+(?:is|are|does)|find|locate|show(?:\s+me)?)\s+(?:the\s+)?/i, '')
       .replace(/\s+(?:live|lives|located)$/i, '')
-      .replace(/^(?:file(?:name)?|named)\s+/i, '').replace(/\s+file$/i, '').trim();
+      .replace(/^(?:file(?:name)?|named)\s+/i, '')
+      .split(/\s+/).filter(t => !KIND_WORDS[t] && !FILLER.includes(t)).join(' ').trim();
   }
   function intent(query) {
     const q = query.trim().replace(/[?!]+$/, '');
@@ -65,6 +93,8 @@
         /^from\s+/i.test(q) || /^how\b.*\b(?:reach|connect|get to)\b/i.test(q))
       return {op: 'PATH', malformed: true};
     if ((m = q.match(/^(?:what|which|who)\s+(?:\w+\s+)?(?:depends? on|uses?|imports?)\s+(.+)$/i)) ||
+        (m = q.match(/^who\s+invokes\s+(.+)$/i)) ||
+        (m = q.match(/^where\s+is\s+(.+?)\s+called\s+from$/i)) ||
         (m = q.match(/\b(?:dependents|downstream)(?:\s+(?:of|from))?\s+(.+)$/i)) ||
         (m = q.match(/^what would break if\s+(.+?)\s+changed$/i)))
       return {op: 'DOWNSTREAM', target: m[1]};
@@ -174,8 +204,8 @@
       if (e.type !== 'realtime') incoming[e.to]++;
     }
     const index = map.nodes.map(n => ({
-      node: n, kind: n.kind, literalPath: n.path || '', basename: (n.path || '').split('/').at(-1),
-      stem: (n.path || '').split('/').at(-1).replace(/\.[^.]+$/, ''),
+      node: n, kind: n.kind, literalPath: (n.path || '').toLowerCase(), basename: (n.path || '').toLowerCase().split('/').at(-1),
+      stem: (n.path || '').toLowerCase().split('/').at(-1).replace(/\.[^.]+$/, ''),
       stemTokens: tokens((n.path || '').split('/').at(-1).replace(/\.[^.]+$/, '')),
       identityTerms: new Set(tokens(n.id)),
       id: n.id, label: normalized(n.label), aliases: (n.aliases || []).map(normalized),
@@ -190,11 +220,13 @@
         name.includes('.') && /^[\w./@\[\]-]+$/.test(name));
       const query = literalNames.length === 1 ? literalNames[0] : filenameText(text);
       const literal = /^[\w./@\[\]-]+$/.test(query);
-      const explicit = /\bfile(?:name)?\b/i.test(text) || literalNames.length > 0 || (literal && /[/.]/.test(query));
+      const explicit = kindHint(text) === 'file' || /\bfilename\b/i.test(text) || literalNames.length > 0 || (literal && /[/.]/.test(query));
       const known = index.some(n => n.kind === 'file' && (n.basename === query || n.stem === query));
       const normalizedQuery = normalized(query);
       const layer = index.some(n => n.kind === 'layer' &&
-        [n.identity, n.label, ...n.aliases].includes(normalizedQuery));
+        ([n.identity, n.label, ...n.aliases].includes(normalizedQuery) ||
+         n.aliases.includes(normalized(text.replace(/^(?:where is|find|locate)\s+(?:the\s+)?/i, ''))) ||
+         (kindHint(text) === 'layer' && n.node.label?.toLowerCase().split('/').at(-1) === query)));
       // Bare architectural aliases remain layers unless syntax explicitly asks for a file.
       const shaped = literal && (/_|[a-z][A-Z]/.test(query) || (query.includes('-') && !layer));
       const nearStem = !explicit && !known && !shaped && !layer && literal && query.length >= 5 && index.some(n => {
@@ -282,7 +314,7 @@
         ['path', 'basename'].includes(s.tier) || (!extension && s.tier === 'stem')));
       return finish(scored, 'filename', query, missingExact);
     }
-    function rank(text) {
+    function rankLiteral(text) {
       const file = fileRequest(text);
       // Real literal filenames/paths (including ambiguous basenames) always win.
       const realFile = file && index.some(n => n.kind === 'file' &&
@@ -302,11 +334,20 @@
         }
         return h;
       }
-      if (file) return rankFile(file);
+      if (file) {
+        const h = rankFile(file);
+        // A kind hint is a preference, not a hard filter. Literal paths and
+        // explicit absent filenames still retain their strict missing-name guard.
+        if (h.match.label !== 'No match' || /[/.]/.test(file.query) || !index.some(n => n.kind === 'layer' &&
+            [n.identity, n.label, ...n.aliases].includes(normalized(file.query)))) return h;
+      }
       const q = terms(text); const phrase = q.join(' '); const raw = normalized(text);
+      const originalPhrase = normalized(text.replace(/^(?:where is|find|locate)\s+(?:the\s+)?/i, ''));
+      const hinted = kindHint(text), name = filenameText(text);
+      const fullLayer = index.some(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name);
       const overlap = set => q.length ? q.filter(t => set.has(t)).length / q.length : 0;
       function architectureScore(n) {
-        const exact = field => Boolean(field && (field === raw || field === phrase));
+        const exact = field => Boolean(field && (field === raw || field === phrase || field === originalPhrase));
         // Preserve literal IDs/paths even when their segments are also intent words (route.ts).
         const literal = field => Boolean(field && (` ${raw} `).includes(` ${field} `));
         const c = {
@@ -317,6 +358,8 @@
           identity: (exact(n.identity) || (n.path && literal(n.identity))) ? 11 : 0,
           structural: 0
         };
+        if (hinted === 'layer' && !fullLayer && n.kind === 'layer' &&
+            n.node.label?.toLowerCase().split('/').at(-1) === name) c.label = 12;
         // Architecture retrieval uses layer responsibility metadata, not filename fragments.
         if (n.kind === 'file') Object.keys(c).forEach(k => { c[k] = 0; });
         const evidence = c.label + c.alias + c.description + c.path + c.identity;
@@ -339,12 +382,35 @@
         materialize:()=>architectureScore(n)} : architectureScore(n));
       return finish(scored, 'architecture', text, false);
     }
+    function rank(text) {
+      const literal = rankLiteral(text);
+      if (literal.match.label !== 'No match') return literal;
+      const found = new Map();
+      for (const variant of synonymQueries(text)) {
+        const h = rankLiteral(variant.query);
+        for (const a of h.suggestions) {
+          const score = a.score * 0.75;
+          if (!found.has(a.id) || found.get(a.id).score < score)
+            found.set(a.id, {id: a.id, score, evidence: score, coverage: h.match.coverage,
+              tier: h.match.missingExact ? 'fuzzy' : h.match.tier,
+              components: {synonym: score}, matchReason: variant.reason + '. ' + a.reason});
+        }
+      }
+      if (!found.size) return literal;
+      return finish(index.map(n => found.get(n.id) || {id: n.id, score: 0, evidence: 0,
+        coverage: 0, components: {synonym: 0}}), 'architecture', text, false);
+    }
     function score(query) {
       if (typeof query !== 'string') throw new TypeError('Query must be a string');
-      const parsed = intent(query);
+      const parsed = intent(normalizeQuestion(query));
       const targets = parsed.op === 'PATH' ? {
         from_target: rank(parsed.from || ''), to_target: rank(parsed.to || '')
       } : {locate_target: rank(parsed.target || '')};
+      // Preserve original evidence display text; retrieval uses only the normalized input.
+      const display = intent(query);
+      if (display.op === parsed.op) for (const [key, h] of Object.entries(targets))
+        if (h.match.mode === 'architecture') h.match.query =
+          (key === 'from_target' ? display.from : key === 'to_target' ? display.to : display.target) || '';
       const yes = !parsed.malformed && Object.values(targets).every(h => h.yes);
       const chosen = yes ? parsed.op : 'NOT_SURE';
       const result = {scoreKind: SCORE_KIND, evidenceVersion: 1, requestedOperation: parsed.op,
@@ -357,5 +423,6 @@
     }
     return {score};
   }
-  return {createScorer, validateHead, validateResult, tokens, OPERATIONS, SCORE_KIND};
+  return {createScorer, validateHead, validateResult, tokens, normalizeQuestion, kindHint, filenameText, terms, intent,
+    KIND_WORDS, FILLER, SYNONYMS, synonymQueries, OPERATIONS, SCORE_KIND};
 });

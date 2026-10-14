@@ -1,19 +1,31 @@
 # Tasks — DAG GPS
 
+## Measurement follow-up — awaiting review
+
+`t_984c3139`: deterministic question-variation benchmark implemented and run on
+main `7db31cd` and unchanged parser code `4ad61d9`, same source-checked targets.
+114,726 generated cases; per-axis/operation and HTTP/direct speed tables in
+`docs/VARIATION_BENCHMARK.md`. Python 458 / JS 204 pass with zero final skips.
+Newly exposed ambiguity, punctuation and typo failures are findings only.
+Next: dag-consultant second opinion, then generalist approval. Still parser-only;
+no next feature, PR, push or merge authorized by this card.
+
 ## Current card
 
-`t_0751cc8d` — implementation and local verification done; consultant second opinion
-pending before parent acceptance. Fix commit `0641dd6`: future class annotation
-bindings abstain; only supported following overload implementations coalesce;
-mutated/rebound markers invalidate; Honcho coverage uses an explicit suite option.
-STATUS and FUNCTION_LAYER now describe only the current build.
+`t_3b508d4b` — the only active feature: natural-language question parser.
+Rules, synonyms and bounded BM25 choices implemented on `question-parser`, with
+frozen Honcho (107) and late-added Salesroom (43) cases, seeded holdouts and
+per-stage reports. Zero new wrong answers; baseline mistakes and concept misses
+remain documented. See [QUESTION_PARSER.md](docs/QUESTION_PARSER.md).
+Real-app evidence and project gates: `artifacts/question-parser/`.
+Consultant second opinion required before parent approval. No push/merge/PR.
+Follow-up `t_e1cca752`: all three findings implemented with RED-first service
+regressions, a separate 16-question real-repo supplement and browser screenshots.
+Frozen sets/splits unchanged; eight unchanged gates and packaging pass on `0059009`
+(458 Python / 199 JS, zero skips; p95 9.399 ms). Second opinion pending.
+The prior function-layer card is on main through PR #8.
 
-455 Python / 182 JS tests, `.verify.json` build/smoke and four evals pass. Fresh
-13-question Honcho proof and source/parity audits pass; zero symbol-graph or count
-changes from v3. See [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md) and local evidence
-`artifacts/function-layer/binding-fixes/`. No push/merge/PR in this card.
-
-## Next items, in order
+## Parked items — do not start while parser work is active
 
 1. **Queued — `t_21987d99`: unresolved-call split.** Separate `unresolved-split`
    worktree after this card's acceptance: classify builtins/external libraries,

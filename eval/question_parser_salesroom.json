@@ -1,0 +1,837 @@
+{
+  "schema": "dag-gps-question-parser-eval/v1",
+  "pin": "5de5c0b4b64ca6579c5c5527fe09108fcf03a0ce",
+  "seed": 3922,
+  "provenance": "Late operator supplement frozen after Honcho rules; baseline from pristine 7db31cd before salesroom tuning.",
+  "rows": [
+    {
+      "id": "sr-001",
+      "question": "youtube",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-002",
+      "question": "where is the youtube",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-003",
+      "question": "where is the YOUTUBE",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-004",
+      "question": "where's youtube",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-005",
+      "question": "wheres the youtube",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-006",
+      "question": "where is youtube located",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-007",
+      "question": "where is the youtube file",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-008",
+      "question": "where is youtube logic",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-009",
+      "question": "where is youtube code",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-010",
+      "question": "where is the youtube module",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-011",
+      "question": "find src/lib/youtube.ts",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-012",
+      "question": "where is SRC/LIB/YOUTUBE.TS",
+      "expected": "match",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/youtube.ts",
+          "path": "src/lib/youtube.ts",
+          "start": 1,
+          "sha256": "e09efb1a3d73bd688973737e910cd5456f6cc8a01971558531145f581152ade7"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-013",
+      "question": "db",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-014",
+      "question": "where is the db",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-015",
+      "question": "where's the db",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-016",
+      "question": "where is the DB",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-017",
+      "question": "where is the db layer",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-018",
+      "question": "where is the database",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-019",
+      "question": "where is the db module",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-020",
+      "question": "where is the db file",
+      "expected": "match",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-021",
+      "question": "src",
+      "expected": "choose",
+      "targets": [
+        "folder-91be6cfb7c9129b9",
+        "folder-e19e62e010f8b565",
+        "folder-3e95fbd4b5d32d26"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-91be6cfb7c9129b9",
+          "path": "src/lib/categories.ts",
+          "start": 1,
+          "sha256": "613c2d7b14316d312ead4543907e2c7c2f239a92fb7be0c817dcb6dc9b5aae65"
+        },
+        {
+          "nodeId": "folder-e19e62e010f8b565",
+          "path": "src/server/actions.ts",
+          "start": 1,
+          "sha256": "4f6fc6f36fa94d197ef0d57ad309bd447c25b4e0f19e6e161b25dc821fb01380"
+        },
+        {
+          "nodeId": "folder-3e95fbd4b5d32d26",
+          "path": "src/components/content/TrackedDocLink.tsx",
+          "start": 1,
+          "sha256": "68d7a7838067289614ba6113a989ec1e7e07ae2824cf86e2c9eddd94dc734466"
+        }
+      ],
+      "rationale": "No src parent node in the preview: offer real descendant folders rather than invent src.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-022",
+      "question": "where is the src",
+      "expected": "choose",
+      "targets": [
+        "folder-91be6cfb7c9129b9",
+        "folder-e19e62e010f8b565",
+        "folder-3e95fbd4b5d32d26"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-91be6cfb7c9129b9",
+          "path": "src/lib/categories.ts",
+          "start": 1,
+          "sha256": "613c2d7b14316d312ead4543907e2c7c2f239a92fb7be0c817dcb6dc9b5aae65"
+        },
+        {
+          "nodeId": "folder-e19e62e010f8b565",
+          "path": "src/server/actions.ts",
+          "start": 1,
+          "sha256": "4f6fc6f36fa94d197ef0d57ad309bd447c25b4e0f19e6e161b25dc821fb01380"
+        },
+        {
+          "nodeId": "folder-3e95fbd4b5d32d26",
+          "path": "src/components/content/TrackedDocLink.tsx",
+          "start": 1,
+          "sha256": "68d7a7838067289614ba6113a989ec1e7e07ae2824cf86e2c9eddd94dc734466"
+        }
+      ],
+      "rationale": "No src parent node in the preview: offer real descendant folders rather than invent src.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-023",
+      "question": "where is the src folder",
+      "expected": "choose",
+      "targets": [
+        "folder-91be6cfb7c9129b9",
+        "folder-e19e62e010f8b565",
+        "folder-3e95fbd4b5d32d26"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-91be6cfb7c9129b9",
+          "path": "src/lib/categories.ts",
+          "start": 1,
+          "sha256": "613c2d7b14316d312ead4543907e2c7c2f239a92fb7be0c817dcb6dc9b5aae65"
+        },
+        {
+          "nodeId": "folder-e19e62e010f8b565",
+          "path": "src/server/actions.ts",
+          "start": 1,
+          "sha256": "4f6fc6f36fa94d197ef0d57ad309bd447c25b4e0f19e6e161b25dc821fb01380"
+        },
+        {
+          "nodeId": "folder-3e95fbd4b5d32d26",
+          "path": "src/components/content/TrackedDocLink.tsx",
+          "start": 1,
+          "sha256": "68d7a7838067289614ba6113a989ec1e7e07ae2824cf86e2c9eddd94dc734466"
+        }
+      ],
+      "rationale": "No src parent node in the preview: offer real descendant folders rather than invent src.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-024",
+      "question": "where is the SRC directory",
+      "expected": "choose",
+      "targets": [
+        "folder-91be6cfb7c9129b9",
+        "folder-e19e62e010f8b565",
+        "folder-3e95fbd4b5d32d26"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "folder-91be6cfb7c9129b9",
+          "path": "src/lib/categories.ts",
+          "start": 1,
+          "sha256": "613c2d7b14316d312ead4543907e2c7c2f239a92fb7be0c817dcb6dc9b5aae65"
+        },
+        {
+          "nodeId": "folder-e19e62e010f8b565",
+          "path": "src/server/actions.ts",
+          "start": 1,
+          "sha256": "4f6fc6f36fa94d197ef0d57ad309bd447c25b4e0f19e6e161b25dc821fb01380"
+        },
+        {
+          "nodeId": "folder-3e95fbd4b5d32d26",
+          "path": "src/components/content/TrackedDocLink.tsx",
+          "start": 1,
+          "sha256": "68d7a7838067289614ba6113a989ec1e7e07ae2824cf86e2c9eddd94dc734466"
+        }
+      ],
+      "rationale": "No src parent node in the preview: offer real descendant folders rather than invent src.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-025",
+      "question": "where is repo",
+      "expected": "match",
+      "targets": [
+        "src/lib/repo.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/repo.ts",
+          "path": "src/lib/repo.ts",
+          "start": 1,
+          "sha256": "4c675376c4f6235397d6f2600f259739754e7753af99bc8ee698bc78afcddb13"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-026",
+      "question": "where is the repo file",
+      "expected": "match",
+      "targets": [
+        "src/lib/repo.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/repo.ts",
+          "path": "src/lib/repo.ts",
+          "start": 1,
+          "sha256": "4c675376c4f6235397d6f2600f259739754e7753af99bc8ee698bc78afcddb13"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-027",
+      "question": "where is repository",
+      "expected": "match",
+      "targets": [
+        "src/lib/repo.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/repo.ts",
+          "path": "src/lib/repo.ts",
+          "start": 1,
+          "sha256": "4c675376c4f6235397d6f2600f259739754e7753af99bc8ee698bc78afcddb13"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-028",
+      "question": "where is env",
+      "expected": "match",
+      "targets": [
+        "src/lib/env.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/env.ts",
+          "path": "src/lib/env.ts",
+          "start": 1,
+          "sha256": "97842cf557c9cdb87f99827ced07842f1c621d5babd224943684a810e37b9995"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-029",
+      "question": "where is environment",
+      "expected": "match",
+      "targets": [
+        "src/lib/env.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/env.ts",
+          "path": "src/lib/env.ts",
+          "start": 1,
+          "sha256": "97842cf557c9cdb87f99827ced07842f1c621d5babd224943684a810e37b9995"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-030",
+      "question": "where is the ENV file",
+      "expected": "match",
+      "targets": [
+        "src/lib/env.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/env.ts",
+          "path": "src/lib/env.ts",
+          "start": 1,
+          "sha256": "97842cf557c9cdb87f99827ced07842f1c621d5babd224943684a810e37b9995"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-031",
+      "question": "where is the config",
+      "expected": "choose",
+      "targets": [
+        "next.config.mjs",
+        "postcss.config.mjs",
+        "tailwind.config.ts",
+        "vitest.config.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "next.config.mjs",
+          "path": "next.config.mjs",
+          "start": 1,
+          "sha256": "f29f82f44332576dc55174edac4929f2b04d59e479fe08dde32c2d53a1dc4861"
+        },
+        {
+          "nodeId": "postcss.config.mjs",
+          "path": "postcss.config.mjs",
+          "start": 1,
+          "sha256": "8c4071497479b4bb346d0ebb53b1bdeb555beb659512aaa0d6988d0d83ddeed5"
+        },
+        {
+          "nodeId": "tailwind.config.ts",
+          "path": "tailwind.config.ts",
+          "start": 1,
+          "sha256": "f95cd05a9a7b65f0e5ad94573db7f713491aa21c334c188ef6826f7487efc753"
+        },
+        {
+          "nodeId": "vitest.config.ts",
+          "path": "vitest.config.ts",
+          "start": 1,
+          "sha256": "ec784881a18e7758f4bdba0c70d34d708ecd679de8e2d68b9d923395069000e5"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-032",
+      "question": "where do we play videos",
+      "expected": "choose",
+      "targets": [
+        "src/components/content/VideoPlayer.tsx"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/components/content/VideoPlayer.tsx",
+          "path": "src/components/content/VideoPlayer.tsx",
+          "start": 1,
+          "sha256": "8c978f2598daaa853c92995113e52fa025223fb23a07d03463c07d109ff4df8e"
+        }
+      ],
+      "rationale": "VideoPlayer.tsx renders an embedded YouTube player; TS BM25 names/paths may lack these concept words.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-033",
+      "question": "where is video playback",
+      "expected": "choose",
+      "targets": [
+        "src/components/content/VideoPlayer.tsx"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/components/content/VideoPlayer.tsx",
+          "path": "src/components/content/VideoPlayer.tsx",
+          "start": 1,
+          "sha256": "8c978f2598daaa853c92995113e52fa025223fb23a07d03463c07d109ff4df8e"
+        }
+      ],
+      "rationale": "VideoPlayer.tsx renders an embedded YouTube player; TS BM25 names/paths may lack these concept words.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-034",
+      "question": "where do we persist room data",
+      "expected": "choose",
+      "targets": [
+        "src/lib/db.ts",
+        "src/lib/repo.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/db.ts",
+          "path": "src/lib/db.ts",
+          "start": 1,
+          "sha256": "2323f741ff5ff71e17a10fc2db4a971e4c93154794f964791093de1ab6ab5df2"
+        },
+        {
+          "nodeId": "src/lib/repo.ts",
+          "path": "src/lib/repo.ts",
+          "start": 1,
+          "sha256": "4c675376c4f6235397d6f2600f259739754e7753af99bc8ee698bc78afcddb13"
+        }
+      ],
+      "rationale": "SQLite persistence documented at top of each file.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-035",
+      "question": "where is youtube.test.ts",
+      "expected": "match",
+      "targets": [
+        "src/lib/__tests__/youtube.test.ts"
+      ],
+      "operation": "LOCATE",
+      "sourceEvidence": [
+        {
+          "nodeId": "src/lib/__tests__/youtube.test.ts",
+          "path": "src/lib/__tests__/youtube.test.ts",
+          "start": 1,
+          "sha256": "7e2dee9015917fa205bbd584efd115311184cb9edd161199aa3a5f58627bb089"
+        }
+      ],
+      "rationale": "Pinned file/name exists; first lines source-checked.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-036",
+      "question": "where is quantum banana teleporter",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-037",
+      "question": "where is the lunar payroll processor",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-038",
+      "question": "where is the dinosaur genome assembler",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-039",
+      "question": "where is the nonexistent_zyx_987",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "holdout"
+    },
+    {
+      "id": "sr-040",
+      "question": "where are embeddings created",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-041",
+      "question": "where is the deriver queue",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-042",
+      "question": "where is the llm",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "dev"
+    },
+    {
+      "id": "sr-043",
+      "question": "where is the submarine sonar driver",
+      "expected": "no-match",
+      "targets": [],
+      "operation": "LOCATE",
+      "sourceEvidence": [],
+      "rationale": "Absent responsibility or fabricated name in this sales-room application.",
+      "split": "dev"
+    }
+  ]
+}

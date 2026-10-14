@@ -4,10 +4,53 @@ A resolved edge is static lexical/import evidence, not runtime dispatch. Additio
 receiver/decorator evidence has explicit weaker tiers; unknown bindings remain unknown.
 """
 import ast
+import json
+import re
 from collections import defaultdict
 from python_call_tiers import CallTiers, TIERS, decorator_metadata, weakest
 
 DEFS = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+
+
+def extract_search_text(paths, sources, symbols, budget=1024 * 1024):
+    """Bounded metadata only; no comments, imports or execution of target code.
+
+    Python AST first docstring paragraphs; other languages use names/paths only.
+    Budget is encoded JSON bytes, including IDs/keys, not just text characters.
+    """
+    def token_text(value, cap):
+        value = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', value)
+        return ' '.join(re.findall(r'[a-z0-9]+', value.lower()))[:cap]
+
+    def paragraph(node):
+        value = ast.get_docstring(node) or ''
+        paragraph = ' '.join(re.split(r'\n\s*\n', value, maxsplit=1)[0].split())
+        return ''.join(c for c in paragraph if ord(c) >= 32)[:300]
+
+    docs = {}
+    for path, source in sources.items():
+        try:
+            tree = ast.parse(source, filename=path)
+        except (SyntaxError, ValueError):
+            continue
+        docs[(path, 0)] = paragraph(tree)
+        for node in ast.walk(tree):
+            if isinstance(node, DEFS):
+                docs[(path, node.lineno)] = paragraph(node)
+    candidates = [(path, path.rsplit('/', 1)[-1], path, 0) for path in sorted(paths)]
+    candidates += [(n['id'], n['qualname'], n['path'], n['start']) for n in symbols]
+    result = {'schema': 'dag-gps-search-text/v1', 'nodes': {}, 'omitted': 0}
+    used = 128
+    for ident, name, path, line in candidates:
+        value = {'name': token_text(name, 80), 'path': token_text(path, 120),
+                 'docstring': docs.get((path, line), '')}
+        size = len(json.dumps({ident: value}, separators=(',', ':')).encode('utf-8')) + 1
+        if used + size > max(128, budget):
+            result['omitted'] += 1
+            continue
+        used += size
+        result['nodes'][ident] = value
+    return result
 
 
 def extract_symbols(sources, import_edges):

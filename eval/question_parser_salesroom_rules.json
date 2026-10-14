@@ -1,0 +1,697 @@
+{
+  "datasetSha256": "0aba0734854428305c18b31e49b6bf79b73fdd26a32f3fbb15861737c9b7e0f3",
+  "pin": "5de5c0b4b64ca6579c5c5527fe09108fcf03a0ce",
+  "buildMs": 1.963708999999998,
+  "splits": {
+    "dev": {
+      "matchCorrect": 17,
+      "chooseCorrect": 4,
+      "noMatchCorrect": 6,
+      "wrong": 0,
+      "overconfident": 0,
+      "cases": 32,
+      "matchTotal": 20,
+      "chooseTotal": 6,
+      "noMatchTotal": 6
+    },
+    "holdout": {
+      "matchCorrect": 7,
+      "chooseCorrect": 0,
+      "noMatchCorrect": 2,
+      "wrong": 0,
+      "overconfident": 0,
+      "cases": 11,
+      "matchTotal": 7,
+      "chooseTotal": 2,
+      "noMatchTotal": 2
+    }
+  },
+  "results": [
+    {
+      "id": "sr-001",
+      "split": "dev",
+      "question": "youtube",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-002",
+      "split": "dev",
+      "question": "where is the youtube",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-003",
+      "split": "dev",
+      "question": "where is the YOUTUBE",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-004",
+      "split": "holdout",
+      "question": "where's youtube",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-005",
+      "split": "holdout",
+      "question": "wheres the youtube",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-006",
+      "split": "dev",
+      "question": "where is youtube located",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-007",
+      "split": "dev",
+      "question": "where is the youtube file",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-008",
+      "split": "dev",
+      "question": "where is youtube logic",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-009",
+      "split": "dev",
+      "question": "where is youtube code",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-010",
+      "split": "holdout",
+      "question": "where is the youtube module",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-011",
+      "split": "holdout",
+      "question": "find src/lib/youtube.ts",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-012",
+      "split": "dev",
+      "question": "where is SRC/LIB/YOUTUBE.TS",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/youtube.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-013",
+      "split": "dev",
+      "question": "db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-014",
+      "split": "dev",
+      "question": "where is the db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-015",
+      "split": "dev",
+      "question": "where's the db",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-016",
+      "split": "dev",
+      "question": "where is the DB",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-017",
+      "split": "holdout",
+      "question": "where is the db layer",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-018",
+      "split": "dev",
+      "question": "where is the database",
+      "expected": "match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-019",
+      "split": "dev",
+      "question": "where is the db module",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-020",
+      "split": "dev",
+      "question": "where is the db file",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/db.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-021",
+      "split": "dev",
+      "question": "src",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-8de019f9192caa03",
+        "folder-9769f1c3dee69801",
+        "folder-91be6cfb7c9129b9"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-022",
+      "split": "dev",
+      "question": "where is the src",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-8de019f9192caa03",
+        "folder-9769f1c3dee69801",
+        "folder-91be6cfb7c9129b9"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-023",
+      "split": "dev",
+      "question": "where is the src folder",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-8de019f9192caa03",
+        "folder-9769f1c3dee69801",
+        "folder-91be6cfb7c9129b9"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-024",
+      "split": "dev",
+      "question": "where is the SRC directory",
+      "expected": "choose",
+      "status": "needs-choice",
+      "targets": [],
+      "alternatives": [
+        "folder-8de019f9192caa03",
+        "folder-9769f1c3dee69801",
+        "folder-91be6cfb7c9129b9"
+      ],
+      "matchCorrect": false,
+      "chooseCorrect": true,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-025",
+      "split": "dev",
+      "question": "where is repo",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/repo.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-026",
+      "split": "holdout",
+      "question": "where is the repo file",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/repo.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-027",
+      "split": "dev",
+      "question": "where is repository",
+      "expected": "match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-028",
+      "split": "dev",
+      "question": "where is env",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/env.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-029",
+      "split": "dev",
+      "question": "where is environment",
+      "expected": "match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-030",
+      "split": "dev",
+      "question": "where is the ENV file",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/env.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-031",
+      "split": "dev",
+      "question": "where is the config",
+      "expected": "choose",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-032",
+      "split": "holdout",
+      "question": "where do we play videos",
+      "expected": "choose",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-033",
+      "split": "dev",
+      "question": "where is video playback",
+      "expected": "choose",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-034",
+      "split": "holdout",
+      "question": "where do we persist room data",
+      "expected": "choose",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-035",
+      "split": "holdout",
+      "question": "where is youtube.test.ts",
+      "expected": "match",
+      "status": "matched",
+      "targets": [
+        "src/lib/__tests__/youtube.test.ts"
+      ],
+      "alternatives": [],
+      "matchCorrect": true,
+      "chooseCorrect": false,
+      "noMatchCorrect": false,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-036",
+      "split": "dev",
+      "question": "where is quantum banana teleporter",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-037",
+      "split": "dev",
+      "question": "where is the lunar payroll processor",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-038",
+      "split": "holdout",
+      "question": "where is the dinosaur genome assembler",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-039",
+      "split": "holdout",
+      "question": "where is the nonexistent_zyx_987",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-040",
+      "split": "dev",
+      "question": "where are embeddings created",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-041",
+      "split": "dev",
+      "question": "where is the deriver queue",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-042",
+      "split": "dev",
+      "question": "where is the llm",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    },
+    {
+      "id": "sr-043",
+      "split": "dev",
+      "question": "where is the submarine sonar driver",
+      "expected": "no-match",
+      "status": "no-match",
+      "targets": [],
+      "alternatives": [],
+      "matchCorrect": false,
+      "chooseCorrect": false,
+      "noMatchCorrect": true,
+      "wrong": false,
+      "overconfident": false
+    }
+  ]
+}

@@ -3,7 +3,8 @@
 System 1 answers questions about a published snapshot with no model calls, no
 network and no imported-source execution. Browser, worker and (later) agent
 consumers all use the same code: `web/query-service.js`, which wraps the
-unchanged `web/scorer.js` and `web/router.js`.
+`web/scorer.js` and the unchanged `web/router.js`. Natural phrasing, synonyms and
+candidate-only concept search are documented in [QUESTION_PARSER.md](QUESTION_PARSER.md).
 
 ## Pipeline
 
@@ -41,7 +42,8 @@ unchanged `web/scorer.js` and `web/router.js`.
 
 ### Python function questions
 
-Snapshots with `map.symbol_graph` support exact, case-sensitive symbol targets:
+Snapshots with `map.symbol_graph` support exact, case-folded symbol targets
+(case-only collisions require choice):
 bare unique name, qualified name, `path:qualified-name`, or full symbol ID.
 `where is X defined` / `locate symbol X`, `what calls X`, `what does X call`,
 `how does X reach Y`, and `trace from X` are deterministic operation templates.
@@ -53,9 +55,11 @@ Missing static paths are not proof that a runtime flow is impossible.
 
 The legacy matching limits below remain for file/group questions.
 
-Matching is lexical over paths, filenames and group labels (the existing scorer).
-Concept questions such as "collision" return `no-match` unless a group label or
-alias matches. Only static extracted relationships are traversed.
+Matching first uses normalized paths, filenames, group labels, symbols and explicit
+synonyms. New snapshots with `map.search_text` can return bounded BM25 concept
+choices when lexical retrieval has no evidence. They never confidently select a
+BM25-only answer. Legacy snapshots have no concept index; reimport to build one.
+Only static extracted relationships are traversed.
 
 ## Reproduce
 
