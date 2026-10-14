@@ -1,5 +1,13 @@
 # Tasks — DAG GPS
 
+## TypeScript aliases card — verified, consultant second opinion requested
+
+`t_50e6f922`: importer config resolution and RED-first fixtures complete on
+`ts-paths`; 510 Python / 266 JS pass. Pinned Salesroom 46→187 imports, Honcho
+edges identical; frozen/variation zero-new-wrong gate passes. Full evidence and
+limits: `docs/TS_PATH_ALIASES.md`. Next: consultant advice, generalist approval.
+No next feature launched; no push, merge or PR.
+
 ## Current question-log card — verified, consultant second opinion requested
 
 `t_44e9d449`: port playground journal/labels/history and persistent session safely
