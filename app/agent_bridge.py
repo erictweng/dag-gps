@@ -111,14 +111,15 @@ class AgentBridge:
         for key, pattern in (('projectId', _PROJECT), ('snapshotId', _SNAPSHOT)):
             if type(request.get(key)) is not str or not pattern.fullmatch(request[key]):
                 raise BridgeError('Invalid ' + key)
-        snapshot_path, snapshot = store.snapshot(request['projectId'], request['snapshotId'])
+        # The store validates each snapshot once; reuse its index for every check below.
+        snapshot_path, snapshot, index = store.snapshot(request['projectId'], request['snapshotId'], with_index=True)
         if tool == 'get_source':
             _fields(args, {'path'}, {'start', 'end'})
             _text(args['path'], 'path', 4096)
             for key in ('start', 'end'):
                 if key in args and type(args[key]) is not int:
                     raise BridgeError('Invalid ' + key)
-            return read_source(git_dir_for(self.root / 'git-cache', snapshot), snapshot, **args)
+            return read_source(git_dir_for(self.root / 'git-cache', snapshot), snapshot, index=index, **args)
         paths = {}
         if tool in ('find_symbols', 'get_callers', 'get_callees'):
             _fields(args, {'symbol'}, {'continuation', 'chosenNodeId', 'certainOnly'})
@@ -144,7 +145,7 @@ class AgentBridge:
             query_request = _query_request(args['request'], snapshot['snapshotId'], require_id=True)
         else:
             query_request = _query_request(args, snapshot['snapshotId'])
-        with QueryWorker(snapshot_path, snapshot) as worker:
+        with QueryWorker(snapshot_path, snapshot, index=index) as worker:
             packet = worker.query(query_request)
         if tool in ('get_dependencies', 'get_dependents') and packet.get('seedNodeId') != paths[args['path']]:
             raise BridgeError('Query grammar cannot resolve this exact file path')
@@ -154,7 +155,7 @@ class AgentBridge:
                     or selected[0] != paths[args['from']] or selected[-1] != paths[args['to']]):
                 raise BridgeError('Query grammar cannot resolve these exact file paths')
         if tool == 'get_context' or (tool == 'submit_explanation' and args.get('useContext', False)):
-            context = build_context(git_dir_for(self.root / 'git-cache', snapshot), snapshot, packet)
+            context = build_context(git_dir_for(self.root / 'git-cache', snapshot), snapshot, packet, index=index)
         else:
             context = None
         if tool == 'get_context':
@@ -162,5 +163,5 @@ class AgentBridge:
         if tool == 'submit_explanation':
             # Never accept a supplied packet/context. Storage validates digest,
             # revision, request identity, citations and optional context file set.
-            return store_explanation(self.root, snapshot, packet, args['explanation'], context=context)
+            return store_explanation(self.root, snapshot, packet, args['explanation'], context=context, index=index)
         return packet
