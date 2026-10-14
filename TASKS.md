@@ -1,12 +1,15 @@
 # Tasks — DAG GPS
 
-## Current parser-collision card — verification in progress
+## Current parser-collision card — verified, consultant second opinion requested
 
 `t_29b602b9`: resolve literal cross-kind targets before every operation, preserve
 explicit-choice traversal, and make pinned-snapshot tests clean-checkout safe.
 Implementation and RED-first regressions are in isolated `parser-collisions`.
-Final full suites, clean detached checkout, eight gates and dag-consultant second
-opinion remain before approval. Parenthesized paths remain a separate limitation.
+474 Python / 265 JS pass with pinned data, zero skips; clean detached checkout
+passes 474 Python and 225 JS with 8 explicit optional-data skips. All eight gates
+and packaging pass on `01dfb1b`. Same-grid wrong decreases on both repos with no
+newly wrong cases; frozen sets unchanged. Dag-consultant second opinion requested,
+approval remains with generalist. Parenthesized paths remain a separate limitation.
 
 ## Current server-speed card — verified, consultant second opinion requested
 

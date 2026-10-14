@@ -68,6 +68,36 @@ for (const repo of ['honcho', 'salesroom']) {
     newWrongExamples: b.filter((r, i) => r.outcome === 'wrong' && a[i].outcome !== 'wrong').slice(0, 30)};
 }
 fs.writeFileSync(path.join(out, 'summary.json'), JSON.stringify(report, null, 2) + '\n');
+// A separately labeled counterexample supplement: do not add or relabel grid rows.
+// These two concrete collision names were not selected as every operation's target
+// by the original frozen grid. Keep that coverage limitation visible.
+const supplementPatterns = ['where is {x}', 'what uses {x}', 'what does {x} use',
+  'dependents of {x}', 'dependencies of {x}', 'downstream of {x}', 'upstream of {x}',
+  'who invokes {x}', 'callers of {x}', 'what does {x} call', 'callees of {x}', 'trace from {x}',
+  'path from {x} to {y}', 'path from {y} to {x}', 'how does {x} reach {y}', 'how does {y} reach {x}'];
+const supplemental = {};
+for (const repo of ['honcho', 'salesroom']) {
+  const snapshot = read(path.join(root, 'artifacts/question-parser', repo, 'snapshot.json'));
+  const old = require(path.join(before, 'web/query-service.js')).createQueryService(snapshot);
+  const current = require(path.join(root, 'web/query-service.js')).createQueryService(snapshot);
+  const name = repo === 'honcho' ? 'backfill' : 'events';
+  const other = repo === 'honcho' ? 'src/reconciler/backfill.py' : 'src/lib/events.ts';
+  const packets = [];
+  supplemental[repo] = supplementPatterns.map(phrase => {
+    const query = phrase.replace('{x}', name).replace('{y}', other), request = {requestId: 'supplement', query};
+    const a = old.query(request), b = current.query(request); packets.push(b);
+    for (const alt of b.alternatives) {
+      packets.push(current.query({...request, chosenNodeId: alt.nodeId}));
+      packets.push(current.query({...request, query: alt.query, chosenNodeId: alt.nodeId}));
+    }
+    return {query, before: {status: a.status, operation: a.operation}, after: {status: b.status, operation: b.operation},
+      confidentToChoice: a.status === 'matched' && b.status === 'needs-choice'};
+  });
+  fs.writeFileSync(path.join(out, repo + '-packets.json'), JSON.stringify(packets) + '\n');
+}
+const compact = structuredClone({...report, supplemental});
+for (const r of Object.values(compact.repos)) { delete r.axes; delete r.newWrongExamples; }
+fs.writeFileSync(path.join(root, 'eval/parser_collision_results.json'), JSON.stringify(compact, null, 2) + '\n');
 for (const [repo, r] of Object.entries(report.repos)) {
   console.log(repo, JSON.stringify({total: r.total, latency: r.latency, frozen: r.frozen}));
   if (r.total.newWrong || r.negatives.after.overconfident > r.negatives.before.overconfident)

@@ -1,0 +1,1367 @@
+{
+  "base": "08f1b4d597d64bbd7557953f54139161d3e6864d",
+  "head": "01dfb1b3c6d09dd99f6753257e9ab0101ef48273",
+  "serviceSha256": "b0caa490ab05643d31b76948cc48c047737df50371bc62c9d2d148959296677b",
+  "seed": "dag-variation-v1-20261013",
+  "templatesSha256": "72e693930dcea20a22532532d50038f4bec51c74bc97e0f00d2173068655a388",
+  "repeats": 3,
+  "warmup": 200,
+  "repos": {
+    "honcho": {
+      "gridSha256": "3e2180597c4fd2ad7a16d3fb3b71f82e84a515d3f0091cb45d5101c7b245f886",
+      "total": {
+        "before": {
+          "total": 92856,
+          "correct": 85135,
+          "choose-correct": 4108,
+          "wrong": 380,
+          "no-match": 2946,
+          "unresolved": 287,
+          "overconfident": 0,
+          "correctPct": 91.68497458430258,
+          "successPct": 96.1090290342035,
+          "distinctSuccessful": 84714
+        },
+        "after": {
+          "total": 92856,
+          "correct": 85080,
+          "choose-correct": 4146,
+          "wrong": 288,
+          "no-match": 2946,
+          "unresolved": 396,
+          "overconfident": 0,
+          "correctPct": 91.62574308606875,
+          "successPct": 96.0907211165676,
+          "distinctSuccessful": 84707
+        },
+        "confidentToChoice": 152,
+        "correctToChoice": 60,
+        "newWrong": 0
+      },
+      "negatives": {
+        "before": {
+          "total": 240,
+          "correct": 0,
+          "choose-correct": 0,
+          "wrong": 0,
+          "no-match": 240,
+          "unresolved": 0,
+          "overconfident": 0,
+          "correctPct": 0,
+          "successPct": 0,
+          "distinctSuccessful": 0
+        },
+        "after": {
+          "total": 240,
+          "correct": 0,
+          "choose-correct": 0,
+          "wrong": 0,
+          "no-match": 240,
+          "unresolved": 0,
+          "overconfident": 0,
+          "correctPct": 0,
+          "successPct": 0,
+          "distinctSuccessful": 0
+        },
+        "confidentToChoice": 0,
+        "correctToChoice": 0,
+        "newWrong": 0
+      },
+      "collisionTargetOperations": {
+        "LOCATE": {
+          "before": {
+            "total": 10178,
+            "correct": 9085,
+            "choose-correct": 915,
+            "wrong": 0,
+            "no-match": 85,
+            "unresolved": 93,
+            "overconfident": 0,
+            "correctPct": 89.26115150324229,
+            "successPct": 98.25112988799371,
+            "distinctSuccessful": 9289
+          },
+          "after": {
+            "total": 10178,
+            "correct": 9085,
+            "choose-correct": 915,
+            "wrong": 0,
+            "no-match": 85,
+            "unresolved": 93,
+            "overconfident": 0,
+            "correctPct": 89.26115150324229,
+            "successPct": 98.25112988799371,
+            "distinctSuccessful": 9289
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "UPSTREAM": {
+          "before": {
+            "total": 6960,
+            "correct": 6230,
+            "choose-correct": 630,
+            "wrong": 40,
+            "no-match": 50,
+            "unresolved": 10,
+            "overconfident": 0,
+            "correctPct": 89.51149425287356,
+            "successPct": 98.5632183908046,
+            "distinctSuccessful": 6380
+          },
+          "after": {
+            "total": 6960,
+            "correct": 6200,
+            "choose-correct": 660,
+            "wrong": 0,
+            "no-match": 50,
+            "unresolved": 50,
+            "overconfident": 0,
+            "correctPct": 89.08045977011494,
+            "successPct": 98.5632183908046,
+            "distinctSuccessful": 6380
+          },
+          "confidentToChoice": 70,
+          "correctToChoice": 30,
+          "newWrong": 0
+        },
+        "DOWNSTREAM": {
+          "before": {
+            "total": 8352,
+            "correct": 7294,
+            "choose-correct": 676,
+            "wrong": 52,
+            "no-match": 270,
+            "unresolved": 60,
+            "overconfident": 0,
+            "correctPct": 87.3323754789272,
+            "successPct": 95.42624521072797,
+            "distinctSuccessful": 7424
+          },
+          "after": {
+            "total": 8352,
+            "correct": 7264,
+            "choose-correct": 686,
+            "wrong": 0,
+            "no-match": 270,
+            "unresolved": 132,
+            "overconfident": 0,
+            "correctPct": 86.97318007662835,
+            "successPct": 95.1867816091954,
+            "distinctSuccessful": 7414
+          },
+          "confidentToChoice": 82,
+          "correctToChoice": 30,
+          "newWrong": 0
+        },
+        "CALLERS": {
+          "before": {
+            "total": 155,
+            "correct": 145,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 5,
+            "unresolved": 5,
+            "overconfident": 0,
+            "correctPct": 93.54838709677419,
+            "successPct": 93.54838709677419,
+            "distinctSuccessful": 145
+          },
+          "after": {
+            "total": 155,
+            "correct": 145,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 5,
+            "unresolved": 5,
+            "overconfident": 0,
+            "correctPct": 93.54838709677419,
+            "successPct": 93.54838709677419,
+            "distinctSuccessful": 145
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "CALLEES": {
+          "before": {
+            "total": 62,
+            "correct": 58,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 2,
+            "unresolved": 2,
+            "overconfident": 0,
+            "correctPct": 93.54838709677419,
+            "successPct": 93.54838709677419,
+            "distinctSuccessful": 58
+          },
+          "after": {
+            "total": 62,
+            "correct": 58,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 2,
+            "unresolved": 2,
+            "overconfident": 0,
+            "correctPct": 93.54838709677419,
+            "successPct": 93.54838709677419,
+            "distinctSuccessful": 58
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "TRACE": {
+          "before": {
+            "total": 62,
+            "correct": 29,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 31,
+            "unresolved": 2,
+            "overconfident": 0,
+            "correctPct": 46.774193548387096,
+            "successPct": 46.774193548387096,
+            "distinctSuccessful": 29
+          },
+          "after": {
+            "total": 62,
+            "correct": 29,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 31,
+            "unresolved": 2,
+            "overconfident": 0,
+            "correctPct": 46.774193548387096,
+            "successPct": 46.774193548387096,
+            "distinctSuccessful": 29
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "PATH": {
+          "before": {
+            "total": 3480,
+            "correct": 3282,
+            "choose-correct": 45,
+            "wrong": 0,
+            "no-match": 123,
+            "unresolved": 30,
+            "overconfident": 0,
+            "correctPct": 94.3103448275862,
+            "successPct": 95.60344827586206,
+            "distinctSuccessful": 3207
+          },
+          "after": {
+            "total": 3480,
+            "correct": 3285,
+            "choose-correct": 45,
+            "wrong": 0,
+            "no-match": 123,
+            "unresolved": 27,
+            "overconfident": 0,
+            "correctPct": 94.39655172413794,
+            "successPct": 95.6896551724138,
+            "distinctSuccessful": 3210
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "FLOW": {
+          "before": {
+            "total": 29,
+            "correct": 28,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 1,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 96.55172413793103,
+            "successPct": 96.55172413793103,
+            "distinctSuccessful": 28
+          },
+          "after": {
+            "total": 29,
+            "correct": 28,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 1,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 96.55172413793103,
+            "successPct": 96.55172413793103,
+            "distinctSuccessful": 28
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        }
+      },
+      "operation": {
+        "LOCATE": {
+          "before": {
+            "total": 38444,
+            "correct": 35851,
+            "choose-correct": 1686,
+            "wrong": 112,
+            "no-match": 674,
+            "unresolved": 121,
+            "overconfident": 0,
+            "correctPct": 93.25512433669753,
+            "successPct": 97.64072417022162,
+            "distinctSuccessful": 35562
+          },
+          "after": {
+            "total": 38444,
+            "correct": 35851,
+            "choose-correct": 1686,
+            "wrong": 112,
+            "no-match": 674,
+            "unresolved": 121,
+            "overconfident": 0,
+            "correctPct": 93.25512433669753,
+            "successPct": 97.64072417022162,
+            "distinctSuccessful": 35562
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "UPSTREAM": {
+          "before": {
+            "total": 18160,
+            "correct": 16760,
+            "choose-correct": 1090,
+            "wrong": 120,
+            "no-match": 180,
+            "unresolved": 10,
+            "overconfident": 0,
+            "correctPct": 92.29074889867842,
+            "successPct": 98.29295154185021,
+            "distinctSuccessful": 16880
+          },
+          "after": {
+            "total": 18160,
+            "correct": 16730,
+            "choose-correct": 1120,
+            "wrong": 80,
+            "no-match": 180,
+            "unresolved": 50,
+            "overconfident": 0,
+            "correctPct": 92.12555066079295,
+            "successPct": 98.29295154185021,
+            "distinctSuccessful": 16880
+          },
+          "confidentToChoice": 70,
+          "correctToChoice": 30,
+          "newWrong": 0
+        },
+        "DOWNSTREAM": {
+          "before": {
+            "total": 21792,
+            "correct": 19642,
+            "choose-correct": 1178,
+            "wrong": 148,
+            "no-match": 764,
+            "unresolved": 60,
+            "overconfident": 0,
+            "correctPct": 90.13399412628488,
+            "successPct": 95.53964757709251,
+            "distinctSuccessful": 19686
+          },
+          "after": {
+            "total": 21792,
+            "correct": 19614,
+            "choose-correct": 1186,
+            "wrong": 96,
+            "no-match": 764,
+            "unresolved": 132,
+            "overconfident": 0,
+            "correctPct": 90.00550660792952,
+            "successPct": 95.44787077826726,
+            "distinctSuccessful": 19676
+          },
+          "confidentToChoice": 82,
+          "correctToChoice": 30,
+          "newWrong": 0
+        },
+        "CALLERS": {
+          "before": {
+            "total": 4650,
+            "correct": 4445,
+            "choose-correct": 40,
+            "wrong": 0,
+            "no-match": 150,
+            "unresolved": 15,
+            "overconfident": 0,
+            "correctPct": 95.59139784946237,
+            "successPct": 96.45161290322581,
+            "distinctSuccessful": 4330
+          },
+          "after": {
+            "total": 4650,
+            "correct": 4445,
+            "choose-correct": 40,
+            "wrong": 0,
+            "no-match": 150,
+            "unresolved": 15,
+            "overconfident": 0,
+            "correctPct": 95.59139784946237,
+            "successPct": 96.45161290322581,
+            "distinctSuccessful": 4330
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "CALLEES": {
+          "before": {
+            "total": 1860,
+            "correct": 1778,
+            "choose-correct": 16,
+            "wrong": 0,
+            "no-match": 60,
+            "unresolved": 6,
+            "overconfident": 0,
+            "correctPct": 95.59139784946237,
+            "successPct": 96.45161290322581,
+            "distinctSuccessful": 1732
+          },
+          "after": {
+            "total": 1860,
+            "correct": 1778,
+            "choose-correct": 16,
+            "wrong": 0,
+            "no-match": 60,
+            "unresolved": 6,
+            "overconfident": 0,
+            "correctPct": 95.59139784946237,
+            "successPct": 96.45161290322581,
+            "distinctSuccessful": 1732
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "TRACE": {
+          "before": {
+            "total": 1860,
+            "correct": 889,
+            "choose-correct": 8,
+            "wrong": 0,
+            "no-match": 918,
+            "unresolved": 45,
+            "overconfident": 0,
+            "correctPct": 47.795698924731184,
+            "successPct": 48.225806451612904,
+            "distinctSuccessful": 866
+          },
+          "after": {
+            "total": 1860,
+            "correct": 889,
+            "choose-correct": 8,
+            "wrong": 0,
+            "no-match": 918,
+            "unresolved": 45,
+            "overconfident": 0,
+            "correctPct": 47.795698924731184,
+            "successPct": 48.225806451612904,
+            "distinctSuccessful": 866
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "PATH": {
+          "before": {
+            "total": 5800,
+            "correct": 5490,
+            "choose-correct": 90,
+            "wrong": 0,
+            "no-match": 190,
+            "unresolved": 30,
+            "overconfident": 0,
+            "correctPct": 94.65517241379311,
+            "successPct": 96.20689655172414,
+            "distinctSuccessful": 5380
+          },
+          "after": {
+            "total": 5800,
+            "correct": 5493,
+            "choose-correct": 90,
+            "wrong": 0,
+            "no-match": 190,
+            "unresolved": 27,
+            "overconfident": 0,
+            "correctPct": 94.70689655172414,
+            "successPct": 96.25862068965517,
+            "distinctSuccessful": 5383
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "FLOW": {
+          "before": {
+            "total": 290,
+            "correct": 280,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 10,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 96.55172413793103,
+            "successPct": 96.55172413793103,
+            "distinctSuccessful": 278
+          },
+          "after": {
+            "total": 290,
+            "correct": 280,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 10,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 96.55172413793103,
+            "successPct": 96.55172413793103,
+            "distinctSuccessful": 278
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        }
+      },
+      "latency": {
+        "before": {
+          "n": 279288,
+          "p50": 0.33137499999429565,
+          "p95": 0.8227920000063023,
+          "p99": 1.1734589999978198,
+          "max": 41.94829200000095,
+          "mean": 0.40998013874205613,
+          "stddev": 0.23840779463938042
+        },
+        "after": {
+          "n": 279288,
+          "p50": 0.31679199999780394,
+          "p95": 0.7905829999945126,
+          "p99": 1.1543749999837019,
+          "max": 4.702791999996407,
+          "mean": 0.36886151146130214,
+          "stddev": 0.22704968106125578
+        }
+      },
+      "frozen": {
+        "before": {
+          "dev": {
+            "matchCorrect": 46,
+            "chooseCorrect": 13,
+            "noMatchCorrect": 16,
+            "wrong": 1,
+            "overconfident": 0,
+            "cases": 80,
+            "matchTotal": 46,
+            "chooseTotal": 18,
+            "noMatchTotal": 16
+          },
+          "holdout": {
+            "matchCorrect": 18,
+            "chooseCorrect": 5,
+            "noMatchCorrect": 4,
+            "wrong": 0,
+            "overconfident": 0,
+            "cases": 27,
+            "matchTotal": 18,
+            "chooseTotal": 5,
+            "noMatchTotal": 4
+          }
+        },
+        "after": {
+          "dev": {
+            "matchCorrect": 46,
+            "chooseCorrect": 13,
+            "noMatchCorrect": 16,
+            "wrong": 1,
+            "overconfident": 0,
+            "cases": 80,
+            "matchTotal": 46,
+            "chooseTotal": 18,
+            "noMatchTotal": 16
+          },
+          "holdout": {
+            "matchCorrect": 18,
+            "chooseCorrect": 5,
+            "noMatchCorrect": 4,
+            "wrong": 0,
+            "overconfident": 0,
+            "cases": 27,
+            "matchTotal": 18,
+            "chooseTotal": 5,
+            "noMatchTotal": 4
+          }
+        }
+      }
+    },
+    "salesroom": {
+      "gridSha256": "1cdb8e19f5eca6e55afd4c6a964b6a5e5feb790681dffcf4db7d307190229291",
+      "total": {
+        "before": {
+          "total": 51410,
+          "correct": 46358,
+          "choose-correct": 1899,
+          "wrong": 712,
+          "no-match": 2197,
+          "unresolved": 244,
+          "overconfident": 0,
+          "correctPct": 90.17311807041432,
+          "successPct": 93.86695195487259,
+          "distinctSuccessful": 46154
+        },
+        "after": {
+          "total": 51410,
+          "correct": 46359,
+          "choose-correct": 1928,
+          "wrong": 682,
+          "no-match": 2191,
+          "unresolved": 250,
+          "overconfident": 0,
+          "correctPct": 90.1750632172729,
+          "successPct": 93.92530636063023,
+          "distinctSuccessful": 46188
+        },
+        "confidentToChoice": 30,
+        "correctToChoice": 0,
+        "newWrong": 0
+      },
+      "negatives": {
+        "before": {
+          "total": 240,
+          "correct": 0,
+          "choose-correct": 0,
+          "wrong": 0,
+          "no-match": 240,
+          "unresolved": 0,
+          "overconfident": 0,
+          "correctPct": 0,
+          "successPct": 0,
+          "distinctSuccessful": 0
+        },
+        "after": {
+          "total": 240,
+          "correct": 0,
+          "choose-correct": 0,
+          "wrong": 0,
+          "no-match": 240,
+          "unresolved": 0,
+          "overconfident": 0,
+          "correctPct": 0,
+          "successPct": 0,
+          "distinctSuccessful": 0
+        },
+        "confidentToChoice": 0,
+        "correctToChoice": 0,
+        "newWrong": 0
+      },
+      "collisionTargetOperations": {
+        "LOCATE": {
+          "before": {
+            "total": 868,
+            "correct": 798,
+            "choose-correct": 56,
+            "wrong": 0,
+            "no-match": 14,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 91.93548387096774,
+            "successPct": 98.38709677419355,
+            "distinctSuccessful": 794
+          },
+          "after": {
+            "total": 868,
+            "correct": 798,
+            "choose-correct": 56,
+            "wrong": 0,
+            "no-match": 14,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 91.93548387096774,
+            "successPct": 98.38709677419355,
+            "distinctSuccessful": 794
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "UPSTREAM": {
+          "before": {
+            "total": 620,
+            "correct": 570,
+            "choose-correct": 40,
+            "wrong": 0,
+            "no-match": 10,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 91.93548387096774,
+            "successPct": 98.38709677419355,
+            "distinctSuccessful": 570
+          },
+          "after": {
+            "total": 620,
+            "correct": 570,
+            "choose-correct": 40,
+            "wrong": 0,
+            "no-match": 10,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 91.93548387096774,
+            "successPct": 98.38709677419355,
+            "distinctSuccessful": 570
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "DOWNSTREAM": {
+          "before": {
+            "total": 744,
+            "correct": 668,
+            "choose-correct": 46,
+            "wrong": 0,
+            "no-match": 30,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 89.78494623655914,
+            "successPct": 95.96774193548387,
+            "distinctSuccessful": 666
+          },
+          "after": {
+            "total": 744,
+            "correct": 668,
+            "choose-correct": 40,
+            "wrong": 0,
+            "no-match": 30,
+            "unresolved": 6,
+            "overconfident": 0,
+            "correctPct": 89.78494623655914,
+            "successPct": 95.16129032258064,
+            "distinctSuccessful": 664
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "PATH": {
+          "before": {
+            "total": 290,
+            "correct": 276,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 14,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 95.17241379310344,
+            "successPct": 95.17241379310344,
+            "distinctSuccessful": 266
+          },
+          "after": {
+            "total": 290,
+            "correct": 276,
+            "choose-correct": 0,
+            "wrong": 0,
+            "no-match": 14,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 95.17241379310344,
+            "successPct": 95.17241379310344,
+            "distinctSuccessful": 266
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        }
+      },
+      "operation": {
+        "LOCATE": {
+          "before": {
+            "total": 17850,
+            "correct": 16114,
+            "choose-correct": 697,
+            "wrong": 302,
+            "no-match": 639,
+            "unresolved": 98,
+            "overconfident": 0,
+            "correctPct": 90.27450980392157,
+            "successPct": 94.17927170868347,
+            "distinctSuccessful": 16018
+          },
+          "after": {
+            "total": 17850,
+            "correct": 16114,
+            "choose-correct": 697,
+            "wrong": 302,
+            "no-match": 639,
+            "unresolved": 98,
+            "overconfident": 0,
+            "correctPct": 90.27450980392157,
+            "successPct": 94.17927170868347,
+            "distinctSuccessful": 16018
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "UPSTREAM": {
+          "before": {
+            "total": 12750,
+            "correct": 11510,
+            "choose-correct": 530,
+            "wrong": 190,
+            "no-match": 450,
+            "unresolved": 70,
+            "overconfident": 0,
+            "correctPct": 90.27450980392157,
+            "successPct": 94.43137254901961,
+            "distinctSuccessful": 11520
+          },
+          "after": {
+            "total": 12750,
+            "correct": 11510,
+            "choose-correct": 530,
+            "wrong": 190,
+            "no-match": 450,
+            "unresolved": 70,
+            "overconfident": 0,
+            "correctPct": 90.27450980392157,
+            "successPct": 94.43137254901961,
+            "distinctSuccessful": 11520
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "DOWNSTREAM": {
+          "before": {
+            "total": 15300,
+            "correct": 13500,
+            "choose-correct": 572,
+            "wrong": 220,
+            "no-match": 932,
+            "unresolved": 76,
+            "overconfident": 0,
+            "correctPct": 88.23529411764706,
+            "successPct": 91.97385620915033,
+            "distinctSuccessful": 13452
+          },
+          "after": {
+            "total": 15300,
+            "correct": 13500,
+            "choose-correct": 602,
+            "wrong": 190,
+            "no-match": 926,
+            "unresolved": 82,
+            "overconfident": 0,
+            "correctPct": 88.23529411764706,
+            "successPct": 92.16993464052288,
+            "distinctSuccessful": 13486
+          },
+          "confidentToChoice": 30,
+          "correctToChoice": 0,
+          "newWrong": 0
+        },
+        "PATH": {
+          "before": {
+            "total": 5510,
+            "correct": 5234,
+            "choose-correct": 100,
+            "wrong": 0,
+            "no-match": 176,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 94.99092558983666,
+            "successPct": 96.80580762250453,
+            "distinctSuccessful": 5164
+          },
+          "after": {
+            "total": 5510,
+            "correct": 5235,
+            "choose-correct": 99,
+            "wrong": 0,
+            "no-match": 176,
+            "unresolved": 0,
+            "overconfident": 0,
+            "correctPct": 95.00907441016334,
+            "successPct": 96.80580762250453,
+            "distinctSuccessful": 5164
+          },
+          "confidentToChoice": 0,
+          "correctToChoice": 0,
+          "newWrong": 0
+        }
+      },
+      "latency": {
+        "before": {
+          "n": 154950,
+          "p50": 0.06716599999344908,
+          "p95": 0.12408400001004338,
+          "p99": 0.15445800000452437,
+          "max": 1.0707089999923483,
+          "mean": 0.07062295244921557,
+          "stddev": 0.02432344020432524
+        },
+        "after": {
+          "n": 154950,
+          "p50": 0.06770800001686439,
+          "p95": 0.12650000001303852,
+          "p99": 0.14654100002371706,
+          "max": 0.4309580000117421,
+          "mean": 0.06769313248144006,
+          "stddev": 0.027534692849907248
+        }
+      },
+      "frozen": {
+        "before": {
+          "dev": {
+            "matchCorrect": 20,
+            "chooseCorrect": 5,
+            "noMatchCorrect": 6,
+            "wrong": 0,
+            "overconfident": 0,
+            "cases": 32,
+            "matchTotal": 20,
+            "chooseTotal": 6,
+            "noMatchTotal": 6
+          },
+          "holdout": {
+            "matchCorrect": 7,
+            "chooseCorrect": 0,
+            "noMatchCorrect": 2,
+            "wrong": 0,
+            "overconfident": 0,
+            "cases": 11,
+            "matchTotal": 7,
+            "chooseTotal": 2,
+            "noMatchTotal": 2
+          }
+        },
+        "after": {
+          "dev": {
+            "matchCorrect": 20,
+            "chooseCorrect": 5,
+            "noMatchCorrect": 6,
+            "wrong": 0,
+            "overconfident": 0,
+            "cases": 32,
+            "matchTotal": 20,
+            "chooseTotal": 6,
+            "noMatchTotal": 6
+          },
+          "holdout": {
+            "matchCorrect": 7,
+            "chooseCorrect": 0,
+            "noMatchCorrect": 2,
+            "wrong": 0,
+            "overconfident": 0,
+            "cases": 11,
+            "matchTotal": 7,
+            "chooseTotal": 2,
+            "noMatchTotal": 2
+          }
+        }
+      }
+    }
+  },
+  "supplemental": {
+    "honcho": [
+      {
+        "query": "where is backfill",
+        "before": {
+          "status": "needs-choice",
+          "operation": "LOCATE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "LOCATE"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "what uses backfill",
+        "before": {
+          "status": "matched",
+          "operation": "DOWNSTREAM"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "DOWNSTREAM"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "what does backfill use",
+        "before": {
+          "status": "matched",
+          "operation": "UPSTREAM"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "UPSTREAM"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "dependents of backfill",
+        "before": {
+          "status": "matched",
+          "operation": "DOWNSTREAM"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "DOWNSTREAM"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "dependencies of backfill",
+        "before": {
+          "status": "matched",
+          "operation": "UPSTREAM"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "UPSTREAM"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "downstream of backfill",
+        "before": {
+          "status": "matched",
+          "operation": "DOWNSTREAM"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "DOWNSTREAM"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "upstream of backfill",
+        "before": {
+          "status": "matched",
+          "operation": "UPSTREAM"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "UPSTREAM"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "who invokes backfill",
+        "before": {
+          "status": "matched",
+          "operation": "CALLERS"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLERS"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "callers of backfill",
+        "before": {
+          "status": "matched",
+          "operation": "CALLERS"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLERS"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "what does backfill call",
+        "before": {
+          "status": "matched",
+          "operation": "CALLEES"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLEES"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "callees of backfill",
+        "before": {
+          "status": "matched",
+          "operation": "CALLEES"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLEES"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "trace from backfill",
+        "before": {
+          "status": "matched",
+          "operation": "TRACE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "TRACE"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "path from backfill to src/reconciler/backfill.py",
+        "before": {
+          "status": "matched",
+          "operation": "PATH"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "PATH"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "path from src/reconciler/backfill.py to backfill",
+        "before": {
+          "status": "matched",
+          "operation": "PATH"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "PATH"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "how does backfill reach src/reconciler/backfill.py",
+        "before": {
+          "status": "matched",
+          "operation": "PATH"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "FLOW"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "how does src/reconciler/backfill.py reach backfill",
+        "before": {
+          "status": "matched",
+          "operation": "PATH"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "FLOW"
+        },
+        "confidentToChoice": true
+      }
+    ],
+    "salesroom": [
+      {
+        "query": "where is events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "LOCATE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "LOCATE"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "what uses events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "DOWNSTREAM"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "what does events use",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "UPSTREAM"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "dependents of events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "DOWNSTREAM"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "dependencies of events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "UPSTREAM"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "downstream of events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "DOWNSTREAM"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "upstream of events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "UPSTREAM"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "who invokes events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLERS"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "callers of events",
+        "before": {
+          "status": "no-match",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLERS"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "what does events call",
+        "before": {
+          "status": "no-match",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLEES"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "callees of events",
+        "before": {
+          "status": "no-match",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "CALLEES"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "trace from events",
+        "before": {
+          "status": "matched",
+          "operation": "LOCATE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "TRACE"
+        },
+        "confidentToChoice": true
+      },
+      {
+        "query": "path from events to src/lib/events.ts",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "PATH"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "path from src/lib/events.ts to events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "PATH"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "how does events reach src/lib/events.ts",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "FLOW"
+        },
+        "confidentToChoice": false
+      },
+      {
+        "query": "how does src/lib/events.ts reach events",
+        "before": {
+          "status": "needs-choice",
+          "operation": "NOT_SURE"
+        },
+        "after": {
+          "status": "needs-choice",
+          "operation": "FLOW"
+        },
+        "confidentToChoice": false
+      }
+    ]
+  }
+}
