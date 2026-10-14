@@ -91,8 +91,11 @@ test('collision choices paginate deterministically and preserve the operation', 
   assert.equal(new Set([...first.alternatives, ...second.alternatives].map(a => a.nodeId)).size, 25);
   assert.equal(second.operation, 'DOWNSTREAM'); assert.equal(second.truncated, false);
   assert.throws(() => q.query({...request, continuation: 'offset:25'}), /past/);
-  const chosen = q.query({...request, continuation: first.continuation, chosenNodeId: 'lib/backfill.py'});
+  // A choice starts the chosen traversal at its first page; with chosenNodeId a
+  // continuation pages that traversal, never the alternatives list.
+  const chosen = q.query({...request, chosenNodeId: 'lib/backfill.py'});
   assert.equal(chosen.seedNodeId, 'lib/backfill.py'); assert.equal(chosen.operation, 'DOWNSTREAM');
+  assert.throws(() => q.query({...request, continuation: first.continuation, chosenNodeId: 'lib/backfill.py'}), /past the end/);
 });
 test('PATH does not promote a fuzzy endpoint when resolving the other endpoint', () => {
   const q = createQueryService(small), query = 'path from backfill to lib/otherr.py';
@@ -125,3 +128,32 @@ for (const repo of ['honcho', 'salesroom']) {
     ['src/lib/events.ts', s.map.nodes.find(n => n.kind === 'layer' && n.label === 'app/api/events').id];
   checkSuite(repo, s, name, ids, ids[0]);
 }
+
+test('explicit choice keeps traversal pagination for files and symbols', () => {
+  const consumers = Array.from({length: 210}, (_, i) => 'app/c' + String(i).padStart(3, '0') + '.py');
+  const files = ['lib/backfill.py', ...consumers];
+  const symbol = (name, path) => ({id: path + ':' + name, kind: 'symbol', symbolKind: name === 'Backfill' ? 'class' : 'function',
+    name, qualname: name, path, start: 1, end: 2});
+  const target = symbol('Backfill', files[0]);
+  const callers = consumers.map((path, i) => symbol('use' + i, path));
+  const snapshot = {schema: 'dag-gps-workspace/v1', projectId: 'fixture', snapshotId: 'fixture', state: 'dependency-preview',
+    mapSha256: 'a'.repeat(64), scorerSha256: 'b'.repeat(64), source: {manifestSha256: 'c'.repeat(64)},
+    inventory: files.map(path => ({path, sha256: 'd'.repeat(64)})),
+    map: {nodes: files.map(path => ({id: path, path, label: path.split('/').at(-1), kind: 'file'})), edges: [],
+      file_edges: consumers.map(from => ({from, to: files[0], type: 'import'})),
+      symbol_graph: {nodes: [target, ...callers], unresolved: [],
+        edges: callers.map(c => ({from: c.id, to: target.id, type: 'call', confidence: 'resolved', sites: []}))}}};
+  const service = createQueryService(snapshot);
+  for (const [query, chosen] of [['what uses backfill', files[0]], ['who invokes backfill', target.id]]) {
+    const first = service.query({requestId: 'p1', query, chosenNodeId: chosen});
+    assert.equal(first.status, 'matched', query);
+    assert.ok(first.truncated && first.continuation, query + ' should page');
+    const second = service.query({requestId: 'p2', query, chosenNodeId: chosen, continuation: first.continuation});
+    assert.equal(second.status, 'matched', query);
+    const a = new Set(first.selectedNodeIds), b = second.selectedNodeIds.filter(id => id !== chosen);
+    assert.ok(b.length > 0, query + ': second page empty');
+    assert.ok(b.every(id => !a.has(id)), query + ': second page repeats the first page');
+    const all = new Set([...first.selectedNodeIds, ...second.selectedNodeIds]);
+    for (const c of query.startsWith('what uses') ? consumers : callers.map(c => c.id)) assert.ok(all.has(c), query + ': missing ' + c);
+  }
+});

@@ -176,7 +176,8 @@
     }
     $('results-heading').hidden = !$('results').children.length;
     $('more').hidden = !packet.truncated;
-    $('more').onclick = () => ask({query: request.query, continuation: packet.continuation});
+    $('more').onclick = () => ask(Object.assign({query: request.query, continuation: packet.continuation},
+      request.chosenNodeId !== undefined ? {chosenNodeId: request.chosenNodeId} : {}));
     clear('limitations');
     for (const l of packet.limitations) li('limitations', l);
     for (const call of packet.unresolvedCalls || []) li('limitations', 'UNRESOLVED: ' + call.expression + ' — ' + call.path + ':' + call.start,

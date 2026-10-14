@@ -497,9 +497,10 @@
           return packet;
         }
         return boundedSymbolQuery(packet, {...request, chosenNodeId: undefined},
-          {op, names: ids.map(Scorer.normalizeQuestion)}, request.chosenNodeId === undefined ? offset : 0);
+          {op, names: ids.map(Scorer.normalizeQuestion)}, offset);
       }
-      return fileOperation(packet, fileOp, ids, request.chosenNodeId === undefined ? offset : 0,
+      // After an explicit choice, a continuation pages the chosen traversal itself.
+      return fileOperation(packet, fileOp, ids, offset,
         'Explicit literal target. ' + targets.map(t => t.reason || '').filter(Boolean).join(' '));
     }
 
