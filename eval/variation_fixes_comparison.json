@@ -1,0 +1,192 @@
+{
+  "honcho": {
+    "correctToChoice": 36,
+    "newWrongVersusParserBefore": 0,
+    "correctToChoiceContainingTarget": 36,
+    "newWrongStrata": {
+      "unambiguous": 0,
+      "ambiguous": 0,
+      "mismatching-kind": 0
+    },
+    "newWrongVersusMainBefore": 149,
+    "newWrongVersusMainAfter": 61,
+    "negativeBefore": {
+      "total": 240,
+      "correct": 0,
+      "choose-correct": 0,
+      "wrong": 0,
+      "no-match": 240,
+      "unresolved": 0,
+      "overconfident": 0,
+      "correctPct": 0,
+      "successPct": 0,
+      "distinctSuccessful": 0
+    },
+    "negativeAfter": {
+      "total": 240,
+      "correct": 0,
+      "choose-correct": 0,
+      "wrong": 0,
+      "no-match": 240,
+      "unresolved": 0,
+      "overconfident": 0,
+      "correctPct": 0,
+      "successPct": 0,
+      "distinctSuccessful": 0
+    },
+    "directP95Before": 0.8136670000385493,
+    "directP95After": 1.0796250000130385,
+    "frozenNewWrong": 0,
+    "frozenBefore": {
+      "dev": {
+        "matchCorrect": 46,
+        "chooseCorrect": 12,
+        "noMatchCorrect": 16,
+        "wrong": 2,
+        "overconfident": 0,
+        "cases": 80,
+        "matchTotal": 46,
+        "chooseTotal": 18,
+        "noMatchTotal": 16
+      },
+      "holdout": {
+        "matchCorrect": 18,
+        "chooseCorrect": 5,
+        "noMatchCorrect": 4,
+        "wrong": 0,
+        "overconfident": 0,
+        "cases": 27,
+        "matchTotal": 18,
+        "chooseTotal": 5,
+        "noMatchTotal": 4
+      }
+    },
+    "frozenAfter": {
+      "dev": {
+        "matchCorrect": 46,
+        "chooseCorrect": 13,
+        "noMatchCorrect": 16,
+        "wrong": 1,
+        "overconfident": 0,
+        "cases": 80,
+        "matchTotal": 46,
+        "chooseTotal": 18,
+        "noMatchTotal": 16
+      },
+      "holdout": {
+        "matchCorrect": 18,
+        "chooseCorrect": 5,
+        "noMatchCorrect": 4,
+        "wrong": 0,
+        "overconfident": 0,
+        "cases": 27,
+        "matchTotal": 18,
+        "chooseTotal": 5,
+        "noMatchTotal": 4
+      }
+    },
+    "acceptance": {
+      "periodEqualsQuestionMark": true,
+      "fewerWrong": true,
+      "zeroOverconfidentNegatives": true,
+      "zeroNewFrozenWrong": true,
+      "holdoutMatchesRetained": true,
+      "directP95Under2ms": true
+    }
+  },
+  "salesroom": {
+    "correctToChoice": 36,
+    "newWrongVersusParserBefore": 7,
+    "correctToChoiceContainingTarget": 36,
+    "newWrongStrata": {
+      "unambiguous": 7,
+      "ambiguous": 0,
+      "mismatching-kind": 0
+    },
+    "newWrongVersusMainBefore": 542,
+    "newWrongVersusMainAfter": 535,
+    "negativeBefore": {
+      "total": 240,
+      "correct": 0,
+      "choose-correct": 0,
+      "wrong": 0,
+      "no-match": 240,
+      "unresolved": 0,
+      "overconfident": 0,
+      "correctPct": 0,
+      "successPct": 0,
+      "distinctSuccessful": 0
+    },
+    "negativeAfter": {
+      "total": 240,
+      "correct": 0,
+      "choose-correct": 0,
+      "wrong": 0,
+      "no-match": 240,
+      "unresolved": 0,
+      "overconfident": 0,
+      "correctPct": 0,
+      "successPct": 0,
+      "distinctSuccessful": 0
+    },
+    "directP95Before": 0.12129200005438179,
+    "directP95After": 0.2317080000648275,
+    "frozenNewWrong": 0,
+    "frozenBefore": {
+      "dev": {
+        "matchCorrect": 20,
+        "chooseCorrect": 5,
+        "noMatchCorrect": 6,
+        "wrong": 0,
+        "overconfident": 0,
+        "cases": 32,
+        "matchTotal": 20,
+        "chooseTotal": 6,
+        "noMatchTotal": 6
+      },
+      "holdout": {
+        "matchCorrect": 7,
+        "chooseCorrect": 0,
+        "noMatchCorrect": 2,
+        "wrong": 0,
+        "overconfident": 0,
+        "cases": 11,
+        "matchTotal": 7,
+        "chooseTotal": 2,
+        "noMatchTotal": 2
+      }
+    },
+    "frozenAfter": {
+      "dev": {
+        "matchCorrect": 20,
+        "chooseCorrect": 5,
+        "noMatchCorrect": 6,
+        "wrong": 0,
+        "overconfident": 0,
+        "cases": 32,
+        "matchTotal": 20,
+        "chooseTotal": 6,
+        "noMatchTotal": 6
+      },
+      "holdout": {
+        "matchCorrect": 7,
+        "chooseCorrect": 0,
+        "noMatchCorrect": 2,
+        "wrong": 0,
+        "overconfident": 0,
+        "cases": 11,
+        "matchTotal": 7,
+        "chooseTotal": 2,
+        "noMatchTotal": 2
+      }
+    },
+    "acceptance": {
+      "periodEqualsQuestionMark": true,
+      "fewerWrong": true,
+      "zeroOverconfidentNegatives": true,
+      "zeroNewFrozenWrong": true,
+      "holdoutMatchesRetained": true,
+      "directP95Under2ms": true
+    }
+  }
+}

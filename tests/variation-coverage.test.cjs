@@ -8,7 +8,7 @@ test('supported operation pattern families are present in the generated grid', (
     DOWNSTREAM: ['what uses {x}', 'downstream of {x}', 'downstream {x}'],
     UPSTREAM: ['what does {x} use', 'upstream of {x}', 'upstream {x}', 'which do {x} import'],
     PATH: ['route from {x} to {y}', 'how {x} reach {y}', 'how does {x} connect to {y}'],
-    TRACE: ['trace {x}']
+    TRACE: ['trace from {x}']
   };
   for (const repo of ['honcho', 'salesroom']) {
     const snapshot = JSON.parse(fs.readFileSync('artifacts/question-parser/' + repo + '/snapshot.json'));

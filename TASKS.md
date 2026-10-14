@@ -1,5 +1,14 @@
 # Tasks — DAG GPS
 
+## Current parser follow-up — final verification
+
+`t_b8a8498e`: terminal punctuation, bare-name choices and comparable synonym
+targets implemented, with RED-first service regressions on both pinned repos.
+Harness review points accepted and corrected separately before measuring fixes.
+Frozen sets have zero new wrong and no held-back match loss. Corrected-grid wrong
+falls 800→380 (Honcho) and 777→712 (Salesroom); six real-app checks pass.
+Full eight gates and consultant second opinion pending. No next feature launched.
+
 ## Measurement follow-up — awaiting review
 
 `t_984c3139`: deterministic question-variation benchmark implemented and run on
