@@ -15,9 +15,11 @@ import argparse
 import hashlib
 import hmac
 import json
+import os
 import re
 import secrets
 import shutil
+import stat
 import sys
 import threading
 import time
@@ -36,6 +38,7 @@ from app.context import ContextError, build_context, git_dir_for, read_source
 from app.contracts import ContractError, validate_snapshot
 from app.explanations import ExplanationError, validate_explanation
 from app.explanation_store import list_explanations, store_explanation
+from app.query_log import LABELS, QueryLog, label_for_status
 
 from app.query_worker import QueryBusy, QueryTimeout, QueryWorkerError, WorkerPool  # noqa: E402
 from app.repositories import RepositoryAcquisitionError, acquire_repository, parse_github_repository  # noqa: E402
@@ -51,6 +54,7 @@ SNAPSHOT_ID = re.compile(r'[0-9a-f]{64}\Z')
 JOB_ID = re.compile(r'j-[0-9a-f]{24}\Z')
 COMMIT = re.compile(r'[0-9a-f]{40}\Z')
 QUERY_FIELDS = {'snapshotId', 'requestId', 'query', 'continuation', 'chosenNodeId', 'certainOnly'}
+HOSTNAME = re.compile(r'[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?\Z')
 STATIC = {
     '/': ('web/workspace.html', 'text/html; charset=utf-8'),
     '/workspace.js': ('web/workspace.js', 'text/javascript; charset=utf-8'),
@@ -259,6 +263,8 @@ class _Handler(BaseHTTPRequestHandler):
         self.send_header('Referrer-Policy', 'no-referrer')
         self.send_header('Cross-Origin-Resource-Policy', 'same-origin')
         self.send_header('Content-Security-Policy', CSP)
+        if getattr(self, 'question_id', None):
+            self.send_header('X-DAG-GPS-Question-ID', self.question_id)
         self.end_headers()
         if self.command != 'HEAD':
             self.wfile.write(body)
@@ -269,10 +275,13 @@ class _Handler(BaseHTTPRequestHandler):
     def _check_boundary(self) -> None:
         app = self.server.app
         allowed = {'127.0.0.1:%d' % app.port, 'localhost:%d' % app.port, '[::1]:%d' % app.port}
+        origins = {'http://' + h for h in allowed}
+        allowed.update(app.allowed_hosts)
+        origins.update('https://' + h for h in app.allowed_hosts)
         if self.headers.get('Host') not in allowed:
             raise ApiError(403, 'Unexpected Host header')
         origin = self.headers.get('Origin')
-        if origin is not None and origin not in {'http://' + h for h in allowed}:
+        if origin is not None and origin not in origins:
             raise ApiError(403, 'Cross-origin requests are not allowed')
         if self.headers.get('Sec-Fetch-Site') not in (None, 'same-origin', 'none'):
             raise ApiError(403, 'Cross-site requests are not allowed')
@@ -301,6 +310,7 @@ class _Handler(BaseHTTPRequestHandler):
         return value
 
     def _dispatch(self) -> None:
+        self.question_id = None
         try:
             self._check_boundary()
             path = self.path
@@ -353,6 +363,12 @@ class _Handler(BaseHTTPRequestHandler):
               and parts[2] == 'snapshots' and parts[4] == 'explanations'):
             _, snapshot, index = app.store.snapshot(parts[1], parts[3], with_index=True)
             self._json(200, {'explanations': list_explanations(app.store.root, snapshot, index=index)})
+        elif method == 'GET' and len(parts) == 3 and parts[0] == 'projects' and parts[2] == 'questions':
+            app.store.project_dir(parts[1])  # Validate opaque project identity.
+            self._json(200, {'questions': app.query_log.entries(parts[1])})
+        elif method == 'POST' and len(parts) == 3 and parts[0] == 'projects' and parts[2] == 'verdict':
+            app.store.project_dir(parts[1])
+            self._verdict(parts[1], self._body())
         elif method == 'POST' and len(parts) == 3 and parts[0] == 'projects':
             route = parts[2]
             if route not in ('query', 'source', 'context', 'explanations'):
@@ -370,8 +386,23 @@ class _Handler(BaseHTTPRequestHandler):
             raise ApiError(404, 'Not found')
 
     def _query(self, project_id: str, body: dict[str, Any]) -> None:
-        _, packet, _ = self._packet(project_id, body)
+        start = time.perf_counter()
+        snapshot, packet, _ = self._packet(project_id, body)
+        if body.get('continuation') is None:
+            self.question_id = self.server.app.query_log.question(
+                project_id, snapshot, body, packet, (time.perf_counter() - start) * 1000)
         self._json(200, packet)
+
+    def _verdict(self, project_id: str, body: dict[str, Any]) -> None:
+        if (set(body) != {'entryId', 'label'} or type(body.get('entryId')) is not str
+                or not re.fullmatch(r'q-[0-9a-f]{32}', body['entryId'])
+                or type(body.get('label')) is not str or body['label'] not in LABELS):
+            raise ApiError(400, 'Expected a question entryId and label: match, no match or unsure')
+        try:
+            entry = self.server.app.query_log.verdict(project_id, body['entryId'], body['label'])
+        except KeyError:
+            raise ApiError(404, 'Unknown or expired question')
+        self._json(200, {'entryId': entry['entryId'], 'verdict': entry['verdict'], 'verdictAt': entry['verdictAt']})
 
     def _packet(self, project_id: str, body: dict[str, Any]) -> tuple:
         # All consumers re-run this exact validated request, never caller packets.
@@ -473,13 +504,20 @@ class _Handler(BaseHTTPRequestHandler):
 class WorkspaceServer:
     def __init__(self, root: Any, *, host: str = '127.0.0.1', port: int = 8765,
                  acquire: Callable[..., dict[str, Any]] = acquire_repository,
-                 worker_timeout: float = 10.0) -> None:
+                 worker_timeout: float = 10.0, allowed_hosts: tuple = (),
+                 session_file: Optional[Path] = None) -> None:
         if host not in ('127.0.0.1', '::1', 'localhost'):
             raise ValueError('The workspace service binds to loopback only')
+        for name in allowed_hosts:
+            if type(name) is not str or not HOSTNAME.fullmatch(name):
+                raise ValueError('Invalid allowed host')
+        self.allowed_hosts = tuple(allowed_hosts)
+        self.session_token = _load_session(session_file)
         self.store = WorkspaceStore(Path(root))
+        self.query_log = QueryLog(Path(root))
         self.imports = ImportManager(self.store, acquire)
         self.workers = WorkerPool(timeout=worker_timeout)
-        self.session_token = secrets.token_urlsafe(32)
+
         self.httpd = ThreadingHTTPServer(('127.0.0.1' if host == 'localhost' else host, port), _Handler)
         self.httpd.daemon_threads = True
         self.httpd.app = self
@@ -498,16 +536,52 @@ class WorkspaceServer:
         self.workers.close()
 
 
+def _load_session(path: Optional[Path]) -> str:
+    if path is None:
+        return secrets.token_urlsafe(32)
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        try:
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            with os.fdopen(fd, 'rb') as handle:
+                info = os.fstat(handle.fileno())
+                if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o600:
+                    raise ValueError('Session file must be a regular file with permissions 0600')
+                raw = handle.read(130)
+                if not re.fullmatch(rb'[A-Za-z0-9_-]{32,128}\n?', raw):
+                    raise ValueError('Session file is malformed; expected a 32–128 character URL-safe key')
+                return raw.decode('ascii').rstrip('\n')
+        except OSError as error:
+            raise ValueError('Cannot safely read session file') from error
+    else:
+        token = secrets.token_urlsafe(32)
+        with os.fdopen(fd, 'w', encoding='ascii') as handle:
+            handle.write(token + '\n')
+        return token
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description='Local DAG GPS workspace (loopback only).')
     parser.add_argument('--root', default=str(ROOT / 'artifacts' / 'workspace'),
                         help='private workspace directory (cache, snapshots)')
     parser.add_argument('--port', type=int, default=8765)
+    parser.add_argument('--allow-host', action='append', default=[],
+                        help='exact hostname accepted from a local HTTPS proxy; repeatable (no scheme or port)')
+    parser.add_argument('--session-file', type=Path,
+                        help='persistent private key file; created 0600, unsafe or malformed files refused')
     args = parser.parse_args(argv)
     if shutil.which('node') is None:
         print('Node.js is required for queries', file=sys.stderr)
         return 2
-    server = WorkspaceServer(args.root, port=args.port)
+    try:
+        server = WorkspaceServer(args.root, port=args.port, allowed_hosts=tuple(args.allow_host),
+                                 session_file=args.session_file)
+    except (ValueError, OSError) as error:
+        print('Cannot start workspace: ' + str(error), file=sys.stderr)
+        return 2
     print('DAG GPS workspace running. Open this private link (it contains your session key):')
     print('  ' + server.url, flush=True)
     try:

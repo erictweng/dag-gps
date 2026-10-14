@@ -13,12 +13,13 @@
   const session = sessionStorage.getItem('dag-gps-session');
   if (!session) $('session-warning').hidden = false;
 
-  async function api(method, path, body) {
+  async function api(method, path, body, onResponse) {
     const options = {method, headers: {'X-DAG-GPS-Session': session || ''}, credentials: 'omit', cache: 'no-store'};
     if (body !== undefined) { options.headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body); }
     const response = await fetch(path, options);
     const value = await response.json().catch(() => ({error: 'Unreadable response'}));
     if (!response.ok) throw new Error(value.error || ('HTTP ' + response.status));
+    if (onResponse) onResponse(response);
     return value;
   }
   const text = (id, value) => { $(id).textContent = value; };
@@ -38,7 +39,7 @@
   const graph = GV.createGraphView($('graph'), {onSelect: id => selectFile(id, {fromGraph: true})});
   const state = {projects: [], project: null, snapshot: null, request: null,
     files: new Map(), nodes: new Map(), groupLabel: new Map(), packet: null, context: null,
-    epoch: 0, sourceVersion: 0, consentVersion: 0};
+    epoch: 0, sourceVersion: 0, consentVersion: 0, questionId: null, historyVersion: 0};
 
   // ---------------------------------------------------------------- projects
   async function loadProjects(selectId) {
@@ -70,6 +71,8 @@
       select.appendChild(option);
     }
     select.value = state.project.current.snapshotId;
+    clear('history'); text('history-count', '0');
+    loadHistory();
     await loadSnapshot(select.value);
   }
   async function loadSnapshot(snapshotId) {
@@ -142,17 +145,75 @@
     if (!state.snapshot) { text('answer-status', 'Import or select a project first.'); return; }
     const snapshot = state.snapshot, project = state.project;
     const epoch = ++state.epoch;
+    const priorQuestionId = state.questionId;
     resetAgent();
     state.sourceVersion++; $('source-viewer').hidden = true;
     const request = Object.assign({snapshotId: snapshot.snapshotId, requestId: 'ui-' + crypto.randomUUID(),
       query: $('question').value.trim(), certainOnly: $('certain-only').checked}, extra || {});
     if (!request.query) return;
     try {
-      const packet = await api('POST', '/api/projects/' + project.projectId + '/query', request);
+      let questionId = null;
+      const packet = await api('POST', '/api/projects/' + project.projectId + '/query', request,
+        response => { questionId = response.headers.get('X-DAG-GPS-Question-ID'); });
       if (epoch !== state.epoch || snapshot !== state.snapshot) return;
       state.request = request; state.packet = packet;
+      state.questionId = request.continuation ? priorQuestionId : questionId;
+      $('label-box').hidden = !state.questionId;
+      if (!request.continuation) {
+        text('label-auto', autoLabel(packet.status)); text('label-verdict', '');
+        for (const b of document.querySelectorAll('#label-box [data-label]')) b.setAttribute('aria-pressed', 'false');
+      }
+      loadHistory();
       render(packet, Boolean(extra && extra.continuation));
     } catch (error) { if (epoch === state.epoch) showError(error); }
+  }
+  function autoLabel(status) { return status === 'matched' ? 'match' : status === 'no-match' ? 'no match' : 'unsure'; }
+  async function saveVerdict(project, entryId, label) {
+    const saved = await api('POST', '/api/projects/' + project.projectId + '/verdict', {entryId, label});
+    if (project !== state.project) return;
+    if (entryId === state.questionId) {
+      text('label-verdict', ' · you said: ' + saved.verdict);
+      for (const b of document.querySelectorAll('#label-box [data-label]'))
+        b.setAttribute('aria-pressed', String(b.dataset.label === saved.verdict));
+    }
+    await loadHistory();
+  }
+  for (const b of document.querySelectorAll('#label-box [data-label]')) b.addEventListener('click', async () => {
+    const project = state.project, entryId = state.questionId;
+    if (!entryId) return;
+    const buttons = [...document.querySelectorAll('#label-box [data-label]')];
+    buttons.forEach(button => { button.disabled = true; });
+    try { await saveVerdict(project, entryId, b.dataset.label); }
+    catch (error) { if (entryId === state.questionId) text('label-verdict', ' · could not save: ' + error.message); }
+    finally { buttons.forEach(button => { button.disabled = false; }); }
+  });
+  async function loadHistory() {
+    const project = state.project, version = ++state.historyVersion;
+    if (!project) return;
+    try {
+      const {questions} = await api('GET', '/api/projects/' + project.projectId + '/questions');
+      if (project !== state.project || version !== state.historyVersion) return;
+      clear('history'); text('history-count', String(questions.length));
+      text('history-summary', questions.length ? 'Newest first; automatic labels are not correctness judgments.' : 'No questions yet.');
+      for (const q of questions.slice(0, 200)) {
+        const item = li('history', q.query + ' — auto: ' + q.label + (q.verdict ? ' · you: ' + q.verdict : '') +
+          ' · ' + q.commit.slice(0, 7));
+        const controls = element(item, 'div', '', 'label-buttons');
+        for (const label of ['match', 'no match', 'unsure']) {
+          const button = element(controls, 'button', label); button.type = 'button';
+          button.setAttribute('aria-pressed', String(q.verdict === label));
+          button.addEventListener('click', async () => {
+            for (const b of controls.children) b.disabled = true;
+            try { await saveVerdict(project, q.entryId, label); }
+            catch (error) { if (project === state.project) text('history-summary', 'Could not save: ' + error.message); }
+            finally { for (const b of controls.children) b.disabled = false; }
+          });
+        }
+      }
+      if (questions.length > 200) text('history-summary', 'Showing newest 200; export the retained log for all entries.');
+    } catch (error) {
+      if (project === state.project && version === state.historyVersion) text('history-summary', 'Could not load history: ' + error.message);
+    }
   }
   function render(packet, append) {
     const request = state.request;
@@ -240,6 +301,8 @@
 
   // ------------------------------------------------ revision-bound source / agents
   function resetAgent() {
+    state.questionId = null;
+    $('label-box').hidden = true;
     state.request = state.packet = state.context = null;
     state.consentVersion++;
     $('agent-section').hidden = true;
