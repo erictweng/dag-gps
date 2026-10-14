@@ -1,5 +1,16 @@
 # Tasks — DAG GPS
 
+## Folder tree data card — verified, consultant second opinion requested
+
+`t_57ec698f`: plan Tasks 1–4 and 6 implemented on `folder-tree` (`fd5104c`).
+Task 5 drill-down dropped as directed. Stable owners/IDs, validated ancestry,
+cached descendants, outside-only traversal, real-file PATH witnesses and folder
+choices/paging verified on both pinned repos. 70 folder questions; zero new wrong
+frozen answers; 499 Python / 274 JS and all eight gates/packaging pass. See
+`docs/FOLDER_TREE.md` for performance, snapshot growth and grading tradeoffs.
+Next: dag-consultant second opinion, then generalist approval/integration only.
+No next mini-milestone is authorized by this card.
+
 ## Current question-log card — verified, consultant second opinion requested
 
 `t_44e9d449`: port playground journal/labels/history and persistent session safely
