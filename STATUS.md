@@ -1,6 +1,6 @@
 # Status — DAG GPS
 
-## Question log + persistent session — implemented, final gates pending
+## Question log + persistent session — verified, consultant second opinion requested
 
 `t_44e9d449`, isolated `question-log`, includes server-speed and parser-collisions
 (including parent's `1adb892` pagination fix). Workspace query journal, saved
@@ -8,7 +8,9 @@ verdicts/history, safe persistent key, explicit HTTPS proxy hosts and draft expo
 implemented. 492 Python / 266 JS pass, zero skips; first Python attempt retained
 an existing oversized-body connection-reset failure, unchanged rerun passed.
 Real Chromium Honcho: five questions, verdicts, same-link restart/history pass.
-Eight final gates and consultant second opinion remain pending. No push/main merge/PR.
+All eight unchanged gates and packaging pass on `365197b`; scorer p95 3.873 ms.
+Warm Honcho HTTP p95 6.070 ms vs fresh server-speed 6.246 ms (480 requests each),
+within +1 ms. Consultant second opinion requested. No push/main merge/PR.
 See `docs/QUESTION_LOG.md`; only this feature is active in this worktree.
 
 ## Parser collision resolution — verified, consultant second opinion requested

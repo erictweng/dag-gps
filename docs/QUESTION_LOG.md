@@ -101,7 +101,42 @@ No frozen sets are edited, and no model calls or automatic tuning occurs.
   `artifacts/question-log/browser-1/receipt.json`, six screenshots and question rows.
   This uses a copied pinned Honcho snapshot, rebound to truthful query-code hashes;
   the live playground is untouched. Browser shows the real app/graph, not mocks.
-- Final exact-checkpoint eight gates and final latency run pending below.
+- All eight unchanged release gates and packaging pass on implementation checkpoint
+  `365197b8fd313cd5d75188f62c1f34f31c3b4c62`: build, test, smoke, release session,
+  accessibility, performance, UI performance and milestone acceptance. Gated suites:
+  492 Python / 266 JS, zero skips. Release scorer worst p95 3.873 ms (<10 ms).
+  Receipt: `artifacts/question-log/gates/verification.json`. Gates passed on their
+  first complete attempt; no threshold changes or performance-failure retries.
+  Later documentation commits are not misrepresented as the gated checkpoint.
+
+### Warm HTTP latency
+
+Existing `bench_server_performance.py`, identical 240 Honcho inputs twice (480
+measured requests per run), one cold request and 20 warmups, serial local HTTP.
+Same pinned snapshot, truthful code bindings. No suites ran concurrently with
+these measurements. Full response bodies were read; logging stays in the timed path.
+
+| Version | p50 ms | p95 ms | p99 ms |
+|---|---:|---:|---:|
+| Stacked base before implementation | 1.402 | 8.139 | 15.583 |
+| Final question-log implementation | 1.196 | 6.070 | 12.694 |
+| Fresh server-speed reference `cebe7c4` | 1.066 | 6.246 | 12.258 |
+
+Final p95 is 0.175 ms below the fresh server-speed reference, meeting the +1 ms
+limit; also 0.923 ms below its historical 6.993 ms. This is evidence of no measured
+regression, not a claim that disk logging accelerates queries. Machine/GC variance
+is visible in the base comparison. All 480 stacked-base/final packet byte hashes
+match; the added question identity is an HTTP header, not a packet mutation.
+
+Artifacts: `artifacts/question-log/{before,after-final,server-speed-reference}/`.
+The preliminary `after/` run (p95 5.514 ms) is retained, but is not the final result:
+torn-line append recovery and the Unicode line cap were hardened afterward. There
+were no discarded failing performance attempts. Before/final summaries record the
+then-current merge HEAD because measurement preceded the implementation commit;
+the final measured source was subsequently committed unchanged as `365197b`.
+
+Dag-consultant second opinion requested; final approval remains with the generalist.
+No next feature, public deployment, main merge, push or PR was started.
 
 Reproduction (installed local test dependencies, not runtime dependencies):
 
