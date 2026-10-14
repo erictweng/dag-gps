@@ -6,6 +6,7 @@ not architectural meaning, actual filesystem bytes, or human consent UI.
 """
 import re
 import math
+import heapq
 
 PACKET_SCHEMA = 'dag-gps-evidence/v1'
 SNAPSHOT_SCHEMA = 'dag-gps-workspace/v1'
@@ -283,6 +284,59 @@ def _symbol_catalog(extension, files, ids, kinds, edges):
     return call_edges
 
 
+class SnapshotIndex(dict):
+    """Trusted in-process index. Snapshot and index are read-only by convention.
+
+    Only validate_snapshot constructs this after the full strict check. Never
+    accept an index from JSON or reuse it after mutating its snapshot.
+    Dictionary access preserves the existing validate_snapshot return API.
+    """
+
+    def __init__(self, snapshot, **catalog):
+        super().__init__(catalog)
+        self.snapshot = snapshot
+        self.content_sha256 = None
+        self.cache_key = None
+        self.certain_edges = {key: certain_edge(edge) for key, edge in self['callEdges'].items()}
+        extension = snapshot['map'].get('symbol_graph', {})
+        self.nodes = {n['id']: n for n in snapshot['map']['nodes']}
+        self.map_node_ids = frozenset(self.nodes)
+        self.symbols = {n['id']: n for n in extension.get('nodes', [])}
+        self.nodes.update(self.symbols)
+        self.unresolved = []
+        for calls in (extension.get('unresolved', []),
+                      certain_unresolved(extension) if extension else []):
+            by_caller = {}
+            for position, call in enumerate(calls):
+                count, first = by_caller.setdefault(call.get('from'), [0, []])
+                if count < 100:
+                    first.append((position, call))
+                by_caller[call.get('from')][0] += 1
+            self.unresolved.append(by_caller)
+        # changes is deliberately validated only when a changed packet needs it,
+        # matching the legacy contract's conditional validation/error precedence.
+        self.changes_error = None
+        try:
+            changes = _obj(snapshot.get('changes'), 'Observed snapshot changes')
+            self.baseline = _text(changes.get('baselineSnapshotId'), 'Observed baseline snapshot ID')
+            self.changed = frozenset(_unique_ids(changes.get('changedNodeIds'), 'Changed nodes', 100000, self['nodeIds']))
+        except ContractError as error:
+            self.changes_error = str(error)
+
+    def for_snapshot(self, snapshot):
+        if snapshot is not self.snapshot:
+            raise ContractError('Snapshot index belongs to a different snapshot object')
+        return self
+
+    def unresolved_for(self, selected, certain):
+        if certain and 'symbol_graph' not in self.snapshot['map']:
+            # Legacy certain_unresolved({}) fails here, not during snapshot checks.
+            raise KeyError('unresolved')
+        groups = [self.unresolved[int(certain)].get(ident, (0, [])) for ident in selected]
+        first = heapq.nsmallest(100, (item for _, calls in groups for item in calls), key=lambda item: item[0])
+        return [call for _, call in first], sum(count for count, _ in groups)
+
+
 def validate_snapshot(snapshot):
     snapshot = _obj(snapshot, 'Snapshot')
     _finite_json(snapshot, 'Snapshot', MAX_SNAPSHOT_VALUES)
@@ -371,10 +425,16 @@ def validate_snapshot(snapshot):
                 if type(value) is not str or len(value) > cap or any(ord(c) < 32 for c in value):
                     raise ContractError('Invalid bounded search text')
     # Legitimate directed cycles remain data, not silently deleted links.
-    return {'nodeIds': set(ids), 'nodeKinds': kinds, 'edges': edges, 'files': files, 'callEdges': call_edges}
+    return SnapshotIndex(snapshot, nodeIds=set(ids), nodeKinds=kinds, edges=edges, files=files, callEdges=call_edges)
 
 
 def validate_evidence_packet(packet, snapshot):
+    # Preserve packet JSON errors before snapshot errors for legacy callers.
+    _validate_packet_json(packet)
+    return _validate_packet_against(packet, validate_snapshot(snapshot))
+
+
+def _validate_packet_json(packet):
     import json
     packet = _obj(packet, 'Evidence packet')
     _finite_json(packet, 'Evidence packet', MAX_PACKET_VALUES)
@@ -384,7 +444,18 @@ def validate_evidence_packet(packet, snapshot):
         raise ContractError('Packet must be finite JSON data') from error
     if len(encoded) > MAX_PACKET_BYTES:
         raise ContractError('Packet exceeds byte limit')
-    graph = validate_snapshot(snapshot)
+
+
+def validate_evidence_packet_against(packet, index):
+    """Validate untrusted packet against an already validated, trusted index."""
+    _validate_packet_json(packet)
+    return _validate_packet_against(packet, index)
+
+
+def _validate_packet_against(packet, graph):
+    if not isinstance(graph, SnapshotIndex):
+        raise ContractError('Expected a validated SnapshotIndex')
+    snapshot = graph.snapshot
     certain = packet.get('certainOnly', False)
     if type(certain) is not bool:
         raise ContractError('certainOnly must be boolean')
@@ -392,7 +463,7 @@ def validate_evidence_packet(packet, snapshot):
         if edge.get('type') == 'call':
             expected = graph['callEdges'].get(_edge(edge))
             if certain and expected:
-                expected = certain_edge(expected)
+                expected = graph.certain_edges[_edge(edge)]
             if edge != expected:
                 raise ContractError('Call evidence differs from observed call sites')
     if packet.get('schema') != PACKET_SCHEMA:
@@ -407,15 +478,13 @@ def validate_evidence_packet(packet, snapshot):
     _enum(packet.get('operation'), OPERATIONS, 'operation')
     selected = _unique_ids(packet.get('selectedNodeIds'), 'Selected nodes', MAX_SELECTED_NODES, graph['nodeIds'])
     if 'entryPoints' in packet:
-        by_id = {n['id']: n for n in snapshot['map'].get('symbol_graph', {}).get('nodes', [])}
+        by_id = graph.symbols
         expected = [{'nodeId': ident, 'decorators': by_id[ident]['entryPoint']} for ident in selected if by_id.get(ident, {}).get('entryPoint')]
         if packet['entryPoints'] != expected:
             raise ContractError('Entry point evidence must match selected definitions')
     if 'unresolvedCalls' in packet or 'unresolvedCallCount' in packet:
-        extension = snapshot['map'].get('symbol_graph', {})
-        unknown = certain_unresolved(extension) if certain else extension.get('unresolved', [])
-        expected = [c for c in unknown if c.get('from') in selected]
-        if packet.get('unresolvedCalls') != expected[:100] or type(packet.get('unresolvedCallCount')) is not int or packet['unresolvedCallCount'] != len(expected):
+        expected, count = graph.unresolved_for(selected, certain)
+        if packet.get('unresolvedCalls') != expected or type(packet.get('unresolvedCallCount')) is not int or packet['unresolvedCallCount'] != count:
             raise ContractError('Unresolved call evidence must match the selected symbols')
     selected_edges = _array(packet.get('selectedEdges'), 'Selected edges', MAX_SELECTED_EDGES)
     edge_keys = [_edge(edge) for edge in selected_edges]
@@ -474,7 +543,9 @@ def validate_evidence_packet(packet, snapshot):
         _text(changes.get('baselineSnapshotId'), 'Observed baseline snapshot ID')
         if packet.get('baselineSnapshotId') != changes.get('baselineSnapshotId'):
             raise ContractError('Changed highlights require an explicit observed baseline')
-        changed = _unique_ids(changes.get('changedNodeIds'), 'Changed nodes', 100000, graph['nodeIds'])
+        if graph.changes_error is not None:
+            raise ContractError(str(graph.changes_error))
+        changed = graph.changed
         if not set(selected).issubset(changed):
             raise ContractError('Relevant/affected nodes are not automatically actually changed')
     for ref in _array(packet.get('sourceRefs'), 'Source references', MAX_SOURCE_REFS):

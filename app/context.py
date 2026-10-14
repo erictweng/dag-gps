@@ -6,7 +6,7 @@ validated Git cache. ContractError propagates; retrieval failures use ContextErr
 import hashlib
 from pathlib import Path
 
-from app.contracts import validate_evidence_packet, validate_snapshot
+from app.contracts import validate_evidence_packet, validate_evidence_packet_against, validate_snapshot
 from app.repositories import RepositoryAcquisitionError, _entry_path, _run_git
 from app.workspace_snapshot import canonical_json
 
@@ -74,17 +74,17 @@ def _blob(git_dir, snapshot, path):
 
 
 def read_source(git_dir, snapshot, path, *, start=None, end=None,
-                max_lines=400, max_bytes=256 * 1024):
+                max_lines=400, max_bytes=256 * 1024, index=None):
     """Return whole logical lines from a hash-verified commit blob.
 
     Ranges are inclusive. Byte cost includes original UTF-8 line terminators.
     Empty excerpts have null start/end; nextStart is the first unreturned line
     within the requested range, even when a single line cannot fit the budget.
     """
-    validate_snapshot(snapshot)
+    index = index.for_snapshot(snapshot) if index is not None else validate_snapshot(snapshot)
     if type(path) is not str:
         raise ContextError('Path must exactly match an inventory path')
-    entry = next((f for f in snapshot['inventory'] if f['path'] == path), None)
+    entry = index['files'].get(path)
     if entry is None:
         raise ContextError('Path must exactly match an inventory path')
     if entry.get('contentKind') != 'utf-8-text' or entry['lineCount'] is None:
@@ -135,13 +135,17 @@ def read_source(git_dir, snapshot, path, *, start=None, end=None,
 
 
 def build_context(git_dir, snapshot, packet, *, budget_bytes=64 * 1024,
-                  max_files=20, lines_per_file=80):
+                  max_files=20, lines_per_file=80, index=None):
     """Build selected-file context, validating provenance before anything else.
 
     budget_bytes bounds the sum of canonical JSON encodings of included file
     entries (including their metadata and escaping), not the envelope/omissions.
     """
-    validate_evidence_packet(packet, snapshot)
+    if index is None:
+        validate_evidence_packet(packet, snapshot)
+        index = validate_snapshot(snapshot)
+    else:
+        validate_evidence_packet_against(packet, index.for_snapshot(snapshot))
     _integer(budget_bytes, 'budget_bytes', minimum=0)
     _integer(max_files, 'max_files', minimum=0)
     _integer(lines_per_file, 'lines_per_file')
@@ -159,9 +163,8 @@ def build_context(git_dir, snapshot, packet, *, budget_bytes=64 * 1024,
     }
     if packet['status'] != 'matched':
         return result
-    nodes = {node['id']: node for node in snapshot['map']['nodes']}
-    nodes.update({node['id']: node for node in snapshot['map'].get('symbol_graph', {}).get('nodes', [])})
-    inventory = {entry['path']: entry for entry in snapshot['inventory']}
+    nodes = index.nodes
+    inventory = index['files']
     selected = list(packet['selectedNodeIds'])
     seed = packet.get('seedNodeId')
     if seed in selected:
@@ -185,7 +188,7 @@ def build_context(git_dir, snapshot, packet, *, budget_bytes=64 * 1024,
             reason = 'byte budget exhausted'
         else:
             source = read_source(git_dir, snapshot, path, start=node.get('start'), end=node.get('end'), max_lines=lines_per_file,
-                                 max_bytes=min(remaining, 256 * 1024))
+                                 max_bytes=min(remaining, 256 * 1024), index=index)
             excerpt = {key: source[key] for key in ('path', 'sha256', 'start', 'end', 'lines', 'truncated')}
             # Whole-line trimming includes JSON escaping and per-file metadata.
             # Binary search avoids quadratic work for caller-selected large caps.

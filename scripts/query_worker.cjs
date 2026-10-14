@@ -22,8 +22,10 @@ const file = process.argv[2];
 if (!file) fail('usage: query_worker.cjs SNAPSHOT.json');
 const stat = fs.statSync(file);
 if (!stat.isFile() || stat.size > MAX_SNAPSHOT_BYTES) fail('snapshot must be a bounded regular file');
-const snapshot = JSON.parse(fs.readFileSync(file, 'utf8'));
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
+const bytes = fs.readFileSync(file);
+if (process.argv[3] && sha(bytes) !== process.argv[3]) fail('snapshot changed since validation');
+const snapshot = JSON.parse(bytes.toString('utf8'));
 for (const name of QUERY_CODE) {
   const actual = sha(fs.readFileSync(path.join(ROOT, name)));
   const bound = snapshot.queryCode && snapshot.queryCode[name];

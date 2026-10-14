@@ -104,6 +104,35 @@ class WorkspaceServerTests(unittest.TestCase):
         return type(self)._job
 
     # ---- M3 revision-bound source and agent intake -------------------------
+    def test_warm_routes_never_rescan_snapshot(self):
+        from contextlib import ExitStack
+        from unittest.mock import patch
+        base, payload, _ = self.context_and_explanation()
+        with ExitStack() as stack:
+            for module in ['app.contracts', 'app.server', 'app.context', 'app.explanations', 'app.query_worker']:
+                stack.enter_context(patch(module + '.validate_snapshot', side_effect=AssertionError('full snapshot scan')))
+            self.assertEqual(200, self.request('POST', base + '/query', dict(payload['request'], snapshotId=payload['snapshotId']))[0])
+            self.assertEqual(200, self.request('POST', base + '/source', dict(snapshotId=payload['snapshotId'], path='lib/util.py'))[0])
+            self.context_and_explanation()
+            self.assertEqual(200, self.request('POST', base + '/explanations', payload)[0])
+            self.assertEqual(200, self.request('GET', base + '/snapshots/' + payload['snapshotId'] + '/explanations')[0])
+
+    def test_tampered_disk_snapshot_is_rejected_after_warm_query(self):
+        base, body = self.agent_request()
+        self.assertEqual(200, self.request('POST', base + '/query', body)[0])
+        path, _ = self.server.store.snapshot(self.imported()['projectId'], body['snapshotId'])
+        original = path.read_bytes()
+        altered = json.loads(original)
+        altered['map']['nodes'][0]['kind'] = 'invalid'
+        try:
+            path.write_text(json.dumps(altered))
+            status, _, error = self.request('POST', base + '/query', body)
+            self.assertEqual(422, status)
+            self.assertIn('evidence contract', error['error'])
+        finally:
+            path.write_bytes(original)
+        self.assertEqual(200, self.request('POST', base + '/query', body)[0])
+
     def agent_request(self):
         job = self.imported()
         return '/api/projects/' + job['projectId'], {

@@ -19,7 +19,7 @@ import threading
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
-from app.contracts import ContractError, validate_evidence_packet
+from app.contracts import ContractError, validate_snapshot, validate_evidence_packet_against
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER_SCRIPT = ROOT / 'scripts' / 'query_worker.cjs'
@@ -44,13 +44,16 @@ class QueryBusy(QueryWorkerError):
 class QueryWorker:
     def __init__(self, snapshot_path: Any, snapshot: Mapping[str, Any], *,
                  command: Optional[Sequence[str]] = None, timeout: float = DEFAULT_TIMEOUT,
-                 max_waiting: int = MAX_WAITING) -> None:
+                 max_waiting: int = MAX_WAITING, index=None) -> None:
         self.snapshot_path = Path(snapshot_path)
         self.snapshot = snapshot
+        self.index = index.for_snapshot(snapshot) if index is not None else validate_snapshot(snapshot)
         node = shutil.which('node')
         if command is None and node is None:
             raise QueryWorkerError('Node.js is required for the query worker')
         self.command = list(command) if command else [node, str(WORKER_SCRIPT), str(self.snapshot_path)]
+        if command is None and getattr(self.index, 'content_sha256', None):
+            self.command.append(self.index.content_sha256)
         self.timeout = float(timeout)
         self._lock = threading.Lock()
         self._waiting = threading.BoundedSemaphore(max_waiting)
@@ -179,7 +182,7 @@ class QueryWorker:
             self._kill()
             raise QueryWorkerError('Worker reply has a mismatched request ID')
         try:
-            validate_evidence_packet(packet, self.snapshot)
+            validate_evidence_packet_against(packet, self.index)
         except ContractError as error:
             self._kill()
             raise QueryWorkerError('Worker packet failed the evidence contract: %s' % error)
@@ -194,28 +197,54 @@ class QueryWorker:
 
 
 class WorkerPool:
-    """At most ``size`` live workers, keyed by snapshot ID (least recently used evicted)."""
+    """At most size workers, keyed by validated file generation; leased while busy."""
 
     def __init__(self, size: int = 4, **options: Any) -> None:
         self.size = size
         self.options = options
-        self._workers: 'collections.OrderedDict[str, QueryWorker]' = collections.OrderedDict()
-        self._lock = threading.Lock()
+        self._workers: 'collections.OrderedDict[Any, QueryWorker]' = collections.OrderedDict()
+        self._lock = threading.RLock()
+        self._condition = threading.Condition(self._lock)
+        self._active = collections.Counter()
 
-    def get(self, snapshot_path: Path, snapshot: Mapping[str, Any]) -> QueryWorker:
-        key = snapshot['snapshotId']
+    @staticmethod
+    def _key(snapshot_path, snapshot, index):
+        return getattr(index, 'cache_key', None) or (str(snapshot_path), snapshot['snapshotId'], id(snapshot))
+
+    def get(self, snapshot_path: Path, snapshot: Mapping[str, Any], *, index=None) -> QueryWorker:
+        key = self._key(snapshot_path, snapshot, index)
         with self._lock:
             worker = self._workers.pop(key, None)
             if worker is None:
-                worker = QueryWorker(snapshot_path, snapshot, **self.options)
+                if len(self._workers) >= self.size:
+                    idle = next((k for k in self._workers if not self._active[k]), None)
+                    if idle is None:
+                        raise QueryBusy('Query worker is busy; retry shortly')
+                    self._workers.pop(idle).close()
+                worker = QueryWorker(snapshot_path, snapshot, index=index, **self.options)
             self._workers[key] = worker
-            while len(self._workers) > self.size:
-                _, old = self._workers.popitem(last=False)
-                old.close()
             return worker
 
-    def close(self) -> None:
+    def query(self, snapshot_path, snapshot, request, *, index=None):
+        # Keep eviction from closing/restarting a worker while a request owns it.
+        # Different revisions can still run concurrently; same-worker admission
+        # and timeout/error behavior remain owned by QueryWorker.
+        key = self._key(snapshot_path, snapshot, index)
         with self._lock:
+            worker = self.get(snapshot_path, snapshot, index=index)
+            self._active[key] += 1
+        try:
+            return worker.query(request)
+        finally:
+            with self._condition:
+                self._active[key] -= 1
+                if not self._active[key]:
+                    del self._active[key]
+                self._condition.notify_all()
+
+    def close(self) -> None:
+        with self._condition:
+            self._condition.wait_for(lambda: not self._active)
             for worker in self._workers.values():
                 worker.close()
             self._workers.clear()
