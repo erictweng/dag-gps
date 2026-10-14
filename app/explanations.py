@@ -8,7 +8,7 @@ import hashlib
 import unicodedata
 
 from app.contracts import (ContractError, _array, _finite_json, _hash, _obj,
-                           _path, validate_evidence_packet, validate_snapshot)
+                           _path, validate_evidence_packet_against, validate_snapshot)
 from app.workspace_snapshot import canonical_json
 
 EXPLANATION_SCHEMA = 'dag-gps-explanation/v1'
@@ -78,7 +78,7 @@ def _citations(value, graph, allowed):
     return value
 
 
-def validate_explanation(explanation, snapshot, packet, *, allowed_paths=None) -> dict:
+def validate_explanation(explanation, snapshot, packet, *, allowed_paths=None, index=None) -> dict:
     """Validate against a trusted snapshot and the exact issued evidence packet.
 
     ``allowed_paths`` optionally restricts citations to context files (a list,
@@ -89,8 +89,8 @@ def validate_explanation(explanation, snapshot, packet, *, allowed_paths=None) -
     """
     try:
         # Validate trusted provenance before considering any untrusted prose.
-        graph = validate_snapshot(snapshot)
-        validate_evidence_packet(packet, snapshot)
+        graph = index.for_snapshot(snapshot) if index is not None else validate_snapshot(snapshot)
+        validate_evidence_packet_against(packet, graph)
         _finite_json(explanation, 'Explanation', MAX_EXPLANATION_VALUES)
         _fields(explanation, 'schema requestId projectId snapshotId packetSha256 agent '
                 'paragraphs suggestedRelationships limitations usage', 'Explanation')

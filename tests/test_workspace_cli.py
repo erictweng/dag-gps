@@ -275,6 +275,37 @@ class WorkspaceCliTests(unittest.TestCase):
         for tool in ('get_dependencies', 'get_dependents', 'find_path', 'get_source', 'get_context', 'submit_explanation'):
             self.call(self.request(tool, {}), ok=False)
 
+    def test_bridge_validates_snapshot_once_per_call(self):
+        # The store validates the snapshot once and returns its index; every
+        # bridge tool must reuse that index instead of re-running the full check.
+        from app import contracts
+        from app.agent_bridge import AgentBridge
+        original = contracts.validate_snapshot
+        calls = []
+        def counted(*args, **kwargs):
+            calls.append(1)
+            return original(*args, **kwargs)
+        modules = ['app.contracts', 'app.server', 'app.query_worker', 'app.context', 'app.explanations']
+        patches = [mock.patch(name + '.validate_snapshot', side_effect=counted) for name in modules]
+        for patch in patches:
+            patch.start()
+        self.addCleanup(lambda: [patch.stop() for patch in patches])
+        bridge = AgentBridge(self.root)
+        packet = self.packet()
+        requests = {
+            'find_nodes': self.request('find_nodes', {'query': 'lib/core.py'}),
+            'get_source': self.request('get_source', {'path': 'lib/core.py', 'start': 1, 'end': 1}),
+            'get_context': self.request('get_context', {'query': 'lib/core.py'}),
+            'get_dependencies': self.request('get_dependencies', {'path': 'lib/core.py'}),
+            'find_path': self.request('find_path', {'from': 'app/main.py', 'to': 'lib/util.py'}),
+            'submit_explanation': self.submission(packet, useContext=True),
+        }
+        for tool, request in requests.items():
+            calls.clear()
+            result = bridge.call(request)
+            self.assertTrue(result['ok'], (tool, result))
+            self.assertEqual(1, len(calls), tool + ' validated the full snapshot more than once')
+
     def test_bridge_never_uses_shell(self):
         from app.agent_bridge import AgentBridge
         original = subprocess.Popen

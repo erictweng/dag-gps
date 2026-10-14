@@ -33,6 +33,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app.context import ContextError, build_context, git_dir_for, read_source
+from app.contracts import ContractError, validate_snapshot
 from app.explanations import ExplanationError, validate_explanation
 from app.explanation_store import list_explanations, store_explanation
 
@@ -79,6 +80,8 @@ class WorkspaceStore:
         (self.root / 'projects').mkdir(parents=True, exist_ok=True)
         (self.root / 'git-cache').mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
+        self._snapshot_lock = threading.Lock()
+        self._snapshots = OrderedDict()
 
     def project_dir(self, project_id: str) -> Path:
         if not PROJECT_ID.fullmatch(project_id):
@@ -118,7 +121,7 @@ class WorkspaceStore:
             tmp.replace(path)
             return index
 
-    def snapshot(self, project_id: str, snapshot_id: str) -> tuple[Path, dict[str, Any]]:
+    def snapshot(self, project_id: str, snapshot_id: str, *, with_index=False) -> tuple:
         if type(snapshot_id) is not str or not SNAPSHOT_ID.fullmatch(snapshot_id):
             raise ApiError(404, 'Unknown snapshot')
         index = self._index(project_id)
@@ -128,10 +131,33 @@ class WorkspaceStore:
         path = (self.root / entry['path']).resolve()
         if self.root.resolve() not in path.parents:
             raise ApiError(404, 'Unknown snapshot')
-        snapshot = json.loads(path.read_text('utf-8'))
-        if snapshot.get('snapshotId') != snapshot_id or snapshot.get('projectId') != project_id:
-            raise ApiError(409, 'Stored snapshot identity mismatch')
-        return path, snapshot
+        # Serialize cold loads: one validated object per identity, bounded at four.
+        # ctime/inode also detect replacements or edits with a restored mtime.
+        def identity():
+            stat = path.stat()
+            return (str(path), stat.st_dev, stat.st_ino, stat.st_size,
+                    stat.st_mtime_ns, stat.st_ctime_ns)
+
+        with self._snapshot_lock:
+            key = (project_id, snapshot_id, str(path))
+            stamp = identity()
+            cached = self._snapshots.pop(key, None)
+            if cached is None or cached[0] != stamp:
+                data = path.read_bytes()
+                if identity() != stamp:
+                    raise ApiError(409, 'Stored snapshot changed while loading; retry')
+                snapshot = json.loads(data.decode('utf-8'))
+                if snapshot.get('snapshotId') != snapshot_id or snapshot.get('projectId') != project_id:
+                    raise ApiError(409, 'Stored snapshot identity mismatch')
+                index = validate_snapshot(snapshot)
+                index.content_sha256 = hashlib.sha256(data).hexdigest()
+                index.cache_key = (snapshot_id, stamp, index.content_sha256)
+                cached = (stamp, snapshot, index)
+            self._snapshots[key] = cached
+            while len(self._snapshots) > 4:
+                self._snapshots.popitem(last=False)
+            _, snapshot, index = cached
+            return (path, snapshot, index) if with_index else (path, snapshot)
 
 
 class ImportManager:
@@ -197,6 +223,7 @@ class ImportManager:
                 snapshot_path = base / ('snapshot-%s.json' % snapshot['snapshotId'][:16])
                 write_snapshot(snapshot, snapshot_path)
                 self.store.record(snapshot, snapshot_path)
+                self.store.snapshot(pid, snapshot['snapshotId'])
                 with self._lock:
                     job.update(projectId=pid, snapshotId=snapshot['snapshotId'], commit=commit)
                 self._event(job, 'ready')
@@ -324,8 +351,8 @@ class _Handler(BaseHTTPRequestHandler):
             self._json(200, snapshot)
         elif (method == 'GET' and len(parts) == 5 and parts[0] == 'projects'
               and parts[2] == 'snapshots' and parts[4] == 'explanations'):
-            _, snapshot = app.store.snapshot(parts[1], parts[3])
-            self._json(200, {'explanations': list_explanations(app.store.root, snapshot)})
+            _, snapshot, index = app.store.snapshot(parts[1], parts[3], with_index=True)
+            self._json(200, {'explanations': list_explanations(app.store.root, snapshot, index=index)})
         elif method == 'POST' and len(parts) == 3 and parts[0] == 'projects':
             route = parts[2]
             if route not in ('query', 'source', 'context', 'explanations'):
@@ -343,7 +370,7 @@ class _Handler(BaseHTTPRequestHandler):
             raise ApiError(404, 'Not found')
 
     def _query(self, project_id: str, body: dict[str, Any]) -> None:
-        _, packet = self._packet(project_id, body)
+        _, packet, _ = self._packet(project_id, body)
         self._json(200, packet)
 
     def _packet(self, project_id: str, body: dict[str, Any]) -> tuple:
@@ -362,43 +389,46 @@ class _Handler(BaseHTTPRequestHandler):
         chosen = body.get('chosenNodeId')
         if chosen is not None and (type(chosen) is not str or len(chosen) > 4096):
             raise ApiError(400, 'Invalid chosenNodeId')
-        path, snapshot = app.store.snapshot(project_id, body.get('snapshotId') or '')
-        if chosen is not None and chosen not in {n['id'] for n in snapshot['map']['nodes']}:
+        try:
+            path, snapshot, index = app.store.snapshot(project_id, body.get('snapshotId') or '', with_index=True)
+        except ContractError as error:
+            raise ApiError(422, 'Worker packet failed the evidence contract: %s' % error)
+        if chosen is not None and chosen not in index.map_node_ids:
             raise ApiError(400, 'chosenNodeId is not a node in this snapshot')
         try:
-            packet = app.workers.get(path, snapshot).query(body)
+            packet = app.workers.query(path, snapshot, body, index=index)
         except QueryBusy as error:
             raise ApiError(429, str(error))
         except QueryTimeout as error:
             raise ApiError(504, str(error))
         except QueryWorkerError as error:
             raise ApiError(422, str(error))
-        return snapshot, packet
+        return snapshot, packet, index
 
     def _source(self, project_id: str, body: dict[str, Any]) -> None:
         if set(body) - {'snapshotId', 'path', 'start', 'end'}:
             raise ApiError(400, 'Unexpected source fields')
         app = self.server.app
-        _, snapshot = app.store.snapshot(project_id, body.get('snapshotId'))
+        _, snapshot, index = app.store.snapshot(project_id, body.get('snapshotId'), with_index=True)
         path = body.get('path')
         if (type(path) is not str or not path or path.startswith('/') or
                 any(part in ('', '.', '..') for part in path.split('/')) or
                 '?' in path or '..' in path or '\\' in path):
             raise ApiError(400, 'Invalid inventory path')
-        if path not in {f['path'] for f in snapshot['inventory']}:
+        if path not in index['files']:
             raise ApiError(404, 'Path is not in this snapshot inventory')
         try:
             result = read_source(git_dir_for(app.store.root / 'git-cache', snapshot), snapshot,
-                                 path, start=body.get('start'), end=body.get('end'), max_lines=200)
+                                 path, start=body.get('start'), end=body.get('end'), max_lines=200, index=index)
         except ContextError as error:
             # Context errors are fixed public messages, never raw Git/OS stderr.
             raise ApiError(400, str(error))
         self._json(200, result)
 
-    def _build_context(self, snapshot: dict, packet: dict) -> dict:
+    def _build_context(self, snapshot: dict, packet: dict, index) -> dict:
         try:
             return build_context(git_dir_for(self.server.app.store.root / 'git-cache', snapshot),
-                                 snapshot, packet)
+                                 snapshot, packet, index=index)
         except ContextError as error:
             raise ApiError(400, str(error))
 
@@ -408,8 +438,8 @@ class _Handler(BaseHTTPRequestHandler):
         if set(body) - (QUERY_FIELDS | {'consent'}):
             raise ApiError(400, 'Unexpected context fields')
         request = {k: v for k, v in body.items() if k != 'consent'}
-        snapshot, packet = self._packet(project_id, request)
-        self._json(200, {'packet': packet, 'context': self._build_context(snapshot, packet)})
+        snapshot, packet, index = self._packet(project_id, request)
+        self._json(200, {'packet': packet, 'context': self._build_context(snapshot, packet, index)})
 
     def _explanation(self, project_id: str, body: dict[str, Any]) -> None:
         if set(body) - {'snapshotId', 'request', 'explanation', 'useContext'}:
@@ -419,12 +449,12 @@ class _Handler(BaseHTTPRequestHandler):
             raise ApiError(400, 'Expected an explanation request, not a packet')
         if 'useContext' in body and type(body['useContext']) is not bool:
             raise ApiError(400, 'useContext must be boolean')
-        snapshot, packet = self._packet(project_id, dict(request, snapshotId=body.get('snapshotId')))
-        context = self._build_context(snapshot, packet) if body.get('useContext') else None
+        snapshot, packet, index = self._packet(project_id, dict(request, snapshotId=body.get('snapshotId')))
+        context = self._build_context(snapshot, packet, index) if body.get('useContext') else None
         explanation = body.get('explanation')
         try:
             validate_explanation(explanation, snapshot, packet,
-                                 allowed_paths=[f['path'] for f in context['files']] if context else None)
+                                 allowed_paths=[f['path'] for f in context['files']] if context else None, index=index)
             if context is not None:
                 # The shared validator restricts paths; transport also restricts excerpt ranges.
                 files = {f['path']: f for f in context['files']}
@@ -434,7 +464,7 @@ class _Handler(BaseHTTPRequestHandler):
                         if citation['start'] is not None and (excerpt['start'] is None or
                                 citation['start'] < excerpt['start'] or citation['end'] > excerpt['end']):
                             raise ExplanationError('Citation range is outside the supplied context excerpt')
-            record = store_explanation(self.server.app.store.root, snapshot, packet, explanation, context)
+            record = store_explanation(self.server.app.store.root, snapshot, packet, explanation, context, index=index)
         except ExplanationError as error:
             raise ApiError(422, str(error))
         self._json(200, record)

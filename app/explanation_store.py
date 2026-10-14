@@ -42,10 +42,10 @@ def _allowed(context, snapshot, packet):
     return [f['path'] for f in context.get('files', [])]
 
 
-def store_explanation(root, snapshot, packet, explanation, context=None):
+def store_explanation(root, snapshot, packet, explanation, context=None, *, index=None):
     """Validate then atomically store. Returns the stored record."""
     allowed = _allowed(context, snapshot, packet)
-    validate_explanation(explanation, snapshot, packet, allowed_paths=allowed)
+    validate_explanation(explanation, snapshot, packet, allowed_paths=allowed, index=index)
     directory = _directory(root, snapshot['projectId'], snapshot['snapshotId'])
     directory.mkdir(parents=True, exist_ok=True)
     record = {'schema': RECORD_SCHEMA, 'storedAt': int(time.time()), 'packet': packet,
@@ -61,7 +61,7 @@ def store_explanation(root, snapshot, packet, explanation, context=None):
     return record
 
 
-def list_explanations(root, snapshot):
+def list_explanations(root, snapshot, *, index=None):
     """Return [{'record': ..., 'valid': bool, 'error': str|None}] newest first."""
     directory = _directory(root, snapshot['projectId'], snapshot['snapshotId'])
     if not directory.is_dir():
@@ -78,7 +78,7 @@ def list_explanations(root, snapshot):
             packet = record['packet']
             files = record.get('contextFiles')
             validate_explanation(record['explanation'], snapshot, packet,
-                                 allowed_paths=files if files is not None else None)
+                                 allowed_paths=files if files is not None else None, index=index)
             out.append({'record': record, 'valid': True, 'error': None})
         except (ValueError, KeyError, TypeError) as error:
             out.append({'record': None, 'valid': False, 'error': str(error)[:300]})
