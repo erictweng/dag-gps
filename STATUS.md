@@ -6,7 +6,10 @@ Card `t_3b508d4b`, branch `question-parser`, based on main `7db31cd` (PR #8).
 Rules, kind hints, versioned synonyms and bounded deterministic BM25 candidates
 are implemented. No model fallback, side features, push, merge or PR.
 See [QUESTION_PARSER.md](docs/QUESTION_PARSER.md) for the pipeline, frozen eval
-matrix, measured limits and remaining failures. Consultant second opinion pending.
+matrix, measured limits and remaining failures. Follow-up `t_e1cca752` accepts and
+fixes all three consultant findings: lexical dispatch, file hints and traversal
+synonym reasons. Seven service tests and 16 real-app review cases pass; frozen
+split results are unchanged. Committed-fix release gates and second opinion pending.
 
 - Frozen Honcho: 107 questions / 27 holdout; late-added Salesroom: 43 / 11 holdout.
 - Every stage has a committed per-case report. Zero new wrong/overconfident answers

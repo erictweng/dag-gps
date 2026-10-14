@@ -9,6 +9,9 @@ per-stage reports. Zero new wrong answers; baseline mistakes and concept misses
 remain documented. See [QUESTION_PARSER.md](docs/QUESTION_PARSER.md).
 Real-app evidence and project gates: `artifacts/question-parser/`.
 Consultant second opinion required before parent approval. No push/merge/PR.
+Follow-up `t_e1cca752`: all three findings implemented with RED-first service
+regressions, a separate 16-question real-repo supplement and browser screenshots.
+Frozen sets/splits unchanged; final gate verification and second opinion pending.
 The prior function-layer card is on main through PR #8.
 
 ## Parked items — do not start while parser work is active

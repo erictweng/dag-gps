@@ -1,0 +1,23 @@
+{
+  "description": "Review regressions, separate from frozen dev/holdout sets. Collision fixtures are covered by service unit tests, not inserted into real repositories.",
+  "honcho": [
+    {"query":"who invokes db","operation":"DOWNSTREAM","target":"src/db.py"},
+    {"query":"where is db called from","operation":"DOWNSTREAM","target":"src/db.py"},
+    {"query":"who invokes db file","operation":"DOWNSTREAM","target":"src/db.py"},
+    {"query":"who invokes src/db.py","operation":"DOWNSTREAM","target":"src/db.py"},
+    {"query":"what uses db","operation":"DOWNSTREAM","target":"src/db.py"},
+    {"query":"where is db module","operation":"LOCATE","target":"src/db.py"},
+    {"query":"where is db script","operation":"LOCATE","target":"src/db.py"}
+  ],
+  "salesroom": [
+    {"query":"who invokes youtube","operation":"DOWNSTREAM","target":"src/lib/youtube.ts"},
+    {"query":"where is youtube called from","operation":"DOWNSTREAM","target":"src/lib/youtube.ts"},
+    {"query":"who invokes youtube file","operation":"DOWNSTREAM","target":"src/lib/youtube.ts"},
+    {"query":"who invokes src/lib/youtube.ts","operation":"DOWNSTREAM","target":"src/lib/youtube.ts"},
+    {"query":"what uses youtube","operation":"DOWNSTREAM","target":"src/lib/youtube.ts"},
+    {"query":"where is youtube module","operation":"LOCATE","target":"src/lib/youtube.ts"},
+    {"query":"where is youtube script","operation":"LOCATE","target":"src/lib/youtube.ts"},
+    {"query":"what uses database","operation":"DOWNSTREAM","target":"src/lib/db.ts","reason":"matched via synonym database→db"},
+    {"query":"what does database depend on","operation":"UPSTREAM","target":"src/lib/db.ts","reason":"matched via synonym database→db"}
+  ]
+}

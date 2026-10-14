@@ -14,6 +14,7 @@ from app.server import WorkspaceServer
 parser = argparse.ArgumentParser()
 parser.add_argument('repo', choices=['honcho', 'salesroom'])
 parser.add_argument('--out', type=Path)
+parser.add_argument('--review-regressions', action='store_true')
 args = parser.parse_args()
 repo, pin = {'honcho': ('plastic-labs/honcho', '3922af856d78ec41133916deec4d821fa9c5a92e'),
              'salesroom': ('erictweng/salesroom-app', '5de5c0b4b64ca6579c5c5527fe09108fcf03a0ce')}[args.repo]
@@ -23,7 +24,8 @@ server = WorkspaceServer(ROOT / 'artifacts/question-parser/workspace', port=0)
 threading.Thread(target=server.serve_forever, daemon=True).start()
 try:
     subprocess.run(['node', str(ROOT / 'scripts/verify_question_parser.cjs'), server.url, str(out),
-                    'https://github.com/' + repo, pin], check=True, timeout=400)
+                    'https://github.com/' + repo, pin] +
+                   (['--review-regressions'] if args.review_regressions else []), check=True, timeout=400)
     project = next(p for p in server.store.projects() if p['repo'] == repo)
     _, snapshot = server.store.snapshot(project['projectId'], project['current']['snapshotId'])
     (out / 'snapshot.json').write_text(json.dumps(snapshot))

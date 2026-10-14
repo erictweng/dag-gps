@@ -173,6 +173,47 @@ reports: `eval/question_parser_{baseline,rules,synonyms,bm25}.json` and
 
 ## Verification and reproduction
 
+### Review fixes (`t_e1cca752`)
+
+All three consultant findings accepted: dispatch now resolves file/group lexical
+evidence (including ambiguous stems) before falling into symbol callers; every
+declared file hint selects the file in a file/group collision; traversal and PATH
+reasons retain target/endpoint matching provenance. Explicit symbol call requests
+remain symbol requests, including missing symbols; file hints break symbol/file
+ties without changing static dependency direction.
+
+`eval/question_parser_review_regressions.json` is a separate review-regressions
+list, not a change to either frozen dataset or its splits. Its 16 real-repository
+cases moved from 8 pass / 8 fail to 16 pass / 0 fail. Seven service tests cover
+Python/TypeScript fixtures, all hints, group/file collisions, single-kind controls,
+duplicate stems, missing full paths, symbol dispatch and both PATH endpoints.
+Initial RED: six failures / one pass; a further symbol/file hint collision was
+also demonstrated RED before fixing it. These synthetic collisions are not claimed
+to exist in the imported repositories.
+
+Frozen review-fix results (M / C / N / W / O), unchanged from BM25:
+
+| Repo / split | M | C | N | W | O |
+|---|---:|---:|---:|---:|---:|
+| Honcho dev | 46 | 12 | 16 | 2 | 0 |
+| Honcho holdout | 18 | 5 | 4 | 0 | 0 |
+| Salesroom dev | 20 | 5 | 6 | 0 | 0 |
+| Salesroom holdout | 7 | 0 | 2 | 0 | 0 |
+
+Zero new wrong/overconfident cases versus baseline; all 28 negatives still abstain.
+Per-case reports: `eval/question_parser{,_salesroom}_review_fixes.json`.
+The remaining failures listed above are unchanged, not relabeled as successes.
+Real-app checks passed all 16 review questions with packet/highlight equality and
+screenshots in `artifacts/question-parser/review-fixes/{honcho,salesroom}/`.
+Honcho dependents are paginated and visibly labeled potentially affected; Salesroom
+database traversal visibly retains `matched via synonym database→db`.
+
+Reproduce the supplement with `node scripts/eval_question_parser_review.cjs`;
+browser scripts accept `--review-regressions --out <evidence-directory>`.
+Unchanged eight-gate release verification is pending on the committed fixes.
+Initial standalone tests: 199 JS passed; Python ran 458 with two browser checks
+skipped before configuring NODE_PATH (not counted as full gate evidence).
+
 Real production WorkspaceServer imports on this card's workspace copy, actual
 Chromium input/Enter, packet-vs-highlight assertions and screenshots for seven
 questions per repo: `artifacts/question-parser/{honcho,salesroom}/`. The YouTube

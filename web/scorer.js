@@ -220,7 +220,7 @@
         name.includes('.') && /^[\w./@\[\]-]+$/.test(name));
       const query = literalNames.length === 1 ? literalNames[0] : filenameText(text);
       const literal = /^[\w./@\[\]-]+$/.test(query);
-      const explicit = /\bfile(?:name)?\b/i.test(text) || literalNames.length > 0 || (literal && /[/.]/.test(query));
+      const explicit = kindHint(text) === 'file' || /\bfilename\b/i.test(text) || literalNames.length > 0 || (literal && /[/.]/.test(query));
       const known = index.some(n => n.kind === 'file' && (n.basename === query || n.stem === query));
       const normalizedQuery = normalized(query);
       const layer = index.some(n => n.kind === 'layer' &&

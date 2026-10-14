@@ -398,10 +398,15 @@
       const symbolOp = symbolRequest(request.query);
       if (symbolOp) symbolOp.names = symbolOp.names.map(name => lookupSymbol(name).length ? name :
         Scorer.filenameText(name.replace(/^the\s+/, '')));
-      // Existing file/group questions keep the unchanged scorer/router path.
-      const preferSymbol = Scorer.kindHint(request.query) === 'symbol' && symbolOp?.names.every(name => lookupSymbol(name).length);
+      // Resolve lexical file/group evidence before dispatch, including ambiguous
+      // stems. Explicit missing call symbols must not silently become files.
+      const preferSymbol = Scorer.kindHint(request.query) === 'symbol' &&
+        (symbolOp?.op !== 'LOCATE' || symbolOp?.names.every(name => lookupSymbol(name).length));
       const legacyTarget = !preferSymbol && symbolOp && symbolOp.names.some(name => nodes.has(name) ||
-        [...nodes.values()].some(n => n.path === name || n.label === name));
+        [...nodes.values()].some(n => n.path === name || n.label === name) ||
+        ((!lookupSymbol(name).length || ['file', 'layer'].includes(Scorer.kindHint(request.query))) &&
+          Object.values(scorer.score(name).targets).some(h =>
+          h.match.label !== 'No match' && h.match.tier !== 'fuzzy' && !h.match.missingExact)));
       if (symbolOp && symbols && !legacyTarget &&
           (symbolOp.op !== 'LOCATE' || symbolOp.names.some(name => lookupSymbol(name).length))) {
         const result = symbolQuery(packet, request, symbolOp, offset);
@@ -439,6 +444,7 @@
       }
       if (requested === 'PATH') {
         const from = result.targets.from_target.choice, to = result.targets.to_target.choice;
+        const evidence = ' From: ' + result.targets.from_target.reason + ' To: ' + result.targets.to_target.reason;
         packet.operation = 'PATH';
         if (nodes.get(from).kind !== nodes.get(to).kind) {
           packet.status = 'unsupported';
@@ -449,11 +455,11 @@
         const path = router.shortestPath(from, to);
         if (!path) {
           packet.status = 'no-path';
-          packet.reason = 'No directed static route from ' + from + ' to ' + to + '.';
+          packet.reason = 'No directed static route from ' + from + ' to ' + to + '.' + evidence;
           return finishSelection(packet, [...new Set([from, to])], [], []);
         }
         packet.status = 'matched';
-        packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).';
+        packet.reason = 'Shortest directed static route (' + (path.length - 1) + ' hops).' + evidence;
         const w = witnessFromChain(path);
         return finishSelection(packet, path, w.edges, path.length > 1 ? [w] : []);
       }
@@ -463,7 +469,9 @@
         packet.reason = result.targets.locate_target.reason;
         return finishSelection(packet, [seed], [], []);
       }
-      return reach(packet, requested, seed, offset);
+      const reached = reach(packet, requested, seed, offset);
+      reached.reason += ' ' + result.targets.locate_target.reason;
+      return reached;
     }
     return {query, limits: LIMITS, conceptStats: concepts.stats};
   }
