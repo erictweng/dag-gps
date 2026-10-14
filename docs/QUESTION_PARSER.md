@@ -39,13 +39,17 @@ legacy parity remain unchanged rather than adding a limitation to every packet.
 - Strip terminal `.`, `!`, `?` runs and trailing whitespace before every tier and
   operation parser. Interior dots in `src/db.py`, `Class.method`, `json.dumps`
   and qualified symbol IDs remain intact. This is sentence punctuation, not path repair.
-- Bare literal stems/folder names with comparable evidence across kinds now ask
-  for a choice. LOCATE combines file/folder/symbol candidates (including `events`
-  and `backfill`); dependency scoring compares files and groups, while explicit
-  call operations retain their symbol meaning. Alternatives name their kind and
-  preserve real IDs; symbol/file choices are both actionable. Kind words and
-  qualified paths resolve the ambiguity. Exact full folder paths are recognized
-  before the absent-file guard. File/folder learned-alias scoring retains precedence.
+- Bare literal stems/folder names with comparable evidence across kinds ask for
+  a choice **before operation dispatch**, including LOCATE, dependency/dependent,
+  caller/callee, trace, upstream/downstream and both PATH/FLOW endpoints. `backfill`
+  includes its file and Python class; `events` includes its file and folder.
+  Kind hints apply to each endpoint, not the whole question. Alternatives preserve
+  the operation and real target IDs. Both `chosenNodeId` and the UI's combined
+  alternative query + ID replay run the operation, never silently LOCATE instead.
+  Two ambiguous endpoints are resolved in sequence; a fuzzy second endpoint is
+  still a choice after resolving the first. Choices paginate at 20 candidates.
+  Exact full folder paths are recognized before the absent-file guard.
+  File/folder learned-alias scoring retains precedence.
 - Kind hints: folder/directory/dir/package → layer; file/module/script → file;
   function/method/class/def → symbol. Prefer a matching hinted kind; fall back to
   the only available kind. Full folder labels outrank suffixes. A folder suffix
@@ -59,6 +63,16 @@ legacy parity remain unchanged rather than adding a limitation to every packet.
 - `who invokes X` / `where is X called from` → CALLERS for symbols, DOWNSTREAM for
   file/group relationships. `what does X depend on` remains UPSTREAM;
   `what uses X` remains DOWNSTREAM. These are static links, not runtime proof.
+- Choosing a file/folder for caller vocabulary runs DOWNSTREAM over static imports;
+  callee/trace vocabulary runs UPSTREAM. Python symbols use call edges: CALLERS and
+  CALLEES are one-hop, TRACE and UPSTREAM are forward transitive, DOWNSTREAM is
+  reverse transitive. PATH/FLOW retain directed witnesses. Mixed symbol/file or
+  folder/file endpoints are unsupported, never silently converted. Certain-only
+  filtering and the 1 MiB complete-packet budget apply to the new symbol paths too.
+- Clean checkouts run committed collision mechanics and cross-language packet
+  tests without external snapshots. Optional real-repository benchmark tests skip
+  with the missing artifact named; malformed/present artifacts still fail.
+  Collision measurements and reproduction: [PARSER_COLLISIONS.md](PARSER_COLLISIONS.md).
 
 ## Synonyms v1
 

@@ -25,7 +25,10 @@ candidate-only concept search are documented in [QUESTION_PARSER.md](QUESTION_PA
 
 - `matched` LOCATE: one known node, file source ref with unknown (`null`) lines.
 - `needs-choice` / `no-match`: nothing is highlighted; alternatives are listed.
-  `chosenNodeId` resolves an explicit user choice to a known ID only.
+  `chosenNodeId` resolves an explicit user choice to a known ID only. When
+  choosing, send the question and `chosenNodeId` without the alternatives
+  page's `continuation`. With `chosenNodeId`, a `continuation` pages the chosen
+  result (the UI's "more" button keeps the choice).
 - `DOWNSTREAM` ("what depends on X", "what would break if X changed"):
   `potential-impact`; every selected consumer has a directed witness chain ending
   at the seed. Potentially affected is not guaranteed to break.
