@@ -27,6 +27,7 @@
   function normalizeQuestion(text) {
     return String(text).toLowerCase().replace(/[’]/g, "'")
       .replace(/\b(where|what|who|how)'?s\b/g, '$1 is')
+      .replace(/[.!?\s]+$/, '')
       .replace(/[`"'?!,;()]/g, ' ').replace(/\s+/g, ' ').trim();
   }
   function kindHint(text) {
@@ -75,14 +76,14 @@
     return row[b.length];
   }
   function filenameText(text) {
-    return text.trim().replace(/[?!]+$/, '').replace(/[`"']/g, '')
+    return text.trim().replace(/[.!?\s]+$/, '').replace(/[`"']/g, '')
       .replace(/^(?:please\s+)?(?:(?:where|what|who|how)\s+(?:is|are|does)|find|locate|show(?:\s+me)?)\s+(?:the\s+)?/i, '')
       .replace(/\s+(?:live|lives|located)$/i, '')
       .replace(/^(?:file(?:name)?|named)\s+/i, '')
       .split(/\s+/).filter(t => !KIND_WORDS[t] && !FILLER.includes(t)).join(' ').trim();
   }
   function intent(query) {
-    const q = query.trim().replace(/[?!]+$/, '');
+    const q = query.trim().replace(/[.!?\s]+$/, '');
     let m;
     // Endpoints are split before scoring; one endpoint cannot supply evidence for the other.
     if ((m = q.match(/\bfrom\s+(.+?)\s+to\s+(.+)$/i)) ||
@@ -214,6 +215,30 @@
       descTerms: new Set(terms(n.desc)), pathTerms: new Set(terms(n.path)),
       prior: Math.min(0.08, Math.log1p(incoming[n.id]) * 0.015)
     }));
+    // Comparable literal names must not inherit unrelated per-kind score scales.
+    const bareNames = new Map();
+    for (const n of index) {
+      const name = n.kind === 'file' ? n.stem : n.kind === 'layer' ? n.node.label?.toLowerCase().split('/').at(-1) : null;
+      if (!name) continue;
+      if (!bareNames.has(name)) bareNames.set(name, []);
+      bareNames.get(name).push(n);
+    }
+    function bareCandidates(text) {
+      const name = filenameText(text);
+      if (!/^[\w-]+$/.test(name)) return [];
+      const candidates = bareNames.get(name) || [], hint = kindHint(text);
+      const preferred = candidates.filter(n => n.kind === hint);
+      const fullLayer = preferred.filter(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name);
+      if (fullLayer.length) return fullLayer;
+      return preferred.length ? preferred : candidates;
+    }
+    function nameHead(candidates, text, reason, score = 40) {
+      const chosen = new Set(candidates.map(n => n.id));
+      return finish(index.map(n => ({id: n.id, score: chosen.has(n.id) ? score : 0,
+        evidence: chosen.has(n.id) ? score : 0, coverage: chosen.has(n.id) ? 1 : 0,
+        exact: true, components: {literalName: chosen.has(n.id) ? score : 0},
+        matchReason: reason + ' (' + n.kind + '): ' + (n.node.path || n.node.label)})), 'architecture', text, false);
+    }
     function fileRequest(text) {
       // Extract whole literal tokens, never truncate/repair a path into a different file.
       const literalNames = (text.match(/[^\s`"'?!,;()]+/g) || []).filter(name =>
@@ -263,7 +288,7 @@
       h.top3 = sorted.slice(0, 3).map(alternative);
       // Show all tied filenames (not only top three); never offer uniform argmax as evidence.
       const tied = present.filter(s => s.score === best.score);
-      const suggestions = mode === 'filename' ? tied.concat(
+      const suggestions = mode === 'filename' || tied.length > 1 ? tied.concat(
         present.filter(s => s.score !== best.score).slice(0, Math.max(0, 3 - tied.length))) : present.slice(0, 3);
       h.suggestions = suggestions.map(alternative);
       return h;
@@ -316,6 +341,10 @@
     }
     function rankLiteral(text) {
       const file = fileRequest(text);
+      const name = filenameText(text);
+      const fullLayers = name.includes('/') ? index.filter(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name) : [];
+      if (fullLayers.length && !index.some(n => n.literalPath === name))
+        return nameHead(fullLayers, text, 'Exact folder path', 60);
       // Real literal filenames/paths (including ambiguous basenames) always win.
       const realFile = file && index.some(n => n.kind === 'file' &&
         (file.query.includes('/') ? n.literalPath === file.query : n.basename === file.query));
@@ -334,6 +363,10 @@
         }
         return h;
       }
+      const bare = bareCandidates(text);
+      if (new Set(bare.map(n => n.kind)).size > 1 ||
+          (kindHint(text) === 'layer' && bare.some(n => n.kind === 'layer')))
+        return nameHead(bare, text, 'Literal name');
       if (file) {
         const h = rankFile(file);
         // A kind hint is a preference, not a hard filter. Literal paths and
@@ -343,7 +376,7 @@
       }
       const q = terms(text); const phrase = q.join(' '); const raw = normalized(text);
       const originalPhrase = normalized(text.replace(/^(?:where is|find|locate)\s+(?:the\s+)?/i, ''));
-      const hinted = kindHint(text), name = filenameText(text);
+      const hinted = kindHint(text);
       const fullLayer = index.some(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name);
       const overlap = set => q.length ? q.filter(t => set.has(t)).length / q.length : 0;
       function architectureScore(n) {
@@ -387,7 +420,8 @@
       if (literal.match.label !== 'No match') return literal;
       const found = new Map();
       for (const variant of synonymQueries(text)) {
-        const h = rankLiteral(variant.query);
+        const bare = bareCandidates(variant.query);
+        const h = bare.length ? nameHead(bare, variant.query, 'Literal synonym target', 40) : rankLiteral(variant.query);
         for (const a of h.suggestions) {
           const score = a.score * 0.75;
           if (!found.has(a.id) || found.get(a.id).score < score)
