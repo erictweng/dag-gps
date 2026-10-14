@@ -1,5 +1,22 @@
 # Status — DAG GPS
 
+## Parser collision resolution — verified, consultant second opinion requested
+
+`t_29b602b9`, isolated `parser-collisions` branch from `08f1b4d`.
+Cross-kind target choices now precede every operation and resolve PATH endpoints
+independently. Candidate/kind/path choices retain traversal; optional pinned-data
+tests skip clearly in clean checkouts, with committed mechanics regressions.
+Implementation `01dfb1b`: 474 Python / 265 JS pass, zero skips; eight unchanged
+gates and packaging pass, scorer worst p95 4.307 ms. Fresh detached checkout:
+474 Python pass; JS 225 pass / 8 optional-artifact skips / zero failures, removed
+afterward. Corrected-grid wrong: Honcho 380→288, Salesroom 712→682, zero newly wrong
+cases; frozen sets unchanged. 152/30 confident answers become choices, including
+60 formerly correct Honcho answers. Full report: `docs/PARSER_COLLISIONS.md`.
+Consultant advice requested; final approval remains with the generalist. No push,
+merge or PR. Later changes are measurement/reporting only.
+Parenthesized paths and the parent card's AgentBridge duplicate validation are
+not part of this card. No next feature launched.
+
 ## Server speed — verified, consultant second opinion requested
 
 `t_20ef91ae`, isolated `server-speed` branch, implementation `8277e35`.

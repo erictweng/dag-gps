@@ -2,7 +2,13 @@
 const test = require('node:test'), assert = require('node:assert/strict'), fs = require('node:fs');
 const Q = require('../web/query-service.js'), S = require('../web/scorer.js');
 const config = require('../eval/variation_templates.json');
-const snapshots = Object.fromEntries(['honcho', 'salesroom'].map(repo => [repo,
+const available = ['honcho', 'salesroom'].filter(repo => {
+  const path = 'artifacts/question-parser/' + repo + '/snapshot.json';
+  if (fs.existsSync(path)) return true;
+  test(repo + ': pinned benchmark regressions', {skip: 'Optional pinned snapshot absent: ' + path}, () => {});
+  return false;
+});
+const snapshots = Object.fromEntries(available.map(repo => [repo,
   JSON.parse(fs.readFileSync('artifacts/question-parser/' + repo + '/snapshot.json'))]));
 const services = Object.fromEntries(Object.entries(snapshots).map(([repo, s]) => [repo, Q.createQueryService(s)]));
 const ask = (repo, query) => services[repo].query({requestId: 'regression', query});
@@ -30,7 +36,7 @@ for (const repo of Object.keys(snapshots)) {
   });
 }
 
-test('salesroom: bare events includes folder and file, kind and full path resolve', () => {
+test('salesroom: bare events includes folder and file, kind and full path resolve', {skip: !snapshots.salesroom && 'Optional Salesroom snapshot absent'}, () => {
   const file = 'src/lib/events.ts', folder = snapshots.salesroom.map.nodes.find(n => n.kind === 'layer' && n.label === 'app/api/events').id;
   for (const query of ['events', 'where is events', 'what uses events', 'what does events use']) {
     const p = ask('salesroom', query);
@@ -44,7 +50,7 @@ test('salesroom: bare events includes folder and file, kind and full path resolv
   }
 });
 
-test('honcho: bare backfill includes file and class, kind and qualified path resolve', () => {
+test('honcho: bare backfill includes file and class, kind and qualified path resolve', {skip: !snapshots.honcho && 'Optional Honcho snapshot absent'}, () => {
   const file = 'src/reconciler/backfill.py', symbol = snapshots.honcho.map.symbol_graph.nodes.find(n => n.name === 'Backfill').id;
   for (const query of ['backfill', 'where is backfill', 'where is backfill defined']) {
     const p = ask('honcho', query);

@@ -68,13 +68,20 @@ const box={module:{exports:{}},require:n=>require(path.resolve('web',n))};
 vm.runInNewContext(cp.execFileSync('git',['show','eb72a73:web/query-service.js'],{encoding:'utf8'}),box);
 const Q=require('./web/query-service.js'),map=require('./maps/quest-coder/map.json');
 const s={schema:'dag-gps-workspace/v1',projectId:'p',snapshotId:'s',mapSha256:'a',scorerSha256:'b',source:{manifestSha256:'c'},map,inventory:map.nodes.filter(n=>n.path).map(n=>({path:n.path,sha256:'d'}))};
-const queries=['where is lib/runner-client.ts defined','what calls lib/runner-client.ts','where is runner-service defined','what calls runner-service'];
+const queries=['where is lib/runner-client.ts defined','where is runner-service defined'];
 for(const extension of [false,true]) {
  if(extension) map.symbol_graph={nodes:[],edges:[],unresolved:[]};
  for(const query of queries) {
   const request={requestId:'r',query};
   const before=box.module.exports.querySnapshot(s,request),after=Q.querySnapshot(s,request);
   if(JSON.stringify(before)!==JSON.stringify(after)) throw Error(JSON.stringify({extension,query,before,after}));
+ }
+ // Caller vocabulary now preserves traversal rather than the old LOCATE fallthrough.
+ for(const target of ['lib/runner-client.ts','runner-service']) {
+  const p=Q.querySnapshot(s,{requestId:'r',query:'what calls '+target});
+  const expected=Q.querySnapshot(s,{requestId:'r',query:'downstream of '+target});
+  if(p.operation!=='DOWNSTREAM' || JSON.stringify(p.selectedNodeIds)!==JSON.stringify(expected.selectedNodeIds) ||
+    JSON.stringify(p.witnesses)!==JSON.stringify(expected.witnesses)) throw Error('Caller traversal mismatch: '+target);
  }
 }
 """
