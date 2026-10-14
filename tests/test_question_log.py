@@ -67,6 +67,16 @@ class LogTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             _load_session(link)
 
+    def test_verdict_checkpoint_keeps_original_chronology(self):
+        # Correcting an old question appends a checkpoint copy; after rotation it
+        # must keep its original place in the newest-first history.
+        self.log.max_bytes = 1200
+        ids = [self.question('question %d' % i, 'r%d' % i) for i in range(6)]
+        self.log.verdict('p', ids[0], 'unsure')
+        order = [q['entryId'] for q in QueryLog(self.root).entries('p')]
+        self.assertIn(ids[0], order)
+        self.assertEqual([i for i in reversed(ids) if i in order], order)
+
     def test_rotation_retains_two_bounded_generations_and_verdict(self):
         self.log.max_bytes = 1200
         first = self.question()

@@ -18,6 +18,8 @@ are not questions in this HTTP journal.
 `<root>/query-log.jsonl` records:
 
 - UTC `at`, `entryId`, `requestId`, `projectId`, `snapshotId`, exact source `commit`;
+- `createdNs`, a creation stamp in nanoseconds. Verdict checkpoint copies keep it, so a
+  corrected old question keeps its place in the history after rotation;
 - original `query`, operation/status, automatic `label`, server processing `latencyMs`;
 - first ten selected IDs and first ten alternative IDs, omitting individual IDs
   longer than 256 characters rather than truncating them into false identifiers.

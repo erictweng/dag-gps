@@ -39,7 +39,10 @@ def read_entries(path):
                         questions[key].update(verdict=row['label'], verdictAt=row['at'])
                 except (ValueError, KeyError, TypeError):
                     continue
-    return list(reversed(list(questions.values())))
+    # Checkpoint copies keep the original creation stamp, so a corrected old
+    # question keeps its place. Rows without a stamp (older logs) sort first.
+    ordered = sorted(questions.values(), key=lambda q: q.get('createdNs') or 0)
+    return list(reversed(ordered))
 
 
 class QueryLog:
@@ -69,7 +72,7 @@ class QueryLog:
 
     def question(self, project_id, snapshot, body, packet, latency_ms):
         entry_id = 'q-' + secrets.token_hex(16)
-        row = {'kind': 'question', 'entryId': entry_id, 'at': timestamp(),
+        row = {'kind': 'question', 'entryId': entry_id, 'at': timestamp(), 'createdNs': time.time_ns(),
                'projectId': project_id, 'snapshotId': snapshot['snapshotId'],
                'commit': snapshot['source']['commit'], 'requestId': body['requestId'],
                'query': body['query'], 'operation': packet['operation'], 'status': packet['status'],
