@@ -1,5 +1,19 @@
 # Status — DAG GPS
 
+## Question-variation measurement — ready for consultant review
+
+Card `t_984c3139`, same `question-parser` branch; no parser behavior changed.
+114,726 constructed cases across pinned Honcho/Salesroom, identical main/parser
+grids, 688,356 timed service calls and 1,920 real HTTP requests. Correct-or-choice:
+Honcho 53.99% → 78.81%; Salesroom 71.16% → 71.79%. Parser warm p95: 0.812 / 0.095 ms;
+HTTP p95: 487.779 / 2.920 ms. Synthetic known-target robustness, not user accuracy.
+Wrong totals improve, but 149 Honcho / 444 Salesroom newly confident-wrong cases
+remain (including ambiguous forms and mismatching kinds); findings only, no fixes.
+Zero matched negatives among 240 per repo/version. Report, axes, failures and
+reproduction: [VARIATION_BENCHMARK.md](docs/VARIATION_BENCHMARK.md).
+Python 458/458 and JS 204/204, zero final skips; raw totals/statuses/source audit
+verified. Consultant second opinion requested; no push, merge or PR.
+
 ## Current work — question parser, local only
 
 Card `t_3b508d4b`, branch `question-parser`, based on main `7db31cd` (PR #8).

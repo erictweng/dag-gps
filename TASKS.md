@@ -1,5 +1,15 @@
 # Tasks — DAG GPS
 
+## Measurement follow-up — awaiting review
+
+`t_984c3139`: deterministic question-variation benchmark implemented and run on
+main `7db31cd` and unchanged parser code `4ad61d9`, same source-checked targets.
+114,726 generated cases; per-axis/operation and HTTP/direct speed tables in
+`docs/VARIATION_BENCHMARK.md`. Python 458 / JS 204 pass with zero final skips.
+Newly exposed ambiguity, punctuation and typo failures are findings only.
+Next: dag-consultant second opinion, then generalist approval. Still parser-only;
+no next feature, PR, push or merge authorized by this card.
+
 ## Current card
 
 `t_3b508d4b` — the only active feature: natural-language question parser.
