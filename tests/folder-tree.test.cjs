@@ -116,3 +116,31 @@ test('article before full folder path cannot select a shorter ancestor', () => {
     assert.equal(p.seedNodeId || p.selectedNodeIds[0], 'components', q);
   }
 });
+function dotted() {
+  const s = fixture();
+  s.map.nodes.push({id: 'gh', kind: 'layer', label: '.github', parent: null, depth: 0},
+    {id: 'ghs', kind: 'layer', label: '.github/scripts', parent: 'gh', depth: 1},
+    {id: 'gate', kind: 'file', path: '.github/scripts/gate.js', layer: 'ghs'},
+    {id: 'gatetest', kind: 'file', path: 'outside/gate-user.js', layer: 'outside'});
+  s.map.file_edges.push({from: 'gatetest', to: 'gate', type: 'import'});
+  s.inventory = s.map.nodes.filter(n => n.kind === 'file').map(n => ({path: n.path, sha256: 'd'.repeat(64)}));
+  return s;
+}
+test('hidden dotted folders are addressable by their literal name', () => {
+  const service = createQueryService(dotted());
+  for (const q of ['where is .github', 'where is folder .github', 'where is the .github folder']) {
+    const p = ask(service, q); assert.equal(p.status, 'matched', q);
+    assert.ok(p.selectedNodeIds.includes('gh') && p.selectedNodeIds.includes('gate'), q);
+  }
+  const up = ask(service, 'what uses .github');
+  assert.equal(up.status, 'matched'); assert.equal(up.operation, 'DOWNSTREAM');
+  assert.deepEqual(new Set(up.selectedNodeIds), new Set(['gh', 'gatetest']));
+});
+test('a dotted folder name shared by two folders still asks which one', () => {
+  const s = dotted();
+  s.map.nodes.push({id: 'gh2', kind: 'layer', label: 'outside/.github', parent: 'outside', depth: 1},
+    {id: 'inner', kind: 'file', path: 'outside/.github/x.yml.js', layer: 'gh2'});
+  s.inventory = s.map.nodes.filter(n => n.kind === 'file').map(n => ({path: n.path, sha256: 'd'.repeat(64)}));
+  const p = ask(createQueryService(s), 'where is .github');
+  assert.equal(p.status, 'needs-choice');
+});

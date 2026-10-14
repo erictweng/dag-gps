@@ -426,7 +426,7 @@
         const name = Scorer.filenameText(text), hint = Scorer.kindHint(text) ||
           (op === 'LOCATE' ? Scorer.kindHint(request.query) : null);
         const alias = (options.learnedAliases || []).some(a => Scorer.normalizeQuestion(a.alias) === name);
-        const literal = !alias && /^[\w-]+$/.test(name) ? literalNames.get(name) || [] : [];
+        const literal = !alias && /^\.?[\w-]+$/.test(name) ? literalNames.get(name) || [] : [];
         const collision = new Set(literal.map(n => n.kind)).size > 1 ||
           (map.meta?.folderTree === 1 && literal.filter(n => n.kind === 'layer').length > 1);
         if (collision) {

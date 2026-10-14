@@ -225,7 +225,8 @@
     }
     function bareCandidates(text) {
       const name = filenameText(text);
-      if (!/^[\w-]+$/.test(name)) return [];
+      // A leading dot is part of real folder names (.github); it is not an extension.
+      if (!/^\.?[\w-]+$/.test(name)) return [];
       const candidates = bareNames.get(name) || [], hint = kindHint(text);
       const preferred = candidates.filter(n => n.kind === hint);
       const fullLayer = preferred.filter(n => n.kind === 'layer' && n.node.label?.toLowerCase() === name);
