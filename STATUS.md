@@ -1,6 +1,18 @@
 # Status — DAG GPS
 
-## Benchmark fixes — verified, consultant second opinion pending
+## Server speed — implemented, final verification in progress
+
+`t_20ef91ae`, isolated `server-speed` branch, implementation `8277e35`.
+Full snapshot validation is cached with a four-entry, file-generation-aware LRU;
+query/source/context/explanation routes reuse the validated index. Warm HTTP
+p95: Honcho 487.774→6.993 ms; Salesroom 3.078→1.075 ms, 480 requests/repo/version.
+All 960 paired response hashes match. Cold starts remain expensive and measured
+combined Honcho RSS rises; see `docs/SERVER_PERFORMANCE.md` for limits and evidence.
+473 Python tests and 212 JS tests passed with browser dependencies supplied;
+final differential replay and eight release gates are in progress. No push/merge/PR.
+Next: finish verification, then request the required consultant second opinion.
+
+## Prior benchmark fixes — verified, consultant feedback received
 
 `t_b8a8498e`, query code `2b80e8d` on `question-parser`. All three prior benchmark
 review points accepted; harness corrected first at `103b6e5`. Same expanded grid
@@ -83,7 +95,8 @@ See [FUNCTION_LAYER.md](docs/FUNCTION_LAYER.md) and [WORKSPACE_QUERY.md](docs/WO
 
 ## Next
 
-Only parser work is active. Parent approval follows consultant review. Unresolved
+Only the server-speed card is active in this worktree. Parser traversal-ambiguity
+and parenthesized-path review findings remain separate follow-ups. Unresolved
 classification, in-app Explain, live refresh and TS/JS symbols remain parked.
 Workspace alias-overlay wiring and the observed expanded-group highlight issue
 are reported limitations, not implemented in this card. Eric's unaided acceptance

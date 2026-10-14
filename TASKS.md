@@ -1,6 +1,15 @@
 # Tasks — DAG GPS
 
-## Current parser follow-up — implemented and verified, awaiting second opinion
+## Current server-speed card — implementation complete, verifying
+
+`t_20ef91ae`, `server-speed` at `8277e35`: cached strict snapshot indexes across
+all workspace routes; generation-bound workers and concurrency/tamper tests.
+Warm Honcho HTTP p95 6.993 ms (<20 ms target), down from 487.774 ms; all 960
+before/after paired response hashes match. Final gates/differential replay pending;
+then dag-consultant second opinion. Details: `docs/SERVER_PERFORMANCE.md`.
+No parser changes, push, merge or PR. No next feature launched.
+
+## Prior parser follow-up — implemented and verified, consultant feedback received
 
 `t_b8a8498e`: terminal punctuation, bare-name choices and comparable synonym
 targets implemented, with RED-first service regressions on both pinned repos.
