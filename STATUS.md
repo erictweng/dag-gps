@@ -1,6 +1,6 @@
 # Status — DAG GPS
 
-## Folder tree data — verified, consultant second opinion requested
+## Folder tree data — reviewed; parent fixed `.github` lookup (`d9d80f7`); PR after #15
 
 `t_57ec698f`, isolated `folder-tree`, implementation/gated checkpoint `fd5104c`.
 New imports retain all real mapped-source folder ancestors, stable direct owners,
@@ -12,6 +12,15 @@ packaging pass. Direct/HTTP p95 within +1 ms; full measurements and caveats in
 `docs/FOLDER_TREE.md`. Same-name src requires choice on Honcho; Salesroom's small
 snapshot grows 5.155%. Consultant advice/generalist approval pending. No push,
 merge, PR, TS alias changes or next feature launched.
+
+## TypeScript aliases — merged to main (PR #15)
+
+`t_50e6f922`, isolated `ts-paths`: root JSONC tsconfig/jsconfig, relative extends,
+paths/baseUrl resolution. Salesroom imports 46→187; unresolved imports 141→0
+(total diagnostics 143→2). All 141 added edges source-audited; Honcho edge bytes
+unchanged. 510 Python / 266 JS pass, zero skips. Frozen sets and 51,650 Salesroom
+variations: zero newly wrong; 108 improved choices. Existing parser mistakes
+remain explicit. See `docs/TS_PATH_ALIASES.md`. No push/merge/PR or sibling edits.
 
 ## Question log + persistent session — verified, consultant second opinion requested
 

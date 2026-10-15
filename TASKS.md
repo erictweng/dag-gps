@@ -1,6 +1,6 @@
 # Tasks — DAG GPS
 
-## Folder tree data card — verified, consultant second opinion requested
+## Folder tree data card — reviewed, `.github` finding fixed (`d9d80f7`), PR next
 
 `t_57ec698f`: plan Tasks 1–4 and 6 implemented on `folder-tree` (`fd5104c`).
 Task 5 drill-down dropped as directed. Stable owners/IDs, validated ancestry,
@@ -10,6 +10,14 @@ frozen answers; 499 Python / 274 JS and all eight gates/packaging pass. See
 `docs/FOLDER_TREE.md` for performance, snapshot growth and grading tradeoffs.
 Next: dag-consultant second opinion, then generalist approval/integration only.
 No next mini-milestone is authorized by this card.
+
+## TypeScript aliases card — merged (PR #15)
+
+`t_50e6f922`: importer config resolution and RED-first fixtures complete on
+`ts-paths`; 510 Python / 266 JS pass. Pinned Salesroom 46→187 imports, Honcho
+edges identical; frozen/variation zero-new-wrong gate passes. Full evidence and
+limits: `docs/TS_PATH_ALIASES.md`. Next: consultant advice, generalist approval.
+No next feature launched; no push, merge or PR.
 
 ## Current question-log card — verified, consultant second opinion requested
 
