@@ -1,5 +1,14 @@
 # Status — DAG GPS
 
+## TypeScript aliases — verified, consultant second opinion requested
+
+`t_50e6f922`, isolated `ts-paths`: root JSONC tsconfig/jsconfig, relative extends,
+paths/baseUrl resolution. Salesroom imports 46→187; unresolved imports 141→0
+(total diagnostics 143→2). All 141 added edges source-audited; Honcho edge bytes
+unchanged. 510 Python / 266 JS pass, zero skips. Frozen sets and 51,650 Salesroom
+variations: zero newly wrong; 108 improved choices. Existing parser mistakes
+remain explicit. See `docs/TS_PATH_ALIASES.md`. No push/merge/PR or sibling edits.
+
 ## Question log + persistent session — verified, consultant second opinion requested
 
 `t_44e9d449`, isolated `question-log`, includes server-speed and parser-collisions

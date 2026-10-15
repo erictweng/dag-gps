@@ -22,16 +22,106 @@ for top in tops:
         if os.path.splitext(p)[1] in EXTS and included(p):
             files.add(p)
 
-def resolve(f, spec):
-    if spec.startswith("@/"):
-        base = spec[2:]
-    elif spec.startswith("."):
-        base = os.path.normpath(os.path.join(os.path.dirname(f), spec))
-    else:
-        return None
+def jsonc(text):
+    """Remove JSONC comments/trailing commas without touching quoted strings."""
+    tokens = r'"(?:\\.|[^"\\])*"|/\*[\s\S]*?\*/|//[^\r\n]*'
+    text = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else
+                  re.sub(r'[^\r\n]', ' ', m[0]), text)
+    return json.loads(re.sub(r'"(?:\\.|[^"\\])*"|,\s*(?=[}\]])',
+                             lambda m: m[0] if m[0].startswith('"') else '', text))
+
+
+config_issues = []
+repo_root = os.path.realpath('.')
+
+
+def local_path(path):
+    """Never inspect config or targets outside the pinned repository."""
+    return os.path.commonpath([repo_root, os.path.realpath(path)]) == repo_root
+
+
+def load_tsconfig(path, chain=()):
+    path = os.path.normpath(path)
+    if not local_path(path) or path in chain or len(chain) >= 64:
+        config_issues.append([path, 'TypeScript config unsupported', 'outside repository, cycle or depth limit'])
+        return {}
+    try:
+        with open(path, encoding='utf-8-sig') as handle:
+            data = jsonc(handle.read())
+        if not isinstance(data, dict):
+            raise ValueError('config must be an object')
+        options = data.get('compilerOptions', {})
+        if not isinstance(options, dict):
+            raise ValueError('compilerOptions must be an object')
+    except (OSError, ValueError) as exc:
+        config_issues.append([path, 'TypeScript config unreadable', str(exc)])
+        return {}
+    result = {}
+    parents = data.get('extends', [])
+    parents = [parents] if isinstance(parents, str) else parents
+    if not isinstance(parents, list):
+        parents = []
+        config_issues.append([path, 'TypeScript config unsupported', 'invalid extends'])
+    for parent in parents:
+        if not isinstance(parent, str) or not parent.startswith(('./', '../')):
+            config_issues.append([path, 'TypeScript config unsupported', 'non-relative extends'])
+            continue
+        target = os.path.normpath(os.path.join(os.path.dirname(path), parent))
+        if not os.path.isfile(target) and not target.endswith('.json'):
+            target += '.json'
+        result.update(load_tsconfig(target, chain + (path,)))
+    if isinstance(options.get('baseUrl'), str):
+        result['baseUrl'] = os.path.normpath(os.path.join(os.path.dirname(path), options['baseUrl']))
+    if isinstance(options.get('paths'), dict):
+        # paths replaces, rather than merges, the inherited table. With no baseUrl,
+        # its relative targets belong to the config that declared that table.
+        result['paths'] = options['paths']
+        result['pathsOrigin'] = os.path.dirname(path)
+    return result
+
+
+tsconfig = next((p for p in ('tsconfig.json', 'jsconfig.json') if os.path.isfile(p)), None)
+tsoptions = load_tsconfig(tsconfig) if tsconfig else {}
+
+
+def resolve_candidate(base):
+    base = os.path.normpath(base)
     for c in [base] + [base + e for e in EXTS] + [os.path.join(base, "index" + e) for e in EXTS]:
-        if os.path.isfile(c):
+        if local_path(c) and os.path.isfile(c):
             return c
+
+
+def resolve(f, spec):
+    if spec.startswith('.'):
+        return resolve_candidate(os.path.join(os.path.dirname(f), spec)) or "UNRESOLVED:" + spec
+    paths = tsoptions.get('paths', {})
+    matches = []
+    for pattern, targets in paths.items():
+        if pattern == spec:
+            matches.append((True, len(pattern), pattern, '', targets))
+        elif pattern.count('*') == 1:
+            prefix, suffix = pattern.split('*')
+            if spec.startswith(prefix) and spec.endswith(suffix) and len(spec) >= len(prefix) + len(suffix):
+                matches.append((False, len(prefix), pattern, spec[len(prefix):len(spec) - len(suffix) if suffix else None], targets))
+    if matches:
+        # Stable ties retain declaration order, as TypeScript does.
+        _, _, pattern, star, targets = max(matches, key=lambda m: m[:2])
+        origin = tsoptions.get('baseUrl', tsoptions.get('pathsOrigin', ''))
+        for target in targets if isinstance(targets, list) else []:
+            if isinstance(target, str) and target.count('*') <= 1:
+                found = resolve_candidate(os.path.join(origin, target.replace('*', star)))
+                if found:
+                    return found
+        return "UNRESOLVED:" + spec
+    if 'baseUrl' in tsoptions and not os.path.isabs(spec):
+        found = resolve_candidate(os.path.join(tsoptions['baseUrl'], spec))
+        if found:
+            return found
+    if not spec.startswith('@/'):
+        return None
+    found = resolve_candidate(spec[2:])
+    if found:
+        return found
     return "UNRESOLVED:" + spec
 
 imp = re.compile(r"""\b(?:import|export)\s[^'";]*?from\s*['"]([^'"]+)['"]|\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)|\bimport\s+['"]([^'"]+)['"]""", re.M)
@@ -64,7 +154,7 @@ def code_matches(pattern, text, mask):
 
 
 require_re = re.compile(r"""\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)""")
-unsupported = []
+unsupported = list(config_issues)
 nodes, edges, ext, api, rpcs = {}, [], {}, {}, {}
 for f in sorted(files):
     t = open(f, encoding="utf-8", errors="ignore").read()
