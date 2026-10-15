@@ -337,6 +337,70 @@ class SnapshotIndex(dict):
         return [call for _, call in first], sum(count for count, _ in groups)
 
 
+def _folder_catalog(graph):
+    """Validate real directory ancestry, then cache it once per snapshot.
+
+    Direct owners can also have subdirectories; 'leaf ownership' means the
+    file's immediate directory, not necessarily a childless tree node.
+    """
+    folders = {n['id']: n for n in graph['nodes'] if n['kind'] == 'layer'}
+    files = [n for n in graph['nodes'] if n['kind'] == 'file']
+    children = {ident: [] for ident in folders}
+    descendants = {ident: [] for ident in folders}
+    ancestors = {n['id']: [] for n in graph['nodes']}
+    tree = 'folderTree' in graph['meta']
+    if tree:
+        if type(graph['meta']['folderTree']) is not int or graph['meta']['folderTree'] != 1:
+            raise ContractError('Unsupported folder tree version')
+        paths = {}
+        real = set()
+        for node in files:
+            parts = node['path'].split('/')
+            real.update('/'.join(parts[:i]) for i in range(1, len(parts)))
+            if len(parts) == 1:
+                real.add('(root)')
+        for ident, node in folders.items():
+            label = _text(node.get('label'), 'Folder path', 4096)
+            if label not in real or label in paths:
+                raise ContractError('Folder must be a unique real source path prefix')
+            paths[label] = ident
+        if set(paths) != real:
+            raise ContractError('Folder tree must retain every real ancestor')
+        for ident, node in folders.items():
+            label = node['label']
+            parent_path = label.rsplit('/', 1)[0] if '/' in label else None
+            expected = paths[parent_path] if parent_path else None
+            if 'parent' not in node or node['parent'] != expected:
+                raise ContractError('Folder parent must be its immediate real directory (no cycles)')
+            if type(node.get('depth')) is not int or node['depth'] != label.count('/'):
+                raise ContractError('Folder depth is inconsistent')
+            if expected is not None:
+                children[expected].append(ident)
+        for node in files:
+            owner = node['path'].rsplit('/', 1)[0] if '/' in node['path'] else '(root)'
+            if node['layer'] != paths[owner]:
+                raise ContractError('File must retain its direct folder ownership')
+        direct = {node['layer'] for node in files}
+        for ident, node in folders.items():
+            end = ident
+            while end not in direct and len(children[end]) == 1:
+                end = children[end][0]
+            if 'compactLabel' in node and node['compactLabel'] != folders[end]['label']:
+                raise ContractError('Compact label must describe a real single-child chain')
+    for ident, node in folders.items():
+        parent = node.get('parent') if tree else None
+        while parent is not None:
+            ancestors[ident].append(parent)
+            parent = folders[parent]['parent']
+    for node in files:
+        owners = [node['layer']] + ancestors[node['layer']]
+        ancestors[node['id']] = owners
+        for owner in owners:
+            descendants[owner].append(node['id'])
+    return dict(children={k: sorted(v) for k, v in children.items()},
+                descendantFiles={k: sorted(v) for k, v in descendants.items()}, ancestors=ancestors)
+
+
 def validate_snapshot(snapshot):
     snapshot = _obj(snapshot, 'Snapshot')
     _finite_json(snapshot, 'Snapshot', MAX_SNAPSHOT_VALUES)
@@ -425,7 +489,8 @@ def validate_snapshot(snapshot):
                 if type(value) is not str or len(value) > cap or any(ord(c) < 32 for c in value):
                     raise ContractError('Invalid bounded search text')
     # Legitimate directed cycles remain data, not silently deleted links.
-    return SnapshotIndex(snapshot, nodeIds=set(ids), nodeKinds=kinds, edges=edges, files=files, callEdges=call_edges)
+    return SnapshotIndex(snapshot, nodeIds=set(ids), nodeKinds=kinds, edges=edges, files=files,
+                         callEdges=call_edges, **_folder_catalog(graph))
 
 
 def validate_evidence_packet(packet, snapshot):
@@ -535,7 +600,12 @@ def _validate_packet_against(packet, graph):
         consumers = set(selected) - {seed}
         if not consumers:
             raise ContractError('A seed-only location is not witnessed potential impact')
-        supported = {w['nodeIds'][0] for w in witnesses if w['edges'] and w['nodeIds'][-1] == seed}
+        endpoints = {seed}
+        if snapshot['map']['meta'].get('folderTree') == 1 and graph['nodeKinds'].get(seed) == 'layer':
+            endpoints = set(graph['descendantFiles'][seed])
+            if consumers & endpoints:
+                raise ContractError('Folder impact must exclude internal files')
+        supported = {w['nodeIds'][0] for w in witnesses if w['edges'] and w['nodeIds'][-1] in endpoints}
         if not consumers.issubset(supported):
             raise ContractError('Each potential-impact selection needs a directed witness ending at the query seed')
     if highlight == 'changed':

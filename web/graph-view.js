@@ -98,8 +98,12 @@
 
   function layoutMap(map, expansion = {}) {
     const all = map.nodes || [];
-    const layers = new Map(all.filter(n => n.kind === 'layer').map(n => [n.id, n]));
     const files = all.filter(n => n.kind === 'file');
+    // Keep the existing flat overview: ancestor-only folders are query plumbing,
+    // not additional empty lanes. Direct groups (including parents) stay intact.
+    const direct = new Set(files.map(n => n.layer));
+    const layers = new Map(all.filter(n => n.kind === 'layer' &&
+      (map.meta?.folderTree !== 1 || direct.has(n.id))).map(n => [n.id, n]));
     const label = id => (layers.get(id) && layers.get(id).label) || id || 'ungrouped';
     const unique = list => [...new Map(list.map(e => [edgeKey(e), e])).values()];
     if (map.symbol_graph && map.symbol_graph.nodes.length) {

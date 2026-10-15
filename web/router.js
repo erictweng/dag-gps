@@ -23,8 +23,41 @@
       return new Map([...adj].map(([id, ids]) => [id, [...ids].sort()]));
     }
     const forward = adjacency(false), backward = adjacency(true);
+    const folderTree = map.meta?.folderTree === 1;
+    const children = new Map([...nodes.values()].filter(n => n.kind === 'layer').map(n => [n.id, []]));
+    const descendantFiles = new Map([...children.keys()].map(id => [id, []]));
+    if (folderTree) for (const n of nodes.values()) {
+      if (n.kind === 'layer' && n.parent) children.get(n.parent).push(n.id);
+      if (n.kind === 'file') {
+        const seen = new Set();
+        for (let owner = n.layer; owner; owner = nodes.get(owner).parent) {
+          if (seen.has(owner)) throw new Error('Cyclic folder hierarchy');
+          seen.add(owner); descendantFiles.get(owner).push(n.id);
+        }
+      }
+    }
+    for (const list of [...children.values(), ...descendantFiles.values()]) list.sort();
+    const isFolder = id => folderTree && nodes.get(id)?.kind === 'layer';
+    function descendants(id) { requireId(id); return (descendantFiles.get(id) || []).slice(); }
+    function folderNodes(id) {
+      const queue = [id];
+      for (let i = 0; i < queue.length; i++) queue.push(...(children.get(queue[i]) || []));
+      return [...queue.slice(1), ...descendants(id)];
+    }
+    // Multi-source BFS gives shortest real-file witnesses, with lexical ties.
+    function traversal(id, reverse) {
+      requireId(id);
+      const seeds = isFolder(id) ? descendants(id) : [id];
+      const prev = new Map(seeds.map(seed => [seed, null])), order = [], queue = seeds.slice();
+      const adj = reverse ? backward : forward;
+      for (let i = 0; i < queue.length; i++) for (const next of adj.get(queue[i])) {
+        if (!prev.has(next)) { prev.set(next, queue[i]); order.push(next); queue.push(next); }
+      }
+      return {prev, order};
+    }
     function reachable(id, reverse) {
       requireId(id);
+      if (isFolder(id)) return traversal(id, reverse).order;
       const seen = new Set([id]), queue = [id], adj = reverse ? backward : forward;
       for (let i = 0; i < queue.length; i++) for (const next of adj.get(queue[i])) {
         if (!seen.has(next)) { seen.add(next); queue.push(next); }
@@ -34,11 +67,13 @@
     function shortestPath(from, to) {
       requireId(from); requireId(to);
       if (nodes.get(from).kind !== nodes.get(to).kind) return null;
-      const prev = new Map([[from, null]]), queue = [from];
+      const seeds = isFolder(from) ? descendants(from) : [from];
+      const targets = new Set(isFolder(to) ? descendants(to) : [to]);
+      const prev = new Map(seeds.map(id => [id, null])), queue = seeds.slice();
       for (let i = 0; i < queue.length; i++) {
         const id = queue[i];
-        if (id === to) {
-          const path = []; let cursor = to;
+        if (targets.has(id)) {
+          const path = []; let cursor = id;
           while (cursor !== null) { path.push(cursor); cursor = prev.get(cursor); }
           return path.reverse();
         }
@@ -50,6 +85,7 @@
       requireId(from);
       if (!['LOCATE', 'UPSTREAM', 'DOWNSTREAM', 'PATH'].includes(op)) throw new Error('Unsupported operation');
       let ids = [from], path = null, status = 'Located node';
+      if (op === 'LOCATE' && isFolder(from)) ids.push(...folderNodes(from));
       if (op === 'PATH') {
         requireId(to); path = shortestPath(from, to); ids = path || [...new Set([from, to])];
         status = path ? 'Directed route found' : 'No directed route found';
@@ -64,7 +100,7 @@
       return {op, from, to: op === 'PATH' ? to : null, ids, path, edges: selectedEdges, status,
         kind: nodes.get(from).kind === (to ? nodes.get(to).kind : nodes.get(from).kind) ? nodes.get(from).kind : 'mixed'};
     }
-    return {reachable, shortestPath, route};
+    return {reachable, shortestPath, route, descendants, folderNodes, isFolder, traversal};
   }
   return {createRouter};
 });
